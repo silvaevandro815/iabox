@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  iabox-app:
+    build: .
+    container_name: iabox-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY}
+    volumes:
+      - iabox_uploads:/app/uploads
+      - iabox_output:/app/output
+      - iabox_db:/app/iabox.db
+
+volumes:
+  iabox_uploads:
+  iabox_output:
+  iabox_db:

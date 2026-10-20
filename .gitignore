@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+iabox.db
+uploads/*
+!uploads/.gitkeep
+output/*
+!output/.gitkeep
+.DS_Store

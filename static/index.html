@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>IABOX — O Estúdio de Inteligência Artificial Mais Completo do Brasil</title>
+  <meta name="description" content="Crie vídeos virais, locuções neurais 100% brasileiras, clonagem vocal, músicas completas estilo Suno e paródias musicais com inteligência artificial.">
+  <link rel="icon" href="/static/assets/logo_esg.jpg">
+  
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+          },
+          colors: {
+            cyan: {
+              400: '#22d3ee',
+              500: '#06b6d4',
+              glow: '#00f0ff',
+            },
+            dark: {
+              900: '#07090e',
+              800: '#0d131f',
+              700: '#151e30',
+              600: '#1e293b'
+            }
+          },
+          boxShadow: {
+            'neon-cyan': '0 0 25px rgba(0, 240, 255, 0.35)',
+            'neon-cyan-sm': '0 0 12px rgba(0, 240, 255, 0.25)',
+            'card-glow': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Estilos Customizados Cyberpunk / Clean Glass */
+    body {
+      background-color: #07090e;
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    .glass-panel {
+      background: rgba(13, 19, 31, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 240, 255, 0.15);
+    }
+    .glass-card {
+      background: rgba(21, 30, 48, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card:hover {
+      border-color: rgba(0, 240, 255, 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0, 240, 255, 0.12);
+    }
+    .cyan-gradient-text {
+      background: linear-gradient(135deg, #00f0ff 0%, #38bdf8 50%, #ffffff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    /* Mascote Flutuante e Arrastável */
+    #draggable-mascot {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      transition: transform 0.1s ease-out;
+    }
+    #draggable-mascot:active {
+      cursor: grabbing;
+    }
+    @keyframes floatingMascot {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+    .mascot-float {
+      animation: floatingMascot 4s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
+
+  <!-- ========================================== -->
+  <!-- NAVBAR SUPERIOR                           -->
+  <!-- ========================================== -->
+  <header class="sticky top-0 z-50 glass-panel border-b border-cyan-500/20 px-4 lg:px-8 py-3.5 transition-all">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      
+      <!-- Logo IABOX & ESG -->
+      <a href="/" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl overflow-hidden border border-cyan-400/40 shadow-neon-cyan-sm group-hover:scale-105 transition-transform bg-black flex items-center justify-center">
+          <img src="/static/assets/logo_esg.jpg" alt="ESG Logo" class="w-full h-full object-cover">
+        </div>
+        <div>
+          <span class="text-2xl font-bold font-display tracking-wider text-white flex items-center gap-1.5">
+            IABOX<span class="w-2 h-2 rounded-full bg-cyan-glow animate-pulse"></span>
+          </span>
+          <span class="text-[10px] text-gray-400 tracking-widest block uppercase font-medium">Sistemas de IA &bull; Evandro Gallina</span>
+        </div>
+      </a>
+
+      <!-- Menu Desktop -->
+      <nav class="hidden md:flex items-center gap-1 bg-dark-800/80 p-1.5 rounded-2xl border border-white/5">
+        <button onclick="switchTab('dashboard')" class="nav-btn active px-4 py-2 rounded-xl text-sm font-medium transition-all text-cyan-400 bg-cyan-500/10">Início</button>
+        <button onclick="switchTab('voice')" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-all">Vozes Brasil</button>
+        <button onclick="switchTab('clone')" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-all">Clonar Voz</button>
+        <button onclick="switchTab('suno')" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-all">Suno Studio</button>
+        <button onclick="switchTab('parody')" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-all">Paródias & Covers</button>
+        <button onclick="switchTab('video')" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-all">Vídeos Virais</button>
+        <button onclick="switchTab('about')" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-all">O Criador</button>
+      </nav>
+
+      <!-- Saldo de Créditos & Botão Recarga -->
+      <div class="flex items-center gap-3">
+        <div class="bg-cyan-500/10 border border-cyan-400/30 px-3.5 py-1.5 rounded-full flex items-center gap-2">
+          <i data-lucide="zap" class="w-4 h-4 text-cyan-400 fill-cyan-400"></i>
+          <span class="text-sm font-bold text-white"><span id="credit-display">100</span> <span class="text-xs text-cyan-300 font-normal">créditos</span></span>
+        </div>
+        <button onclick="openModal('recharge-modal')" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold px-4 py-2 rounded-xl text-sm shadow-neon-cyan-sm transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Recarregar</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- CONTEÚDO PRINCIPAL (TABS)                 -->
+  <!-- ========================================== -->
+  <main class="flex-grow max-w-7xl mx-auto w-full px-4 lg:px-8 py-8">
+
+    <!-- ---------------------------------------- -->
+    <!-- 1. TAB: DASHBOARD (HOME)                 -->
+    <!-- ---------------------------------------- -->
+    <section id="tab-dashboard" class="tab-content block space-y-10">
+      
+      <!-- Hero Banner -->
+      <div class="relative overflow-hidden rounded-3xl glass-panel p-8 md:p-12 border border-cyan-500/30 shadow-card-glow">
+        <div class="absolute -right-20 -top-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-3xl space-y-4 relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-semibold tracking-wider uppercase">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+            Plataforma 100% Ativa na VPS Hostinger
+          </div>
+          <h1 class="text-4xl md:text-6xl font-extrabold font-display leading-tight">
+            Crie Criativos de <br><span class="cyan-gradient-text">Vídeo, Áudio e Música</span> com IA
+          </h1>
+          <p class="text-gray-300 text-base md:text-lg leading-relaxed">
+            O ecossistema oficial do Brasil para criadores, empresas e agências. Sem mensalidade obrigatória: use o modelo pré-pago e pague apenas o que gerar.
+          </p>
+          <div class="flex flex-wrap gap-4 pt-2">
+            <button onclick="switchTab('suno')" class="bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold px-6 py-3 rounded-xl shadow-neon-cyan transition-all hover:scale-105 flex items-center gap-2">
+              <i data-lucide="music" class="w-5 h-5"></i>
+              Criar Música Estilo Suno
+            </button>
+            <button onclick="switchTab('parody')" class="bg-dark-700/80 hover:bg-dark-600 border border-white/10 text-white font-semibold px-6 py-3 rounded-xl transition-all flex items-center gap-2">
+              <i data-lucide="mic-2" class="w-5 h-5 text-cyan-400"></i>
+              Fábrica de Paródias
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid de Módulos / Ferramentas -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Card 1: Suno Music Studio -->
+        <div onclick="switchTab('suno')" class="glass-card rounded-2xl p-6 cursor-pointer group">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mb-5 group-hover:scale-110 transition-transform">
+            <i data-lucide="music-4" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-cyan-300 transition-colors">Suno Studio (Músicas do Zero)</h3>
+          <p class="text-sm text-gray-400 leading-relaxed mb-4">Gere músicas completas (vocais + instrumentos) a partir de um prompt em qualquer ritmo com a sua voz cantando.</p>
+          <div class="flex items-center justify-between text-xs font-semibold text-cyan-400 pt-3 border-t border-white/5">
+            <span>Custo: 15 créditos</span>
+            <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+          </div>
+        </div>
+
+        <!-- Card 2: Fábrica de Paródias -->
+        <div onclick="switchTab('parody')" class="glass-card rounded-2xl p-6 cursor-pointer group">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-400/30 flex items-center justify-center text-purple-400 mb-5 group-hover:scale-110 transition-transform">
+            <i data-lucide="disc" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-purple-300 transition-colors">Paródias & AI Song Covers</h3>
+          <p class="text-sm text-gray-400 leading-relaxed mb-4">Isole o instrumental original de canções famosas e insira novas letras cantadas com a sua voz afinada.</p>
+          <div class="flex items-center justify-between text-xs font-semibold text-purple-400 pt-3 border-t border-white/5">
+            <span>Custo: 20 créditos</span>
+            <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+          </div>
+        </div>
+
+        <!-- Card 3: Vozes Neurais do Brasil -->
+        <div onclick="switchTab('voice')" class="glass-card rounded-2xl p-6 cursor-pointer group">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400 mb-5 group-hover:scale-110 transition-transform">
+            <i data-lucide="volume-2" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-emerald-300 transition-colors">Locuções 100% Brasil</h3>
+          <p class="text-sm text-gray-400 leading-relaxed mb-4">Narrações profissionais em português brasileiro nativo (Antonio, Francisca, Thalita) sem sotaque estrangeiro.</p>
+          <div class="flex items-center justify-between text-xs font-semibold text-emerald-400 pt-3 border-t border-white/5">
+            <span>Custo: 1 crédito / 30s</span>
+            <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+          </div>
+        </div>
+
+        <!-- Card 4: Clonagem de Voz -->
+        <div onclick="switchTab('clone')" class="glass-card rounded-2xl p-6 cursor-pointer group">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-400/30 flex items-center justify-center text-amber-400 mb-5 group-hover:scale-110 transition-transform">
+            <i data-lucide="sparkles" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-amber-300 transition-colors">Clonador de Voz (1 Minuto)</h3>
+          <p class="text-sm text-gray-400 leading-relaxed mb-4">Envie um áudio de 1 minuto falando e crie um clone neural fiel para narrar qualquer novo roteiro.</p>
+          <div class="flex items-center justify-between text-xs font-semibold text-amber-400 pt-3 border-t border-white/5">
+            <span>Custo: 5 créditos</span>
+            <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+          </div>
+        </div>
+
+        <!-- Card 5: Editor de Vídeo Viral -->
+        <div onclick="switchTab('video')" class="glass-card rounded-2xl p-6 cursor-pointer group">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400 mb-5 group-hover:scale-110 transition-transform">
+            <i data-lucide="video" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-blue-300 transition-colors">Vídeos Virais (Reels 9:16)</h3>
+          <p class="text-sm text-gray-400 leading-relaxed mb-4">Cortes automáticos de silêncio, legendas dinâmicas estilo Hormozi, punch-in zoom e stickers animados.</p>
+          <div class="flex items-center justify-between text-xs font-semibold text-blue-400 pt-3 border-t border-white/5">
+            <span>Custo: 10 créditos</span>
+            <span class="flex items-center gap-1">Acessar <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+          </div>
+        </div>
+
+        <!-- Card 6: Conheça o Criador -->
+        <div onclick="switchTab('about')" class="glass-card rounded-2xl p-6 cursor-pointer group border-cyan-500/30">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400/20 to-teal-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 mb-5 group-hover:scale-110 transition-transform">
+            <i data-lucide="user-check" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-cyan-300 transition-colors">Sobre o Criador</h3>
+          <p class="text-sm text-gray-400 leading-relaxed mb-4">Conheça a trajetória e o currículo de Evandro Silva Gallina, arquiteto e especialista por trás do IABOX.</p>
+          <div class="flex items-center justify-between text-xs font-semibold text-cyan-400 pt-3 border-t border-white/5">
+            <span>Perfil & Conexões</span>
+            <span class="flex items-center gap-1">Ver perfil <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- 2. TAB: SUNO MUSIC STUDIO                -->
+    <!-- ---------------------------------------- -->
+    <section id="tab-suno" class="tab-content hidden space-y-6">
+      <div class="border-b border-white/10 pb-4">
+        <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
+          <i data-lucide="music-4" class="w-8 h-8 text-cyan-400"></i>
+          Suno Studio — Criação de Músicas Inéditas
+        </h2>
+        <p class="text-gray-400 text-sm mt-1">Crie canções profissionais completas em qualquer estilo musical com letra, instrumentos e voz cantada.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Formulário -->
+        <div class="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-5">
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">Tema ou História da Canção</label>
+            <input type="text" id="suno-theme" placeholder="Ex: Viagem no tempo em um carro clássico na estrada de Brasília" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">Gênero e Instrumentos Musicais</label>
+            <input type="text" id="suno-genre" value="sertanejo pop animado, violao, sanfona e bateria 128 bpm" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 transition-colors">
+            <p class="text-xs text-gray-400 mt-1">Exemplos: <em>funk 130bpm</em>, <em>rock clássico anos 80</em>, <em>trap melódico</em>, <em>pagode romântico</em>.</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">Deseja cantar com a SUA voz clonada? (Opcional)</label>
+            <input type="file" id="suno-voice" accept="audio/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/20 file:text-cyan-300 hover:file:bg-cyan-500/30">
+            <p class="text-xs text-gray-400 mt-1">Selecione uma gravação de 1 min da sua voz. Se deixar vazio, usará um vocal de estúdio original.</p>
+          </div>
+
+          <button onclick="handleGenerateSuno()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold py-3.5 rounded-xl shadow-neon-cyan transition-all flex items-center justify-center gap-2">
+            <i data-lucide="play" class="w-5 h-5 fill-black"></i>
+            <span>Gerar Música Completa (15 Créditos)</span>
+          </button>
+        </div>
+
+        <!-- Painel Lateral de Resultado -->
+        <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white mb-3">Player de Áudio</h3>
+            <div id="suno-player-box" class="bg-dark-800/80 rounded-xl p-4 border border-white/5 text-center text-gray-400 text-sm">
+              <i data-lucide="music" class="w-10 h-10 mx-auto text-gray-500 mb-2"></i>
+              Nenhuma música gerada ainda. Preencha os campos e clique em Gerar.
+            </div>
+          </div>
+          <div class="p-4 rounded-xl bg-cyan-500/5 border border-cyan-400/20 mt-4 text-xs text-gray-300 leading-relaxed">
+            <span class="font-bold text-cyan-400 block mb-1">Como o Suno Studio opera:</span>
+            A IA gera a letra com metatags (Versos e Refrão), compõe o arranjo instrumental via rede neural e masteriza em 320kbps MP3.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- 3. TAB: PARÓDIAS & AI SONG COVERS        -->
+    <!-- ---------------------------------------- -->
+    <section id="tab-parody" class="tab-content hidden space-y-6">
+      <div class="border-b border-white/10 pb-4">
+        <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
+          <i data-lucide="disc" class="w-8 h-8 text-purple-400"></i>
+          Fábrica de Paródias Musicais & Covers
+        </h2>
+        <p class="text-gray-400 text-sm mt-1">Isole o instrumental original de qualquer música comercial e cante sua paródia afinada.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-5">
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">1. Música Original (MP3/WAV)</label>
+            <input type="file" id="parody-song" accept="audio/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500/20 file:text-purple-300">
+            <p class="text-xs text-gray-400 mt-1">Ex: O arquivo da música original (Luan Santana, Gusttavo Lima, Queen, etc.).</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">2. Áudio Guia da Paródia (Gravado por você no ritmo)</label>
+            <input type="file" id="parody-guide" accept="audio/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500/20 file:text-purple-300">
+            <p class="text-xs text-gray-400 mt-1">Pode ser gravado no WhatsApp ou celular cantando a nova letra na cadência da música.</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">3. Áudio de Referência da Sua Voz (1 minuto)</label>
+            <input type="file" id="parody-voice" accept="audio/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500/20 file:text-purple-300">
+          </div>
+
+          <button onclick="handleGenerateParody()" class="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+            <span>Criar Paródia Masterizada (20 Créditos)</span>
+          </button>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white mb-3">Paródia Final</h3>
+            <div id="parody-player-box" class="bg-dark-800/80 rounded-xl p-4 border border-white/5 text-center text-gray-400 text-sm">
+              <i data-lucide="music-2" class="w-10 h-10 mx-auto text-purple-400 mb-2"></i>
+              Envie os 3 arquivos para iniciar a separação de stems e afinamento da sua voz.
+            </div>
+          </div>
+          <div class="p-4 rounded-xl bg-purple-500/5 border border-purple-400/20 mt-4 text-xs text-gray-300">
+            <strong>Como funciona:</strong> O Demucs v4 separa o instrumental original limpo, enquanto o Seed-VC transfere o seu timbre vocal mantendo as notas e afinação.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- 4. TAB: VOZES NEURAIS DO BRASIL          -->
+    <!-- ---------------------------------------- -->
+    <section id="tab-voice" class="tab-content hidden space-y-6">
+      <div class="border-b border-white/10 pb-4">
+        <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
+          <i data-lucide="volume-2" class="w-8 h-8 text-emerald-400"></i>
+          Locuções Neurais 100% Brasil (PT-BR)
+        </h2>
+        <p class="text-gray-400 text-sm mt-1">Vozes de rádio e cinema com dicção limpa, naturalidade broadcast e zero sotaque gringo.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-5">
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">Escolha a Voz</label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <label class="border border-cyan-400/30 bg-cyan-500/10 p-3 rounded-xl flex items-center gap-3 cursor-pointer">
+                <input type="radio" name="voice_select" value="antonio" checked class="text-cyan-400">
+                <div>
+                  <span class="font-bold text-white text-sm block">Antonio</span>
+                  <span class="text-xs text-cyan-300">Masculino Imponente</span>
+                </div>
+              </label>
+              <label class="border border-white/10 bg-dark-800 p-3 rounded-xl flex items-center gap-3 cursor-pointer">
+                <input type="radio" name="voice_select" value="francisca" class="text-cyan-400">
+                <div>
+                  <span class="font-bold text-white text-sm block">Francisca</span>
+                  <span class="text-xs text-gray-400">Feminino Suave</span>
+                </div>
+              </label>
+              <label class="border border-white/10 bg-dark-800 p-3 rounded-xl flex items-center gap-3 cursor-pointer">
+                <input type="radio" name="voice_select" value="thalita" class="text-cyan-400">
+                <div>
+                  <span class="font-bold text-white text-sm block">Thalita</span>
+                  <span class="text-xs text-gray-400">Jovem Expressiva</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">Texto do Roteiro</label>
+            <textarea id="voice-text" rows="5" placeholder="Digite ou cole aqui o texto que a voz neural brasileira deve narrar..." class="w-full bg-dark-800 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-emerald-400 transition-colors"></textarea>
+          </div>
+
+          <button onclick="handleGenerateVoice()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-black font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+            <i data-lucide="play" class="w-5 h-5 fill-black"></i>
+            <span>Gerar Áudio PT-BR (1 Crédito)</span>
+          </button>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white mb-3">Áudio Gerado</h3>
+            <div id="voice-player-box" class="bg-dark-800/80 rounded-xl p-4 border border-white/5 text-center text-gray-400 text-sm">
+              <i data-lucide="volume-2" class="w-10 h-10 mx-auto text-emerald-400 mb-2"></i>
+              Digite o texto ao lado para gerar sua locução em segundos.
+            </div>
+          </div>
+          <div class="p-4 rounded-xl bg-emerald-500/5 border border-emerald-400/20 mt-4 text-xs text-gray-300">
+            Perfeito para vídeos do TikTok, Reels, anúncios pagos e narrações institucionais.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- 5. TAB: CLONADOR DE VOZ                  -->
+    <!-- ---------------------------------------- -->
+    <section id="tab-clone" class="tab-content hidden space-y-6">
+      <div class="border-b border-white/10 pb-4">
+        <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
+          <i data-lucide="sparkles" class="w-8 h-8 text-amber-400"></i>
+          Clonador de Voz Instantâneo (Zero-Shot)
+        </h2>
+        <p class="text-gray-400 text-sm mt-1">Clone a sua voz com apenas 1 minuto de gravação e faça ela falar qualquer novo texto.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-5">
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">Amostra da Sua Voz (1 minuto)</label>
+            <input type="file" id="clone-audio" accept="audio/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500/20 file:text-amber-300">
+            <p class="text-xs text-gray-400 mt-1">Grave pelo celular num lugar silencioso falando normalmente por cerca de 30 a 60 segundos.</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">O que você quer que a sua voz fale?</label>
+            <textarea id="clone-text" rows="4" placeholder="Escreva o novo texto que você quer ouvir sendo falado com a sua própria voz..." class="w-full bg-dark-800 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-amber-400 transition-colors"></textarea>
+          </div>
+
+          <button onclick="handleCloneVoice()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-black font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+            <i data-lucide="cpu" class="w-5 h-5"></i>
+            <span>Sintetizar com Minha Voz Clonada (5 Créditos)</span>
+          </button>
+        </div>
+
+        <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white mb-3">Resultado da Clonagem</h3>
+            <div id="clone-player-box" class="bg-dark-800/80 rounded-xl p-4 border border-white/5 text-center text-gray-400 text-sm">
+              <i data-lucide="mic" class="w-10 h-10 mx-auto text-amber-400 mb-2"></i>
+              Envie o áudio de referência para sintetizar com a sua voz.
+            </div>
+          </div>
+          <div class="p-4 rounded-xl bg-amber-500/5 border border-amber-400/20 mt-4 text-xs text-gray-300">
+            A IA mapeia o seu trato vocal, respiração e sotaque brasileiro e alinha com o novo texto fonético.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- 6. TAB: VÍDEOS VIRAIS (9:16)             -->
+    <!-- ---------------------------------------- -->
+    <section id="tab-video" class="tab-content hidden space-y-6">
+      <div class="border-b border-white/10 pb-4">
+        <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
+          <i data-lucide="video" class="w-8 h-8 text-blue-400"></i>
+          Editor Automático de Vídeos Virais (Reels 9:16)
+        </h2>
+        <p class="text-gray-400 text-sm mt-1">Transforme gravações brutas de celular em vídeos dinâmicos de alta retenção.</p>
+      </div>
+
+      <div class="glass-panel p-6 rounded-2xl space-y-6 max-w-2xl">
+        <div>
+          <label class="block text-sm font-semibold text-gray-200 mb-2">Upload do Vídeo Bruto (.mp4 / .mov)</label>
+          <input type="file" id="video-file" accept="video/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-500/20 file:text-blue-300">
+        </div>
+
+        <div class="space-y-3">
+          <span class="block text-sm font-semibold text-gray-200">Efeitos Inteligentes Ativos:</span>
+          <label class="flex items-center gap-3 p-3 rounded-xl bg-dark-800/80 border border-white/5 cursor-pointer">
+            <input type="checkbox" checked disabled class="rounded text-cyan-400">
+            <div>
+              <span class="text-sm font-bold text-white block">Jump Cuts Automáticos</span>
+              <span class="text-xs text-gray-400">Remove pausas longas e respirações via detecção de silêncio FFmpeg.</span>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-3 rounded-xl bg-dark-800/80 border border-white/5 cursor-pointer">
+            <input type="checkbox" checked disabled class="rounded text-cyan-400">
+            <div>
+              <span class="text-sm font-bold text-white block">Legendas Dinâmicas Karaokê (Hormozi)</span>
+              <span class="text-xs text-gray-400">Sincronização palavra por palavra com destaque em amarelo e branco.</span>
+            </div>
+          </label>
+          <label class="flex items-center gap-3 p-3 rounded-xl bg-dark-800/80 border border-white/5 cursor-pointer">
+            <input type="checkbox" checked disabled class="rounded text-cyan-400">
+            <div>
+              <span class="text-sm font-bold text-white block">Punch-in Zoom & Motion Graphics</span>
+              <span class="text-xs text-gray-400">Zooms em pontos-chave da fala para quebrar monotonia e reter atenção.</span>
+            </div>
+          </label>
+        </div>
+
+        <button onclick="alert('Módulo de renderização de vídeo acionado na VPS Hostinger!')" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-black font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+          <i data-lucide="scissors" class="w-5 h-5"></i>
+          <span>Processar Vídeo Viral (10 Créditos)</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- 7. TAB: O CRIADOR (EVANDRO SILVA GALLINA) -->
+    <!-- ---------------------------------------- -->
+    <section id="tab-about" class="tab-content hidden space-y-8">
+      
+      <div class="glass-panel p-8 md:p-12 rounded-3xl border border-cyan-500/30 relative overflow-hidden">
+        <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+          
+          <!-- Foto Oficial de Evandro -->
+          <div class="lg:col-span-5 flex flex-col items-center">
+            <div class="relative group">
+              <div class="absolute -inset-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-2xl blur-lg opacity-70 group-hover:opacity-100 transition duration-500"></div>
+              <div class="relative w-72 h-84 md:w-80 md:h-96 rounded-2xl overflow-hidden border-2 border-cyan-400/50 shadow-2xl bg-black">
+                <img src="/static/assets/evandro_criador.jpg" alt="Evandro Silva Gallina" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              </div>
+            </div>
+            
+            <div class="mt-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-semibold">
+              <i data-lucide="badge-check" class="w-4 h-4 text-cyan-400"></i>
+              Criador & Diretor do IABOX
+            </div>
+          </div>
+
+          <!-- Currículo & Biografia de Autoridade -->
+          <div class="lg:col-span-7 space-y-5">
+            <div>
+              <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Quem Sou Eu &bull; Criador da Plataforma</span>
+              <h2 class="text-3xl md:text-5xl font-extrabold font-display text-white">Evandro Silva Gallina</h2>
+              <p class="text-cyan-300 font-medium text-sm md:text-base mt-1">Especialista em Sistemas de IA, Gestão Pública e Comunicação Estratégica</p>
+            </div>
+
+            <div class="space-y-3 text-gray-300 text-sm md:text-base leading-relaxed">
+              <p>
+                Sou Evandro Silva Gallina, um profissional multidisciplinar com um background único: a rara interseção entre <strong>Comunicação Estratégica, Gestão Pública e Engenharia de Sistemas de IA</strong>.
+              </p>
+              <p>
+                Ao contrário de desenvolvedores tradicionais, minha trajetória na Gestão e Comunicação me treinou para entender de <strong>pessoas, narrativas, engajamento e conversão</strong>. E ao contrário de comunicadores convencionais, eu possuo o domínio técnico prático para arquitetar infraestruturas completas de inteligência artificial, plataformas SaaS, orquestração de Agentes Autônomos (RAG) e esteiras audiovisuais automatizadas.
+              </p>
+              <p>
+                O <strong>IABOX</strong> nasceu para consolidar essa visão: entregar para o mercado uma suíte de criação ágil, acessível e de altíssima qualidade técnica para vídeos, vozes brasileiras e produções musicais por IA.
+              </p>
+            </div>
+
+            <!-- Badges de Competências -->
+            <div class="flex flex-wrap gap-2 pt-2">
+              <span class="px-3 py-1 rounded-lg bg-dark-800 border border-white/10 text-xs text-gray-300">Arquitetura de Agentes de IA</span>
+              <span class="px-3 py-1 rounded-lg bg-dark-800 border border-white/10 text-xs text-gray-300">Automações N8N & APIs</span>
+              <span class="px-3 py-1 rounded-lg bg-dark-800 border border-white/10 text-xs text-gray-300">Micro-SaaS & Deploy Cloud</span>
+              <span class="px-3 py-1 rounded-lg bg-dark-800 border border-white/10 text-xs text-gray-300">Produção Audiovisual</span>
+              <span class="px-3 py-1 rounded-lg bg-dark-800 border border-white/10 text-xs text-gray-300">Marketing Digital & Performance</span>
+            </div>
+
+            <!-- Links de Conexão -->
+            <div class="flex flex-wrap gap-3 pt-3">
+              <a href="https://instagram.com/evandrosilvagallina" target="_blank" class="px-4 py-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 border border-white/10 text-white text-xs font-semibold flex items-center gap-2 transition-all hover:border-cyan-400">
+                <i data-lucide="instagram" class="w-4 h-4 text-cyan-400"></i>
+                Instagram
+              </a>
+              <a href="https://linkedin.com/in/evandro-sillva-gallina-83097b1aa" target="_blank" class="px-4 py-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 border border-white/10 text-white text-xs font-semibold flex items-center gap-2 transition-all hover:border-cyan-400">
+                <i data-lucide="linkedin" class="w-4 h-4 text-cyan-400"></i>
+                LinkedIn
+              </a>
+              <a href="https://github.com/silvaevandro815" target="_blank" class="px-4 py-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 border border-white/10 text-white text-xs font-semibold flex items-center gap-2 transition-all hover:border-cyan-400">
+                <i data-lucide="github" class="w-4 h-4 text-cyan-400"></i>
+                GitHub
+              </a>
+              <a href="https://wa.me/5532984587255" target="_blank" class="px-4 py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-300 text-xs font-semibold flex items-center gap-2 transition-all">
+                <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i>
+                Falar no WhatsApp
+              </a>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL DE RECARGA DE CRÉDITOS (STRIPE/PIX)  -->
+  <!-- ========================================== -->
+  <div id="recharge-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-3xl w-full p-6 md:p-8 rounded-3xl border border-cyan-500/40 shadow-2xl relative">
+      <button onclick="closeModal('recharge-modal')" class="absolute top-5 right-5 text-gray-400 hover:text-white">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+
+      <div class="text-center max-w-md mx-auto mb-8">
+        <h3 class="text-2xl font-bold font-display text-white">Recarga Pré-Paga de Créditos</h3>
+        <p class="text-sm text-gray-400 mt-1">Sem mensalidade obrigatória. Seus créditos não expiram e você usa quando precisar.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        
+        <!-- Pacote 1 -->
+        <div class="glass-card rounded-2xl p-5 border border-white/10 flex flex-col justify-between text-center">
+          <div>
+            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Starter</span>
+            <div class="text-3xl font-extrabold text-white my-3">R$ 29,90</div>
+            <div class="text-cyan-400 font-bold text-lg mb-4">100 Créditos</div>
+            <ul class="text-xs text-gray-300 space-y-2 text-left mb-6">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 100 locuções PT-BR</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 20 clonagens de voz</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 6 músicas Suno</li>
+            </ul>
+          </div>
+          <button onclick="handleStripeCheckout('starter')" class="w-full bg-dark-700 hover:bg-dark-600 border border-white/20 text-white font-bold py-2.5 rounded-xl text-sm transition-all">
+            Recarregar
+          </button>
+        </div>
+
+        <!-- Pacote 2 (Destaque) -->
+        <div class="glass-card rounded-2xl p-5 border-2 border-cyan-400 shadow-neon-cyan-sm flex flex-col justify-between text-center relative bg-dark-800">
+          <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-cyan-400 text-black text-[10px] font-black uppercase tracking-widest px-3 py-0.5 rounded-full">
+            Mais Popular
+          </div>
+          <div>
+            <span class="text-xs font-bold text-cyan-300 uppercase tracking-wider block mt-1">Profissional</span>
+            <div class="text-3xl font-extrabold text-white my-3">R$ 59,90</div>
+            <div class="text-cyan-400 font-bold text-lg mb-4">250 Créditos</div>
+            <ul class="text-xs text-gray-300 space-y-2 text-left mb-6">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 250 locuções PT-BR</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 50 clonagens de voz</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 16 músicas Suno / Paródias</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 25 vídeos virais editados</li>
+            </ul>
+          </div>
+          <button onclick="handleStripeCheckout('pro')" class="w-full bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold py-2.5 rounded-xl text-sm shadow-neon-cyan transition-all hover:scale-105">
+            Recarregar Agora
+          </button>
+        </div>
+
+        <!-- Pacote 3 -->
+        <div class="glass-card rounded-2xl p-5 border border-white/10 flex flex-col justify-between text-center">
+          <div>
+            <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Agência / Viral</span>
+            <div class="text-3xl font-extrabold text-white my-3">R$ 129,90</div>
+            <div class="text-cyan-400 font-bold text-lg mb-4">700 Créditos</div>
+            <ul class="text-xs text-gray-300 space-y-2 text-left mb-6">
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 700 locuções PT-BR</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 140 clonagens de voz</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 46 músicas completas</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 70 vídeos virais 9:16</li>
+            </ul>
+          </div>
+          <button onclick="handleStripeCheckout('viral')" class="w-full bg-dark-700 hover:bg-dark-600 border border-white/20 text-white font-bold py-2.5 rounded-xl text-sm transition-all">
+            Recarregar
+          </button>
+        </div>
+
+      </div>
+
+      <div class="text-center mt-6 text-xs text-gray-400 flex items-center justify-center gap-2">
+        <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
+        Pagamento seguro processado via Stripe &bull; Cartão, Boleto e PIX
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- ROBÔ MASCOTE INTERATIVO E FLUTUANTE (ARRASTÁVEL POR TOQUE OU MOUSE)       -->
+  <!-- ========================================================================= -->
+  <div id="draggable-mascot" class="flex flex-col items-center">
+    
+    <!-- Balão de Fala do Robô -->
+    <div id="mascot-bubble" class="bg-dark-800/90 text-white text-xs px-3.5 py-2 rounded-2xl border border-cyan-400/40 shadow-neon-cyan-sm mb-2 max-w-[200px] text-center transform scale-95 transition-all">
+      <span id="mascot-msg">Olá! Sou o IABot. Toque em mim para dicas! 🤖</span>
+    </div>
+
+    <!-- Imagem Transparente do Robô com Animação -->
+    <div id="mascot-img-wrapper" class="w-24 h-24 md:w-28 md:h-28 mascot-float filter drop-shadow-[0_10px_20px_rgba(0,240,255,0.4)]">
+      <img src="/static/assets/robot_mascot.png" alt="IABot Mascote" class="w-full h-full object-contain pointer-events-none">
+    </div>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FOOTER                                     -->
+  <!-- ========================================== -->
+  <footer class="border-t border-white/10 glass-panel py-8 mt-12 px-4">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400">
+      <div class="flex items-center gap-3">
+        <div class="w-7 h-7 rounded-lg overflow-hidden border border-white/10">
+          <img src="/static/assets/logo_esg.jpg" alt="Logo ESG" class="w-full h-full object-cover">
+        </div>
+        <span>&copy; 2026 IABOX &bull; Criado por Evandro Silva Gallina &bull; Todos os direitos reservados.</span>
+      </div>
+      <div>
+        <span>Domínio Oficial: <strong class="text-cyan-400">iabox.evandrosilvagallina.cloud</strong></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- SCRIPTS JAVASCRIPT: LÓGICA E INTERAÇÃO     -->
+  <!-- ========================================== -->
+  <script>
+    // Inicializa ícones do Lucide
+    lucide.createIcons();
+
+    // 1. Navegação de Abas
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      const activeTab = document.getElementById(`tab-${tabId}`);
+      if (activeTab) activeTab.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-cyan-400', 'bg-cyan-500/10');
+        btn.classList.add('text-gray-300');
+      });
+
+      // Atualiza dica do robô
+      const tips = {
+        'suno': 'No Suno Studio, você pode criar desde modão sertanejo até trap e funk!',
+        'parody': 'Quer viralizar no TikTok? Use o modo Paródia com a sua voz cantando!',
+        'voice': 'Nossas vozes neurais brasileiras não têm nenhum sotaque estrangeiro!',
+        'clone': 'Com apenas 1 minuto de áudio você já tem seu clone vocal perfeito!',
+        'video': 'Os cortes de silêncio (jump cuts) aumentam a retenção em até 40%!',
+        'about': 'Conheça o Evandro, o especialista que desenvolveu toda essa tecnologia!',
+        'dashboard': 'Clique no robô ou arraste-o pela tela para onde quiser!'
+      };
+      if (tips[tabId]) setMascotMessage(tips[tabId]);
+    }
+
+    // 2. Modais
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // 3. Mascote Interativo Arrastável (Touch & Mouse Drag)
+    const mascot = document.getElementById('draggable-mascot');
+    const bubble = document.getElementById('mascot-bubble');
+    const msgEl = document.getElementById('mascot-msg');
+
+    let isDragging = false;
+    let startX, startY, initialX, initialY;
+
+    function setMascotMessage(msg) {
+      msgEl.innerText = msg;
+      bubble.classList.remove('scale-95');
+      bubble.classList.add('scale-105');
+      setTimeout(() => bubble.classList.remove('scale-105'), 300);
+    }
+
+    const tipsList = [
+      "Arraste-me para onde quiser na tela!",
+      "Sabia que você pode criar paródias perfeitas com o instrumental original?",
+      "Nossas vozes masculinas e femininas são 100% brasileiras!",
+      "Experimente criar uma música sertaneja ou trap no Suno Studio!",
+      "Acesse a aba 'O Criador' para ver o currículo do Evandro Gallina!",
+      "Você ganhou 100 créditos gratuitos de boas-vindas para testar!"
+    ];
+    let tipIdx = 0;
+
+    mascot.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      mascot.classList.remove('mascot-float');
+      startX = e.clientX;
+      startY = e.clientY;
+      const rect = mascot.getBoundingClientRect();
+      initialX = rect.left;
+      initialY = rect.top;
+      mascot.setPointerCapture(e.pointerId);
+    });
+
+    mascot.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      mascot.style.left = `${initialX + dx}px`;
+      mascot.style.top = `${initialY + dy}px`;
+      mascot.style.bottom = 'auto';
+      mascot.style.right = 'auto';
+    });
+
+    mascot.addEventListener('pointerup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      mascot.classList.add('mascot-float');
+      // Se apenas deu um clique curto
+      if (Math.abs(e.clientX - startX) < 5 && Math.abs(e.clientY - startY) < 5) {
+        tipIdx = (tipIdx + 1) % tipsList.length;
+        setMascotMessage(tipsList[tipIdx]);
+      }
+    });
+
+    // 4. Integração de APIs de Geração
+    async function updateCredits() {
+      try {
+        const res = await fetch('/api/user/credits?user_id=default_user');
+        const data = await res.json();
+        document.getElementById('credit-display').innerText = data.credits;
+      } catch (err) { console.log('Erro ao ler créditos:', err); }
+    }
+    updateCredits();
+
+    // Gerar Voz Brasil
+    async function handleGenerateVoice() {
+      const text = document.getElementById('voice-text').value.trim();
+      const voice = document.querySelector('input[name="voice_select"]:checked').value;
+      if (!text) return alert('Por favor, digite o texto.');
+
+      const box = document.getElementById('voice-player-box');
+      box.innerHTML = '<div class="py-6"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-emerald-400 animate-spin mb-2"></i> Sintetizando voz neural PT-BR...</div>';
+      lucide.createIcons();
+
+      const formData = new FormData();
+      formData.append('text', text);
+      formData.append('voice', voice);
+
+      try {
+        const res = await fetch('/api/voice/generate', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.result_url) {
+          box.innerHTML = `
+            <div class="space-y-3">
+              <span class="text-xs font-bold text-emerald-400 block">Áudio Gerado com Sucesso!</span>
+              <audio controls autoplay class="w-full"><source src="${data.result_url}" type="audio/mpeg"></audio>
+              <a href="${data.result_url}" download class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:underline">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar MP3
+              </a>
+            </div>`;
+          updateCredits();
+        } else {
+          box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${data.detail || 'Falha na síntese'}</span>`;
+        }
+      } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro de conexão: ${e.message}</span>`; }
+      lucide.createIcons();
+    }
+
+    // Gerar Suno Studio
+    async function handleGenerateSuno() {
+      const theme = document.getElementById('suno-theme').value.trim();
+      const genre = document.getElementById('suno-genre').value.trim();
+      const voiceFile = document.getElementById('suno-voice').files[0];
+      if (!theme) return alert('Informe o tema da canção.');
+
+      const box = document.getElementById('suno-player-box');
+      box.innerHTML = '<div class="py-6"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-cyan-400 animate-spin mb-2"></i> Compondo letra e gerando instrumental neural (leva cerca de 30-60s)...</div>';
+      lucide.createIcons();
+
+      const formData = new FormData();
+      formData.append('theme', theme);
+      formData.append('genre', genre);
+      formData.append('duration', 95);
+      if (voiceFile) formData.append('voice_sample', voiceFile);
+
+      try {
+        const res = await fetch('/api/music/suno', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.job_id) {
+          pollJob(data.job_id, box);
+          updateCredits();
+        }
+      } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`; }
+    }
+
+    // Gerar Paródia
+    async function handleGenerateParody() {
+      const song = document.getElementById('parody-song').files[0];
+      const guide = document.getElementById('parody-guide').files[0];
+      const voice = document.getElementById('parody-voice').files[0];
+      if (!song || !guide || !voice) return alert('Envie os 3 arquivos necessários.');
+
+      const box = document.getElementById('parody-player-box');
+      box.innerHTML = '<div class="py-6"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-purple-400 animate-spin mb-2"></i> Isolando instrumentos (Demucs) e afinando sua voz (Seed-VC)...</div>';
+      lucide.createIcons();
+
+      const formData = new FormData();
+      formData.append('song_file', song);
+      formData.append('guide_file', guide);
+      formData.append('voice_sample', voice);
+
+      try {
+        const res = await fetch('/api/music/parody', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.job_id) {
+          pollJob(data.job_id, box);
+          updateCredits();
+        }
+      } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`; }
+    }
+
+    // Polling de Jobs Assíncronos
+    function pollJob(jobId, element) {
+      const interval = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/jobs/${jobId}`);
+          const job = await res.json();
+          if (job.status === 'completed') {
+            clearInterval(interval);
+            element.innerHTML = `
+              <div class="space-y-3">
+                <span class="text-xs font-bold text-cyan-400 block">Produção Concluída com Sucesso!</span>
+                <audio controls autoplay class="w-full"><source src="${job.result_url}" type="audio/mpeg"></audio>
+                <a href="${job.result_url}" download class="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:underline">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar Arquivo Final
+                </a>
+              </div>`;
+            lucide.createIcons();
+          } else if (job.status === 'failed') {
+            clearInterval(interval);
+            element.innerHTML = `<span class="text-red-400 text-xs">Falha na produção: ${job.error || 'Erro desconhecido'}</span>`;
+          }
+        } catch (e) {}
+      }, 4000);
+    }
+
+    // 5. Checkout Stripe
+    async function handleStripeCheckout(pkgId) {
+      try {
+        const formData = new FormData();
+        formData.append('package_id', pkgId);
+        formData.append('user_id', 'default_user');
+
+        const res = await fetch('/api/stripe/create-checkout', { method: 'POST', body: formData });
+        const data = await res.json();
+
+        if (data.checkout_url) {
+          window.location.href = data.checkout_url;
+        } else if (data.mode === 'test_auto_recharge') {
+          alert(`${data.message}\nNovo Saldo: ${data.new_balance} créditos`);
+          closeModal('recharge-modal');
+          updateCredits();
+        }
+      } catch (e) { alert('Erro ao abrir checkout: ' + e.message); }
+    }
+  </script>
+</body>
+</html>
