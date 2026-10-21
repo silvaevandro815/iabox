@@ -144,74 +144,68 @@
 </head>
 <body class="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
 
-  <!-- ========================================== -->
-  <!-- NAVBAR SUPERIOR (AJUSTADA SEM CORTE NO PC) -->
-  <!-- ========================================== -->
-  <header class="sticky top-0 z-50 glass-panel border-b border-cyan-500/20 px-3 lg:px-6 py-2.5 transition-all">
-    <div class="max-w-[1400px] mx-auto flex items-center justify-between gap-2">
+  <!-- ========================================================================= -->
+  <!-- NAVBAR SUPERIOR EM DOIS NÍVEIS (100% VISÍVEL EM QUALQUER ZOOM E TELA)     -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-50 glass-panel border-b border-cyan-500/25 px-3 lg:px-6 py-2 transition-all">
+    <div class="max-w-[1400px] mx-auto flex flex-col gap-2">
       
-      <!-- Logo Quadrada IABOX & ESG (3 cliques ou 3 toques liberam acesso total exclusivo no aparelho) -->
-      <div id="esg-logo-trigger" onpointerdown="handleLogoSecretClick(event)" class="flex items-center gap-2.5 group cursor-pointer select-none shrink-0" title="Toque ou clique 3 vezes para Acesso Total VIP neste aparelho">
-        <div style="width: 50px; height: 50px; min-width: 50px; min-height: 50px; border-radius: 8px;" class="shrink-0 overflow-hidden border-2 border-cyan-400 shadow-neon-cyan-sm group-hover:scale-105 transition-transform bg-white p-0.5 flex items-center justify-center">
-          <img src="/static/assets/logo_esg_square.png?v=2" alt="ESG Logo Quadrada" class="w-full h-full object-contain">
+      <!-- NÍVEL 1: LOGO QUADRADA ESG + SALDO VIP/TOKENS + BOTÃO RECARREGAR -->
+      <div class="flex items-center justify-between gap-2">
+        <!-- Logo Quadrada IABOX & ESG (3 cliques ou 3 toques liberam acesso total exclusivo no aparelho) -->
+        <div id="esg-logo-trigger" onpointerdown="handleLogoSecretClick(event)" class="flex items-center gap-2.5 group cursor-pointer select-none shrink-0" title="Toque ou clique 3 vezes para Acesso Total VIP neste aparelho">
+          <div style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px;" class="shrink-0 overflow-hidden border-2 border-cyan-400 shadow-neon-cyan-sm group-hover:scale-105 transition-transform bg-white p-0.5 flex items-center justify-center">
+            <img src="/static/assets/logo_esg_square.png?v=3" alt="ESG Logo Quadrada" class="w-full h-full object-contain">
+          </div>
+          <div class="shrink-0">
+            <span class="text-lg lg:text-xl font-bold font-display tracking-wider text-white flex items-center gap-1.5 leading-none">
+              IABOX<span class="w-2 h-2 rounded-full bg-cyan-glow animate-pulse"></span>
+            </span>
+            <span class="text-[9px] text-cyan-300/90 tracking-wider block uppercase font-semibold mt-0.5">ESG &bull; Sistemas de IA</span>
+          </div>
         </div>
-        <div class="shrink-0">
-          <span class="text-xl lg:text-2xl font-bold font-display tracking-wider text-white flex items-center gap-1.5 leading-none">
-            IABOX<span class="w-2 h-2 rounded-full bg-cyan-glow animate-pulse"></span>
-          </span>
-          <span class="text-[9px] text-cyan-300/90 tracking-wider block uppercase font-semibold mt-0.5">ESG &bull; Sistemas de IA</span>
+
+        <!-- Botão Rápido Memória + Saldo de Créditos + Botão Recarga com Ícones Futuristas Neon -->
+        <div class="flex items-center gap-2 shrink-0">
+          <button onclick="switchTab('memory')" class="hidden sm:flex items-center gap-1.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-400/40 text-purple-200 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
+            <i data-lucide="database" class="w-3.5 h-3.5 text-purple-400"></i>
+            <span>Memória & Acessos</span>
+          </button>
+
+          <div id="wallet-badge-pill" class="bg-cyan-500/10 border border-cyan-400/40 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 cursor-pointer hover:border-cyan-400 transition-colors whitespace-nowrap shrink-0" onclick="openModal('recharge-modal')">
+            <svg class="w-4 h-4 text-cyan-400 shrink-0" style="filter: drop-shadow(0 0 6px #00f0ff);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="rgba(0,240,255,0.25)"/>
+            </svg>
+            <span class="text-xs font-extrabold text-white whitespace-nowrap"><span id="credit-display">50</span> <span id="credit-label-text" class="text-[11px] text-cyan-300 font-semibold">tokens</span></span>
+          </div>
+
+          <button onclick="openModal('recharge-modal')" class="bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-extrabold px-3 py-1.5 rounded-xl text-xs shadow-neon-cyan transition-all transform hover:scale-105 active:scale-95 flex items-center gap-1.5 whitespace-nowrap shrink-0">
+            <svg class="w-3.5 h-3.5 text-black shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
+              <line x1="12" y1="8" x2="12" y2="16"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            <span>Recarregar</span>
+          </button>
         </div>
       </div>
 
-      <!-- Menu Desktop (Compacto & Sem Quebra de Linha para não cortar o botão Recarregar) -->
-      <nav class="hidden xl:flex items-center gap-1 bg-dark-800/90 p-1 rounded-2xl border border-white/10 shrink-0">
-        <button onclick="switchTab('dashboard')" class="nav-btn active whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all text-cyan-400 bg-cyan-500/10">Início</button>
-        <button onclick="switchTab('canvas')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all flex items-center gap-1">
-          <span>⚡</span> Magnific Canvas
-        </button>
-        <button onclick="switchTab('image')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">Imagens IA</button>
-        <button onclick="switchTab('voice')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">Vozes Brasil</button>
-        <button onclick="switchTab('clone')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">Clonar Voz</button>
-        <button onclick="switchTab('suno')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">Suno Studio</button>
-        <button onclick="switchTab('parody')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">Paródias</button>
-        <button onclick="switchTab('video')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">Vídeos 9:16</button>
-        <button onclick="switchTab('about')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">O Criador</button>
+      <!-- NÍVEL 2: MENU COMPLETO COM QUEBRA INTELIGENTE (SEMPRE 100% VISÍVEL EM ZOOM 100%) -->
+      <nav class="flex flex-wrap items-center justify-center gap-1.5 pt-1.5 border-t border-white/10">
+        <button data-tab="dashboard" onclick="switchTab('dashboard')" class="nav-btn active whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold transition-all text-cyan-400 bg-cyan-500/15 border border-cyan-400/30">🏠 Início</button>
+        <button data-tab="canvas" onclick="switchTab('canvas')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all">⚡ Magnific Canvas</button>
+        <button data-tab="image" onclick="switchTab('image')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">📸 Imagens (3-5 Refs)</button>
+        <button data-tab="video" onclick="switchTab('video')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">🎬 Vídeos (Até 5m + VFX)</button>
+        <button data-tab="voice" onclick="switchTab('voice')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">🎙️ Vozes Brasil</button>
+        <button data-tab="clone" onclick="switchTab('clone')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">🧬 Clonar Voz</button>
+        <button data-tab="suno" onclick="switchTab('suno')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">🎵 Suno Studio</button>
+        <button data-tab="parody" onclick="switchTab('parody')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">💿 Paródias IA</button>
+        <button data-tab="memory" onclick="switchTab('memory')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-purple-300 hover:text-white bg-purple-500/15 border border-purple-400/30 transition-all">💾 Memória & Acessos</button>
+        <button data-tab="about" onclick="switchTab('about')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">👤 O Criador</button>
       </nav>
-
-      <!-- Saldo de Créditos & Botão Recarga com Ícones Futuristas Neon (Sempre 100% Visíveis) -->
-      <div class="flex items-center gap-2 shrink-0">
-        <div id="wallet-badge-pill" class="bg-cyan-500/10 border border-cyan-400/40 px-3 py-1.5 rounded-xl flex items-center gap-1.5 cursor-pointer hover:border-cyan-400 transition-colors whitespace-nowrap shrink-0" onclick="openModal('recharge-modal')">
-          <svg class="w-4 h-4 text-cyan-400 shrink-0" style="filter: drop-shadow(0 0 6px #00f0ff);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="rgba(0,240,255,0.25)"/>
-          </svg>
-          <span class="text-xs lg:text-sm font-extrabold text-white whitespace-nowrap"><span id="credit-display">50</span> <span id="credit-label-text" class="text-[11px] text-cyan-300 font-semibold">tokens</span></span>
-        </div>
-        <button onclick="openModal('recharge-modal')" class="bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-extrabold px-3.5 py-2 rounded-xl text-xs lg:text-sm shadow-neon-cyan transition-all transform hover:scale-105 active:scale-95 flex items-center gap-1.5 whitespace-nowrap shrink-0">
-          <!-- Ícone Futurista Neon Cyber-Core -->
-          <svg class="w-4 h-4 text-black shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-            <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
-            <line x1="12" y1="8" x2="12" y2="16"/>
-            <line x1="8" y1="12" x2="16" y2="12"/>
-          </svg>
-          <span>Recarregar</span>
-        </button>
-      </div>
 
     </div>
   </header>
-
-  <!-- Barra de Navegação Compacta para Telas Médias, Tablets e Celulares -->
-  <div class="xl:hidden glass-panel border-b border-white/5 px-3 py-2 flex items-center gap-2 overflow-x-auto">
-    <button onclick="switchTab('dashboard')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-cyan-400 bg-cyan-500/10">Início</button>
-    <button onclick="switchTab('canvas')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-bold text-orange-400 bg-orange-500/10 border border-orange-500/30">⚡ Magnific Canvas</button>
-    <button onclick="switchTab('image')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300">Imagens IA</button>
-    <button onclick="switchTab('voice')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300">Vozes Brasil</button>
-    <button onclick="switchTab('clone')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300">Clonar Voz</button>
-    <button onclick="switchTab('suno')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300">Suno Studio</button>
-    <button onclick="switchTab('parody')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300">Paródias</button>
-    <button onclick="switchTab('video')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300">Vídeos 9:16</button>
-    <button onclick="switchTab('about')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300">O Criador</button>
-  </div>
 
   <!-- ========================================== -->
   <!-- CONTEÚDO PRINCIPAL (TABS)                 -->
@@ -256,20 +250,20 @@
             </div>
           </div>
 
-          <!-- Coluna Direita: Reel de Cinema Auto-Play com o Rosto Fiel de Evandro (lado2.jpg) -->
+          <!-- Coluna Direita: Reel de Cinema Auto-Play com o Rosto Fiel de Evandro (lado2.jpg) em Movimento Real LTX-Video -->
           <div class="lg:col-span-5">
             <div class="relative rounded-2xl overflow-hidden border-2 border-amber-400/50 shadow-2xl bg-black group">
-              <video autoplay loop muted playsinline poster="/static/samples/canvas_take1.jpg?v=2" class="w-full h-64 md:h-72 object-cover">
-                <source src="/static/samples/take1_video.mp4?v=2" type="video/mp4">
+              <video autoplay loop muted playsinline poster="/static/samples/canvas_take1.jpg?v=real2026" class="w-full h-64 md:h-72 object-cover">
+                <source src="/static/samples/take1_video.mp4?v=real2026" type="video/mp4">
               </video>
               <div class="absolute top-3 left-3 bg-black/75 backdrop-blur-md border border-amber-400/40 px-3 py-1 rounded-full text-[11px] font-bold text-amber-300 flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                ROSTO 100% FIEL &bull; CINEMA 35MM
+                FILME EM MOVIMENTO REAL &bull; ROSTO 100% FIEL
               </div>
               <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-4 flex items-center justify-between">
                 <div>
-                  <span class="text-xs font-extrabold text-white block">Movimento de Câmera & Consistência</span>
-                  <span class="text-[11px] text-gray-300">Tecnologia Magnific Canvas + Higgsfield Motion</span>
+                  <span class="text-xs font-extrabold text-white block">Movimento Real de Estrada & Direção 35mm</span>
+                  <span class="text-[11px] text-gray-300">Gerado via Motor Neural LTX-Video + Magnific 8K</span>
                 </div>
                 <button onclick="switchTab('canvas')" class="bg-amber-400 hover:bg-amber-300 text-black font-extrabold px-3 py-1.5 rounded-lg text-xs transition-all">
                   Testar Agora
@@ -457,18 +451,18 @@
         <!-- BLOCO 1: VÍDEOS GERADOS PELA TECNOLOGIA (AUTO-PLAY ESTILO ARTLIST KLING AI) -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
-          <!-- Vídeo 1: Cyberpunk Ronin Motion (Kling / Higgsfield Style) -->
+          <!-- Vídeo 1: Cyberpunk Ronin Motion (Kling / LTX-Video Real Motion) -->
           <div class="glass-panel rounded-2xl overflow-hidden border border-amber-400/30 flex flex-col justify-between group">
             <div class="relative aspect-video bg-black overflow-hidden">
               <video autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                <source src="/static/samples/kling_cyberpunk_motion.mp4" type="video/mp4">
+                <source src="/static/samples/kling_cyberpunk_motion.mp4?v=real2026" type="video/mp4">
               </video>
-              <span class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur-md text-amber-300 border border-amber-400/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md">VÍDEO IA &bull; CÂMERA DOLLY IN</span>
+              <span class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur-md text-amber-300 border border-amber-400/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md">VÍDEO IA &bull; MOVIMENTO REAL</span>
             </div>
             <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
               <div>
                 <h4 class="text-base font-bold text-white">1. Cinema Cyberpunk 65mm</h4>
-                <p class="text-xs text-gray-400 mt-1">Movimento de câmera suave com reflexos em neon, neblina volumétrica e lente anamórfica.</p>
+                <p class="text-xs text-gray-400 mt-1">Movimento temporal real com chuva, reflexos em neon e lente anamórfica 65mm.</p>
               </div>
               <button onclick="useShowcasePreset('canvas', 'Guerreiro cyberpunk caminhando em rua de Tóquio chuvosa iluminada por neon, reflexos no asfalto molhado, lente anamórfica ARRI Alexa 65mm, ultra-realista 8K')" class="w-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all">
                 <span>Usar Este Estilo Agora</span>
@@ -477,18 +471,18 @@
             </div>
           </div>
 
-          <!-- Vídeo 2: Sci-Fi IMAX Odyssey (Kling / Higgsfield Style) -->
+          <!-- Vídeo 2: Sci-Fi IMAX Odyssey (Kling / LTX-Video Real Motion) -->
           <div class="glass-panel rounded-2xl overflow-hidden border border-cyan-400/30 flex flex-col justify-between group">
             <div class="relative aspect-video bg-black overflow-hidden">
               <video autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                <source src="/static/samples/kling_scifi_motion.mp4" type="video/mp4">
+                <source src="/static/samples/kling_scifi_motion.mp4?v=real2026" type="video/mp4">
               </video>
-              <span class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur-md text-cyan-300 border border-cyan-400/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md">VÍDEO IA &bull; CRANE PULL-OUT</span>
+              <span class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur-md text-cyan-300 border border-cyan-400/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md">VÍDEO IA &bull; IMAX 70MM</span>
             </div>
             <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
               <div>
                 <h4 class="text-base font-bold text-white">2. Ficção Científica IMAX 70mm</h4>
-                <p class="text-xs text-gray-400 mt-1">Afastamento épico de câmera revelando planeta gigante e nebulosa bioluminescente.</p>
+                <p class="text-xs text-gray-400 mt-1">Cena cinematográfica em movimento real revelando planeta gigante e nebulosa bioluminescente.</p>
               </div>
               <button onclick="useShowcasePreset('canvas', 'Astronauta solitário em penhasco cristalino observando nebulosa brilhante e planeta com anéis, fotografia IMAX 70mm estilo Interestelar, ultra-realista 8K')" class="w-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all">
                 <span>Usar Este Estilo Agora</span>
@@ -497,18 +491,18 @@
             </div>
           </div>
 
-          <!-- Vídeo 3: Consistência de Personagem (Take 2 1970) -->
+          <!-- Vídeo 3: Consistência de Personagem em Movimento Real (Take 2) -->
           <div class="glass-panel rounded-2xl overflow-hidden border border-purple-400/30 flex flex-col justify-between group">
             <div class="relative aspect-video bg-black overflow-hidden">
               <video autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                <source src="/static/samples/take2_video.mp4" type="video/mp4">
+                <source src="/static/samples/take2_video.mp4?v=real2026" type="video/mp4">
               </video>
               <span class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur-md text-purple-300 border border-purple-400/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md">STORYBOARD &bull; @IMAGE1 + @IMAGE2</span>
             </div>
             <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
               <div>
                 <h4 class="text-base font-bold text-white">3. Filme com Seu Próprio Rosto</h4>
-                <p class="text-xs text-gray-400 mt-1">Conecte sua foto no Canvas (@Image1) e gere múltiplos ângulos de cinema mantendo a mesma pessoa.</p>
+                <p class="text-xs text-gray-400 mt-1">Conecte de 3 a 5 fotos no Canvas (@Image1..5) e gere filmes mantendo 100% a mesma pessoa.</p>
               </div>
               <button onclick="switchTab('canvas')" class="w-full bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/40 text-purple-300 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all">
                 <span>Abrir Storyboard de Nós</span>
@@ -517,13 +511,11 @@
             </div>
           </div>
 
-          <!-- Vídeo 4: Workflow Magnific Canvas em Ação -->
+          <!-- Card 4: Imagem Oficial do Canvas do Magnific (BeatDesign Node Graph) -->
           <div class="glass-panel rounded-2xl overflow-hidden border border-pink-400/30 flex flex-col justify-between group">
-            <div class="relative aspect-video bg-black overflow-hidden">
-              <video autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                <source src="/static/samples/showcase_canvas_workflow.mp4" type="video/mp4">
-              </video>
-              <span class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur-md text-pink-300 border border-pink-400/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md">MAGNIFIC CANVAS &bull; WORKFLOW</span>
+            <div class="relative aspect-video bg-black overflow-hidden cursor-pointer" onclick="openCanvasLightbox('/static/samples/magnific_canvas_preview.jpg?v=real2026', 'Arquitetura Magnific Canvas & Storyboard')">
+              <img src="/static/samples/magnific_canvas_preview.jpg?v=real2026" alt="Canvas do Magnific" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+              <span class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur-md text-pink-300 border border-pink-400/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md">MAGNIFIC CANVAS &bull; NÓS + TIMELINE</span>
             </div>
             <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
               <div>
@@ -949,118 +941,187 @@
       </div>
     </section>
 
-    <!-- ---------------------------------------- -->
-    <!-- 6. TAB: VÍDEOS VIRAIS (9:16)             -->
-    <!-- ---------------------------------------- -->
+    <!-- ------------------------------------------------------------ -->
+    <!-- 6. TAB: ESTÚDIO DE VÍDEOS & VFX (ATÉ 5 MIN + 3-5 IMAGENS REF)-->
+    <!-- ------------------------------------------------------------ -->
     <section id="tab-video" class="tab-content hidden space-y-6">
       <div class="border-b border-white/10 pb-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 border border-blue-400/40 text-blue-300 text-xs font-extrabold uppercase tracking-wider mb-2">
+          <i data-lucide="film" class="w-3.5 h-3.5 text-blue-400"></i>
+          Suporte até 5 Minutos &bull; 3 a 5 Imagens de Referência &bull; Troca de Personagem & Motion Graphics
+        </div>
         <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
           <i data-lucide="video" class="w-8 h-8 text-blue-400"></i>
-          Editor Automático de Vídeos Virais (Reels 9:16)
+          Estúdio de Vídeos IA, VFX, Criativos & Troca de Personagem
         </h2>
-        <p class="text-gray-400 text-sm mt-1">Transforme gravações brutas de celular em vídeos dinâmicos de alta retenção.</p>
+        <p class="text-gray-400 text-sm mt-1">Envie vídeos de <strong>até 5 minutos</strong>, adicione de <strong>3 a 5 imagens de referência</strong> e/ou vídeos auxiliares para inserir criativos, design, objetos, trocar personagens e aplicar Motion Graphics.</p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Coluna Formulário -->
         <div class="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-5">
-          <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">Upload do Vídeo Bruto (.mp4 / .mov)</label>
-            <input type="file" id="video-file" accept="video/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-500/20 file:text-blue-300">
-            <p class="text-xs text-gray-400 mt-1">Envie qualquer gravação de celular na vertical ou horizontal. O motor enquadra automaticamente em 9:16.</p>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-200 mb-1.5">1. Vídeo Principal (Até 5 Minutos) <span class="text-blue-400">*Obrigatório</span></label>
+              <input type="file" id="video-file" accept="video/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-500/20 file:text-blue-300">
+              <p class="text-[11px] text-gray-400 mt-1">Aceita vídeos de até <strong>5 minutos (300s)</strong> em MP4, MOV ou WebM.</p>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-200 mb-1.5">2. Vídeo Auxiliar / B-Roll / Criativo <span class="text-cyan-400">(Opcional)</span></label>
+              <input type="file" id="video-overlay-file" accept="video/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/20 file:text-cyan-300">
+              <p class="text-[11px] text-gray-400 mt-1">Vídeo secundário para inserir criativos em Picture-in-Picture ou Motion Design.</p>
+            </div>
           </div>
 
-          <div class="space-y-3">
-            <span class="block text-sm font-semibold text-gray-200">Efeitos Inteligentes Ativos:</span>
+          <div class="p-4 rounded-2xl bg-dark-800/90 border border-blue-400/30 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="block text-sm font-bold text-blue-300">3. Imagens de Referência (Selecione de 3 a 5 Imagens para Criativos, Objetos ou Personagem)</label>
+              <span id="video-ref-count-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">0 / 5 selecionadas</span>
+            </div>
+            <input type="file" id="video-ref-images" accept="image/*" multiple onchange="previewRefFiles('video-ref-images', 'video-ref-preview', 'video-ref-count-badge')" class="w-full bg-dark-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500/20 file:text-amber-300">
+            <p class="text-[11px] text-gray-400">Envie de <strong>3 a 5 fotos</strong> (produtos, logos, objetos de design ou ângulos do rosto do personagem para substituição e inserção automática no vídeo).</p>
+            <div id="video-ref-preview" class="flex flex-wrap gap-2 pt-1"></div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-200 mb-1.5">4. Operação de IA & VFX no Vídeo</label>
+              <select id="video-vfx-mode" class="w-full bg-dark-800 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-blue-400">
+                <option value="full_production">🎬 Produção Completa (Inserir Criativos + Motion Graphics + Cortes)</option>
+                <option value="insert_creatives">🖼️ Inserir Criativos, Design & Objetos (3 a 5 Imagens + Vídeo)</option>
+                <option value="character_swap">🎭 Trocar Personagem / Influencer Motion Swap (Guiado pelas Fotos)</option>
+                <option value="motion_graphics">✨ Inserir Motion Graphics Neon, HUD & Rotoscopia 3D</option>
+                <option value="jump_cuts">✂️ Apenas Jump Cuts de Silêncio + Color Grade</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-200 mb-1.5">5. Formato Final de Renderização</label>
+              <select id="video-aspect-ratio" class="w-full bg-dark-800 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-blue-400">
+                <option value="9:16">▯ 9:16 Vertical (Reels, TikTok, Shorts)</option>
+                <option value="16:9">▭ 16:9 Horizontal Cinema (YouTube, VSL, TV)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-1.5">6. Instruções de Criativos, Design, Objetos ou Personagem (Opcional)</label>
+            <input type="text" id="video-creative-prompt" placeholder="Ex: Inserir os produtos das imagens de referência nos momentos de destaque com HUD neon e trocar personagem..." class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-blue-400">
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <label class="flex items-center gap-3 p-3 rounded-xl bg-dark-800/80 border border-white/5 cursor-pointer">
               <input type="checkbox" id="video-jumpcuts" checked class="rounded text-cyan-400">
               <div>
-                <span class="text-sm font-bold text-white block">Jump Cuts Automáticos (Corte de Silêncio)</span>
-                <span class="text-xs text-gray-400">Remove pausas longas e respirações via detecção de decibéis do FFmpeg.</span>
+                <span class="text-xs font-bold text-white block">Jump Cuts Automáticos (Corte de Silêncio)</span>
+                <span class="text-[11px] text-gray-400">Remove pausas longas via FFmpeg (até 5 min).</span>
               </div>
             </label>
             <label class="flex items-center gap-3 p-3 rounded-xl bg-dark-800/80 border border-white/5 cursor-pointer">
               <input type="checkbox" id="video-subtitles" checked class="rounded text-cyan-400">
               <div>
-                <span class="text-sm font-bold text-white block">Enquadramento Nativo 9:16 & Color Grade</span>
-                <span class="text-xs text-gray-400">Otimização de contraste e nitidez para retenção máxima no algoritmo.</span>
+                <span class="text-xs font-bold text-white block">Motion Graphics HUD & Color Grade</span>
+                <span class="text-[11px] text-gray-400">Insere barra gráfica neon e contraste de cinema.</span>
               </div>
             </label>
           </div>
 
-          <button onclick="handleGenerateVideo()" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-400 hover:to-cyan-400 text-black font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
-            <i data-lucide="scissors" class="w-5 h-5 fill-black"></i>
-            <span>Processar Vídeo Viral (10 Créditos)</span>
+          <button onclick="handleGenerateVideo()" class="w-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 hover:opacity-95 text-black font-extrabold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+            <i data-lucide="wand-2" class="w-5 h-5"></i>
+            <span>Renderizar Vídeo Completo com Criativos & VFX (10 Créditos)</span>
           </button>
         </div>
 
         <!-- Coluna Resultado / Demonstração -->
         <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
           <div>
-            <h3 class="text-lg font-bold text-white mb-3">Player de Vídeo</h3>
+            <h3 class="text-lg font-bold text-white mb-3">Monitor de Vídeo & VFX</h3>
             <div id="video-player-box" class="bg-dark-800/80 rounded-xl p-4 border border-white/5 text-center text-gray-400 text-sm">
-              <video controls playsinline class="w-full rounded-lg mb-3">
-                <source src="/static/samples/demo_video_viral.mp4" type="video/mp4">
+              <video controls playsinline class="w-full rounded-lg mb-3" poster="/static/samples/canvas_take1.jpg?v=real2026">
+                <source src="/static/samples/demo_video_viral.mp4?v=real2026" type="video/mp4">
               </video>
-              <span class="text-xs text-cyan-300 font-semibold block">Amostra demonstrativa de edição 9:16</span>
+              <span class="text-xs text-cyan-300 font-semibold block">Filme Demonstrativo em Movimento Real (Zero Slide)</span>
             </div>
           </div>
-          <div class="p-4 rounded-xl bg-blue-500/5 border border-blue-400/20 mt-4 text-xs text-gray-300">
-            <strong>Otimizado para retenção:</strong> Ritmo dinâmico sem pontos mortos, pronto para postar no TikTok, Reels e YouTube Shorts.
+          <div class="p-4 rounded-xl bg-blue-500/5 border border-blue-400/20 mt-4 text-xs text-gray-300 space-y-1">
+            <strong class="text-blue-300 block">Capacidades do Motor de Vídeo:</strong>
+            <p>&bull; Recebe vídeos longos de <strong>até 5 minutos</strong>.</p>
+            <p>&bull; Recebe de <strong>3 a 5 imagens</strong> e vídeos auxiliares para inserir design, objetos, motion graphics e troca de personagem.</p>
+            <p>&bull; Salva automaticamente na sua <strong>Memória Cloud (Supabase + SQLite)</strong>.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ---------------------------------------- -->
-    <!-- 7. TAB: IMAGENS & FOTOS IA (FLUX)        -->
-    <!-- ---------------------------------------- -->
+    <!-- ------------------------------------------------------------ -->
+    <!-- 7. TAB: IMAGENS & FOTOS IA (COM 3 A 5 IMAGENS DE REFERÊNCIA) -->
+    <!-- ------------------------------------------------------------ -->
     <section id="tab-image" class="tab-content hidden space-y-6">
       <div class="border-b border-white/10 pb-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/15 border border-pink-400/40 text-pink-300 text-xs font-extrabold uppercase tracking-wider mb-2">
+          <i data-lucide="layers" class="w-3.5 h-3.5 text-pink-400"></i>
+          Multi-Referência Ativa &bull; Envie de 3 a 5 Fotos de Referência
+        </div>
         <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
           <i data-lucide="image" class="w-8 h-8 text-pink-400"></i>
-          Gerador de Imagens & Fotos Profissionais com IA
+          Gerador de Imagens & Fotos 8K (Com 3 a 5 Imagens de Referência)
         </h2>
-        <p class="text-gray-400 text-sm mt-1">Crie imagens fotorrealistas, fotos de estúdio, banners e criativos publicitários em segundos (Modelo Flux).</p>
+        <p class="text-gray-400 text-sm mt-1">Crie fotos ultra-realistas de cinema, retratos fiéis e criativos publicitários enviando de <strong>3 a 5 imagens de referência</strong> para a IA manter total fidelidade visual.</p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-5">
           <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">Descrição / Prompt da Imagem</label>
-            <textarea id="image-prompt" rows="4" placeholder="Ex: Foto publicitária profissional de um smartphone futurista flutuando sobre uma bancada de mármore preto com iluminação de neon ciano e reflexos dourados, 8k, hiper-detalhado..." class="w-full bg-dark-800 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-pink-400 transition-colors"></textarea>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">1. Descrição / Prompt da Imagem</label>
+            <textarea id="image-prompt" rows="3" placeholder="Ex: Foto cinematográfica 8K mantendo exatamente a pessoa e o estilo das imagens de referência em um cenário de cinema ao pôr do sol, lente 85mm f/1.2..." class="w-full bg-dark-800 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-pink-400 transition-colors"></textarea>
           </div>
 
-          <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">Formato & Proporção</label>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <label class="border border-pink-400/30 bg-pink-500/10 p-3 rounded-xl flex items-center gap-3 cursor-pointer">
-                <input type="radio" name="image_aspect" value="1:1" checked class="text-pink-400">
-                <div>
-                  <span class="font-bold text-white text-sm block">1:1 Quadrado</span>
-                  <span class="text-xs text-pink-300">Feed Instagram & E-commerce</span>
-                </div>
-              </label>
-              <label class="border border-white/10 bg-dark-800 p-3 rounded-xl flex items-center gap-3 cursor-pointer">
-                <input type="radio" name="image_aspect" value="9:16" class="text-pink-400">
-                <div>
-                  <span class="font-bold text-white text-sm block">9:16 Vertical</span>
-                  <span class="text-xs text-gray-400">Stories, TikTok e Reels</span>
-                </div>
-              </label>
-              <label class="border border-white/10 bg-dark-800 p-3 rounded-xl flex items-center gap-3 cursor-pointer">
-                <input type="radio" name="image_aspect" value="16:9" class="text-pink-400">
-                <div>
-                  <span class="font-bold text-white text-sm block">16:9 Horizontal</span>
-                  <span class="text-xs text-gray-400">YouTube, Banners & Web</span>
-                </div>
-              </label>
+          <!-- Upload de 3 a 5 Imagens de Referência -->
+          <div class="p-4 rounded-2xl bg-dark-800/90 border border-pink-400/30 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="block text-sm font-bold text-pink-300">2. Imagens de Referência para a IA (Selecione de 3 a 5 Imagens — Opcional)</label>
+              <span id="image-ref-count-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pink-500/20 text-pink-300 border border-pink-400/30">0 / 5 selecionadas</span>
+            </div>
+            <input type="file" id="image-ref-files" accept="image/*" multiple onchange="previewRefFiles('image-ref-files', 'image-ref-preview', 'image-ref-count-badge')" class="w-full bg-dark-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-pink-500/20 file:text-pink-300">
+            <p class="text-[11px] text-gray-400">Envie de <strong>3 a 5 imagens de referência</strong> (rosto de múltiplos ângulos, produto, roupa ou cenário). O motor Gemini Vision + Flux + Magnific 8K analisa todas as fotos para gerar sua imagem.</p>
+            <div id="image-ref-preview" class="flex flex-wrap gap-2 pt-1"></div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-200 mb-2">3. Motor Óptico & Estilo</label>
+              <select id="image-model-style" class="w-full bg-dark-800 border border-white/15 rounded-xl px-3.5 py-3 text-xs md:text-sm text-white focus:outline-none focus:border-pink-400">
+                <option value="NanoBanana Pro">🍌 NanoBanana Pro (Fidelidade Multi-Referência 3 a 5 Fotos)</option>
+                <option value="Magnific Cinema 8K">✨ Magnific Cinema 8K (Micro-Textura de Pele & Poros)</option>
+                <option value="Flux Realism Pro">📸 Flux Realism Pro (Fotografia Comercial de Estúdio)</option>
+                <option value="Higgsfield Dark Cinema">🎬 Higgsfield Dark Cinema (Anamórfico 35mm Hollywood)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-200 mb-2">4. Formato & Proporção</label>
+              <div class="grid grid-cols-3 gap-2">
+                <label class="border border-pink-400/30 bg-pink-500/10 p-2.5 rounded-xl flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="image_aspect" value="1:1" checked class="text-pink-400">
+                  <span class="font-bold text-white text-xs">1:1 Feed</span>
+                </label>
+                <label class="border border-white/10 bg-dark-800 p-2.5 rounded-xl flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="image_aspect" value="9:16" class="text-pink-400">
+                  <span class="font-bold text-white text-xs">9:16 Reels</span>
+                </label>
+                <label class="border border-white/10 bg-dark-800 p-2.5 rounded-xl flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="image_aspect" value="16:9" class="text-pink-400">
+                  <span class="font-bold text-white text-xs">16:9 Cinema</span>
+                </label>
+              </div>
             </div>
           </div>
 
           <button onclick="handleGenerateImage()" class="w-full bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-400 hover:to-rose-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
             <i data-lucide="sparkles" class="w-5 h-5"></i>
-            <span>Gerar Imagem com IA (2 Créditos)</span>
+            <span>Gerar Imagem 8K com Referências (2 Créditos)</span>
           </button>
         </div>
 
@@ -1069,11 +1130,11 @@
             <h3 class="text-lg font-bold text-white mb-3">Resultado da Imagem</h3>
             <div id="image-player-box" class="bg-dark-800/80 rounded-xl p-4 border border-white/5 text-center text-gray-400 text-sm min-h-[260px] flex flex-col items-center justify-center">
               <i data-lucide="image" class="w-10 h-10 text-pink-400 mb-2"></i>
-              Preencha a descrição ao lado e gere sua imagem em alta definição.
+              Descreva a cena e anexe de 3 a 5 imagens de referência para gerar em alta definição.
             </div>
           </div>
           <div class="p-4 rounded-xl bg-pink-500/5 border border-pink-400/20 mt-4 text-xs text-gray-300">
-            Renderizado pelo modelo neural Flux com hiper-definição de iluminação fotográfica e texturas realistas.
+            Todas as imagens geradas ficam salvas automaticamente na sua aba <strong>Memória & Acessos</strong> (Supabase + SQLite).
           </div>
         </div>
       </div>
@@ -1345,19 +1406,15 @@
               <span class="px-3 py-1 rounded-lg bg-dark-800 border border-white/10 text-xs text-gray-300">Marketing Digital & Performance</span>
             </div>
 
-            <!-- Links de Conexão -->
+            <!-- Links de Conexão (Sem GitHub e com LinkedIn Oficial Atualizado) -->
             <div class="flex flex-wrap gap-3 pt-3">
               <a href="https://instagram.com/evandrosilvagallina" target="_blank" class="px-4 py-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 border border-white/10 text-white text-xs font-semibold flex items-center gap-2 transition-all hover:border-cyan-400">
                 <i data-lucide="instagram" class="w-4 h-4 text-cyan-400"></i>
                 Instagram
               </a>
-              <a href="https://linkedin.com/in/evandro-sillva-gallina-83097b1aa" target="_blank" class="px-4 py-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 border border-white/10 text-white text-xs font-semibold flex items-center gap-2 transition-all hover:border-cyan-400">
+              <a href="https://www.linkedin.com/in/evandro-silva-gallina-83097b1aa/" target="_blank" class="px-4 py-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 border border-white/10 text-white text-xs font-semibold flex items-center gap-2 transition-all hover:border-cyan-400">
                 <i data-lucide="linkedin" class="w-4 h-4 text-cyan-400"></i>
                 LinkedIn
-              </a>
-              <a href="https://github.com/silvaevandro815" target="_blank" class="px-4 py-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 border border-white/10 text-white text-xs font-semibold flex items-center gap-2 transition-all hover:border-cyan-400">
-                <i data-lucide="github" class="w-4 h-4 text-cyan-400"></i>
-                GitHub
               </a>
               <a href="https://wa.me/5532984587255" target="_blank" class="px-4 py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-300 text-xs font-semibold flex items-center gap-2 transition-all">
                 <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i>
@@ -1371,6 +1428,71 @@
 
       </div>
 
+    </section>
+
+    <!-- ------------------------------------------------------------ -->
+    <!-- 8. TAB: MEMÓRIA DE CONTEÚDOS & AUDITORIA DE ACESSOS (SUPABASE)-->
+    <!-- ------------------------------------------------------------ -->
+    <section id="tab-memory" class="tab-content hidden space-y-8">
+      <div class="border-b border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-400/40 text-purple-300 text-xs font-extrabold uppercase tracking-wider mb-2">
+            <i data-lucide="database" class="w-3.5 h-3.5 text-purple-400"></i>
+            Persistência Dupla Ativa &bull; Supabase Cloud + SQLite Local
+          </div>
+          <h2 class="text-3xl font-bold font-display text-white">Memória de Conteúdos dos Clientes & Painel de Acessos</h2>
+          <p class="text-gray-400 text-sm mt-1">Todos os vídeos, imagens, áudios, músicas, paródias e o registro de quem acessou a plataforma ficam salvos com segurança na memória.</p>
+        </div>
+        <button onclick="loadMemoryAndAccessLogs()" class="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/40 text-purple-200 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 self-start md:self-auto transition-all">
+          <i data-lucide="refresh-cw" class="w-4 h-4 text-purple-400"></i>
+          <span>Atualizar Memória Agora</span>
+        </button>
+      </div>
+
+      <!-- Bloco 1: Galeria de Conteúdos Salvos (Imagens, Vídeos, Vozes, Músicas, Paródias) -->
+      <div class="glass-panel p-6 rounded-3xl border border-purple-400/30 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-bold font-display text-white flex items-center gap-2">
+            <i data-lucide="folder-heart" class="w-5 h-5 text-purple-400"></i>
+            Biblioteca de Conteúdos Gerados (Salvos na Memória)
+          </h3>
+          <span id="memory-creations-count" class="text-xs font-bold px-3 py-1 rounded-full bg-purple-500/20 text-purple-300">Carregando...</span>
+        </div>
+        <div id="memory-creations-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="col-span-full text-center py-8 text-gray-400 text-sm">Carregando criativos salvos...</div>
+        </div>
+      </div>
+
+      <!-- Bloco 2: Auditoria de Quem Teve Acesso & Carteiras por IP -->
+      <div class="glass-panel p-6 rounded-3xl border border-cyan-400/30 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-xl font-bold font-display text-white flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-5 h-5 text-cyan-400"></i>
+              Registro de Quem Teve Acesso & Carteiras por IP
+            </h3>
+            <p class="text-xs text-gray-400">Monitoramento em tempo real de IPs conectados, dispositivos VIP desbloqueados e saldo de tokens.</p>
+          </div>
+          <span id="memory-supabase-status" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">Supabase Sincronizado</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="border-b border-white/10 text-gray-400 uppercase">
+                <th class="py-2.5 px-3">IP do Aparelho</th>
+                <th class="py-2.5 px-3">ID / Dispositivo</th>
+                <th class="py-2.5 px-3">Nível de Acesso</th>
+                <th class="py-2.5 px-3">Ação</th>
+                <th class="py-2.5 px-3">Data / Hora (UTC)</th>
+              </tr>
+            </thead>
+            <tbody id="memory-access-table-body" class="divide-y divide-white/5 text-gray-200">
+              <tr><td colspan="5" class="py-6 text-center text-gray-400">Carregando histórico de acessos...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -1619,23 +1741,24 @@
       if (activeTab) activeTab.classList.remove('hidden');
 
       document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('text-cyan-400', 'bg-cyan-500/10');
-        btn.classList.add('text-gray-300');
-      });
-      document.querySelectorAll('.nav-btn-mobile').forEach(btn => {
-        btn.classList.remove('text-cyan-400', 'bg-cyan-500/10');
-        btn.classList.add('text-gray-300');
+        const isCurrent = btn.getAttribute('data-tab') === tabId;
+        if (isCurrent) {
+          btn.classList.add('ring-2', 'ring-cyan-400', 'text-cyan-300');
+        } else {
+          btn.classList.remove('ring-2', 'ring-cyan-400', 'text-cyan-300');
+        }
       });
 
       // Atualiza dica do robô
       const tips = {
         'canvas': 'Arraste os nós @Image1 e @Image2, dê duplo-clique para 4K ou compile seu filme!',
-        'image': 'O motor Flux cria fotos ultra-realistas com iluminação de cinema!',
+        'image': 'Anexe de 3 a 5 fotos de referência para a IA manter 100% da fidelidade visual!',
         'suno': 'No Suno Studio, você pode criar desde modão sertanejo até trap e funk!',
         'parody': 'Crie um AI Cover na música do seu cantor favorito ou gere uma paródia!',
         'voice': 'Nossas vozes neurais brasileiras não têm nenhum sotaque estrangeiro!',
         'clone': 'Com apenas 1 minuto de áudio você já tem seu clone vocal perfeito!',
-        'video': 'Os cortes de silêncio (jump cuts) aumentam a retenção em até 40%!',
+        'video': 'Envie vídeos de até 5 min + 3 a 5 imagens para inserir criativos, objetos e trocar personagem!',
+        'memory': 'Aqui ficam salvos todos os seus criativos e o histórico de acessos no Supabase + SQLite!',
         'about': 'Conheça o Evandro, o especialista que desenvolveu toda essa tecnologia!',
         'dashboard': 'Clique no robô ou arraste-o pela tela para onde quiser!'
       };
@@ -1643,7 +1766,116 @@
       if (tabId === 'canvas') {
         setTimeout(() => { renderCanvasNodes(); drawCanvasCables(); }, 60);
       }
+      if (tabId === 'memory') {
+        loadMemoryAndAccessLogs();
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Preview de Miniaturas de 3 a 5 Imagens de Referência (Imagens e Vídeos)
+    function previewRefFiles(inputId, previewBoxId, badgeId) {
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(previewBoxId);
+      const badge = document.getElementById(badgeId);
+      if (!input || !preview) return;
+
+      preview.innerHTML = '';
+      const files = Array.from(input.files || []).slice(0, 5);
+      if (badge) badge.innerText = `${files.length} / 5 selecionadas`;
+
+      files.forEach((f, idx) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const item = document.createElement('div');
+          item.className = 'relative w-16 h-16 rounded-xl overflow-hidden border border-cyan-400/50 bg-black shadow';
+          item.innerHTML = `
+            <img src="${ev.target.result}" class="w-full h-full object-cover">
+            <span class="absolute bottom-0 inset-x-0 bg-black/80 text-[9px] text-center font-bold text-amber-300">@Ref${idx + 1}</span>
+          `;
+          preview.appendChild(item);
+        };
+        reader.readAsDataURL(f);
+      });
+    }
+
+    // Carrega Biblioteca de Conteúdos dos Clientes & Painel de Acessos (Supabase + SQLite)
+    async function loadMemoryAndAccessLogs() {
+      const grid = document.getElementById('memory-creations-grid');
+      const countBadge = document.getElementById('memory-creations-count');
+      const tableBody = document.getElementById('memory-access-table-body');
+      const supaBadge = document.getElementById('memory-supabase-status');
+
+      try {
+        const [memRes, logRes] = await Promise.all([
+          fetch(`/api/user/memory?user_id=${encodeURIComponent(currentUserId)}`),
+          fetch(`/api/admin/access-logs?user_id=${encodeURIComponent(currentUserId)}`)
+        ]);
+        const memData = await memRes.json();
+        const logData = await logRes.json();
+
+        const creations = memData.creations || [];
+        if (countBadge) countBadge.innerText = `${creations.length} arquivo(s) na memória`;
+        if (supaBadge) {
+          supaBadge.innerText = memData.supabase_synced ? '☁️ Supabase + SQLite Sincronizados' : '💾 SQLite Local Ativo';
+        }
+
+        if (grid) {
+          if (creations.length === 0) {
+            grid.innerHTML = '<div class="col-span-full text-center py-8 text-gray-400 text-sm">Nenhum conteúdo gerado ainda nesta carteira. Gere uma imagem, vídeo, voz ou música para ver aqui!</div>';
+          } else {
+            grid.innerHTML = creations.map(c => {
+              let mediaHtml = '';
+              const url = c.result_url || '';
+              if (url.endsWith('.mp4') || c.category === 'video' || c.category === 'storyboard') {
+                mediaHtml = `<video controls playsinline class="w-full h-40 object-cover rounded-xl bg-black border border-white/10"><source src="${url}" type="video/mp4"></video>`;
+              } else if (url.endsWith('.mp3') || url.endsWith('.wav') || ['voice', 'clone', 'suno', 'parody'].includes(c.category)) {
+                mediaHtml = `<div class="p-3 rounded-xl bg-dark-900 border border-white/10"><audio controls class="w-full h-9"><source src="${url}" type="audio/mpeg"></audio></div>`;
+              } else {
+                mediaHtml = `<img src="${url}" class="w-full h-40 object-cover rounded-xl bg-black border border-white/10 cursor-pointer" onclick="openCanvasLightbox('${url}', '${(c.title || 'Criativo').replace(/'/g, '')}')">`;
+              }
+              return `
+                <div class="bg-dark-800/90 border border-white/10 rounded-2xl p-4 flex flex-col justify-between space-y-3">
+                  <div class="space-y-2">
+                    <div class="flex items-center justify-between text-[10px]">
+                      <span class="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 font-bold uppercase">${c.category}</span>
+                      <span class="text-gray-400 font-mono">${c.created_at || ''}</span>
+                    </div>
+                    <h4 class="text-sm font-bold text-white truncate">${c.title || 'Criativo IA'}</h4>
+                    ${mediaHtml}
+                    <p class="text-[11px] text-gray-400 line-clamp-2">${c.prompt || ''}</p>
+                  </div>
+                  <div class="flex items-center justify-between pt-2 border-t border-white/5 text-xs">
+                    <span class="text-[10px] text-gray-500 font-mono">IP: ${c.ip || '-'}</span>
+                    <a href="${url}" download class="text-cyan-400 hover:underline font-bold flex items-center gap-1">Baixar Arquivo</a>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+
+        if (tableBody) {
+          const logs = logData.access_logs || [];
+          if (logs.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-400">Nenhum acesso registrado ainda.</td></tr>';
+          } else {
+            tableBody.innerHTML = logs.map(l => `
+              <tr class="hover:bg-white/5 transition-colors">
+                <td class="py-2.5 px-3 font-mono text-cyan-300 font-semibold">${l.ip}</td>
+                <td class="py-2.5 px-3 font-mono text-gray-300">${l.user_id}</td>
+                <td class="py-2.5 px-3">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${l.is_vip ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40' : 'bg-cyan-500/15 text-cyan-300'}">${l.role}</span>
+                </td>
+                <td class="py-2.5 px-3 text-gray-300">${l.action}</td>
+                <td class="py-2.5 px-3 font-mono text-gray-400">${l.created_at}</td>
+              </tr>
+            `).join('');
+          }
+        }
+      } catch (e) {
+        console.error('Erro ao carregar memória:', e);
+      }
+      lucide.createIcons();
     }
 
     // 2. Modais
@@ -1969,18 +2201,32 @@
       } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`; }
     }
 
-    // 10. Editor de Vídeo Viral 9:16
+    // 10. Estúdio de Vídeo & VFX (Até 5 Minutos + 3 a 5 Imagens de Referência + Vídeo Auxiliar)
     async function handleGenerateVideo() {
       if (!requireCredits(10)) return;
       const fileInput = document.getElementById('video-file');
-      if (!fileInput.files || !fileInput.files[0]) return alert('Por favor, selecione um arquivo de vídeo (.mp4 ou .mov).');
+      if (!fileInput.files || !fileInput.files[0]) return alert('Por favor, selecione o vídeo principal (até 5 minutos).');
 
+      const refInput = document.getElementById('video-ref-images');
+      const overlayInput = document.getElementById('video-overlay-file');
+      const vfxMode = document.getElementById('video-vfx-mode').value;
+      const aspectRatio = document.getElementById('video-aspect-ratio').value;
+      const creativePrompt = document.getElementById('video-creative-prompt').value.trim();
+
+      const refFiles = Array.from((refInput && refInput.files) || []).slice(0, 5);
       const box = document.getElementById('video-player-box');
-      box.innerHTML = '<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-cyan-400 animate-spin mb-2"></i> Processando cortes de silêncio e enquadramento 9:16...</div>';
+      box.innerHTML = `<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-cyan-400 animate-spin mb-2"></i> Renderizando vídeo (${vfxMode}) com ${refFiles.length} imagem(ns) de referência (suporte até 5 min)...</div>`;
       lucide.createIcons();
 
       const formData = new FormData();
       formData.append('video_file', fileInput.files[0]);
+      refFiles.forEach(rf => formData.append('ref_images', rf));
+      if (overlayInput && overlayInput.files && overlayInput.files[0]) {
+        formData.append('overlay_video', overlayInput.files[0]);
+      }
+      formData.append('vfx_mode', vfxMode);
+      formData.append('aspect_ratio', aspectRatio);
+      formData.append('creative_prompt', creativePrompt);
       formData.append('silence_removal', document.getElementById('video-jumpcuts').checked);
       formData.append('subtitles_karaoke', document.getElementById('video-subtitles').checked);
       formData.append('user_id', currentUserId);
@@ -1997,20 +2243,27 @@
       } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`; }
     }
 
-    // 11. Gerador de Imagens & Fotos IA (Flux)
+    // 11. Gerador de Imagens & Fotos IA (Com 3 a 5 Imagens de Referência)
     async function handleGenerateImage() {
       if (!requireCredits(2)) return;
       const prompt = document.getElementById('image-prompt').value.trim();
       const aspect = document.querySelector('input[name="image_aspect"]:checked').value;
+      const modelStyleEl = document.getElementById('image-model-style');
+      const modelStyle = modelStyleEl ? modelStyleEl.value : 'NanoBanana Pro';
+      const refInput = document.getElementById('image-ref-files');
+      const refFiles = Array.from((refInput && refInput.files) || []).slice(0, 5);
+
       if (!prompt) return alert('Por favor, descreva a foto ou imagem que deseja gerar.');
 
       const box = document.getElementById('image-player-box');
-      box.innerHTML = '<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-pink-400 animate-spin mb-2"></i> Renderizando imagem neural em alta resolução (Flux)...</div>';
+      box.innerHTML = `<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-pink-400 animate-spin mb-2"></i> Analisando ${refFiles.length} referência(s) e gerando imagem 8K (${modelStyle})...</div>`;
       lucide.createIcons();
 
       const formData = new FormData();
       formData.append('prompt', prompt);
       formData.append('aspect_ratio', aspect);
+      formData.append('model_style', modelStyle);
+      refFiles.forEach(rf => formData.append('ref_images', rf));
       formData.append('user_id', currentUserId);
 
       try {
@@ -2019,8 +2272,8 @@
         if (data.result_url) {
           box.innerHTML = `
             <div class="space-y-3 w-full">
-              <span class="text-xs font-bold text-pink-400 block">Imagem Renderizada com Sucesso!</span>
-              <img src="${data.result_url}" alt="Imagem Gerada por IA" class="rounded-xl w-full max-h-72 object-contain bg-black/40 border border-white/10 shadow-lg">
+              <span class="text-xs font-bold text-pink-400 block">Imagem 8K Renderizada (${data.ref_count || 0} ref usadas) & Salva na Memória!</span>
+              <img src="${data.result_url}" alt="Imagem Gerada por IA" class="rounded-xl w-full max-h-72 object-contain bg-black/40 border border-white/10 shadow-lg cursor-pointer" onclick="openCanvasLightbox('${data.result_url}', 'Imagem Gerada com IA')">
               <a href="${data.result_url}" download class="inline-flex items-center gap-1.5 text-xs font-semibold text-pink-400 hover:underline">
                 <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar Imagem HD
               </a>
@@ -2093,19 +2346,19 @@
     // 14. MOTOR INTERATIVO MAGNIFIC CANVAS + STORYBOARD + HIGGSFIELD TIMELINE
     // =========================================================================
     let canvasNodes = [
-      { id: 'node_1', tag: '@Image1', title: 'Take 1: Evandro Close-Up', url: '/static/samples/canvas_take1.jpg?v=2', res: '2752 x 1536', x: 90, y: 65, connected: true },
-      { id: 'node_2', tag: '@Image2', title: 'Take 2: Perfil Cinematográfico', url: '/static/samples/canvas_take2.jpg', res: '2752 x 1536', x: 95, y: 245, connected: true },
-      { id: 'node_3', tag: '@Image3', title: 'Take 3: Plano Aberto Estrada', url: '/static/samples/canvas_take3.jpg', res: '2752 x 1536', x: 295, y: 155, connected: true }
+      { id: 'node_1', tag: '@Image1', title: 'Take 1: Evandro Close-Up', url: '/static/samples/canvas_take1.jpg?v=real2026', res: '2752 x 1536', x: 90, y: 65, connected: true },
+      { id: 'node_2', tag: '@Image2', title: 'Take 2: Perfil Cinematográfico', url: '/static/samples/canvas_take2.jpg?v=real2026', res: '2752 x 1536', x: 95, y: 245, connected: true },
+      { id: 'node_3', tag: '@Image3', title: 'Take 3: Plano Aberto Estrada', url: '/static/samples/canvas_take3.jpg?v=real2026', res: '2752 x 1536', x: 295, y: 155, connected: true }
     ];
-    let currentGeneratedNodeUrl = '/static/samples/canvas_take3.jpg';
-    let currentLightboxUrl = '/static/samples/canvas_take1.jpg?v=2';
-    let selectedCanvasNodeUrl = '/static/samples/canvas_take1.jpg?v=2';
+    let currentGeneratedNodeUrl = '/static/samples/canvas_take3.jpg?v=real2026';
+    let currentLightboxUrl = '/static/samples/canvas_take1.jpg?v=real2026';
+    let selectedCanvasNodeUrl = '/static/samples/canvas_take1.jpg?v=real2026';
 
     function resetCanvasDemoNodes() {
       canvasNodes = [
-        { id: 'node_1', tag: '@Image1', title: 'Take 1: Evandro Close-Up', url: '/static/samples/canvas_take1.jpg?v=2', res: '2752 x 1536', x: 90, y: 65, connected: true },
-        { id: 'node_2', tag: '@Image2', title: 'Take 2: Perfil Cinematográfico', url: '/static/samples/canvas_take2.jpg', res: '2752 x 1536', x: 95, y: 245, connected: true },
-        { id: 'node_3', tag: '@Image3', title: 'Take 3: Plano Aberto Estrada', url: '/static/samples/canvas_take3.jpg', res: '2752 x 1536', x: 295, y: 155, connected: true }
+        { id: 'node_1', tag: '@Image1', title: 'Take 1: Evandro Close-Up', url: '/static/samples/canvas_take1.jpg?v=real2026', res: '2752 x 1536', x: 90, y: 65, connected: true },
+        { id: 'node_2', tag: '@Image2', title: 'Take 2: Perfil Cinematográfico', url: '/static/samples/canvas_take2.jpg?v=real2026', res: '2752 x 1536', x: 95, y: 245, connected: true },
+        { id: 'node_3', tag: '@Image3', title: 'Take 3: Plano Aberto Estrada', url: '/static/samples/canvas_take3.jpg?v=real2026', res: '2752 x 1536', x: 295, y: 155, connected: true }
       ];
       const genNode = document.getElementById('canvas-gen-node');
       if (genNode) { genNode.style.left = '540px'; genNode.style.top = '95px'; }

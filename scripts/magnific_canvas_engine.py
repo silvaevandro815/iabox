@@ -35,6 +35,7 @@ class MagnificCanvasEngine:
         if not env:
             env = os.environ
         self.gemini_key = env.get('GEMINI_API_KEY') or env.get('GOOGLE_API_KEY') or os.environ.get('GEMINI_API_KEY', '')
+        self.hf_token = env.get('HF_TOKEN') or env.get('HUGGINGFACE_TOKEN') or os.environ.get('HF_TOKEN', '')
 
         self.style_presets = {
             "NanoBanana Pro": "cinematic movie still, ARRI Alexa 65, anamorphic lens 35mm, dramatic volumetric lighting, shallow depth of field, hyper-detailed skin texture, 8k photorealistic",
@@ -51,12 +52,14 @@ class MagnificCanvasEngine:
         style_suffix = self.style_presets.get(model_style, self.style_presets["NanoBanana Pro"])
 
         if not self.gemini_key or not reference_paths:
-            clean_prompt = user_prompt.replace("@Image1", "").replace("@Image2", "").replace("@Image3", "").strip()
-            return f"{clean_prompt}, {style_suffix}"
+            clean_prompt = user_prompt
+            for tag in ("@Image1", "@Image2", "@Image3", "@Image4", "@Image5"):
+                clean_prompt = clean_prompt.replace(tag, "")
+            return f"{clean_prompt.strip()}, {style_suffix}"
 
         parts = []
         valid_refs = 0
-        for idx, ref_path in enumerate(reference_paths[:3], start=1):
+        for idx, ref_path in enumerate(reference_paths[:5], start=1):
             if ref_path and os.path.exists(ref_path):
                 try:
                     with open(ref_path, "rb") as f:
@@ -72,14 +75,16 @@ class MagnificCanvasEngine:
                     pass
 
         if valid_refs == 0:
-            clean_prompt = user_prompt.replace("@Image1", "").replace("@Image2", "").replace("@Image3", "").strip()
-            return f"{clean_prompt}, {style_suffix}"
+            clean_prompt = user_prompt
+            for tag in ("@Image1", "@Image2", "@Image3", "@Image4", "@Image5"):
+                clean_prompt = clean_prompt.replace(tag, "")
+            return f"{clean_prompt.strip()}, {style_suffix}"
 
         system_instruction = f"""You are the visual continuity engine of BeatDesign / Higgsfield / Magnific AI.
-The user connected {valid_refs} reference image node(s) (@Image1, @Image2, etc.) on an Infinite Storyboard Canvas and requested:
+The user connected {valid_refs} reference image node(s) (@Image1 through @Image{valid_refs}) and requested:
 "{user_prompt}"
 
-Analyze the attached reference image(s) (character appearance, clothing, lighting mood, color palette, environment) and write a single, cohesive, ultra-detailed English image generation prompt (max 90 words) that fulfills the user's request while keeping strict visual and cinematic continuity with the reference image(s).
+Analyze all {valid_refs} attached reference image(s) (exact facial features, character appearance, clothing, objects, lighting mood, color palette, environment) and write a single, cohesive, ultra-detailed English image generation prompt (max 95 words) that fulfills the user's request while keeping strict visual and cinematic continuity with all reference image(s).
 Include these style specifications: {style_suffix}.
 Return ONLY the final English prompt, without quotes or explanations."""
 
@@ -95,8 +100,10 @@ Return ONLY the final English prompt, without quotes or explanations."""
         except Exception as e:
             print(f"[MagnificCanvas] Aviso na análise multi-nó: {e}")
 
-        clean_prompt = user_prompt.replace("@Image1", "").replace("@Image2", "").replace("@Image3", "").strip()
-        return f"{clean_prompt}, {style_suffix}"
+        clean_prompt = user_prompt
+        for tag in ("@Image1", "@Image2", "@Image3", "@Image4", "@Image5"):
+            clean_prompt = clean_prompt.replace(tag, "")
+        return f"{clean_prompt.strip()}, {style_suffix}"
 
     def generate_connected_node(
         self,
@@ -229,41 +236,61 @@ Return ONLY the final English prompt, without quotes or explanations."""
         frames = int(sec_per_take * fps)
         take_files = []
 
-        # Movimentos de câmera alternados estilo Higgsfield Cinema
-        camera_motions = [
-            # Take 1: Slow Dolly Push-In Central
-            f"scale=2560:-1,zoompan=z='min(zoom+0.0015,1.22)':d={frames}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={w}x{h}:fps={fps}",
-            # Take 2: Dramatic Pan + Zoom
-            f"scale=2560:-1,zoompan=z='1.15':d={frames}:x='(iw-iw/zoom)*(on/{frames})':y='ih/2-(ih/zoom/2)':s={w}x{h}:fps={fps}",
-            # Take 3: Crane Pull-Out (Zoom Out suave)
-            f"scale=2560:-1,zoompan=z='max(1.22-0.0015*on,1.0)':d={frames}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={w}x{h}:fps={fps}"
+        # Geração de Vídeo em Movimento Real (Motor Neural Image-to-Video LTX-Video — ZERO SLIDE)
+        motion_prompts = [
+            "Real 35mm Hollywood movie shot with natural temporal motion, realistic character movement, dynamic environment and background moving naturally, cinematic lighting, 8k film",
+            "Cinematic tracking movie shot with real physical motion in subject and scenery, wind and atmosphere moving naturally, 35mm film grain",
+            "Epic cinema wide shot with realistic vehicle and environment motion, clouds and light moving naturally across the scene, IMAX 70mm film"
         ]
+
+        ltx_client = None
+        try:
+            from gradio_client import Client, handle_file
+            ltx_client = Client("Lightricks/ltx-video-distilled", token=self.hf_token or None)
+        except Exception as e:
+            print(f"[MagnificCanvas] Aviso ao inicializar LTX-Video: {e}")
 
         for idx, img_path in enumerate(image_paths):
             if not os.path.exists(img_path):
                 continue
             take_out = os.path.join(work_dir, f"take_{idx:02d}.mp4")
-            motion_vf = camera_motions[idx % len(camera_motions)]
-            full_vf = (
-                f"{motion_vf},"
-                f"eq=contrast=1.06:brightness=0.01:saturation=1.10,"
-                f"format=yuv420p"
-            )
-            cmd = [
-                "ffmpeg", "-y",
-                "-loop", "1",
-                "-i", img_path,
-                "-vf", full_vf,
-                "-t", str(sec_per_take),
-                "-c:v", "libx264",
-                "-preset", "fast",
-                "-crf", "20",
-                "-pix_fmt", "yuv420p",
-                take_out
-            ]
-            res = subprocess.run(cmd, capture_output=True, text=True)
-            if res.returncode == 0 and os.path.exists(take_out):
-                take_files.append(take_out)
+            generated_real_video = False
+
+            if ltx_client is not None:
+                try:
+                    from gradio_client import handle_file
+                    res_vid = ltx_client.predict(
+                        prompt=motion_prompts[idx % len(motion_prompts)],
+                        negative_prompt="worst quality, blurry, jittery, distorted face, static slide, zoompan",
+                        input_image_filepath=handle_file(img_path),
+                        input_video_filepath=None,
+                        height_ui=512 if w >= h else 768,
+                        width_ui=768 if w >= h else 512,
+                        mode="image-to-video",
+                        duration_ui=min(float(sec_per_take), 5.0),
+                        ui_frames_to_use=9,
+                        seed_ui=42 + idx,
+                        randomize_seed=False,
+                        ui_guidance_scale=1.0,
+                        improve_texture_flag=True,
+                        api_name="/image_to_video"
+                    )
+                    v_path = res_vid[0]["video"] if isinstance(res_vid[0], dict) else res_vid[0]
+                    if v_path and os.path.exists(v_path):
+                        subprocess.run([
+                            "ffmpeg", "-y", "-i", v_path,
+                            "-vf", f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},eq=contrast=1.05:saturation=1.08,format=yuv420p",
+                            "-c:v", "libx264", "-preset", "fast", "-crf", "20", "-an",
+                            take_out
+                        ], capture_output=True)
+                        if os.path.exists(take_out):
+                            take_files.append(take_out)
+                            generated_real_video = True
+                except Exception as e:
+                    print(f"[MagnificCanvas] Aviso LTX no take {idx}: {e}")
+
+            if not generated_real_video:
+                raise RuntimeError("Motor de Vídeo Neural LTX temporariamente ocupado. Proibido gerar vídeo slide.")
 
         if not take_files:
             raise RuntimeError("Não foi possível renderizar os takes do Storyboard.")

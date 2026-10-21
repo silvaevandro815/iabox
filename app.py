@@ -16,8 +16,10 @@ import shutil
 import asyncio
 import subprocess
 import contextvars
+import threading
+import requests as http_requests
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from fastapi import FastAPI, UploadFile, File, Form, BackgroundTasks, HTTPException, Request
 from fastapi.responses import JSONResponse, FileResponse
@@ -51,9 +53,11 @@ env = dotenv_values('.env')
 if not env:
     env = os.environ
 
-STRIPE_SECRET_KEY = env.get('STRIPE_SECRET_KEY', '')
-STRIPE_PUBLISHABLE_KEY = env.get('STRIPE_PUBLISHABLE_KEY', '')
-GEMINI_API_KEY = env.get('GEMINI_API_KEY', '') or env.get('GOOGLE_API_KEY', '')
+STRIPE_SECRET_KEY = env.get('STRIPE_SECRET_KEY', '') or os.environ.get('STRIPE_SECRET_KEY', '')
+STRIPE_PUBLISHABLE_KEY = env.get('STRIPE_PUBLISHABLE_KEY', '') or os.environ.get('STRIPE_PUBLISHABLE_KEY', '')
+GEMINI_API_KEY = env.get('GEMINI_API_KEY', '') or env.get('GOOGLE_API_KEY', '') or os.environ.get('GEMINI_API_KEY', '')
+SUPABASE_URL = env.get('SUPABASE_URL', '') or os.environ.get('SUPABASE_URL', 'https://qkopgftfrfftoyndhhfj.supabase.co')
+SUPABASE_KEY = env.get('SUPABASE_KEY', '') or os.environ.get('SUPABASE_KEY', '')
 
 # Inicialização do FastAPI
 app = FastAPI(
@@ -156,10 +160,118 @@ def init_db():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS user_creations (
+            id TEXT PRIMARY KEY,
+            user_id TEXT,
+            ip TEXT,
+            category TEXT,
+            title TEXT,
+            prompt TEXT,
+            result_url TEXT,
+            metadata TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS access_logs (
+            id TEXT PRIMARY KEY,
+            ip TEXT,
+            user_id TEXT,
+            is_vip INTEGER DEFAULT 0,
+            role TEXT,
+            action TEXT,
+            user_agent TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
     conn.commit()
     conn.close()
 
 init_db()
+
+def _sync_supabase_async(categoria: str, titulo: str, payload: dict):
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        return
+    def _worker():
+        try:
+            url = f"{SUPABASE_URL.rstrip('/')}/rest/v1/cerebro_conhecimento"
+            headers = {
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}",
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal"
+            }
+            body = {
+                "produto": "IABOX",
+                "categoria": categoria,
+                "titulo": titulo[:250],
+                "conteudo": json.dumps(payload, ensure_ascii=False)
+            }
+            http_requests.post(url, headers=headers, json=body, timeout=10)
+        except Exception:
+            pass
+    threading.Thread(target=_worker, daemon=True).start()
+
+def log_client_access(ip: str, user_id: str, is_vip: bool, action: str = "visit", user_agent: str = ""):
+    role_str = "VIP Ilimitado" if is_vip else "Visitante (50 Tokens IP)"
+    log_id = str(uuid.uuid4())
+    now_str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        # Evita flood de logs de polling da mesma sessão a cada segundo se for apenas check_credits
+        if action == "session_access":
+            c.execute("SELECT id FROM access_logs WHERE ip = ? AND user_id = ? AND action = 'session_access' AND created_at >= datetime('now', '-10 minutes')", (ip, user_id))
+            if c.fetchone():
+                conn.close()
+                return
+        c.execute(
+            "INSERT INTO access_logs (id, ip, user_id, is_vip, role, action, user_agent, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (log_id, ip, user_id, 1 if is_vip else 0, role_str, action, (user_agent or "")[:200], now_str)
+        )
+        conn.commit()
+        conn.close()
+        _sync_supabase_async("IABOX_ACESSO", f"{ip} | {user_id} | {action}", {
+            "id": log_id,
+            "ip": ip,
+            "user_id": user_id,
+            "is_vip": is_vip,
+            "role": role_str,
+            "action": action,
+            "user_agent": (user_agent or "")[:200],
+            "created_at": now_str
+        })
+    except Exception:
+        pass
+
+def save_user_creation(user_id: str, category: str, title: str, prompt: str, result_url: str, metadata: dict = None, ip_override: str = None):
+    ip = ip_override or client_ip_var.get() or "unknown"
+    creation_id = str(uuid.uuid4())
+    now_str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    meta_json = json.dumps(metadata or {}, ensure_ascii=False)
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute(
+            "INSERT INTO user_creations (id, user_id, ip, category, title, prompt, result_url, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (creation_id, user_id, ip, category, title, prompt, result_url, meta_json, now_str)
+        )
+        conn.commit()
+        conn.close()
+        _sync_supabase_async("IABOX_CRIATIVO", f"[{category.upper()}] {title[:120]}", {
+            "id": creation_id,
+            "user_id": user_id,
+            "ip": ip,
+            "category": category,
+            "title": title,
+            "prompt": prompt,
+            "result_url": result_url,
+            "metadata": metadata or {},
+            "created_at": now_str
+        })
+    except Exception:
+        pass
 
 def is_founder_vip(user_id: str = "", ip: str = "") -> bool:
     uid_clean = (user_id or "").strip().lower()
@@ -287,12 +399,93 @@ def get_credits(request: Request, user_id: str = "default_user"):
     ip = extract_client_ip(request)
     vip = is_founder_vip(user_id, ip)
     credits = get_user_credits(user_id)
+    ua = request.headers.get("user-agent", "")
+    log_client_access(ip, user_id, vip, action="session_access", user_agent=ua)
     return {
         "user_id": user_id,
         "ip": ip,
         "is_vip": vip,
         "role": "Fundador VIP (Acesso Ilimitado)" if vip else "Visitante (Bônus Único por IP)",
         "credits": credits
+    }
+
+@app.get("/api/user/memory")
+def get_user_memory(request: Request, user_id: str = "default_user"):
+    ip = extract_client_ip(request)
+    vip = is_founder_vip(user_id, ip)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    if vip:
+        c.execute("SELECT id, user_id, ip, category, title, prompt, result_url, metadata, created_at FROM user_creations ORDER BY created_at DESC LIMIT 100")
+    else:
+        c.execute("SELECT id, user_id, ip, category, title, prompt, result_url, metadata, created_at FROM user_creations WHERE user_id = ? OR ip = ? ORDER BY created_at DESC LIMIT 60", (user_id, ip))
+    rows = c.fetchall()
+    conn.close()
+
+    creations = []
+    for r in rows:
+        try:
+            meta = json.loads(r[7] or "{}")
+        except Exception:
+            meta = {}
+        creations.append({
+            "id": r[0],
+            "user_id": r[1],
+            "ip": r[2],
+            "category": r[3],
+            "title": r[4],
+            "prompt": r[5],
+            "result_url": r[6],
+            "metadata": meta,
+            "created_at": r[8]
+        })
+
+    return {
+        "status": "success",
+        "is_vip": vip,
+        "ip": ip,
+        "user_id": user_id,
+        "supabase_synced": bool(SUPABASE_URL and SUPABASE_KEY),
+        "creations": creations
+    }
+
+@app.get("/api/admin/access-logs")
+def get_access_logs(request: Request, user_id: str = "default_user"):
+    ip = extract_client_ip(request)
+    vip = is_founder_vip(user_id, ip)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT id, ip, user_id, is_vip, role, action, user_agent, created_at FROM access_logs ORDER BY created_at DESC LIMIT 100")
+    log_rows = c.fetchall()
+
+    c.execute("SELECT ip, credits, bonus_claimed, created_at FROM ip_wallets ORDER BY created_at DESC LIMIT 100")
+    wallet_rows = c.fetchall()
+    conn.close()
+
+    logs = [{
+        "id": r[0],
+        "ip": r[1],
+        "user_id": r[2],
+        "is_vip": bool(r[3]),
+        "role": r[4],
+        "action": r[5],
+        "user_agent": r[6],
+        "created_at": r[7]
+    } for r in log_rows]
+
+    wallets = [{
+        "ip": w[0],
+        "credits": w[1],
+        "bonus_claimed": bool(w[2]),
+        "created_at": w[3]
+    } for w in wallet_rows]
+
+    return {
+        "status": "success",
+        "is_vip": vip,
+        "supabase_synced": bool(SUPABASE_URL and SUPABASE_KEY),
+        "access_logs": logs,
+        "ip_wallets": wallets
     }
 
 @app.get("/api/jobs/{job_id}")
@@ -335,10 +528,11 @@ async def generate_voice(
         from scripts.voice_clone_engine import VoiceCloneEngine
         engine = VoiceCloneEngine()
         engine.generate_neural_brazil(text, output_path=out_path, voice=voice)
-        save_job(job_id, "voice", status="completed", progress=100, result_url=f"/output/{out_filename}")
+        save_job(job_id, "voice", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
+        save_user_creation(user_id, "voice", f"Locução PT-BR ({voice.capitalize()})", text, f"/output/{out_filename}", {"voice": voice})
         return {"status": "success", "job_id": job_id, "result_url": f"/output/{out_filename}", "remaining_credits": get_user_credits(user_id)}
     except Exception as e:
-        save_job(job_id, "voice", status="failed", error=str(e))
+        save_job(job_id, "voice", status="failed", error=str(e), user_id=user_id)
         raise HTTPException(status_code=500, detail=str(e))
 
 # ----------------------------------------------------------------------------------------
@@ -363,16 +557,17 @@ async def clone_voice(
     out_filename = f"cloned_{job_id[:8]}.mp3"
     out_path = os.path.join(OUTPUT_DIR, out_filename)
 
-    save_job(job_id, "clone", status="processing", progress=20)
+    save_job(job_id, "clone", status="processing", progress=20, user_id=user_id)
 
     try:
         from scripts.voice_clone_engine import VoiceCloneEngine
         engine = VoiceCloneEngine()
         engine.clone_voice_sample(ref_path, text, output_path=out_path)
-        save_job(job_id, "clone", status="completed", progress=100, result_url=f"/output/{out_filename}")
+        save_job(job_id, "clone", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
+        save_user_creation(user_id, "clone", f"Voz Clonada ({audio_sample.filename})", text, f"/output/{out_filename}", {"sample": audio_sample.filename})
         return {"status": "success", "job_id": job_id, "result_url": f"/output/{out_filename}", "remaining_credits": get_user_credits(user_id)}
     except Exception as e:
-        save_job(job_id, "clone", status="failed", error=str(e))
+        save_job(job_id, "clone", status="failed", error=str(e), user_id=user_id)
         raise HTTPException(status_code=500, detail=str(e))
 
 # ----------------------------------------------------------------------------------------
@@ -390,8 +585,9 @@ async def generate_suno_music(
     if not deduct_credits(user_id, amount=cost):
         raise HTTPException(status_code=402, detail=f"Saldo insuficiente (necessário {cost} créditos).")
 
+    req_ip = client_ip_var.get()
     job_id = str(uuid.uuid4())
-    save_job(job_id, "suno", status="processing", progress=15)
+    save_job(job_id, "suno", status="processing", progress=15, user_id=user_id)
 
     voice_path = None
     if voice_sample:
@@ -408,21 +604,21 @@ async def generate_suno_music(
             mod = importlib.import_module("scripts.10_suno_studio_engine")
             engine = mod.SunoStudioEngine()
             lyrics = engine.compose_lyrics(theme, genre=genre, duration_sec=duration)
-            save_job(job_id, "suno", status="processing", progress=40)
+            save_job(job_id, "suno", status="processing", progress=40, user_id=user_id)
 
             raw_song = engine.generate_full_song(lyrics, style_prompt=genre, output_path=os.path.join(OUTPUT_DIR, f"raw_{out_filename}"), duration=duration)
-            save_job(job_id, "suno", status="processing", progress=75)
+            save_job(job_id, "suno", status="processing", progress=75, user_id=user_id)
 
             if voice_path:
                 engine.clone_singer_on_song(raw_song, voice_path, output_path=out_path)
             else:
                 shutil.copy(raw_song, out_path)
 
-            save_job(job_id, "suno", status="completed", progress=100, result_url=f"/output/{out_filename}")
+            save_job(job_id, "suno", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
+            save_user_creation(user_id, "suno", f"Suno Music: {theme[:60]}", f"{genre} | {theme}", f"/output/{out_filename}", {"genre": genre, "duration": duration}, ip_override=req_ip)
         except Exception as e:
-            save_job(job_id, "suno", status="failed", error=str(e))
+            save_job(job_id, "suno", status="failed", error=str(e), user_id=user_id)
 
-    import threading
     t = threading.Thread(target=_task)
     t.start()
 
@@ -488,6 +684,7 @@ async def create_parody(
     if not deduct_credits(user_id, amount=20):
         raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 20 créditos).")
 
+    req_ip = client_ip_var.get()
     job_id = str(uuid.uuid4())
     save_job(job_id, "parody", status="processing", progress=15, user_id=user_id)
 
@@ -503,6 +700,7 @@ async def create_parody(
 
     out_filename = f"parodia_{job_id[:8]}.mp3"
     out_path = os.path.join(OUTPUT_DIR, out_filename)
+    mode_label = "Paródia Musical" if guide_path else "AI Song Cover"
 
     def _task():
         try:
@@ -529,62 +727,84 @@ async def create_parody(
                     pitch_shift=pitch_shift
                 )
             save_job(job_id, "parody", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
+            save_user_creation(user_id, "parody", f"{mode_label}: {song_file.filename}", f"Voz: {voice_sample.filename}", f"/output/{out_filename}", {"mode": mode_label, "pitch_shift": pitch_shift}, ip_override=req_ip)
         except Exception as e:
             save_job(job_id, "parody", status="failed", error=str(e), user_id=user_id)
 
-    import threading
     t = threading.Thread(target=_task)
     t.start()
 
-    mode_label = "Paródia Musical" if guide_path else "AI Song Cover"
     return {"status": "started", "job_id": job_id, "message": f"Produção de {mode_label} iniciada.", "cost": 20}
 
 # ----------------------------------------------------------------------------------------
-# 5. GERADOR DE IMAGENS & CRIATIVOS PUBLICITÁRIOS (FLUX / POLLINATIONS)
+# 5. GERADOR DE IMAGENS & CRIATIVOS PUBLICITÁRIOS (SUPORTE A 3 A 5 IMAGENS DE REFERÊNCIA)
 # ----------------------------------------------------------------------------------------
 @app.post("/api/image/generate")
 async def generate_image(
     prompt: str = Form(...),
     aspect_ratio: str = Form("1:1"),
+    model_style: str = Form("NanoBanana Pro"),
+    ref_images: List[UploadFile] = File(default=[]),
     user_id: str = Form("default_user")
 ):
     if not deduct_credits(user_id, amount=2):
         raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 2 créditos).")
 
     job_id = str(uuid.uuid4())
-    dim_map = {
-        "1:1": (1024, 1024),
-        "9:16": (768, 1344),
-        "16:9": (1344, 768)
-    }
-    w, h = dim_map.get(aspect_ratio, (1024, 1024))
     out_filename = f"image_{job_id[:8]}.jpg"
     out_path = os.path.join(OUTPUT_DIR, out_filename)
 
-    import urllib.parse
-    import requests
-    encoded = urllib.parse.quote(prompt)
-    url = f"https://image.pollinations.ai/prompt/{encoded}?width={w}&height={h}&nologo=true&enhance=true&model=flux"
+    saved_refs = []
+    for idx, rf in enumerate((ref_images or [])[:5]):
+        if rf and rf.filename:
+            ext = os.path.splitext(rf.filename)[1] or ".jpg"
+            r_path = os.path.join(UPLOAD_DIR, f"imgref_{job_id[:8]}_{idx}{ext}")
+            with open(r_path, "wb") as f:
+                shutil.copyfileobj(rf.file, f)
+            saved_refs.append(r_path)
 
     try:
-        r = requests.get(url, timeout=45)
-        if r.status_code == 200:
-            with open(out_path, "wb") as f:
-                f.write(r.content)
-            save_job(job_id, "image", status="completed", progress=100, result_url=f"/output/{out_filename}")
-            return {"status": "success", "job_id": job_id, "result_url": f"/output/{out_filename}", "remaining_credits": get_user_credits(user_id)}
-        else:
-            raise RuntimeError(f"Erro no provedor de imagem: status {r.status_code}")
+        from scripts.magnific_canvas_engine import MagnificCanvasEngine
+        engine = MagnificCanvasEngine()
+        info = engine.generate_connected_node(
+            prompt=prompt,
+            reference_images=saved_refs,
+            model_style=model_style,
+            aspect_ratio=aspect_ratio,
+            output_path=out_path
+        )
+        save_job(job_id, "image", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
+        save_user_creation(
+            user_id,
+            "image",
+            f"Imagem IA ({len(saved_refs)} ref)" if saved_refs else "Imagem IA",
+            prompt,
+            f"/output/{out_filename}",
+            {"aspect_ratio": aspect_ratio, "ref_count": len(saved_refs), "compiled_prompt": info.get("compiled_prompt", prompt)}
+        )
+        return {
+            "status": "success",
+            "job_id": job_id,
+            "result_url": f"/output/{out_filename}",
+            "ref_count": len(saved_refs),
+            "compiled_prompt": info.get("compiled_prompt", prompt),
+            "remaining_credits": get_user_credits(user_id)
+        }
     except Exception as e:
-        save_job(job_id, "image", status="failed", error=str(e))
+        save_job(job_id, "image", status="failed", error=str(e), user_id=user_id)
         raise HTTPException(status_code=500, detail=str(e))
 
 # ----------------------------------------------------------------------------------------
-# 6. EDITOR DE VÍDEOS VIRAIS (REELS/SHORTS 9:16)
+# 6. ESTÚDIO DE VÍDEOS VIRAIS & VFX (ATÉ 5 MINUTOS + 3 A 5 IMAGENS REF + VÍDEOS AUXILIARES)
 # ----------------------------------------------------------------------------------------
 @app.post("/api/video/edit")
 async def edit_viral_video(
     video_file: UploadFile = File(...),
+    ref_images: List[UploadFile] = File(default=[]),
+    overlay_video: Optional[UploadFile] = File(None),
+    vfx_mode: str = Form("full_production"),
+    creative_prompt: str = Form(""),
+    aspect_ratio: str = Form("9:16"),
     silence_removal: bool = Form(True),
     subtitles_karaoke: bool = Form(True),
     punch_zoom: bool = Form(True),
@@ -593,6 +813,7 @@ async def edit_viral_video(
     if not deduct_credits(user_id, amount=10):
         raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 10 créditos).")
 
+    req_ip = client_ip_var.get()
     job_id = str(uuid.uuid4())
     in_filename = f"raw_video_{job_id[:8]}_{video_file.filename}"
     in_path = os.path.join(UPLOAD_DIR, in_filename)
@@ -600,28 +821,110 @@ async def edit_viral_video(
     with open(in_path, "wb") as f:
         shutil.copyfileobj(video_file.file, f)
 
+    saved_ref_imgs = []
+    for idx, rf in enumerate((ref_images or [])[:5]):
+        if rf and rf.filename:
+            ext = os.path.splitext(rf.filename)[1] or ".jpg"
+            r_path = os.path.join(UPLOAD_DIR, f"vidref_{job_id[:8]}_{idx}{ext}")
+            with open(r_path, "wb") as f:
+                shutil.copyfileobj(rf.file, f)
+            saved_ref_imgs.append(r_path)
+
+    overlay_vid_path = None
+    if overlay_video and overlay_video.filename:
+        ext = os.path.splitext(overlay_video.filename)[1] or ".mp4"
+        overlay_vid_path = os.path.join(UPLOAD_DIR, f"vidovl_{job_id[:8]}{ext}")
+        with open(overlay_vid_path, "wb") as f:
+            shutil.copyfileobj(overlay_video.file, f)
+
     out_filename = f"viral_{job_id[:8]}.mp4"
     out_path = os.path.join(OUTPUT_DIR, out_filename)
 
-    save_job(job_id, "video", status="processing", progress=20)
+    save_job(job_id, "video", status="processing", progress=15, user_id=user_id)
 
     def _task():
         try:
-            save_job(job_id, "video", status="processing", progress=40)
-            vf_filters = [
-                "scale=1080:1920:force_original_aspect_ratio=increase",
-                "crop=1080:1920",
-                "eq=contrast=1.06:brightness=0.02:saturation=1.12",
-                "format=yuv420p"
-            ]
-            vf_str = ",".join(vf_filters)
+            save_job(job_id, "video", status="processing", progress=35, user_id=user_id)
+
+            # Aciona os motores modulares de VFX / Troca de Personagem / Rotoscopia se selecionados
+            if vfx_mode == "character_swap" and saved_ref_imgs:
+                try:
+                    import importlib
+                    swap_mod = importlib.import_module("scripts.07_influencer_motion_swap")
+                    swap_engine = swap_mod.InfluencerMotionEngine()
+                    swap_engine.process_portrait_swap(saved_ref_imgs[0], in_path, out_path)
+                except Exception as e:
+                    print(f"[VideoStudio] Info Character Swap: {e}")
+
+            target_w, target_h = (1080, 1920) if aspect_ratio == "9:16" else (1280, 720)
+
+            # Monta pipeline FFmpeg suportando até 5 minutos (300 segundos) + Inserção de Criativos/Design/Motion Graphics
+            cmd = ["ffmpeg", "-y", "-i", in_path]
+            for r_img in saved_ref_imgs:
+                cmd.extend(["-i", r_img])
+            if overlay_vid_path:
+                cmd.extend(["-stream_loop", "-1", "-i", overlay_vid_path])
+
+            base_chain = (
+                f"[0:v]scale={target_w}:{target_h}:force_original_aspect_ratio=increase,"
+                f"crop={target_w}:{target_h},"
+                f"eq=contrast=1.07:brightness=0.02:saturation=1.14"
+            )
+            if vfx_mode == "motion_graphics" or subtitles_karaoke:
+                # Barra de HUD / Motion Graphic Neon no rodapé
+                hud_y = int(target_h * 0.82)
+                base_chain += f",drawbox=x=40:y={hud_y}:w={target_w-80}:h=110:color=black@0.68:t=fill"
+                base_chain += f",drawbox=x=40:y={hud_y}:w=8:h=110:color=0x00F0FF@0.95:t=fill"
+
+            filter_parts = [f"{base_chain}[base0]"]
+            last_label = "[base0]"
+            input_idx = 1
+
+            # Insere as 3 a 5 imagens de referência como Cards Criativos / Objetos flutuantes sincronizados ao longo do vídeo
+            card_w = int(target_w * 0.28)
+            for idx, _ in enumerate(saved_ref_imgs):
+                t_start = 1.0 + idx * 5.0
+                t_end = t_start + 4.5
+                ovl_x = target_w - card_w - 36 if idx % 2 == 0 else 36
+                ovl_y = 60 + (idx % 2) * 40
+                ref_lbl = f"[ref{idx}]"
+                out_lbl = f"[v_img{idx}]"
+                filter_parts.append(
+                    f"[{input_idx}:v]scale={card_w}:{card_w}:force_original_aspect_ratio=increase,crop={card_w}:{card_w},"
+                    f"drawbox=x=0:y=0:w={card_w}:h={card_w}:color=0x00F0FF@0.9:t=4{ref_lbl}"
+                )
+                filter_parts.append(
+                    f"{last_label}{ref_lbl}overlay=x={ovl_x}:y={ovl_y}:enable='between(t,{t_start},{t_end})'{out_lbl}"
+                )
+                last_label = out_lbl
+                input_idx += 1
+
+            # Se houver vídeo auxiliar de criativo/B-Roll, insere como Picture-in-Picture dinâmico
+            if overlay_vid_path:
+                pip_w = int(target_w * 0.34)
+                pip_h = int(pip_w * 0.56)
+                pip_x = target_w - pip_w - 36
+                pip_y = int(target_h * 0.58)
+                filter_parts.append(
+                    f"[{input_idx}:v]scale={pip_w}:{pip_h}:force_original_aspect_ratio=increase,crop={pip_w}:{pip_h},"
+                    f"drawbox=x=0:y=0:w={pip_w}:h={pip_h}:color=0xFF007F@0.9:t=4[pipv]"
+                )
+                filter_parts.append(
+                    f"{last_label}[pipv]overlay=x={pip_x}:y={pip_y}:shortest=1[v_pip]"
+                )
+                last_label = "[v_pip]"
+
+            filter_parts.append(f"{last_label}format=yuv420p[vout]")
+            filter_complex_str = ";".join(filter_parts)
+
             af_str = "silenceremove=start_periods=1:start_duration=0.25:start_threshold=-35dB:detection=peak" if silence_removal else "anull"
 
-            cmd = [
-                "ffmpeg", "-y",
-                "-i", in_path,
-                "-vf", vf_str,
+            cmd.extend([
+                "-filter_complex", filter_complex_str,
+                "-map", "[vout]",
+                "-map", "0:a?",
                 "-af", af_str,
+                "-t", "300",  # Suporte oficial a vídeos de até 5 minutos (300 segundos)
                 "-c:v", "libx264",
                 "-preset", "fast",
                 "-crf", "21",
@@ -629,27 +932,42 @@ async def edit_viral_video(
                 "-b:a", "192k",
                 "-movflags", "+faststart",
                 out_path
-            ]
+            ])
+
+            save_job(job_id, "video", status="processing", progress=70, user_id=user_id)
             res = subprocess.run(cmd, capture_output=True, text=True)
-            if res.returncode == 0 and os.path.exists(out_path):
-                save_job(job_id, "video", status="completed", progress=100, result_url=f"/output/{out_filename}")
-            else:
+            if res.returncode != 0 or not os.path.exists(out_path):
                 fallback_cmd = [
                     "ffmpeg", "-y", "-i", in_path,
-                    "-vf", "scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280",
-                    "-c:v", "libx264", "-crf", "23", "-c:a", "aac",
+                    "-vf", f"scale={target_w}:{target_h}:force_original_aspect_ratio=increase,crop={target_w}:{target_h},format=yuv420p",
+                    "-t", "300",
+                    "-c:v", "libx264", "-preset", "fast", "-crf", "23", "-c:a", "aac",
                     out_path
                 ]
                 subprocess.run(fallback_cmd, capture_output=True)
-                save_job(job_id, "video", status="completed", progress=100, result_url=f"/output/{out_filename}")
-        except Exception as e:
-            save_job(job_id, "video", status="failed", error=str(e))
 
-    import threading
+            save_job(job_id, "video", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
+            save_user_creation(
+                user_id,
+                "video",
+                f"Vídeo Studio ({vfx_mode})",
+                creative_prompt or f"Edição {aspect_ratio} ({len(saved_ref_imgs)} imagens ref)",
+                f"/output/{out_filename}",
+                {"vfx_mode": vfx_mode, "ref_images_count": len(saved_ref_imgs), "has_overlay_video": bool(overlay_vid_path), "max_duration": "5min"},
+                ip_override=req_ip
+            )
+        except Exception as e:
+            save_job(job_id, "video", status="failed", error=str(e), user_id=user_id)
+
     t = threading.Thread(target=_task)
     t.start()
 
-    return {"status": "started", "job_id": job_id, "message": "Edição de vídeo viral iniciada em segundo plano.", "cost": 10}
+    return {
+        "status": "started",
+        "job_id": job_id,
+        "message": f"Produção de Vídeo ({vfx_mode}) com {len(saved_ref_imgs)} referência(s) iniciada (suporte até 5 min).",
+        "cost": 10
+    }
 
 # ----------------------------------------------------------------------------------------
 # 7. MAGNIFIC & HIGGSFIELD INFINITE CANVAS (BEATDESIGN STORYBOARD & CINEMA STUDIO)
@@ -714,6 +1032,7 @@ async def generate_canvas_node(
             output_path=out_path
         )
         save_job(job_id, "canvas_node", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
+        save_user_creation(user_id, "canvas_node", f"Canvas Node ({model_style})", prompt, f"/output/{out_filename}", {"model_style": model_style, "aspect_ratio": aspect_ratio})
         return {
             "status": "success",
             "job_id": job_id,
@@ -762,6 +1081,7 @@ async def magnific_upscale_node(
             creativity_level=creativity_level or creativity_strength,
             scale_target="4k"
         )
+        save_user_creation(user_id, "magnific_4k", "Magnific Upscale 4K", f"Criatividade: {creativity_level}", f"/output/{out_filename}", {"scale": "4k"})
         return {
             "status": "success",
             "result_url": f"/output/{out_filename}",
@@ -800,6 +1120,7 @@ async def render_canvas_storyboard(
     if not image_paths:
         raise HTTPException(status_code=400, detail="Nenhum nó de imagem válido selecionado no Storyboard.")
 
+    req_ip = client_ip_var.get()
     job_id = str(uuid.uuid4())
     out_filename = f"storyboard_cinema_{job_id[:8]}.mp4"
     out_path = os.path.join(OUTPUT_DIR, out_filename)
@@ -821,6 +1142,7 @@ async def render_canvas_storyboard(
                 sec_per_take=final_sec
             )
             save_job(job_id, "storyboard", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
+            save_user_creation(user_id, "storyboard", f"Filme Storyboard ({len(image_paths)} takes)", final_narration or "Cinema Motion", f"/output/{out_filename}", {"takes": len(image_paths)}, ip_override=req_ip)
         except Exception as e:
             save_job(job_id, "storyboard", status="failed", error=str(e), user_id=user_id)
 
