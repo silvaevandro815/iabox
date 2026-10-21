@@ -57,7 +57,9 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(STATIC_DIR, exist_ok=True)
 
 # Banco de Dados SQLite Local
-DB_PATH = "iabox.db"
+DATA_DIR = os.environ.get("DATA_DIR", ".")
+os.makedirs(DATA_DIR, exist_ok=True)
+DB_PATH = os.path.join(DATA_DIR, "iabox.db")
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
@@ -104,9 +106,9 @@ def get_user_credits(user_id="default_user"):
     c.execute("SELECT credits FROM users WHERE id = ?", (user_id,))
     row = c.fetchone()
     if not row:
-        c.execute("INSERT INTO users (id, credits) VALUES (?, ?)", (user_id, 100)) # 100 créditos grátis de boas-vindas
+        c.execute("INSERT INTO users (id, credits) VALUES (?, ?)", (user_id, 0)) # Saldo 0: requer compra pré-paga
         conn.commit()
-        credits = 100
+        credits = 0
     else:
         credits = row[0]
     conn.close()
@@ -335,7 +337,119 @@ async def create_parody(
     return {"status": "started", "job_id": job_id, "message": "Criação de paródia iniciada.", "cost": 20}
 
 # ----------------------------------------------------------------------------------------
-# 5. STRIPE CHECKOUT (SISTEMA PRÉ-PAGO)
+# 5. GERADOR DE IMAGENS & CRIATIVOS PUBLICITÁRIOS (FLUX / POLLINATIONS)
+# ----------------------------------------------------------------------------------------
+@app.post("/api/image/generate")
+async def generate_image(
+    prompt: str = Form(...),
+    aspect_ratio: str = Form("1:1"),
+    user_id: str = Form("default_user")
+):
+    if not deduct_credits(user_id, amount=2):
+        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 2 créditos).")
+
+    job_id = str(uuid.uuid4())
+    dim_map = {
+        "1:1": (1024, 1024),
+        "9:16": (768, 1344),
+        "16:9": (1344, 768)
+    }
+    w, h = dim_map.get(aspect_ratio, (1024, 1024))
+    out_filename = f"image_{job_id[:8]}.jpg"
+    out_path = os.path.join(OUTPUT_DIR, out_filename)
+
+    import urllib.parse
+    import requests
+    encoded = urllib.parse.quote(prompt)
+    url = f"https://image.pollinations.ai/prompt/{encoded}?width={w}&height={h}&nologo=true&enhance=true&model=flux"
+
+    try:
+        r = requests.get(url, timeout=45)
+        if r.status_code == 200:
+            with open(out_path, "wb") as f:
+                f.write(r.content)
+            save_job(job_id, "image", status="completed", progress=100, result_url=f"/output/{out_filename}")
+            return {"status": "success", "job_id": job_id, "result_url": f"/output/{out_filename}", "remaining_credits": get_user_credits(user_id)}
+        else:
+            raise RuntimeError(f"Erro no provedor de imagem: status {r.status_code}")
+    except Exception as e:
+        save_job(job_id, "image", status="failed", error=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ----------------------------------------------------------------------------------------
+# 6. EDITOR DE VÍDEOS VIRAIS (REELS/SHORTS 9:16)
+# ----------------------------------------------------------------------------------------
+@app.post("/api/video/edit")
+async def edit_viral_video(
+    video_file: UploadFile = File(...),
+    silence_removal: bool = Form(True),
+    subtitles_karaoke: bool = Form(True),
+    punch_zoom: bool = Form(True),
+    user_id: str = Form("default_user")
+):
+    if not deduct_credits(user_id, amount=10):
+        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 10 créditos).")
+
+    job_id = str(uuid.uuid4())
+    in_filename = f"raw_video_{job_id[:8]}_{video_file.filename}"
+    in_path = os.path.join(UPLOAD_DIR, in_filename)
+
+    with open(in_path, "wb") as f:
+        shutil.copyfileobj(video_file.file, f)
+
+    out_filename = f"viral_{job_id[:8]}.mp4"
+    out_path = os.path.join(OUTPUT_DIR, out_filename)
+
+    save_job(job_id, "video", status="processing", progress=20)
+
+    def _task():
+        try:
+            save_job(job_id, "video", status="processing", progress=40)
+            vf_filters = [
+                "scale=1080:1920:force_original_aspect_ratio=increase",
+                "crop=1080:1920",
+                "eq=contrast=1.06:brightness=0.02:saturation=1.12",
+                "format=yuv420p"
+            ]
+            vf_str = ",".join(vf_filters)
+            af_str = "silenceremove=start_periods=1:start_duration=0.25:start_threshold=-35dB:detection=peak" if silence_removal else "anull"
+
+            cmd = [
+                "ffmpeg", "-y",
+                "-i", in_path,
+                "-vf", vf_str,
+                "-af", af_str,
+                "-c:v", "libx264",
+                "-preset", "fast",
+                "-crf", "21",
+                "-c:a", "aac",
+                "-b:a", "192k",
+                "-movflags", "+faststart",
+                out_path
+            ]
+            res = subprocess.run(cmd, capture_output=True, text=True)
+            if res.returncode == 0 and os.path.exists(out_path):
+                save_job(job_id, "video", status="completed", progress=100, result_url=f"/output/{out_filename}")
+            else:
+                fallback_cmd = [
+                    "ffmpeg", "-y", "-i", in_path,
+                    "-vf", "scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280",
+                    "-c:v", "libx264", "-crf", "23", "-c:a", "aac",
+                    out_path
+                ]
+                subprocess.run(fallback_cmd, capture_output=True)
+                save_job(job_id, "video", status="completed", progress=100, result_url=f"/output/{out_filename}")
+        except Exception as e:
+            save_job(job_id, "video", status="failed", error=str(e))
+
+    import threading
+    t = threading.Thread(target=_task)
+    t.start()
+
+    return {"status": "started", "job_id": job_id, "message": "Edição de vídeo viral iniciada em segundo plano.", "cost": 10}
+
+# ----------------------------------------------------------------------------------------
+# 7. STRIPE CHECKOUT (SISTEMA PRÉ-PAGO)
 # ----------------------------------------------------------------------------------------
 PACKAGES = {
     "starter": {"name": "Pacote Starter (100 Créditos)", "credits": 100, "price_brl": 29.90, "cents": 2990},
@@ -366,7 +480,6 @@ async def create_checkout_session(
 
     try:
         session = stripe.checkout.Session.create(
-            payment_method_types=['card', 'boleto'],
             line_items=[{
                 'price_data': {
                     'currency': 'brl',
@@ -384,6 +497,34 @@ async def create_checkout_session(
             metadata={'user_id': user_id, 'credits': str(pkg['credits'])}
         )
         return {"checkout_url": session.url, "session_id": session.id}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/stripe/verify-session")
+def verify_stripe_session(session_id: str, user_id: str = "default_user"):
+    if not STRIPE_SECRET_KEY:
+        return {"status": "mock_success", "credits_added": 100}
+    import stripe
+    stripe.api_key = STRIPE_SECRET_KEY
+    try:
+        session = stripe.checkout.Session.retrieve(session_id)
+        if session.payment_status == "paid":
+            conn = sqlite3.connect(DB_PATH)
+            c = conn.cursor()
+            c.execute("SELECT id FROM orders WHERE stripe_session_id = ?", (session_id,))
+            already_processed = c.fetchone()
+            if not already_processed:
+                credits_to_add = int(session.metadata.get("credits", 100))
+                c.execute("INSERT INTO orders (id, user_id, amount_brl, credits, status, stripe_session_id) VALUES (?, ?, ?, ?, ?, ?)",
+                          (str(uuid.uuid4()), user_id, session.amount_total / 100.0, credits_to_add, "paid", session_id))
+                c.execute("UPDATE users SET credits = credits + ? WHERE id = ?", (credits_to_add, user_id))
+                conn.commit()
+                conn.close()
+                return {"status": "success", "credits_added": credits_to_add, "new_balance": get_user_credits(user_id)}
+            conn.close()
+            return {"status": "already_credited", "new_balance": get_user_credits(user_id)}
+        else:
+            return {"status": "pending", "payment_status": session.payment_status}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

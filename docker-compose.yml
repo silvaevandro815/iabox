@@ -9,15 +9,16 @@ services:
       - "8000:8000"
     environment:
       - PORT=8000
+      - DATA_DIR=/app/data
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - STRIPE_PUBLISHABLE_KEY=${STRIPE_PUBLISHABLE_KEY}
     volumes:
       - iabox_uploads:/app/uploads
       - iabox_output:/app/output
-      - iabox_db:/app/iabox.db
+      - iabox_data:/app/data
 
 volumes:
   iabox_uploads:
   iabox_output:
-  iabox_db:
+  iabox_data:
