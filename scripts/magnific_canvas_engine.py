@@ -169,8 +169,11 @@ The user provided {valid_refs} reference image(s) and requested this scene:
 Camera Angle Override: {cam_spec or 'Follow user prompt'}
 Lighting Mood Override: {light_spec or 'Follow user prompt'}
 
-Write a single, cohesive, ultra-detailed English image generation prompt (max 95 words) that is 100% faithful to the user's request and preserves the exact subject identity, clothing, vehicles/objects, and visual elements from the reference image(s).
-Include these optical specifications: {extra_specs}.
+MANDATORY RULES:
+1. Start the very first sentence with the exact biometric and physical description of the person from the reference image (exact ethnicity, e.g. Caucasian Brazilian man, age ~35, short dark combed hair, light facial stubble, masculine jawline, olive-fair skin tone, exact clothing/objects seen in reference).
+2. NEVER change the person's ethnicity or facial features to match a foreign city or setting mentioned in the prompt.
+3. Write a single, cohesive, ultra-detailed photorealistic English prompt (max 90 words) that is 100% faithful to the user's request and reference image(s).
+4. Include these optical specifications: {extra_specs}.
 Return ONLY the final English prompt, without quotes or explanations."""
 
         enhanced = self._call_llm_text(system_instruction, parts=parts if valid_refs > 0 else None, timeout=22)
@@ -337,9 +340,10 @@ Return ONLY the final English prompt, without quotes or explanations."""
             else:
                 raise RuntimeError("Motor óptico ocupado. Tente novamente em instantes.")
 
-        # 2. Masterização Óptica 8K (Conversão WebP/PNG -> JPG Master + Lanczos + Micro-Contraste de Pele)
+        # 2. Masterização Óptica 8K (Remoção total de bordas externas + Lanczos + Micro-Contraste de Pele)
         vf = (
-            f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}:flags=lanczos,"
+            f"crop=iw:trunc(ih*0.935/2)*2:0:0,"
+            f"scale={w}:{h}:force_original_aspect_ratio=increase:flags=lanczos,crop={w}:{h},"
             f"unsharp=5:5:0.95:5:5:0.0,eq=contrast=1.05:brightness=0.01:saturation=1.08"
         )
         cmd = [
