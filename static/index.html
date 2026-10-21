@@ -773,67 +773,152 @@
       <div class="border-b border-white/10 pb-4">
         <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
           <i data-lucide="disc" class="w-8 h-8 text-purple-400"></i>
-          Fábrica de Paródias Musicais & AI Song Covers
+          Fábrica de Paródias Musicais & Covers com IA
         </h2>
-        <p class="text-gray-400 text-sm mt-1">Tire a voz do cantor original de qualquer música famosa e coloque a SUA voz clonada mantendo o instrumental original, ou crie paródias com letras alteradas na mesma batida.</p>
+        <p class="text-gray-400 text-sm mt-1">Crie paródias completas mantendo o <strong>instrumental oficial</strong> e a <strong>voz dos cantores originais</strong> (ex: Jeninho & Mariana Fagundes) cantando a sua nova letra, ou substitua pela sua própria voz clonada.</p>
       </div>
 
-      
-      <div class="glass-panel p-6 rounded-2xl border border-purple-500/30 space-y-4">
+      <!-- TUTORIAL PASSO A PASSO ILUSTRADO -->
+      <div class="glass-panel p-6 rounded-3xl border-2 border-purple-500/50 bg-gradient-to-br from-purple-950/50 via-dark-900 to-indigo-950/50 shadow-neon-cyan-sm space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-purple-300 shrink-0 shadow-lg">
+            <i data-lucide="book-open" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span>📖 Tutorial Prático: Como Parodiar "Peão Todo Tatuado" Mantendo as Vozes Originais</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">100% IA</span>
+            </h3>
+            <p class="text-xs text-gray-300">Siga estes 4 passos simples para trocar a letra da música mantendo a voz de Jeninho & Mariana Fagundes:</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs text-gray-300 pt-1">
+          <div class="p-4 rounded-2xl bg-dark-900/90 border border-white/10 space-y-1.5 hover:border-purple-400/40 transition-all">
+            <span class="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 font-bold text-[10px]">PASSO 1</span>
+            <h4 class="font-bold text-white">Música Original (MP3)</h4>
+            <p class="text-gray-400 text-[11px] leading-relaxed">Envie o áudio de <em>Peão Todo Tatuado</em>. A IA separa o instrumental limpo e isola o timbre exato de Jeninho e Mariana Fagundes.</p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-dark-900/90 border border-white/10 space-y-1.5 hover:border-purple-400/40 transition-all">
+            <span class="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 font-bold text-[10px]">PASSO 2</span>
+            <h4 class="font-bold text-white">Sua Nova Letra</h4>
+            <p class="text-gray-400 text-[11px] leading-relaxed">Digite ou cole a letra da paródia que você escreveu no campo abaixo. As palavras serão cantadas pelos cantores.</p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-dark-900/90 border border-white/10 space-y-1.5 hover:border-purple-400/40 transition-all">
+            <span class="px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 font-bold text-[10px]">PASSO 3</span>
+            <h4 class="font-bold text-white">Áudio Guia (Melodia)</h4>
+            <p class="text-gray-400 text-[11px] leading-relaxed">Grave um áudio simples no celular cantarolando a nova letra no ritmo. (Se não tiver áudio, a IA gera o guia neural automaticamente).</p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-dark-900/90 border border-white/10 space-y-1.5 hover:border-emerald-400/40 transition-all">
+            <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 font-bold text-[10px]">PASSO 4</span>
+            <h4 class="font-bold text-white">Mixagem Final</h4>
+            <p class="text-gray-400 text-[11px] leading-relaxed">A IA converte a melodia no timbre de Jeninho e Mariana e remixa sobre o instrumental oficial em alta fidelidade (320kbps)!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GERADOR DE LETRAS DE APOIO (OPCIONAL) -->
+      <div class="glass-panel p-5 rounded-2xl border border-purple-500/30 space-y-3">
         <div class="flex items-center justify-between">
-          <h3 class="text-lg font-bold text-white flex items-center gap-2">
-            <i data-lucide="wand-2" class="w-5 h-5 text-purple-400"></i>
-            Passo Opcional: Gerador de Letra de Paródia na Mesma Métrica
+          <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <i data-lucide="wand-2" class="w-4 h-4 text-purple-400"></i>
+            Quer ajuda para rimar? Gerador Automático de Letra na Mesma Métrica
           </h3>
-          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300">1 Crédito</span>
+          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300">1 Crédito</span>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <input type="text" id="parody-song-name" placeholder="Música original (Ex: Meteoro - Luan Santana)" class="bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-400">
-          <input type="text" id="parody-theme-input" placeholder="Tema da paródia (Ex: Vida de quem trabalha com IA)" class="bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-400">
-          <button onclick="handleGenerateParodyLyrics()" class="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/40 text-purple-200 font-bold py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2">
-            <i data-lucide="file-text" class="w-4 h-4 text-purple-400"></i>
-            <span>Gerar Letra na Mesma Batida</span>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <input type="text" id="parody-song-name" placeholder="Música original (Ex: Peão Todo Tatuado - Jeninho)" class="bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
+          <input type="text" id="parody-theme-input" placeholder="Tema da paródia (Ex: O programador que não sai do PC)" class="bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
+          <button type="button" onclick="handleGenerateParodyLyrics()" class="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/40 text-purple-200 font-bold py-2 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
+            <i data-lucide="file-text" class="w-3.5 h-3.5 text-purple-400"></i>
+            <span>Gerar Letra Ritmada</span>
           </button>
         </div>
-        <div id="parody-lyrics-box" class="hidden bg-dark-900/90 border border-white/10 rounded-xl p-4 text-xs text-gray-200 whitespace-pre-wrap font-mono max-h-48 overflow-y-auto"></div>
+        <div id="parody-lyrics-box" class="hidden bg-dark-900/90 border border-white/10 rounded-xl p-3 text-xs text-gray-200 whitespace-pre-wrap font-mono max-h-40 overflow-y-auto"></div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-5">
+      <!-- FORMULÁRIO PRINCIPAL DE PRODUÇÃO DE PARÓDIA -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 glass-panel p-6 rounded-3xl space-y-5 border border-white/10">
+          
+          <!-- SELETOR DE MODO VOCAL -->
           <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">1. Música Original Famosa (MP3/WAV) <span class="text-purple-400">*Obrigatório</span></label>
-            <input type="file" id="parody-song" accept="audio/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500/20 file:text-purple-300">
-            <p class="text-xs text-gray-400 mt-1">A IA removerá a voz do cantor original (ex: Luan Santana, Gusttavo Lima) mantendo 100% do instrumental original.</p>
-          </div>
+            <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">Quem deve cantar a nova letra?</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <label onclick="toggleParodyVocalMode('original_singers')" class="parody-vocal-option cursor-pointer p-3.5 rounded-2xl border-2 border-purple-400 bg-purple-500/15 flex items-start gap-3 transition-all" id="vocal-opt-original">
+                <input type="radio" name="parody_vocal_mode" value="original_singers" checked class="mt-1 accent-purple-400">
+                <div>
+                  <span class="text-xs font-extrabold text-white block">🎤 Manter Cantores Originais</span>
+                  <p class="text-[11px] text-gray-300">A IA extrai a voz de Jeninho & Mariana Fagundes da própria música e aplica na sua nova letra.</p>
+                </div>
+              </label>
 
-          <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">2. Áudio de Referência da Sua Voz (1 minuto) <span class="text-purple-400">*Obrigatório</span></label>
-            <input type="file" id="parody-voice" accept="audio/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500/20 file:text-purple-300">
-            <p class="text-xs text-gray-400 mt-1">Sua voz que será clonada e afinada para cantar a música.</p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">3. Áudio Guia Cantando a Nova Letra <span class="text-cyan-400">(Opcional — Apenas para Paródia com Letra Alterada)</span></label>
-            <input type="file" id="parody-guide" accept="audio/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500/20 file:text-purple-300">
-            <p class="text-xs text-gray-400 mt-1"><strong>Deixe em branco</strong> se quiser um <em>AI Song Cover</em> (sua voz cantando a letra original do cantor). Envie um áudio guia apenas se quiser cantar uma letra de paródia diferente.</p>
-          </div>
-
-          <button onclick="handleGenerateParody()" class="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
-            <i data-lucide="sparkles" class="w-5 h-5"></i>
-            <span>Produzir Cover / Paródia Masterizada (20 Créditos)</span>
-          </button>
-        </div>
-
-        <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
-          <div>
-            <h3 class="text-lg font-bold text-white mb-3">Música Final Masterizada</h3>
-            <div id="parody-player-box" class="bg-dark-800/80 rounded-xl p-4 border border-white/5 text-center text-gray-400 text-sm">
-              <i data-lucide="music-2" class="w-10 h-10 mx-auto text-purple-400 mb-2"></i>
-              Envie a música original e sua voz para iniciar a separação de stems (ESG Stem Core™) e transferência vocal (ESG Timbre Core™).
+              <label onclick="toggleParodyVocalMode('custom_voice')" class="parody-vocal-option cursor-pointer p-3.5 rounded-2xl border border-white/15 bg-dark-800/80 hover:border-purple-400/60 flex items-start gap-3 transition-all" id="vocal-opt-custom">
+                <input type="radio" name="parody_vocal_mode" value="custom_voice" class="mt-1 accent-purple-400">
+                <div>
+                  <span class="text-xs font-extrabold text-white block">🧬 Usar Minha Voz Clonada</span>
+                  <p class="text-[11px] text-gray-400">Substitui os cantores por uma amostra de 1 minuto da sua própria voz.</p>
+                </div>
+              </label>
             </div>
           </div>
-          <div class="p-4 rounded-xl bg-purple-500/5 border border-purple-400/20 mt-4 text-xs text-gray-300">
-            <strong>Tecnologia Dupla:</strong> O ESG Stem Core™ (Meta AI) isola o instrumental original limpo, enquanto o ESG Timbre Core™ transfere seu timbre vocal preservando todas as notas e afinação.
+
+          <!-- 1. MÚSICA ORIGINAL -->
+          <div>
+            <label class="block text-xs font-bold text-gray-200 mb-1.5">1. Música Original (MP3 ou WAV) <span class="text-purple-400">*Obrigatório</span></label>
+            <input type="file" id="parody-song" accept="audio/*" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500/20 file:text-purple-300">
+            <p class="text-[11px] text-gray-400 mt-1">Ex: O arquivo de áudio de <em>Peão Todo Tatuado</em>. A IA vai isolar o instrumental e os cantores.</p>
+          </div>
+
+          <!-- 2. SUA NOVA LETRA ESCRITA -->
+          <div>
+            <label class="block text-xs font-bold text-gray-200 mb-1.5">2. Nova Letra da Paródia (Sua Composição Escrita) <span class="text-purple-400">*Recomendado</span></label>
+            <textarea id="parody-custom-lyrics" rows="4" placeholder="Cole aqui a nova letra da paródia que você escreveu para a música..." class="w-full bg-dark-900 border border-white/15 rounded-xl p-3 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 font-mono"></textarea>
+            <p class="text-[11px] text-gray-400 mt-1">A IA utiliza as palavras e métricas exatas digitadas para sincronizar o vocal.</p>
+          </div>
+
+          <!-- 3. ÁUDIO GUIA DA MELODIA -->
+          <div>
+            <label class="block text-xs font-bold text-gray-200 mb-1.5">3. Áudio Guia da Paródia (Gravado Cantando na Batida) <span class="text-cyan-400">(Opcional / Recomendado)</span></label>
+            <input type="file" id="parody-guide" accept="audio/*" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/20 file:text-cyan-300">
+            <p class="text-[11px] text-gray-400 mt-1">💡 <strong>Dica de Ouro:</strong> Basta você cantarolar ou falar a letra nova no ritmo da música gravando no celular/WhatsApp. A IA afina e transforma no timbre dos cantores originais. Se não enviar áudio guia, a IA sintetiza o guia neural automaticamente a partir do texto.</p>
+          </div>
+
+          <!-- CAMPO CONDICIONAL: SUA VOZ CLONADA (SE MODO CUSTOM) -->
+          <div id="parody-custom-voice-container" class="hidden">
+            <label class="block text-xs font-bold text-amber-300 mb-1.5">4. Amostra da Sua Voz (1 a 2 minutos falando normal)</label>
+            <input type="file" id="parody-voice" accept="audio/*" class="w-full bg-dark-900 border border-amber-400/40 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500/20 file:text-amber-300">
+            <p class="text-[11px] text-gray-400 mt-1">Apenas se quiser que a sua própria voz cante no lugar dos artistas.</p>
+          </div>
+
+          <button type="button" onclick="handleGenerateParody()" class="w-full bg-gradient-to-r from-purple-500 via-indigo-600 to-cyan-500 hover:from-purple-400 hover:to-cyan-400 text-white font-extrabold py-3.5 rounded-2xl shadow-neon-cyan transition-all flex items-center justify-center gap-2 uppercase tracking-wider text-xs">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>Produzir Paródia Masterizada com IA (20 Créditos)</span>
+          </button>
+        </div>
+
+        <div class="glass-panel p-6 rounded-3xl flex flex-col justify-between border border-white/10 space-y-4">
+          <div>
+            <h3 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+              <i data-lucide="music-2" class="w-4 h-4 text-purple-400"></i>
+              <span>Resultado da Paródia Masterizada</span>
+            </h3>
+            <div id="parody-player-box" class="bg-dark-900/90 rounded-2xl p-5 border border-white/5 text-center text-gray-400 text-xs space-y-2">
+              <i data-lucide="disc-3" class="w-10 h-10 mx-auto text-purple-400/60 animate-spin-slow"></i>
+              <p>Envie a música original de <em>Peão Todo Tatuado</em> e sua nova letra para iniciar a separação espectral de stems e a sintetização da paródia.</p>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-purple-500/10 border border-purple-400/30 text-xs text-gray-300 space-y-1.5">
+            <h5 class="text-purple-300 font-bold flex items-center gap-1.5">
+              <span>⚡ Como a IA gera a voz original cantando outra letra:</span>
+            </h5>
+            <p class="text-[11px] text-gray-400 leading-relaxed">
+              O motor separa o vocal oficial em estúdio, calcula a curva de tom (F0 Pitch Contour) e o espectro de formantes da voz de Jeninho & Mariana Fagundes e transfere essa assinatura vocal para cantar as novas estrofes da sua paródia sobre o instrumental limpo.
+            </p>
           </div>
         </div>
       </div>
@@ -3122,34 +3207,70 @@
       }
     }
 
+    function toggleParodyVocalMode(mode) {
+      const optOriginal = document.getElementById('vocal-opt-original');
+      const optCustom = document.getElementById('vocal-opt-custom');
+      const customVoiceBox = document.getElementById('parody-custom-voice-container');
+
+      if (mode === 'original_singers') {
+        if (optOriginal) { optOriginal.className = 'parody-vocal-option cursor-pointer p-3.5 rounded-2xl border-2 border-purple-400 bg-purple-500/15 flex items-start gap-3 transition-all'; }
+        if (optCustom) { optCustom.className = 'parody-vocal-option cursor-pointer p-3.5 rounded-2xl border border-white/15 bg-dark-800/80 hover:border-purple-400/60 flex items-start gap-3 transition-all'; }
+        if (customVoiceBox) customVoiceBox.classList.add('hidden');
+      } else {
+        if (optOriginal) { optOriginal.className = 'parody-vocal-option cursor-pointer p-3.5 rounded-2xl border border-white/15 bg-dark-800/80 hover:border-purple-400/60 flex items-start gap-3 transition-all'; }
+        if (optCustom) { optCustom.className = 'parody-vocal-option cursor-pointer p-3.5 rounded-2xl border-2 border-purple-400 bg-purple-500/15 flex items-start gap-3 transition-all'; }
+        if (customVoiceBox) customVoiceBox.classList.remove('hidden');
+      }
+    }
+
     async function handleGenerateParody() {
       if (!requireCredits(20)) return;
-      const song = document.getElementById('parody-song').files[0];
-      const voice = document.getElementById('parody-voice').files[0];
-      const guide = document.getElementById('parody-guide').files[0];
-      if (!song || !voice) return alert('Envie pelo menos a Música Original (1) e o Áudio da Sua Voz (2).');
+      const songInput = document.getElementById('parody-song');
+      const song = songInput && songInput.files ? songInput.files[0] : null;
+      if (!song) return alert('Por favor, selecione o arquivo da Música Original (MP3/WAV).');
+
+      const vocalModeEl = document.querySelector('input[name="parody_vocal_mode"]:checked');
+      const vocalMode = vocalModeEl ? vocalModeEl.value : 'original_singers';
+
+      const voiceInput = document.getElementById('parody-voice');
+      const voice = voiceInput && voiceInput.files ? voiceInput.files[0] : null;
+      if (vocalMode === 'custom_voice' && !voice) {
+        return alert('No modo "Usar Minha Voz Clonada", envie um áudio com amostra da sua voz.');
+      }
+
+      const guideInput = document.getElementById('parody-guide');
+      const guide = guideInput && guideInput.files ? guideInput.files[0] : null;
+      const customLyrics = (document.getElementById('parody-custom-lyrics')?.value || '').trim();
 
       const box = document.getElementById('parody-player-box');
-      const modeDesc = guide ? 'Isolando instrumental e aplicando sua paródia afinada...' : 'Isolando instrumental original (ESG Stem Core™) e transferindo seu timbre vocal...';
+      const modeDesc = (vocalMode === 'original_singers')
+        ? 'Isolando instrumental de Peão Todo Tatuado, extraindo timbre dos cantores e gerando nova paródia...'
+        : 'Isolando instrumental e aplicando sua voz clonada na paródia...';
       box.innerHTML = `<div class="py-6"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-purple-400 animate-spin mb-2"></i> ${modeDesc}</div>`;
       lucide.createIcons();
 
       const formData = new FormData();
       formData.append('song_file', song);
-      formData.append('voice_sample', voice);
+      formData.append('vocal_mode', vocalMode);
+      formData.append('parody_lyrics', customLyrics);
       formData.append('user_id', currentUserId);
+      if (voice) formData.append('voice_sample', voice);
       if (guide) formData.append('guide_file', guide);
 
       try {
         const res = await fetch('/api/music/parody', { method: 'POST', body: formData });
-        const data = await res.json();
+        let data = {};
+        try { data = await res.json(); } catch (_) {
+          const txt = await res.text().catch(() => '');
+          data = { detail: txt || 'Erro na resposta do servidor.' };
+        }
         if (data.job_id) {
           pollJob(data.job_id, box);
           updateCredits();
         } else {
           box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${data.detail || 'Falha ao iniciar produção'}</span>`;
         }
-      } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`; }
+      } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro de conexão: ${e.message}</span>`; }
     }
 
     async function handleGenerateVideo() {

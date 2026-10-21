@@ -143,17 +143,42 @@ Retorne APENAS o bloco de timestamps e letra, sem explicações."""
             pitch_shift=pitch_shift
         )
 
-    def create_parody(self, original_song_path, parody_vocal_guide, user_voice_path, output_path="output/parodia_final.mp3", pitch_shift=0):
+    def create_parody(self, original_song_path, parody_vocal_guide=None, user_voice_path=None, output_path="output/parodia_final.mp3", pitch_shift=0, use_original_singer=False, lyrics=""):
         import importlib
         mod = importlib.import_module("scripts.09_ai_song_cover_engine")
         cover_engine = mod.AISongCoverEngine()
-        _, instrumental = cover_engine.separate_vocals_and_instrumental(original_song_path)
+
+        # 1. Separa instrumental e o vocal original isolado dos cantores (ex: Jeninho & Mariana Fagundes)
+        isolated_vocals, instrumental = cover_engine.separate_vocals_and_instrumental(original_song_path)
+
+        # 2. Se for modo "Manter Cantores Originais", a voz de referência é o próprio vocal isolado da faixa
+        target_voice = isolated_vocals if (use_original_singer or not user_voice_path) else user_voice_path
+
+        # 3. Se não houver áudio guia mas houver letra escrita, sintetiza guia neural brasileiro
+        actual_guide = parody_vocal_guide
+        if not actual_guide and lyrics:
+            try:
+                from scripts.voice_clone_engine import VoiceCloneEngine
+                v_eng = VoiceCloneEngine()
+                guide_tmp = os.path.join("output/stems", f"neural_guide_{uuid.uuid4().hex[:6]}.mp3")
+                v_eng.generate_neural_brazil(lyrics, output_path=guide_tmp, voice="antonio")
+                if os.path.exists(guide_tmp):
+                    actual_guide = guide_tmp
+            except Exception as e:
+                print(f"[ParodyEngine] Síntese de guia vocal neural: {e}")
+
+        if not actual_guide:
+            actual_guide = isolated_vocals
+
+        # 4. Converte a melodia e as palavras da nova letra para o timbre dos cantores
         converted_vocal = cover_engine.convert_singing_voice(
-            parody_vocal_guide,
-            user_voice_path,
+            actual_guide,
+            target_voice,
             output_path=os.path.join("output/stems", f"parody_voc_{uuid.uuid4().hex[:6]}.wav"),
             pitch_shift=pitch_shift
         )
+
+        # 5. Mixa o vocal com a nova letra sobre o instrumental original da música
         return cover_engine.mix_vocals_and_instrumental(
             converted_vocal,
             instrumental,

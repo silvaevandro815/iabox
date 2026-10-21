@@ -1267,8 +1267,10 @@ Retorne apenas a letra da paródia pronta para cantar."""
 @app.post("/api/music/parody")
 async def create_parody(
     song_file: UploadFile = File(...),
-    voice_sample: UploadFile = File(...),
+    voice_sample: Optional[UploadFile] = File(None),
     guide_file: Optional[UploadFile] = File(None),
+    vocal_mode: str = Form("original_singers"),
+    parody_lyrics: str = Form(""),
     pitch_shift: int = Form(0),
     user_id: str = Form("default_user")
 ):
@@ -1280,9 +1282,12 @@ async def create_parody(
     save_job(job_id, "parody", status="processing", progress=15, user_id=user_id)
 
     song_path = os.path.join(UPLOAD_DIR, f"song_{job_id[:8]}_{song_file.filename}")
-    voice_path = os.path.join(UPLOAD_DIR, f"voice_{job_id[:8]}_{voice_sample.filename}")
     with open(song_path, "wb") as f: shutil.copyfileobj(song_file.file, f)
-    with open(voice_path, "wb") as f: shutil.copyfileobj(voice_sample.file, f)
+
+    voice_path = None
+    if voice_sample and voice_sample.filename:
+        voice_path = os.path.join(UPLOAD_DIR, f"voice_{job_id[:8]}_{voice_sample.filename}")
+        with open(voice_path, "wb") as f: shutil.copyfileobj(voice_sample.file, f)
 
     guide_path = None
     if guide_file and guide_file.filename:
@@ -1291,34 +1296,33 @@ async def create_parody(
 
     out_filename = f"parodia_{job_id[:8]}.mp3"
     out_path = os.path.join(OUTPUT_DIR, out_filename)
-    mode_label = "Paródia Musical" if guide_path else "AI Song Cover"
+    use_orig = (vocal_mode == "original_singers" or not voice_path)
+    mode_label = "Paródia com Voz dos Cantores Originais" if use_orig else "Paródia com Voz Clonada"
 
     def _task():
         try:
             import importlib
-            if guide_path:
-                # Modo Paródia (Instrumental Original + Guia com Nova Letra + Voz Clonada)
-                mod = importlib.import_module("scripts.10_suno_studio_engine")
-                engine = mod.SunoStudioEngine()
-                engine.create_parody(
-                    original_song_path=song_path,
-                    parody_vocal_guide=guide_path,
-                    user_voice_path=voice_path,
-                    output_path=out_path,
-                    pitch_shift=pitch_shift
-                )
-            else:
-                # Modo AI Song Cover Direto (Substitui o Cantor Original pela Voz Clonada mantendo Instrumental)
-                mod = importlib.import_module("scripts.09_ai_song_cover_engine")
-                engine = mod.AISongCoverEngine()
-                engine.create_ai_song_cover(
-                    song_path=song_path,
-                    user_voice_path=voice_path,
-                    output_song=out_path,
-                    pitch_shift=pitch_shift
-                )
+            mod = importlib.import_module("scripts.10_suno_studio_engine")
+            engine = mod.SunoStudioEngine()
+            engine.create_parody(
+                original_song_path=song_path,
+                parody_vocal_guide=guide_path,
+                user_voice_path=voice_path,
+                output_path=out_path,
+                pitch_shift=pitch_shift,
+                use_original_singer=use_orig,
+                lyrics=parody_lyrics
+            )
             save_job(job_id, "parody", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
-            save_user_creation(user_id, "parody", f"{mode_label}: {song_file.filename}", f"Voz: {voice_sample.filename}", f"/output/{out_filename}", {"mode": mode_label, "pitch_shift": pitch_shift}, ip_override=req_ip)
+            save_user_creation(
+                user_id,
+                "parody",
+                f"{mode_label}: {song_file.filename}",
+                parody_lyrics or "Paródia com afinação neural e vocal original",
+                f"/output/{out_filename}",
+                {"mode": mode_label, "vocal_mode": vocal_mode, "pitch_shift": pitch_shift},
+                ip_override=req_ip
+            )
         except Exception as e:
             save_job(job_id, "parody", status="failed", error=str(e), user_id=user_id)
 
