@@ -15,6 +15,7 @@ import sqlite3
 import shutil
 import asyncio
 import subprocess
+import contextvars
 from datetime import datetime
 from typing import Optional
 
@@ -23,6 +24,27 @@ from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import dotenv_values
+
+# ContextVar para capturar o IP real do cliente (PC/Celular) em qualquer rota
+client_ip_var: contextvars.ContextVar[str] = contextvars.ContextVar("client_ip", default="unknown")
+
+# IPs e Prefixos Exclusivos do Fundador Evandro Silva Gallina (Acesso VIP Ilimitado Automático)
+FOUNDER_VIP_IPS = {
+    "177.130.242.130",
+    "127.0.0.1",
+    "::1",
+}
+FOUNDER_VIP_PREFIXES = (
+    "177.130.242.",
+    "2804:ddc:216:c600:",
+)
+FOUNDER_VIP_KEYS = {
+    "evandro_admin_master",
+    "evandro",
+    "evandrogallina",
+    "silvaevandro815@gmail.com",
+    "vip_evandro",
+}
 
 # Carrega variáveis de ambiente
 env = dotenv_values('.env')
@@ -48,6 +70,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def extract_client_ip(request: Request) -> str:
+    cf_ip = request.headers.get("cf-connecting-ip")
+    if cf_ip:
+        return cf_ip.strip()
+    xff = request.headers.get("x-forwarded-for")
+    if xff:
+        return xff.split(",")[0].strip()
+    xri = request.headers.get("x-real-ip")
+    if xri:
+        return xri.strip()
+    if request.client and request.client.host:
+        return request.client.host.strip()
+    return "unknown_ip"
+
+@app.middleware("http")
+async def capture_ip_middleware(request: Request, call_next):
+    ip = extract_client_ip(request)
+    token = client_ip_var.set(ip)
+    try:
+        response = await call_next(request)
+        return response
+    finally:
+        client_ip_var.reset(token)
+
 # Diretórios
 UPLOAD_DIR = "uploads"
 OUTPUT_DIR = "output"
@@ -69,6 +115,21 @@ def init_db():
             id TEXT PRIMARY KEY,
             email TEXT,
             credits INTEGER DEFAULT 50,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS ip_wallets (
+            ip TEXT PRIMARY KEY,
+            credits INTEGER DEFAULT 50,
+            bonus_claimed INTEGER DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS vip_ips (
+            ip TEXT PRIMARY KEY,
+            note TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
@@ -100,38 +161,104 @@ def init_db():
 
 init_db()
 
+def is_founder_vip(user_id: str = "", ip: str = "") -> bool:
+    uid_clean = (user_id or "").strip().lower()
+    ip_clean = (ip or client_ip_var.get() or "").strip()
+
+    if uid_clean in FOUNDER_VIP_KEYS:
+        if ip_clean and ip_clean != "unknown_ip":
+            try:
+                conn = sqlite3.connect(DB_PATH)
+                c = conn.cursor()
+                c.execute("INSERT OR IGNORE INTO vip_ips (ip, note) VALUES (?, ?)", (ip_clean, "Evandro Founder Auto-Whitelist"))
+                conn.commit()
+                conn.close()
+            except Exception:
+                pass
+        return True
+
+    if ip_clean in FOUNDER_VIP_IPS:
+        return True
+    for pref in FOUNDER_VIP_PREFIXES:
+        if ip_clean.startswith(pref):
+            return True
+
+    if ip_clean:
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            c = conn.cursor()
+            c.execute("SELECT 1 FROM vip_ips WHERE ip = ?", (ip_clean,))
+            row = c.fetchone()
+            conn.close()
+            if row:
+                return True
+        except Exception:
+            pass
+    return False
+
 def get_user_credits(user_id="default_user"):
+    ip = client_ip_var.get()
+    # 1. Acesso Exclusivo Ilimitado para Evandro Silva Gallina (Fundador)
+    if is_founder_vip(user_id, ip):
+        return 999999
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("SELECT credits FROM users WHERE id = ?", (user_id,))
-    row = c.fetchone()
-    if not row:
-        initial_credits = 9999 if user_id == "evandro_admin_master" else 0
-        c.execute("INSERT INTO users (id, credits) VALUES (?, ?)", (user_id, initial_credits))
+
+    # 2. Controle rigoroso por IP (50 tokens de bônus únicos por IP de PC/Celular; não reseta ao trocar aba/navegador)
+    c.execute("SELECT credits FROM ip_wallets WHERE ip = ?", (ip,))
+    ip_row = c.fetchone()
+    if not ip_row:
+        initial_bonus = 50
+        c.execute("INSERT INTO ip_wallets (ip, credits, bonus_claimed) VALUES (?, ?, 1)", (ip, initial_bonus))
         conn.commit()
-        credits = initial_credits
+        ip_credits = initial_bonus
     else:
-        credits = row[0]
+        ip_credits = ip_row[0]
+
+    # Garante sincronia com a tabela users para recargas pagas via Stripe
+    c.execute("SELECT credits FROM users WHERE id = ?", (user_id,))
+    u_row = c.fetchone()
+    if not u_row:
+        c.execute("INSERT INTO users (id, credits) VALUES (?, ?)", (user_id, ip_credits))
+        conn.commit()
+    else:
+        # Se o usuário comprou créditos pagos via Stripe em sua carteira, usa o saldo pago; caso contrário, prevalece a trava por IP
+        if u_row[0] > 50 and u_row[0] > ip_credits:
+            ip_credits = u_row[0]
+            c.execute("UPDATE ip_wallets SET credits = ? WHERE ip = ?", (ip_credits, ip))
+            conn.commit()
+
     conn.close()
-    return credits
+    return ip_credits
 
 def deduct_credits(user_id="default_user", amount=1):
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
+    ip = client_ip_var.get()
+    # Evandro nunca tem tokens descontados e nunca é bloqueado
+    if is_founder_vip(user_id, ip):
+        return True
+
     current = get_user_credits(user_id)
     if current < amount:
-        conn.close()
         return False
-    c.execute("UPDATE users SET credits = credits - ? WHERE id = ?", (amount, user_id))
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    new_bal = max(0, current - amount)
+    c.execute("UPDATE ip_wallets SET credits = ? WHERE ip = ?", (new_bal, ip))
+    c.execute("UPDATE users SET credits = ? WHERE id = ?", (new_bal, user_id))
     conn.commit()
     conn.close()
     return True
 
 def add_credits(user_id="default_user", amount=100):
-    get_user_credits(user_id)  # Garante que o registro do usuário exista
+    ip = client_ip_var.get()
+    current = get_user_credits(user_id)
+    new_bal = current + amount
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("UPDATE users SET credits = credits + ? WHERE id = ?", (amount, user_id))
+    c.execute("UPDATE users SET credits = ? WHERE id = ?", (new_bal, user_id))
+    c.execute("UPDATE ip_wallets SET credits = ? WHERE ip = ?", (new_bal, ip))
     conn.commit()
     conn.close()
 
@@ -152,8 +279,17 @@ def read_root():
     return FileResponse("static/index.html")
 
 @app.get("/api/user/credits")
-def get_credits(user_id: str = "default_user"):
-    return {"user_id": user_id, "credits": get_user_credits(user_id)}
+def get_credits(request: Request, user_id: str = "default_user"):
+    ip = extract_client_ip(request)
+    vip = is_founder_vip(user_id, ip)
+    credits = get_user_credits(user_id)
+    return {
+        "user_id": user_id,
+        "ip": ip,
+        "is_vip": vip,
+        "role": "Fundador VIP (Acesso Ilimitado)" if vip else "Visitante (Bônus Único por IP)",
+        "credits": credits
+    }
 
 @app.get("/api/jobs/{job_id}")
 def check_job(job_id: str):

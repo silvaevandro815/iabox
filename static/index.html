@@ -105,8 +105,8 @@
   <header class="sticky top-0 z-50 glass-panel border-b border-cyan-500/20 px-4 lg:px-8 py-3.5 transition-all">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       
-      <!-- Logo IABOX & ESG -->
-      <a href="/" class="flex items-center gap-3 group">
+      <!-- Logo IABOX & ESG (3 cliques rápidos ativam o modo VIP Fundador em redes móveis 4G) -->
+      <div onclick="handleLogoSecretClick()" class="flex items-center gap-3 group cursor-pointer select-none">
         <div class="w-10 h-10 rounded-xl overflow-hidden border border-cyan-400/40 shadow-neon-cyan-sm group-hover:scale-105 transition-transform bg-black flex items-center justify-center">
           <img src="/static/assets/logo_esg.jpg" alt="ESG Logo" class="w-full h-full object-cover">
         </div>
@@ -116,7 +116,7 @@
           </span>
           <span class="text-[10px] text-gray-400 tracking-widest block uppercase font-medium">Sistemas de IA &bull; Evandro Gallina</span>
         </div>
-      </a>
+      </div>
 
       <!-- Menu Desktop -->
       <nav class="hidden md:flex items-center gap-1 bg-dark-800/80 p-1.5 rounded-2xl border border-white/5">
@@ -135,9 +135,9 @@
 
       <!-- Saldo de Créditos & Botão Recarga -->
       <div class="flex items-center gap-3">
-        <div class="bg-cyan-500/10 border border-cyan-400/30 px-3.5 py-1.5 rounded-full flex items-center gap-2 cursor-pointer hover:border-cyan-400 transition-colors" onclick="openModal('recharge-modal')">
+        <div id="wallet-badge-pill" class="bg-cyan-500/10 border border-cyan-400/30 px-3.5 py-1.5 rounded-full flex items-center gap-2 cursor-pointer hover:border-cyan-400 transition-colors" onclick="openModal('recharge-modal')">
           <i data-lucide="zap" class="w-4 h-4 text-cyan-400 fill-cyan-400"></i>
-          <span class="text-sm font-bold text-white"><span id="credit-display">0</span> <span class="text-xs text-cyan-300 font-normal">créditos</span></span>
+          <span class="text-sm font-bold text-white"><span id="credit-display">50</span> <span id="credit-label-text" class="text-xs text-cyan-300 font-normal">tokens</span></span>
         </div>
         <button onclick="openModal('recharge-modal')" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold px-4 py-2 rounded-xl text-sm shadow-neon-cyan-sm transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2">
           <i data-lucide="plus-circle" class="w-4 h-4"></i>
@@ -171,36 +171,73 @@
     <!-- ---------------------------------------- -->
     <section id="tab-dashboard" class="tab-content block space-y-10">
       
-      <!-- Hero Banner -->
-      <div class="relative overflow-hidden rounded-3xl glass-panel p-8 md:p-12 border border-cyan-500/30 shadow-card-glow">
+      <!-- Hero Banner Estilo Artlist / Kling AI (Didático + Preview de Cinema ao Vivo) -->
+      <div class="relative overflow-hidden rounded-3xl glass-panel p-6 md:p-10 border border-cyan-500/30 shadow-card-glow">
         <div class="absolute -right-20 -top-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="max-w-3xl space-y-4 relative z-10">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-semibold tracking-wider uppercase">
-            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-            Plataforma 100% Ativa na VPS Hostinger
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+          
+          <!-- Coluna Esquerda: Títulos Claros e Didáticos -->
+          <div class="lg:col-span-7 space-y-4">
+            <div id="hero-bonus-badge" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 text-xs font-extrabold tracking-wide uppercase">
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+              <span>🎁 Bônus de Teste: 50 Tokens Grátis Liberados no Seu IP</span>
+            </div>
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold font-display leading-tight text-white">
+              Estúdio de <span class="cyan-gradient-text">Cinema, Vídeo, Voz e Música</span> com IA
+            </h1>
+            <p class="text-gray-300 text-sm md:text-base leading-relaxed">
+              Escolha abaixo o que deseja criar em poucos cliques: <strong>Storyboard de Cinema (Magnific & Kling Style)</strong>, <strong>Fotos Ultra-Realistas 8K</strong>, <strong>Músicas Inéditas (Suno)</strong>, <strong>Covers/Paródias com Sua Voz</strong> e <strong>Locuções 100% Brasileiras</strong>.
+            </p>
+            <div class="flex flex-wrap gap-3 pt-2">
+              <button onclick="switchTab('canvas')" class="bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 text-black font-extrabold px-5 py-3 rounded-xl shadow-lg transition-all hover:scale-105 flex items-center gap-2 text-sm">
+                <i data-lucide="workflow" class="w-5 h-5"></i>
+                1. Abrir Magnific Canvas (Cinema)
+              </button>
+              <button onclick="switchTab('image')" class="bg-gradient-to-r from-pink-500 to-rose-600 text-white font-bold px-5 py-3 rounded-xl shadow-lg transition-all hover:scale-105 flex items-center gap-2 text-sm">
+                <i data-lucide="camera" class="w-5 h-5"></i>
+                2. Gerar Fotos 8K Ultra-Realistas
+              </button>
+              <button onclick="switchTab('suno')" class="bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold px-5 py-3 rounded-xl shadow-neon-cyan transition-all hover:scale-105 flex items-center gap-2 text-sm">
+                <i data-lucide="music" class="w-5 h-5"></i>
+                3. Criar Música / Paródia
+              </button>
+            </div>
           </div>
-          <h1 class="text-4xl md:text-6xl font-extrabold font-display leading-tight">
-            Crie Criativos de <br><span class="cyan-gradient-text">Vídeo, Áudio e Música</span> com IA
-          </h1>
-          <p class="text-gray-300 text-base md:text-lg leading-relaxed">
-            O ecossistema oficial do Brasil para criadores, empresas e agências. Sem mensalidade obrigatória: use o modelo pré-pago e pague apenas o que gerar.
-          </p>
-          <div class="flex flex-wrap gap-4 pt-2">
-            <button onclick="switchTab('canvas')" class="bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 text-black font-extrabold px-6 py-3 rounded-xl shadow-lg transition-all hover:scale-105 flex items-center gap-2">
-              <i data-lucide="workflow" class="w-5 h-5"></i>
-              Magnific Canvas (Storyboard IA)
-            </button>
-            <button onclick="switchTab('suno')" class="bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold px-6 py-3 rounded-xl shadow-neon-cyan transition-all hover:scale-105 flex items-center gap-2">
-              <i data-lucide="music" class="w-5 h-5"></i>
-              Criar Música Estilo Suno
-            </button>
-            <button onclick="switchTab('parody')" class="bg-dark-700/80 hover:bg-dark-600 border border-white/10 text-white font-semibold px-6 py-3 rounded-xl transition-all flex items-center gap-2">
-              <i data-lucide="mic-2" class="w-5 h-5 text-cyan-400"></i>
-              Fábrica de Paródias
-            </button>
+
+          <!-- Coluna Direita: Reel de Cinema Auto-Play (Estilo Artlist Kling AI) -->
+          <div class="lg:col-span-5">
+            <div class="relative rounded-2xl overflow-hidden border-2 border-amber-400/50 shadow-2xl bg-black group">
+              <video autoplay loop muted playsinline class="w-full h-64 md:h-72 object-cover">
+                <source src="/static/samples/take1_video.mp4" type="video/mp4">
+              </video>
+              <div class="absolute top-3 left-3 bg-black/75 backdrop-blur-md border border-amber-400/40 px-3 py-1 rounded-full text-[11px] font-bold text-amber-300 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                GERADO NA PLATAFORMA &bull; CINEMA 35MM
+              </div>
+              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-4 flex items-center justify-between">
+                <div>
+                  <span class="text-xs font-extrabold text-white block">Movimento de Câmera & Consistência</span>
+                  <span class="text-[11px] text-gray-300">Tecnologia Magnific Canvas + Higgsfield Motion</span>
+                </div>
+                <button onclick="switchTab('canvas')" class="bg-amber-400 hover:bg-amber-300 text-black font-extrabold px-3 py-1.5 rounded-lg text-xs transition-all">
+                  Testar Agora
+                </button>
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
+
+      <!-- PASSO A PASSO DIDÁTICO: TODAS AS 7 FERRAMENTAS NUMERADAS E FÁCEIS DE VISUALIZAR -->
+      <div class="space-y-4">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-white/10 pb-3">
+          <div>
+            <span class="text-xs font-extrabold text-cyan-400 uppercase tracking-widest block">Painel Didático de Ferramentas</span>
+            <h2 class="text-2xl md:text-3xl font-extrabold font-display text-white">O Que Você Deseja Criar Hoje? (Clique na Ferramenta)</h2>
+          </div>
+          <span class="text-xs text-gray-400">Todas as ferramentas estão liberadas para você testar com seus <strong>50 Tokens de Bônus</strong></span>
+        </div>
 
       <!-- Grid de Módulos / Ferramentas -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -310,6 +347,187 @@
           </div>
         </div>
 
+      </div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- GALERIA DE CINEMA & VÍDEOS IA (ESTILO ARTLIST / KLING AI / MAGNIFIC 8K)   -->
+      <!-- ========================================================================= -->
+      <div class="mt-10 space-y-6">
+        <div class="border-b border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 text-xs font-extrabold uppercase tracking-wider mb-2">
+              <i data-lucide="clapperboard" class="w-3.5 h-3.5 text-amber-400"></i>
+              Padrão Hollywood &bull; Inspirado em Kling AI, Magnific 8K & Higgsfield
+            </div>
+            <h2 class="text-2xl md:text-4xl font-extrabold font-display text-white">Vídeos & Imagens Cinematográficas Ultra-Realistas</h2>
+            <p class="text-gray-300 text-sm mt-1">Veja exemplos reais gerados pela nossa tecnologia e clique em <strong>"Usar Este Estilo Agora"</strong> para criar o seu com um clique.</p>
+          </div>
+          <button onclick="switchTab('canvas')" class="bg-gradient-to-r from-amber-400 to-orange-500 text-black font-extrabold px-5 py-2.5 rounded-xl text-xs md:text-sm shadow-lg hover:scale-105 transition-all flex items-center gap-2 self-start md:self-auto">
+            <i data-lucide="workflow" class="w-4 h-4"></i>
+            Abrir Estúdio de Cinema IA
+          </button>
+        </div>
+
+        <!-- BLOCO 1: VÍDEOS GERADOS PELA TECNOLOGIA (AUTO-PLAY ESTILO ARTLIST KLING AI) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+          <!-- Vídeo 1: Cyberpunk Ronin Motion (Kling / Higgsfield Style) -->
+          <div class="glass-panel rounded-2xl overflow-hidden border border-amber-400/30 flex flex-col justify-between group">
+            <div class="relative aspect-video bg-black overflow-hidden">
+              <video autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                <source src="/static/samples/kling_cyberpunk_motion.mp4" type="video/mp4">
+              </video>
+              <span class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur-md text-amber-300 border border-amber-400/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md">VÍDEO IA &bull; CÂMERA DOLLY IN</span>
+            </div>
+            <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <h4 class="text-base font-bold text-white">1. Cinema Cyberpunk 65mm</h4>
+                <p class="text-xs text-gray-400 mt-1">Movimento de câmera suave com reflexos em neon, neblina volumétrica e lente anamórfica.</p>
+              </div>
+              <button onclick="useShowcasePreset('canvas', 'Guerreiro cyberpunk caminhando em rua de Tóquio chuvosa iluminada por neon, reflexos no asfalto molhado, lente anamórfica ARRI Alexa 65mm, ultra-realista 8K')" class="w-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all">
+                <span>Usar Este Estilo Agora</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Vídeo 2: Sci-Fi IMAX Odyssey (Kling / Higgsfield Style) -->
+          <div class="glass-panel rounded-2xl overflow-hidden border border-cyan-400/30 flex flex-col justify-between group">
+            <div class="relative aspect-video bg-black overflow-hidden">
+              <video autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                <source src="/static/samples/kling_scifi_motion.mp4" type="video/mp4">
+              </video>
+              <span class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur-md text-cyan-300 border border-cyan-400/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md">VÍDEO IA &bull; CRANE PULL-OUT</span>
+            </div>
+            <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <h4 class="text-base font-bold text-white">2. Ficção Científica IMAX 70mm</h4>
+                <p class="text-xs text-gray-400 mt-1">Afastamento épico de câmera revelando planeta gigante e nebulosa bioluminescente.</p>
+              </div>
+              <button onclick="useShowcasePreset('canvas', 'Astronauta solitário em penhasco cristalino observando nebulosa brilhante e planeta com anéis, fotografia IMAX 70mm estilo Interestelar, ultra-realista 8K')" class="w-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all">
+                <span>Usar Este Estilo Agora</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Vídeo 3: Consistência de Personagem (Take 2 1970) -->
+          <div class="glass-panel rounded-2xl overflow-hidden border border-purple-400/30 flex flex-col justify-between group">
+            <div class="relative aspect-video bg-black overflow-hidden">
+              <video autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                <source src="/static/samples/take2_video.mp4" type="video/mp4">
+              </video>
+              <span class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur-md text-purple-300 border border-purple-400/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md">STORYBOARD &bull; @IMAGE1 + @IMAGE2</span>
+            </div>
+            <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <h4 class="text-base font-bold text-white">3. Filme com Seu Próprio Rosto</h4>
+                <p class="text-xs text-gray-400 mt-1">Conecte sua foto no Canvas (@Image1) e gere múltiplos ângulos de cinema mantendo a mesma pessoa.</p>
+              </div>
+              <button onclick="switchTab('canvas')" class="w-full bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/40 text-purple-300 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all">
+                <span>Abrir Storyboard de Nós</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Vídeo 4: Workflow Magnific Canvas em Ação -->
+          <div class="glass-panel rounded-2xl overflow-hidden border border-pink-400/30 flex flex-col justify-between group">
+            <div class="relative aspect-video bg-black overflow-hidden">
+              <video autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                <source src="/static/samples/showcase_canvas_workflow.mp4" type="video/mp4">
+              </video>
+              <span class="absolute top-2.5 left-2.5 bg-black/80 backdrop-blur-md text-pink-300 border border-pink-400/40 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md">MAGNIFIC CANVAS &bull; WORKFLOW</span>
+            </div>
+            <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <h4 class="text-base font-bold text-white">4. Quadro Infinito & Zoom 4K</h4>
+                <p class="text-xs text-gray-400 mt-1">Arraste cards, conecte cabos Bezier, dê duplo-clique para Upscale 4K e compile o filme completo.</p>
+              </div>
+              <button onclick="switchTab('canvas')" class="w-full bg-pink-500/20 hover:bg-pink-500/30 border border-pink-400/40 text-pink-300 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all">
+                <span>Experimentar Canvas Agora</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- BLOCO 2: IMAGENS CINEMATOGRÁFICAS ULTRA-REALISTAS 8K (CLIQUE PARA DAR ZOOM 4K OU USAR O PROMPT) -->
+        <div class="pt-4">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <span class="text-xs font-extrabold text-pink-400 uppercase tracking-widest block">Fotografia Neural 8K &bull; Magnific Skin & Lighting</span>
+              <h3 class="text-xl md:text-2xl font-extrabold font-display text-white">Galeria de Imagens Ultra-Realistas (Duplo-Clique para Zoom 4K)</h3>
+            </div>
+            <span class="text-xs text-gray-400 hidden sm:inline">Custo para gerar: apenas <strong>2 créditos</strong> por foto</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+            <!-- Foto 8K 1: Retrato Brasileiro Ultra-Realista -->
+            <div class="glass-panel rounded-2xl overflow-hidden border border-white/10 group flex flex-col justify-between">
+              <div class="relative aspect-video bg-black overflow-hidden cursor-pointer" onclick="openCanvasLightbox('/static/samples/cinema_magnific_portrait.jpg', 'Retrato 8K Magnific — Micro-Textura de Pele')">
+                <img src="/static/samples/cinema_magnific_portrait.jpg" alt="Retrato 8K Magnific" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <span class="absolute top-2.5 right-2.5 bg-black/75 text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-400/30">8K SKIN DETAIL</span>
+              </div>
+              <div class="p-4 space-y-2.5">
+                <h4 class="text-sm font-bold text-white">Retrato Realista (Pele & Olhos 8K)</h4>
+                <p class="text-[11px] text-gray-400">Poros reais, iluminação dourada de fim de tarde e nitidez óptica de lente 85mm f/1.2.</p>
+                <button onclick="useShowcasePreset('image', 'Retrato cinematográfico close-up 8K de uma mulher brasileira em luz dourada do pôr do sol, micro-textura real da pele, olhos verdes iluminados, lente 85mm f/1.2')" class="w-full bg-pink-500/20 hover:bg-pink-500/30 border border-pink-400/40 text-pink-300 font-bold py-1.5 rounded-lg text-xs transition-all">
+                  Gerar Foto Com Este Estilo
+                </button>
+              </div>
+            </div>
+
+            <!-- Foto 8K 2: Comercial Automotivo de Luxo -->
+            <div class="glass-panel rounded-2xl overflow-hidden border border-white/10 group flex flex-col justify-between">
+              <div class="relative aspect-video bg-black overflow-hidden cursor-pointer" onclick="openCanvasLightbox('/static/samples/cinema_luxury_car.jpg', 'Comercial Automotivo RED V-Raptor 8K')">
+                <img src="/static/samples/cinema_luxury_car.jpg" alt="Hypercar 8K" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <span class="absolute top-2.5 right-2.5 bg-black/75 text-cyan-300 text-[10px] font-bold px-2 py-0.5 rounded border border-cyan-400/30">RED V-RAPTOR 8K</span>
+              </div>
+              <div class="p-4 space-y-2.5">
+                <h4 class="text-sm font-bold text-white">Comercial Automotivo & Produto</h4>
+                <p class="text-[11px] text-gray-400">Reflexos reais no asfalto úmido, motion blur nas rodas e iluminação publicitária de estúdio.</p>
+                <button onclick="useShowcasePreset('image', 'Fotografia comercial automotiva 8K, hipercarro preto fosco em estrada de montanha com neblina no crepúsculo, luzes de LED refletindo no asfalto molhado, câmera RED 8K')" class="w-full bg-pink-500/20 hover:bg-pink-500/30 border border-pink-400/40 text-pink-300 font-bold py-1.5 rounded-lg text-xs transition-all">
+                  Gerar Foto Com Este Estilo
+                </button>
+              </div>
+            </div>
+
+            <!-- Foto 8K 3: Cyberpunk Tóquio Anamórfico -->
+            <div class="glass-panel rounded-2xl overflow-hidden border border-white/10 group flex flex-col justify-between">
+              <div class="relative aspect-video bg-black overflow-hidden cursor-pointer" onclick="openCanvasLightbox('/static/samples/cinema_kling_cyberpunk.jpg', 'Cinema Cyberpunk ARRI Alexa 65mm')">
+                <img src="/static/samples/cinema_kling_cyberpunk.jpg" alt="Cyberpunk 8K" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <span class="absolute top-2.5 right-2.5 bg-black/75 text-purple-300 text-[10px] font-bold px-2 py-0.5 rounded border border-purple-400/30">ARRI 65MM</span>
+              </div>
+              <div class="p-4 space-y-2.5">
+                <h4 class="text-sm font-bold text-white">Cena de Filme Cyberpunk Neon</h4>
+                <p class="text-[11px] text-gray-400">Contraste cinematográfico Teal & Orange, profundidade de campo rasa e atmosfera de filme.</p>
+                <button onclick="useShowcasePreset('image', 'Cena de filme Hollywood 8K, samurai cyberpunk em rua de Tóquio à noite sob chuva e luzes neon, reflexos no chão molhado, lente anamórfica ARRI Alexa 65mm')" class="w-full bg-pink-500/20 hover:bg-pink-500/30 border border-pink-400/40 text-pink-300 font-bold py-1.5 rounded-lg text-xs transition-all">
+                  Gerar Foto Com Este Estilo
+                </button>
+              </div>
+            </div>
+
+            <!-- Foto 8K 4: Epopeia Espacial IMAX -->
+            <div class="glass-panel rounded-2xl overflow-hidden border border-white/10 group flex flex-col justify-between">
+              <div class="relative aspect-video bg-black overflow-hidden cursor-pointer" onclick="openCanvasLightbox('/static/samples/cinema_scifi_odyssey.jpg', 'Epopeia Espacial IMAX 70mm')">
+                <img src="/static/samples/cinema_scifi_odyssey.jpg" alt="Sci-Fi 8K" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <span class="absolute top-2.5 right-2.5 bg-black/75 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-400/30">IMAX 70MM</span>
+              </div>
+              <div class="p-4 space-y-2.5">
+                <h4 class="text-sm font-bold text-white">Cenários Épicos & Ficção IMAX</h4>
+                <p class="text-[11px] text-gray-400">Escala monumental, luz volumétrica dramática e granulação autêntica de película 70mm.</p>
+                <button onclick="useShowcasePreset('image', 'Cena épica IMAX 70mm, astronauta em traje detalhado sobre penhasco cristalino observando nebulosa luminosa e planeta gigante com anéis, fotografia realista 8K')" class="w-full bg-pink-500/20 hover:bg-pink-500/30 border border-pink-400/40 text-pink-300 font-bold py-1.5 rounded-lg text-xs transition-all">
+                  Gerar Foto Com Este Estilo
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
 
       <!-- SEÇÃO VITRINE & DEMONSTRAÇÕES INTERATIVAS (ACESSO PÚBLICO LIVRE) -->
@@ -1243,10 +1461,17 @@
     // Inicializa ícones do Lucide
     lucide.createIcons();
 
-    let userCredits = 0;
+    let userCredits = 50;
+    let isVipFounder = false;
+    let logoClickCount = 0;
+    let logoClickTimer = null;
 
-    // Identificador Único de Carteira Pré-Paga por Visitante/Cliente
+    // Identificador Único de Carteira Pré-Paga por Visitante/Cliente + Ativação Automática VIP
     function getOrInitUserId() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('vip') === 'evandro') {
+        localStorage.setItem('iabox_user_id', 'evandro_admin_master');
+      }
       let uid = localStorage.getItem('iabox_user_id');
       if (!uid || uid === 'default_user') {
         uid = 'usr_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36).slice(-4);
@@ -1258,6 +1483,37 @@
     }
 
     let currentUserId = getOrInitUserId();
+
+    // Atalho exclusivo para Evandro: 3 cliques rápidos na logo ESG desbloqueiam o modo VIP em qualquer rede 4G/5G
+    function handleLogoSecretClick() {
+      logoClickCount++;
+      clearTimeout(logoClickTimer);
+      logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 1200);
+      if (logoClickCount >= 3) {
+        logoClickCount = 0;
+        currentUserId = 'evandro_admin_master';
+        localStorage.setItem('iabox_user_id', currentUserId);
+        updateCredits();
+        setMascotMessage('👑 Modo VIP Fundador Evandro ativado com tokens ilimitados!');
+      } else {
+        switchTab('dashboard');
+      }
+    }
+
+    // Abre ferramenta já preenchida com o estilo da Vitrine Artlist / Kling AI
+    function useShowcasePreset(targetTab, promptText) {
+      switchTab(targetTab);
+      setTimeout(() => {
+        if (targetTab === 'canvas') {
+          const inp = document.getElementById('canvas-prompt-input');
+          if (inp) { inp.value = promptText; inp.focus(); }
+        } else if (targetTab === 'image') {
+          const inp = document.getElementById('image-prompt');
+          if (inp) { inp.value = promptText; inp.focus(); }
+        }
+        setMascotMessage('Estilo carregado! Clique no botão Gerar para criar o seu! 🎬');
+      }, 100);
+    }
 
     function syncWalletId() {
       const val = document.getElementById('wallet-id-input').value.trim();
@@ -1366,20 +1622,44 @@
       }
     });
 
-    // 4. Gestão de Saldo e Créditos Pré-Pagos
+    // 4. Gestão de Saldo, Bônus de 50 Tokens por IP e Acesso VIP Fundador
     async function updateCredits() {
       try {
         const res = await fetch(`/api/user/credits?user_id=${encodeURIComponent(currentUserId)}`);
         const data = await res.json();
         userCredits = data.credits;
-        document.getElementById('credit-display').innerText = userCredits;
+        isVipFounder = !!data.is_vip;
+
+        const disp = document.getElementById('credit-display');
+        const lbl = document.getElementById('credit-label-text');
+        const pill = document.getElementById('wallet-badge-pill');
+        const heroBadge = document.getElementById('hero-bonus-badge');
+
+        if (isVipFounder) {
+          disp.innerText = '👑 VIP';
+          if (lbl) lbl.innerText = 'Ilimitado (Evandro)';
+          if (pill) {
+            pill.classList.remove('bg-cyan-500/10', 'border-cyan-400/30');
+            pill.classList.add('bg-amber-500/20', 'border-amber-400');
+          }
+          if (heroBadge) {
+            heroBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span><span>👑 Acesso Exclusivo Fundador (Evandro Gallina) &bull; Tokens Ilimitados Liberados</span>';
+          }
+        } else {
+          disp.innerText = userCredits;
+          if (lbl) lbl.innerText = 'tokens';
+          if (heroBadge) {
+            heroBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span><span>🎁 Bônus de Teste Ativo no Seu IP (${data.ip || 'PC/Mobile'}): ${userCredits} Tokens Restantes</span>`;
+          }
+        }
       } catch (err) { console.log('Erro ao ler créditos:', err); }
     }
     updateCredits();
 
     function requireCredits(cost) {
+      if (isVipFounder) return true;
       if (userCredits < cost) {
-        setMascotMessage(`Você precisa de ${cost} créditos para gerar. Escolha seu plano pré-pago via Stripe! 💳`);
+        setMascotMessage(`Seus 50 tokens gratuitos de teste por IP acabaram! Escolha seu pacote pré-pago via Stripe para continuar criando. 💳`);
         openModal('recharge-modal');
         return false;
       }
