@@ -165,8 +165,13 @@
           </div>
         </div>
 
-        <!-- Botão Rápido Memória + Saldo de Créditos + Botão Recarga com Ícones Futuristas Neon -->
+        <!-- Botão Rápido Perguntar ao Robô + Memória + Saldo de Créditos + Botão Recarga -->
         <div class="flex items-center gap-2 shrink-0">
+          <button onclick="openIABotAssistant()" class="flex items-center gap-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/40 text-emerald-200 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
+            <i data-lucide="bot" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span class="hidden md:inline">Perguntar ao Robô</span>
+          </button>
+
           <button onclick="switchTab('memory')" class="hidden sm:flex items-center gap-1.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-400/40 text-purple-200 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
             <i data-lucide="database" class="w-3.5 h-3.5 text-purple-400"></i>
             <span>Memória & Acessos</span>
@@ -1091,11 +1096,14 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-200 mb-2">3. Motor Óptico & Estilo</label>
+              <label class="block text-sm font-semibold text-gray-200 mb-2">3. Motor Óptico 8K & Estilo</label>
               <select id="image-model-style" class="w-full bg-dark-800 border border-white/15 rounded-xl px-3.5 py-3 text-xs md:text-sm text-white focus:outline-none focus:border-pink-400">
-                <option value="NanoBanana Pro">🍌 NanoBanana Pro (Fidelidade Multi-Referência 3 a 5 Fotos)</option>
+                <option value="Seedream 5 Pro">🌟 Seedream 5 Pro (8K Cinema & Realismo Extremo)</option>
+                <option value="NanoBanana Pro 2">🍌 NanoBanana Pro 2 (Fidelidade Multi-Referência 3 a 5 Fotos)</option>
+                <option value="Flux.1 Kontext Pro">🔒 Flux.1 Kontext Pro (100% Fidelização de Rosto / Face Lock)</option>
                 <option value="Magnific Cinema 8K">✨ Magnific Cinema 8K (Micro-Textura de Pele & Poros)</option>
-                <option value="Flux Realism Pro">📸 Flux Realism Pro (Fotografia Comercial de Estúdio)</option>
+                <option value="GPT Image 2 Ultra">🧠 GPT Image 2 Ultra (Precisão Espacial & Composição)</option>
+                <option value="Qwen Image Edit Pro">🎨 Qwen Image Edit Pro (Re-Iluminação & Figurino)</option>
                 <option value="Higgsfield Dark Cinema">🎬 Higgsfield Dark Cinema (Anamórfico 35mm Hollywood)</option>
               </select>
             </div>
@@ -1140,150 +1148,333 @@
       </div>
     </section>
 
-    <!-- ------------------------------------------------------------ -->
-    <!-- 6B. TAB: MAGNIFIC CANVAS (STORYBOARD DE NÓS & HIGGSFIELD IA) -->
-    <!-- ------------------------------------------------------------ -->
+    <!-- -------------------------------------------------------------------------------- -->
+    <!-- 6B. TAB: MAGNIFIC 2.0 INFINITE CANVAS EXPANSIVO & DIRETOR DE FILMES ATÉ 2 HORAS -->
+    <!-- -------------------------------------------------------------------------------- -->
     <section id="tab-canvas" class="tab-content hidden space-y-6">
-      <div class="border-b border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="border-b border-white/10 pb-4 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
         <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-2">
+          <div class="inline-flex flex-wrap items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 text-xs font-extrabold uppercase tracking-wider mb-2">
             <i data-lucide="workflow" class="w-3.5 h-3.5 text-amber-400"></i>
-            Arquitetura Clonada &bull; Magnific AI + Higgsfield + BeatDesign
+            <span>Magnific 2.0 + Buzzy Film Agent + Seedream 5 Pro 8K + Seedance 2.5 + SFX Reais</span>
           </div>
-          <h2 class="text-3xl font-bold font-display text-white">Magnific Canvas & Storyboard Cinematográfico</h2>
-          <p class="text-gray-400 text-sm mt-1">Arraste os nós no Canvas Infinito, conecte múltiplas referências (<code class="text-amber-300">@Image1</code>, <code class="text-amber-300">@Image2</code>), dê <strong>duplo-clique</strong> para Super-Resolução 4K e compile todos os takes em um filme .MP4.</p>
+          <h2 class="text-2xl md:text-3xl font-bold font-display text-white">Magnific Canvas Expansivo & Estúdio de Filmes Longos (Até 2 Horas)</h2>
+          <p class="text-gray-400 text-xs md:text-sm mt-1">
+            Tela expansiva com <strong>controle total</strong>: mova qualquer card, painel ou barra livremente, <strong>delete imagens</strong> (<code class="text-red-400">🗑️</code>), trave <strong>100% da Fidelidade de Rosto</strong>, escolha <strong>Vozes + Efeitos Sonoros Reais (SFX)</strong> e crie filmes de até <strong>1 a 2 horas</strong>!
+          </p>
         </div>
 
+        <!-- Botões Superiores de Comando Rápido do Canvas -->
         <div class="flex flex-wrap items-center gap-2">
-          <label class="cursor-pointer bg-dark-700 hover:bg-dark-600 border border-amber-400/40 text-amber-300 font-bold px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2">
+          <button onclick="toggleCanvasExpandMode()" id="btn-canvas-fullscreen" class="bg-gradient-to-r from-cyan-500/25 to-blue-600/25 hover:from-cyan-500/40 hover:to-blue-600/40 border border-cyan-400/50 text-cyan-200 font-extrabold px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-lg">
+            <i data-lucide="maximize" class="w-4 h-4 text-cyan-400"></i>
+            <span>Tela Expansiva (Fullscreen)</span>
+          </button>
+
+          <button onclick="openModal('rea-reverse-modal')" class="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/40 text-purple-200 font-bold px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5">
+            <i data-lucide="scan-eye" class="w-4 h-4 text-purple-400"></i>
+            <span>Engenharia Reversa REA</span>
+          </button>
+
+          <button onclick="openIABotAssistant('Como funciona o novo Magnific Canvas Expansivo, Fidelização de Rosto, SFX Reais e criação de filmes de até 2 horas?')" class="bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-200 font-bold px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5">
+            <i data-lucide="bot" class="w-4 h-4 text-emerald-400"></i>
+            <span>Perguntar ao Robô IABot</span>
+          </button>
+
+          <label class="cursor-pointer bg-dark-700 hover:bg-dark-600 border border-amber-400/40 text-amber-300 font-bold px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5">
             <i data-lucide="upload-cloud" class="w-4 h-4 text-amber-400"></i>
             <span>+ Subir Foto (@Image)</span>
             <input type="file" id="canvas-upload-input" accept="image/*" class="hidden" onchange="handleCanvasUploadNode(event)">
           </label>
-          <button onclick="resetCanvasDemoNodes()" class="bg-dark-800 hover:bg-dark-700 border border-white/10 text-gray-300 font-semibold px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5">
+
+          <button onclick="deleteSelectedCanvasNode()" class="bg-red-500/15 hover:bg-red-500/30 border border-red-400/40 text-red-300 font-bold px-3 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5" title="Deletar o nó atualmente selecionado no Canvas">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5 text-red-400"></i>
+            <span>Deletar Nó</span>
+          </button>
+
+          <button onclick="clearAllCanvasNodes()" class="bg-dark-800 hover:bg-red-950/60 border border-white/10 text-gray-300 hover:text-red-300 font-semibold px-3 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5" title="Limpar todos os nós do Canvas">
+            <i data-lucide="eraser" class="w-3.5 h-3.5 text-gray-400"></i>
+            <span>Limpar Tudo</span>
+          </button>
+
+          <button onclick="resetCanvasDemoNodes()" class="bg-dark-800 hover:bg-dark-700 border border-white/10 text-gray-300 font-semibold px-3 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5">
             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-cyan-400"></i>
-            Resetar Layout
+            <span>Resetar Demo</span>
           </button>
         </div>
       </div>
 
-      <!-- QUADRO DO INFINITE CANVAS (ESTILO BEATDESIGN / HIGGSFIELD / MAGNIFIC) -->
-      <div id="magnific-canvas-board" class="relative w-full h-[640px] rounded-3xl border border-white/15 overflow-hidden select-none shadow-2xl" style="background-color: #080a10; background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px); background-size: 24px 24px;">
+      <!-- ================================================================================= -->
+      <!-- BARRA DO AGENTE DIRETOR DE FILMES IA (DE 1 FRASE A FILME DE 1 A 2 HORAS NO CANVAS)-->
+      <!-- ================================================================================= -->
+      <div class="glass-panel p-4 md:p-5 rounded-2xl border border-amber-400/40 bg-gradient-to-r from-amber-500/10 via-dark-900 to-cyan-500/10">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div class="flex-1 space-y-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-md bg-amber-400 text-black text-[10px] font-black uppercase tracking-wider">Agente Diretor de Filmes IA (Magnific / Buzzy Clone)</span>
+              <span class="text-xs text-cyan-300 font-semibold">👑 VIP Evandro: Uso Infinito 8K &bull; Visitantes: Escalonado pelos Tokens</span>
+            </div>
+            <p class="text-xs text-gray-300">Digite <strong>uma única frase</strong> e a IA gera o Roteiro Multi-Capítulos + Nós de <strong>[Personagem Fiel]</strong>, <strong>[Objeto/Veículo]</strong>, <strong>[Cenário]</strong> e <strong>[Cenas Conectadas]</strong> para filmes de até 2 horas:</p>
+          </div>
 
-        <!-- Camada SVG para Cabos Bezier Dinâmicos entre Nós -->
-        <svg id="canvas-svg-cables" class="absolute inset-0 w-full h-full pointer-events-none z-10"></svg>
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 lg:w-[62%]">
+            <input type="text" id="film-agent-idea-input" value="Filme de ação e ficção científica: Evandro pilota um V8 clássico blindado pelas estradas iluminadas rumo a uma metrópole futurista" placeholder="Descreva seu filme em 1 frase..." class="flex-1 bg-dark-900 border border-amber-400/40 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
 
-        <!-- Barra Lateral Flutuante Esquerda (Ferramentas do Canvas) -->
-        <div class="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-dark-800/90 backdrop-blur-md border border-white/10 rounded-2xl p-2 flex flex-col gap-2 shadow-xl">
-          <button onclick="document.getElementById('canvas-upload-input').click()" title="Adicionar Nó de Imagem" class="w-10 h-10 rounded-xl bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/30 text-amber-300 flex items-center justify-center transition-all">
+            <select id="film-agent-scale-select" class="bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-amber-300 font-bold focus:outline-none">
+              <option value="feature_2h">🏆 Longa-Metragem (1h a 2 Horas &bull; 5 Atos / 24 Cap.)</option>
+              <option value="medium_30m">🎞️ Série / Média-Metragem (15 a 45 Min &bull; 12 Cap.)</option>
+              <option value="short_3m">🎬 Curta / Trailer IMAX (1 a 5 Min &bull; 6 Cenas)</option>
+            </select>
+
+            <button onclick="handleRunFilmDirectorAgent()" id="film-agent-btn" class="bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 hover:opacity-95 text-black font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-1.5 whitespace-nowrap">
+              <i data-lucide="clapperboard" class="w-4 h-4"></i>
+              <span>Criar Filme & Nós (5 Cr)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================================= -->
+      <!-- QUADRO DO INFINITE CANVAS EXPANSIVO (TUDO NELE PODE SER MOVIDO E CONTROLADO)      -->
+      <!-- ================================================================================= -->
+      <div id="magnific-canvas-board" class="relative w-full h-[790px] rounded-3xl border-2 border-amber-400/30 overflow-hidden select-none shadow-2xl transition-all duration-300" style="background-color: #07090e; background-image: radial-gradient(rgba(255,255,255,0.13) 1px, transparent 1px); background-size: 24px 24px;">
+
+        <!-- BARRA SUPERIOR INTERNA FLUTUANTE E MOVÍVEL (ZOOM, PAN, FULLSCREEN E STATUS) -->
+        <div id="canvas-top-hud" class="absolute top-3 left-4 z-30 flex flex-wrap items-center gap-2 bg-dark-900/90 backdrop-blur-xl border border-white/15 px-3 py-1.5 rounded-2xl shadow-xl cursor-move">
+          <span class="text-[10px] font-black text-amber-400 uppercase tracking-wider flex items-center gap-1">
+            <i data-lucide="move" class="w-3.5 h-3.5"></i> HUD Movível
+          </span>
+          <div class="h-3 w-[1px] bg-white/15"></div>
+          <button onclick="zoomCanvasViewport(-0.12)" class="px-2 py-0.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-xs text-gray-200 font-bold" title="Diminuir Zoom (-)">−</button>
+          <span id="canvas-zoom-badge" class="text-[11px] font-mono text-cyan-300 font-bold">100%</span>
+          <button onclick="zoomCanvasViewport(0.12)" class="px-2 py-0.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-xs text-gray-200 font-bold" title="Aumentar Zoom (+)">+</button>
+          <button onclick="resetCanvasViewportZoom()" class="px-2 py-0.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-[10px] text-amber-300 font-semibold">Centralizar</button>
+          <div class="h-3 w-[1px] bg-white/15"></div>
+          <span id="canvas-connected-count" class="text-[11px] text-emerald-300 font-bold">3 Nós Conectados</span>
+          <button onclick="toggleCanvasExpandMode()" class="px-2.5 py-0.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-[10px] text-cyan-300 font-extrabold">⛶ Expandir/Reduzir Tela</button>
+        </div>
+
+        <!-- CAMADA DE VIEWPORT COM SUPORTE A PAN (ARRASTAR FUNDO) E ZOOM -->
+        <div id="canvas-viewport-stage" class="absolute inset-0 w-full h-full origin-top-left transition-transform duration-75">
+          <!-- Camada SVG para Cabos Bezier Dinâmicos entre Nós -->
+          <svg id="canvas-svg-cables" class="absolute inset-0 w-full h-full pointer-events-none z-10"></svg>
+
+          <!-- CONTAINER DOS NÓS ARRASTÁVEIS DE REFERÊNCIA E CENAS (@Image1, @Image2, @Image3...) -->
+          <div id="canvas-nodes-layer" class="absolute inset-0 z-20">
+            <!-- Renderizado dinamicamente via JS -->
+          </div>
+
+          <!-- NÓ CENTRAL DE GERAÇÃO CONECTADA 8K (IMAGE / TAKE GENERATION NODE — MOVÍVEL) -->
+          <div id="canvas-gen-node" class="absolute z-20 w-72 md:w-80 rounded-2xl bg-dark-800/95 backdrop-blur-xl border-2 border-cyan-400/70 shadow-neon-cyan p-3 cursor-grab active:cursor-grabbing" style="left: 470px; top: 75px;">
+            <!-- Porta de Entrada (Esquerda) -->
+            <div id="gen-node-in-port" class="absolute -left-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-cyan-400 text-black font-black flex items-center justify-center shadow-lg border-2 border-dark-900 text-xs" title="Conector de Entrada Multi-Referência">+</div>
+
+            <div class="flex items-center justify-between text-xs text-gray-300 mb-2 px-1">
+              <span class="font-bold text-cyan-300 flex items-center gap-1.5">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
+                Master 8K Scene Output
+              </span>
+              <span id="gen-node-res-badge" class="text-[10px] font-mono bg-cyan-500/15 text-cyan-300 px-2 py-0.5 rounded-md border border-cyan-400/30">3840 x 2160 (8K)</span>
+            </div>
+
+            <!-- Preview da Cena Gerada no Nó -->
+            <div id="gen-node-preview-box" ondblclick="openCanvasLightbox(currentGeneratedNodeUrl, 'Cena Conectada 8K (Magnific Studio)')" class="relative w-full h-44 rounded-xl overflow-hidden bg-black border border-white/10 group cursor-pointer">
+              <img id="gen-node-img" src="/static/samples/canvas_take3.jpg?v=real2026" alt="Generated Scene" class="w-full h-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-2.5">
+                <span class="text-[10px] text-white font-semibold bg-black/70 px-2 py-1 rounded-lg">2x Clique: Zoom 8K & Upscale</span>
+              </div>
+            </div>
+
+            <!-- Ações Rápidas do Nó Gerado -->
+            <div class="grid grid-cols-3 gap-1.5 mt-2.5">
+              <button onclick="branchGeneratedToNewNode()" class="bg-dark-700 hover:bg-dark-600 border border-white/10 text-[11px] text-amber-300 font-bold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition-all" title="Adicionar esta cena como um novo nó @Image no Canvas">
+                <i data-lucide="git-branch" class="w-3 h-3"></i>
+                <span>+Virar Nó</span>
+              </button>
+              <button onclick="handleMagnificUpscale(currentGeneratedNodeUrl)" class="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-[11px] text-amber-300 font-bold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition-all" title="Super-Resolução Óptica 8K">
+                <i data-lucide="sparkles" class="w-3 h-3"></i>
+                <span>Upscale 8K</span>
+              </button>
+              <button onclick="handleGenerateSingleNodeVideo(currentGeneratedNodeUrl, 'Master Output Take')" class="bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-[11px] text-emerald-300 font-bold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition-all" title="Gerar Vídeo Real + Efeitos Sonoros Reais deste Take">
+                <i data-lucide="film" class="w-3 h-3"></i>
+                <span>Vídeo+SFX</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- BARRA DE FERRAMENTAS ESQUERDA (100% MOVÍVEL / ARRASTÁVEL) -->
+        <div id="canvas-left-toolbar" class="absolute z-30 bg-dark-900/95 backdrop-blur-xl border border-white/15 rounded-2xl p-2 flex flex-col gap-2 shadow-2xl cursor-move" style="left: 14px; top: 90px;">
+          <div class="text-[9px] text-center font-mono text-gray-400 border-b border-white/10 pb-1">⠿ MOVER</div>
+          <button onclick="document.getElementById('canvas-upload-input').click()" title="Subir Nova Imagem (@Image)" class="w-10 h-10 rounded-xl bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/30 text-amber-300 flex items-center justify-center transition-all">
             <i data-lucide="plus" class="w-5 h-5"></i>
           </button>
-          <button onclick="focusCanvasPrompt()" title="Gerador Conectado" class="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 text-cyan-400 flex items-center justify-center transition-all">
-            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          <button onclick="duplicateSelectedCanvasNode()" title="Duplicar Nó Selecionado" class="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 text-cyan-400 flex items-center justify-center transition-all">
+            <i data-lucide="copy" class="w-4 h-4"></i>
           </button>
-          <button onclick="openLightboxFromSelected()" title="Zoom Cinema 4K (Duplo Clique)" class="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 text-purple-400 flex items-center justify-center transition-all">
-            <i data-lucide="maximize-2" class="w-5 h-5"></i>
+          <button onclick="deleteSelectedCanvasNode()" title="Deletar Imagem / Nó Selecionado" class="w-10 h-10 rounded-xl bg-red-500/15 hover:bg-red-500/30 border border-red-400/30 text-red-400 flex items-center justify-center transition-all">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
           </button>
-          <button onclick="scrollToTimelineCompiler()" title="Compilar Storyboard em Vídeo MP4" class="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 text-emerald-400 flex items-center justify-center transition-all">
-            <i data-lucide="film" class="w-5 h-5"></i>
+          <button onclick="openLightboxFromSelected()" title="Inspeção e Upscale 8K" class="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 text-purple-400 flex items-center justify-center transition-all">
+            <i data-lucide="maximize-2" class="w-4 h-4"></i>
+          </button>
+          <button onclick="openModal('rea-reverse-modal')" title="Engenharia Reversa Criativa (REA 4 Camadas)" class="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 text-pink-400 flex items-center justify-center transition-all">
+            <i data-lucide="scan-eye" class="w-4 h-4"></i>
+          </button>
+          <button onclick="openIABotAssistant()" title="Perguntar ao Robô Como o Sistema Funciona" class="w-10 h-10 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-300 flex items-center justify-center transition-all">
+            <i data-lucide="bot" class="w-5 h-5"></i>
           </button>
         </div>
 
-        <!-- Contador e Dica no Topo do Canvas -->
-        <div class="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between pointer-events-none gap-2">
-          <div class="bg-dark-900/85 backdrop-blur-md border border-white/10 px-3.5 py-1.5 rounded-xl text-xs text-gray-300 flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-            <span>Arraste os cards livremente &bull; <strong>Duplo-clique</strong> em qualquer imagem abre o <strong>Magnific 4K Upscaler</strong></span>
-          </div>
-          <div class="bg-dark-900/85 backdrop-blur-md border border-cyan-500/30 px-3.5 py-1.5 rounded-xl text-xs text-cyan-300 font-semibold">
-            <span id="canvas-connected-count">3 Nós Conectados ao Gerador</span>
-          </div>
-        </div>
-
-        <!-- CONTAINER DOS NÓS ARRASTÁVEIS DE REFERÊNCIA (@Image1, @Image2, @Image3...) -->
-        <div id="canvas-nodes-layer" class="absolute inset-0 z-20">
-          <!-- Renderizado dinamicamente via JS -->
-        </div>
-
-        <!-- NÓ CENTRAL DE GERAÇÃO CONECTADA (IMAGE / VIDEO GENERATION NODE) -->
-        <div id="canvas-gen-node" class="absolute z-20 w-72 md:w-80 rounded-2xl bg-dark-800/95 backdrop-blur-xl border-2 border-cyan-400/60 shadow-neon-cyan p-3 cursor-grab active:cursor-grabbing" style="left: 540px; top: 95px;">
-          <!-- Porta de Entrada (Esquerda) -->
-          <div id="gen-node-in-port" class="absolute -left-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-cyan-400 text-black font-black flex items-center justify-center shadow-lg border-2 border-dark-900 text-xs" title="Conector de Entrada Multi-Referência">+</div>
-
-          <div class="flex items-center justify-between text-xs text-gray-300 mb-2 px-1">
-            <span class="font-bold text-cyan-300 flex items-center gap-1.5">
-              <i data-lucide="image" class="w-3.5 h-3.5 text-cyan-400"></i>
-              Image / Take Generation
+        <!-- ============================================================================= -->
+        <!-- PAINEL INSPETOR DIREITO (100% MOVÍVEL): ROSTO FIEL + CÂMERA/LUZ + VOZ & SFX   -->
+        <!-- ============================================================================= -->
+        <div id="canvas-director-inspector" class="absolute z-30 w-80 rounded-2xl bg-dark-900/95 backdrop-blur-2xl border border-amber-400/40 p-3.5 shadow-2xl space-y-3 text-xs" style="left: 815px; top: 55px;">
+          <!-- Cabeçalho Arrastável do Inspetor -->
+          <div class="flex items-center justify-between border-b border-white/10 pb-2 cursor-move">
+            <span class="font-extrabold text-amber-300 flex items-center gap-1.5">
+              <i data-lucide="sliders" class="w-4 h-4 text-amber-400"></i>
+              <span>⠿ Direção: Rosto, Câmera, Voz & SFX</span>
             </span>
-            <span id="gen-node-res-badge" class="text-[10px] font-mono bg-cyan-500/15 text-cyan-300 px-2 py-0.5 rounded-md border border-cyan-400/30">2560 x 1440</span>
+            <span id="inspector-selected-tag" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold">@Image1</span>
           </div>
 
-          <!-- Preview da Cena Gerada no Nó -->
-          <div id="gen-node-preview-box" ondblclick="openCanvasLightbox(currentGeneratedNodeUrl, 'Cena Conectada (Magnific Studio)')" class="relative w-full h-44 rounded-xl overflow-hidden bg-black border border-white/10 group cursor-pointer">
-            <img id="gen-node-img" src="/static/samples/canvas_take3.jpg" alt="Generated Scene" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-2.5">
-              <span class="text-[10px] text-white font-semibold bg-black/60 px-2 py-1 rounded-lg">Duplo-clique: Zoom & Upscale 4K</span>
+          <!-- 1. OPÇÕES DE FIDELIZAÇÃO DE ROSTO 100% (FACE LOCK BIOMÉTRICO) -->
+          <div class="p-2.5 rounded-xl bg-dark-800/90 border border-cyan-400/30 space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="font-bold text-cyan-300 flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="canvas-facelock-toggle" checked class="rounded text-cyan-400">
+                <span>🔒 Fidelização de Rosto (Face Lock)</span>
+              </label>
+              <span id="canvas-facelock-pct" class="text-[10px] font-mono text-emerald-400 font-bold">100% Fiel</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <img id="canvas-facelock-thumb" src="/static/samples/canvas_take1.jpg?v=real2026" class="w-10 h-10 rounded-lg object-cover border border-cyan-400/50 shrink-0">
+              <div class="flex-1 space-y-1">
+                <select id="canvas-facelock-preset" onchange="handleFaceLockPresetChange()" class="w-full bg-dark-900 border border-white/15 rounded-lg px-2 py-1 text-[11px] text-white focus:outline-none">
+                  <option value="/static/samples/canvas_take1.jpg?v=real2026">👑 Rosto Oficial Evandro (Fiel)</option>
+                  <option value="/static/samples/canvas_take2.jpg?v=real2026">👑 Evandro Perfil 3/4 (Real)</option>
+                  <option value="custom">📸 Subir Outro Rosto para Travar...</option>
+                </select>
+                <input type="file" id="canvas-facelock-file" accept="image/*" onchange="handleCustomFaceLockUpload(event)" class="hidden">
+                <input type="range" id="canvas-facelock-slider" min="80" max="100" value="100" oninput="document.getElementById('canvas-facelock-pct').innerText = this.value + '% Fiel'" class="w-full accent-cyan-400 h-1.5 bg-dark-700 rounded-lg cursor-pointer">
+              </div>
             </div>
           </div>
 
-          <!-- Ações Rápidas do Nó Gerado -->
-          <div class="grid grid-cols-2 gap-2 mt-2.5">
-            <button onclick="branchGeneratedToNewNode()" class="bg-dark-700 hover:bg-dark-600 border border-white/10 text-xs text-amber-300 font-semibold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition-all">
-              <i data-lucide="git-branch" class="w-3.5 h-3.5"></i>
-              Virar @Image
-            </button>
-            <button onclick="handleMagnificUpscale(currentGeneratedNodeUrl)" class="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-xs text-amber-300 font-bold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition-all">
-              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-              Upscale 4K (4 cr)
-            </button>
+          <!-- 2. CONTROLE INDIVIDUAL DE CENA: ÂNGULO DE CÂMERA & ILUMINAÇÃO (COMO NO VÍDEO MAGNIFIC) -->
+          <div class="p-2.5 rounded-xl bg-dark-800/90 border border-white/10 space-y-2">
+            <span class="font-bold text-gray-200 block text-[11px]">🎥 Ângulo & Luz da Cena (Sem Refazer o Filme):</span>
+            <select id="canvas-camera-select" class="w-full bg-dark-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-[11px] text-white focus:outline-none">
+              <option value="default">🎥 Ângulo Padrão do Prompt</option>
+              <option value="close_up_85mm">🔍 Close-Up Retrato 85mm f/1.2 (Rosto)</option>
+              <option value="low_angle_hero">⚡ Contra-Plongée Heroico 24mm (Câmera Baixa)</option>
+              <option value="wide_anamorphic">🌄 Plano Aberto Anamórfico 35mm IMAX</option>
+              <option value="side_profile">🏎️ Perfil Cinematográfico Tracking</option>
+              <option value="over_shoulder">👥 Over-the-Shoulder (Sobre o Ombro)</option>
+              <option value="drone_aerial">🚁 Drone Aéreo Panorâmico</option>
+              <option value="dutch_angle">🔥 Dutch Angle (Ação & Tensão)</option>
+            </select>
+
+            <select id="canvas-lighting-select" class="w-full bg-dark-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-[11px] text-white focus:outline-none">
+              <option value="default">💡 Iluminação Padrão da Cena</option>
+              <option value="golden_hour">🌅 Golden Hour (Pôr do Sol Dourado)</option>
+              <option value="cyberpunk_neon">🌆 Cyberpunk Neon & Reflexo Noturno</option>
+              <option value="chiaroscuro_noir">🌑 Chiaroscuro Dark Cinema (Noir)</option>
+              <option value="imax_daylight">☀️ Luz do Dia Cristalina IMAX 70mm</option>
+              <option value="fire_volumetric">🔥 Fogo & Fumaça Volumétrica</option>
+            </select>
+
+            <div class="grid grid-cols-2 gap-1.5 pt-1">
+              <button onclick="reshootSelectedCanvasNode()" class="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 font-bold py-1.5 px-2 rounded-lg text-[10px] flex items-center justify-center gap-1">
+                <i data-lucide="camera" class="w-3 h-3"></i>
+                <span>Regravar Ângulo</span>
+              </button>
+              <button onclick="handleGenerateSingleNodeVideo(selectedCanvasNodeUrl, 'Take Selecionado')" class="bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-300 font-bold py-1.5 px-2 rounded-lg text-[10px] flex items-center justify-center gap-1">
+                <i data-lucide="play" class="w-3 h-3"></i>
+                <span>Gerar Vídeo+SFX</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. ESCOLHA DE VOZES & EFEITOS SONOROS REAIS (REAL SFX) NO CANVAS -->
+          <div class="p-2.5 rounded-xl bg-dark-800/90 border border-emerald-400/30 space-y-2">
+            <span class="font-bold text-emerald-300 block text-[11px]">🔊 Voz da Cena & Efeitos Sonoros Reais (SFX):</span>
+            <select id="canvas-voice-select" onchange="syncCanvasVoiceAndSfxToTimeline()" class="w-full bg-dark-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-[11px] text-white focus:outline-none">
+              <option value="antonio">🎙️ Voz: Antonio (Masculina Cinema PT-BR)</option>
+              <option value="francisca">🎙️ Voz: Francisca (Feminina Narrativa PT-BR)</option>
+              <option value="thalita">🎙️ Voz: Thalita (Feminina Jovem/Dinâmica PT-BR)</option>
+              <option value="cloned">🧬 Usar Minha Voz Clonada (.MP3/.WAV)</option>
+              <option value="none">🔇 Sem Locução (Apenas Efeitos Sonoros Reais)</option>
+            </select>
+
+            <select id="canvas-sfx-select" onchange="syncCanvasVoiceAndSfxToTimeline()" class="w-full bg-dark-900 border border-emerald-400/30 rounded-lg px-2.5 py-1.5 text-[11px] text-emerald-200 font-semibold focus:outline-none">
+              <option value="auto_contextual">🔊 SFX Real: IA Detecta Automaticamente da Cena</option>
+              <option value="v8_engine_road">🏎️ SFX Real: Ronco Motor V8 + Pneus + Estrada</option>
+              <option value="rain_thunder_noir">🌧️ SFX Real: Chuva Forte + Trovoada Cinematográfica</option>
+              <option value="epic_cinema_impact">💥 SFX Real: Sub-Bass IMAX Braaam + Whoosh</option>
+              <option value="wind_desert_nature">🌬️ SFX Real: Vento em Cânion & Natureza Aberta</option>
+              <option value="scifi_cyberpunk">🛸 SFX Real: Propulsor Espacial & Pulso Cyberpunk</option>
+              <option value="footsteps_action">👣 SFX Real: Passos de Perseguição & Tensão</option>
+            </select>
           </div>
         </div>
 
-        <!-- DOCK INFERIOR FLUTUANTE DE PROMPT & MODELOS (EXATO COMO NO VÍDEO MAGNIFIC) -->
-        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 w-[94%] max-w-3xl bg-dark-900/95 backdrop-blur-2xl border border-white/15 rounded-2xl p-3.5 shadow-2xl">
+        <!-- ============================================================================= -->
+        <!-- DOCK INFERIOR FLUTUANTE E MOVÍVEL DE PROMPT & MELHORES LLMs 8K DO MERCADO    -->
+        <!-- ============================================================================= -->
+        <div id="canvas-bottom-dock" class="absolute z-30 w-[92%] max-w-3xl bg-dark-900/95 backdrop-blur-2xl border border-white/15 rounded-2xl p-3.5 shadow-2xl" style="left: 28px; top: 585px;">
           
-          <!-- Linha de Referências Conectadas (@Image1, @Image2...) -->
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-            <div id="canvas-prompt-tags" class="flex flex-wrap items-center gap-1.5">
-              <!-- Preenchido via JS com miniaturas de @Image1, @Image2, @Image3 -->
+          <!-- Linha de Referências Conectadas (@Image1, @Image2...) + Handle para Mover Dock -->
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2 cursor-move">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="text-[10px] font-mono text-gray-400 bg-white/5 px-2 py-0.5 rounded">⠿ Mover Dock</span>
+              <div id="canvas-prompt-tags" class="flex flex-wrap items-center gap-1.5">
+                <!-- Preenchido via JS com miniaturas de @Image1, @Image2, @Image3 -->
+              </div>
             </div>
-            <span class="text-[11px] text-gray-400">Clique em um <code class="text-amber-300">@Image</code> para citar no prompt</span>
+            <span class="text-[11px] text-gray-400">Clique em <code class="text-amber-300">@Image</code> para citar &bull; <code class="text-red-400">🗑️</code> em qualquer card para deletar</span>
           </div>
 
           <!-- Caixa de Prompt com Menções @Image -->
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-            <input type="text" id="canvas-prompt-input" value="Crie um novo take cinematográfico mantendo o personagem de @Image1 e a iluminação dramática de @Image2 em plano aberto de cinema 35mm" placeholder="Ex: Crie um novo ângulo câmera baixa de @Image1 mantendo o cenário de @Image2..." class="flex-1 bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
+            <input type="text" id="canvas-prompt-input" value="Crie um novo take cinematográfico 8K mantendo 100% do rosto fiel de @Image1 e a iluminação dramática de @Image2 em plano aberto 35mm" placeholder="Ex: Crie um novo ângulo câmera baixa de @Image1 mantendo o cenário de @Image2..." class="flex-1 bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
             
             <button onclick="handleCanvasGenerateNode()" id="canvas-gen-btn" class="bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 hover:opacity-95 text-black font-extrabold px-5 py-2.5 rounded-xl text-xs md:text-sm shadow-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap">
               <i data-lucide="wand-2" class="w-4 h-4"></i>
-              <span>Gerar Nó (3 Cr)</span>
+              <span>Gerar Nó 8K (3 Cr)</span>
             </button>
           </div>
 
-          <!-- Seletores Inferiores: Modelo (NanoBanana Pro / Magnific 8K / Flux) + Aspect Ratio -->
+          <!-- Seletores Inferiores: Melhores LLMs 8K (Seedream 5 Pro / NanoBanana 2 / Flux Kontext / GPT Image 2 / Qwen) -->
           <div class="flex flex-wrap items-center justify-between gap-3 mt-2.5 pt-2 border-t border-white/10 text-xs">
             <div class="flex flex-wrap items-center gap-2">
-              <div class="flex items-center gap-1.5 bg-dark-800 border border-white/10 rounded-lg px-2.5 py-1 text-gray-200">
+              <div class="flex items-center gap-1.5 bg-dark-800 border border-amber-400/30 rounded-lg px-2.5 py-1 text-gray-200">
                 <span class="w-2 h-2 rounded-full bg-amber-400"></span>
                 <select id="canvas-model-select" class="bg-transparent text-xs font-bold text-amber-300 focus:outline-none cursor-pointer">
-                  <option value="NanoBanana Pro" class="bg-dark-900 text-white">🍌 NanoBanana Pro (Multi-Node Vision)</option>
-                  <option value="Magnific Cinema 8K" class="bg-dark-900 text-white">✨ Magnific Cinema 8K (Skin & Micro-Detail)</option>
+                  <option value="Seedream 5 Pro" class="bg-dark-900 text-white">🌟 Seedream 5 Pro (8K Cinema Master & Micro-Pores)</option>
+                  <option value="NanoBanana Pro 2" class="bg-dark-900 text-white">🍌 NanoBanana Pro 2 (Multi-Node Vision Consistency)</option>
+                  <option value="Flux.1 Kontext Pro" class="bg-dark-900 text-white">🔒 Flux.1 Kontext Pro (100% Face Fidelity Lock)</option>
+                  <option value="Magnific Cinema 8K" class="bg-dark-900 text-white">✨ Magnific Cinema 8K (Optical Skin & Detail)</option>
+                  <option value="GPT Image 2 Ultra" class="bg-dark-900 text-white">🧠 GPT Image 2 Ultra (High-Precision Scene)</option>
+                  <option value="Qwen Image Edit Pro" class="bg-dark-900 text-white">🎨 Qwen Image Edit Pro (Relighting & Costume)</option>
                   <option value="Higgsfield Dark Cinema" class="bg-dark-900 text-white">🎬 Higgsfield Dark Cinema (Anamorphic 35mm)</option>
-                  <option value="Flux Realism Pro" class="bg-dark-900 text-white">📸 Flux Realism Pro (Estúdio Fotorrealista)</option>
                 </select>
               </div>
 
               <select id="canvas-aspect-select" class="bg-dark-800 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-gray-300 focus:outline-none cursor-pointer">
                 <option value="16:9">▭ 16:9 Cinema Horizontal</option>
                 <option value="9:16">▯ 9:16 Reels / Shorts Vertical</option>
+                <option value="21:9">▬ 21:9 Anamórfico Ultra-Wide</option>
                 <option value="1:1">□ 1:1 Quadrado</option>
               </select>
 
-              <span class="px-2 py-1 rounded-lg bg-white/5 text-gray-400 text-[11px] font-mono">2K / 4K Ready</span>
+              <span class="px-2 py-1 rounded-lg bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold">8K + Face Lock + SFX Ready</span>
             </div>
 
             <div id="canvas-status-msg" class="text-[11px] text-cyan-400 font-semibold">
-              Pronto para gerar com consistência de personagem
+              Pronto &bull; Tudo no Canvas pode ser movido ou editado
             </div>
           </div>
         </div>
@@ -1291,35 +1482,68 @@
       </div>
 
       <!-- ========================================================================= -->
-      <!-- COMPILADOR DE STORYBOARD & TIMELINE DE VÍDEO (ESTILO HIGGSFIELD / MOVIE)  -->
+      <!-- PAINEL DE ROTEIRO MULTI-CAPÍTULOS (FILMES DE ATÉ 1 A 2 HORAS)             -->
+      <!-- ========================================================================= -->
+      <div id="film-agent-chapters-panel" class="glass-panel p-5 rounded-3xl border border-cyan-500/30 hidden space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-white/10 pb-3">
+          <div>
+            <span id="film-project-scale-badge" class="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded bg-amber-400 text-black">Longa-Metragem 1h a 2 Horas</span>
+            <h3 id="film-project-title" class="text-xl font-bold font-display text-white mt-1">Arquitetura de Capítulos do Filme</h3>
+            <p id="film-project-logline" class="text-xs text-gray-300"></p>
+          </div>
+          <div class="text-xs text-right text-cyan-300 font-semibold">
+            <div>👑 Criador Evandro: <strong>Tokens Infinitos para Renderizar Todos os Atos</strong></div>
+            <div class="text-gray-400 text-[11px]">Clientes: Renderização por capítulo/ato conforme saldo de tokens</div>
+          </div>
+        </div>
+        <div id="film-project-chapters-grid" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- COMPILADOR DE STORYBOARD, VOZES, EFEITOS SONOROS REAIS (SFX) & FILME MP4  -->
       <!-- ========================================================================= -->
       <div id="canvas-timeline-section" class="glass-panel p-6 rounded-3xl border border-amber-400/30 space-y-6">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
+        <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 border-b border-white/10 pb-4">
           <div>
-            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block">Canvas-to-Movie Timeline &bull; Vídeo Cinematográfico</span>
-            <h3 class="text-2xl font-bold font-display text-white">Timeline do Storyboard (Compilador de Filme .MP4)</h3>
-            <p class="text-xs text-gray-400 mt-1">Converte automaticamente todos os nós ativos do seu Canvas em um filme contínuo com movimento de câmera (Dolly Push-In, Tracking Pan, Crane Pull-Out), color grading 35mm e locução PT-BR opcional.</p>
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block">Canvas-to-Cinema Master Compiler &bull; Movimento Real + Efeitos Sonoros Reais (SFX) + Voz</span>
+            <h3 class="text-2xl font-bold font-display text-white">Timeline do Filme (Com Vozes, SFX Reais e Escala até 2 Horas)</h3>
+            <p class="text-xs text-gray-400 mt-1">Converte os nós conectados do seu Canvas em um filme com <strong>movimento temporal real (Zero Slide)</strong>, <strong>efeitos sonoros reais de cinema (SFX)</strong> e <strong>locução neural brasileira</strong> ou voz clonada.</p>
           </div>
-          <div class="flex items-center gap-3">
-            <select id="timeline-aspect-select" class="bg-dark-800 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
-              <option value="16:9">Formato do Filme: 16:9 Cinema (1920x1080)</option>
-              <option value="9:16">Formato do Filme: 9:16 Reels/TikTok (1080x1920)</option>
+          <div class="flex flex-wrap items-center gap-2.5">
+            <select id="timeline-video-model-select" class="bg-dark-800 border border-amber-400/40 rounded-xl px-3 py-2 text-xs text-amber-300 font-bold focus:outline-none">
+              <option value="Seedance 2.5 4K">🎥 Motor Vídeo: Seedance 2.5 4K (Real Motion + SFX)</option>
+              <option value="LTX-Video Distilled">⚡ Motor Vídeo: LTX-Video Distilled (Movimento Real)</option>
+              <option value="Wan 2.1 Cinema">🎬 Motor Vídeo: Wan 2.1 Cinema Pro (Física Realista)</option>
+              <option value="Kling 2.0 Master">🔥 Motor Vídeo: Kling 2.0 Master (Ação Hollywood)</option>
+              <option value="Veo 3 Cinema">🌟 Motor Vídeo: Veo 3 Cinema 8K</option>
             </select>
+
+            <select id="timeline-duration-scale-select" class="bg-dark-800 border border-cyan-400/30 rounded-xl px-3 py-2 text-xs text-cyan-300 font-bold focus:outline-none">
+              <option value="short_3m">Escala: Curta / Trailer (12 Cr | VIP Grátis)</option>
+              <option value="medium_30m">Escala: Média-Metragem 15–45m (25 Cr | VIP Grátis)</option>
+              <option value="feature_2h">Escala: Longa-Metragem 1h–2h (45 Cr | VIP Grátis)</option>
+            </select>
+
+            <select id="timeline-aspect-select" class="bg-dark-800 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+              <option value="16:9">16:9 Cinema (1920x1080)</option>
+              <option value="9:16">9:16 Reels/TikTok (1080x1920)</option>
+            </select>
+
             <button onclick="handleRenderStoryboardMovie()" class="bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-black font-extrabold px-5 py-2.5 rounded-xl text-xs md:text-sm shadow-lg transition-all flex items-center gap-2">
               <i data-lucide="clapperboard" class="w-4 h-4"></i>
-              <span>Renderizar Filme do Storyboard (12 Créditos)</span>
+              <span>Renderizar Filme com SFX Reais</span>
             </button>
           </div>
         </div>
 
-        <!-- Fita de Takes na Timeline + Player do Filme -->
+        <!-- Fita de Takes na Timeline + Controles de Voz/SFX + Player do Filme -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          <!-- Esquerda: Sequência de Takes do Canvas + Locução Opcional -->
+          <!-- Esquerda: Sequência de Takes do Canvas + Escolha de Voz + Efeitos Sonoros Reais -->
           <div class="lg:col-span-7 space-y-4">
             <div class="flex items-center justify-between text-xs text-gray-300">
-              <span class="font-bold uppercase tracking-wider text-amber-300">Sequência de Takes Conectados na Timeline:</span>
-              <span class="text-gray-400">3.5s por Take + Transição Suave</span>
+              <span class="font-bold uppercase tracking-wider text-amber-300">Sequência de Takes Conectados na Timeline (Clique em 🗑️ para remover qualquer take):</span>
+              <span class="text-emerald-400 font-semibold">Movimento Real + SFX Estéreo</span>
             </div>
 
             <!-- Filmstrip dos Nós -->
@@ -1327,24 +1551,56 @@
               <!-- Preenchido dinamicamente pelo JS com os nós do canvas -->
             </div>
 
-            <!-- Locução Cinematográfica PT-BR Opcional -->
-            <div class="pt-2">
-              <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">Roteiro de Narração Cinematográfica PT-BR (Opcional — Voz Neural Antonio):</label>
-              <input type="text" id="timeline-narration-input" placeholder="Deixe em branco para apenas trilha sonora ambiente, ou digite a narração do trailer em português..." class="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
+            <!-- Seletores de Voz, Upload de Voz Clonada e Pacote de Efeitos Sonoros Reais (SFX) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+              <div class="p-3 rounded-xl bg-dark-800/90 border border-white/10 space-y-1.5">
+                <label class="block text-[11px] font-bold text-cyan-300 uppercase">1. Escolha da Voz do Filme:</label>
+                <select id="timeline-voice-select" class="w-full bg-dark-900 border border-white/15 rounded-lg px-3 py-2 text-xs text-white focus:outline-none">
+                  <option value="antonio">🎙️ Antonio — Masculina Cinema / Trailer PT-BR</option>
+                  <option value="francisca">🎙️ Francisca — Feminina Narrativa / Doce PT-BR</option>
+                  <option value="thalita">🎙️ Thalita — Feminina Jovem / Dinâmica PT-BR</option>
+                  <option value="cloned">🧬 Minha Voz Clonada (Subir Áudio Abaixo)</option>
+                  <option value="none">🔇 Sem Locução (Apenas Efeitos Sonoros Reais SFX)</option>
+                </select>
+                <input type="file" id="timeline-cloned-voice-file" accept="audio/*" class="w-full text-[10px] text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-cyan-500/20 file:text-cyan-300">
+              </div>
+
+              <div class="p-3 rounded-xl bg-dark-800/90 border border-emerald-400/30 space-y-1.5">
+                <label class="block text-[11px] font-bold text-emerald-300 uppercase">2. Efeitos Sonoros Reais (SFX Cinema):</label>
+                <select id="timeline-sfx-select" class="w-full bg-dark-900 border border-emerald-400/30 rounded-lg px-3 py-2 text-xs text-emerald-200 font-semibold focus:outline-none">
+                  <option value="auto_contextual">🔊 Auto IA Contextual (Detecta Som da Cena)</option>
+                  <option value="v8_engine_road">🏎️ Ronco Real Motor V8 + Estrada + Vento</option>
+                  <option value="rain_thunder_noir">🌧️ Chuva Forte Realista + Trovão Noir</option>
+                  <option value="epic_cinema_impact">💥 Impactos IMAX (Sub-Bass Braaam + Whoosh)</option>
+                  <option value="wind_desert_nature">🌬️ Vento Cânion Realista & Natureza</option>
+                  <option value="scifi_cyberpunk">🛸 Propulsão Espacial & Pulso Cyberpunk</option>
+                  <option value="footsteps_action">👣 Passos de Perseguição & Ação</option>
+                </select>
+                <span class="block text-[10px] text-gray-400">Os vídeos saem masterizados com SFX acústicos reais em estéreo + voz.</span>
+              </div>
+            </div>
+
+            <!-- Roteiro de Narração Cinematográfica PT-BR -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">3. Roteiro de Fala / Narração do Filme em Português (Opcional):</label>
+              <input type="text" id="timeline-narration-input" value="A estrada chama quem nasceu para criar o futuro. Bem-vindo à nova era do cinema com inteligência artificial." placeholder="Digite a fala ou narração do filme em português (ou deixe em branco para apenas efeitos sonoros reais)..." class="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
             </div>
           </div>
 
-          <!-- Direita: Player do Filme Renderizado -->
-          <div class="lg:col-span-5 bg-dark-800/90 rounded-2xl p-4 border border-white/10 flex flex-col justify-between min-h-[250px]">
-            <h4 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
-              <i data-lucide="film" class="w-4 h-4 text-amber-400"></i>
-              Monitor de Direção (Preview do Filme)
-            </h4>
+          <!-- Direita: Player do Filme Renderizado com Efeitos Sonoros Reais -->
+          <div class="lg:col-span-5 bg-dark-800/90 rounded-2xl p-4 border border-white/10 flex flex-col justify-between min-h-[290px]">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="film" class="w-4 h-4 text-amber-400"></i>
+                Monitor de Direção (Vídeo Real + SFX)
+              </h4>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">Áudio SFX Ativo</span>
+            </div>
             <div id="timeline-movie-box" class="flex-1 flex flex-col items-center justify-center text-center p-2">
-              <video controls playsinline class="w-full rounded-xl max-h-52 bg-black border border-white/10 mb-2" poster="/static/samples/canvas_take1.jpg">
-                <source src="/static/samples/demo_cinema_1970.mp4" type="video/mp4">
+              <video controls playsinline class="w-full rounded-xl max-h-56 bg-black border border-white/10 mb-2" poster="/static/samples/canvas_take1.jpg?v=real2026">
+                <source src="/static/samples/demo_cinema_1970.mp4?v=real2026" type="video/mp4">
               </video>
-              <span class="text-[11px] text-gray-400">Exemplo de Storyboard compilado a partir dos 3 Takes do Canvas acima.</span>
+              <span class="text-[11px] text-gray-400">Filme com Movimento Real (LTX/Seedance), Rosto 100% Fiel e Efeitos Sonoros Reais.</span>
             </div>
           </div>
 
@@ -1593,13 +1849,13 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- MODAL DE ZOOM 4K & MAGNIFIC UPSCALER (DUPLO CLIQUE EM QUALQUER NÓ)         -->
+  <!-- MODAL DE ZOOM 8K & MAGNIFIC UPSCALER (DUPLO CLIQUE EM QUALQUER NÓ)         -->
   <!-- ========================================================================= -->
   <div id="canvas-lightbox-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="glass-panel max-w-4xl w-full p-5 md:p-6 rounded-3xl border border-amber-400/40 shadow-2xl relative">
       <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
         <div class="flex items-center gap-2">
-          <span class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-400/30">Magnific 4K Cinema Inspector</span>
+          <span class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-400/30">Magnific 8K Cinema Inspector</span>
           <h4 id="lightbox-node-title" class="text-base md:text-lg font-bold text-white">@Image1</h4>
         </div>
         <button onclick="closeModal('canvas-lightbox-modal')" class="text-gray-400 hover:text-white">
@@ -1608,19 +1864,19 @@
       </div>
 
       <div class="bg-black rounded-2xl overflow-hidden border border-white/10 flex items-center justify-center max-h-[65vh]">
-        <img id="lightbox-node-img" src="/static/samples/canvas_take1.jpg" alt="Zoom 4K" class="max-h-[65vh] w-auto object-contain">
+        <img id="lightbox-node-img" src="/static/samples/canvas_take1.jpg" alt="Zoom 8K" class="max-h-[65vh] w-auto object-contain">
       </div>
 
       <div class="flex flex-wrap items-center justify-between gap-3 mt-4 pt-3 border-t border-white/10">
-        <span id="lightbox-status" class="text-xs text-gray-400">Super-Resolução Lanczos 4K + Micro-Contraste de Pele & Iluminação Cinematográfica</span>
+        <span id="lightbox-status" class="text-xs text-gray-400">Super-Resolução Lanczos 8K + Micro-Contraste de Pele & Iluminação Cinematográfica</span>
         <div class="flex items-center gap-2.5">
           <button onclick="handleMagnificUpscale(currentLightboxUrl, true)" class="bg-gradient-to-r from-amber-400 to-orange-500 text-black font-extrabold px-4 py-2 rounded-xl text-xs shadow-lg hover:scale-105 transition-all flex items-center gap-1.5">
             <i data-lucide="sparkles" class="w-4 h-4"></i>
-            <span>Aplicar Magnific 4K Upscale (4 Créditos)</span>
+            <span>Aplicar Magnific 8K Upscale (4 Créditos)</span>
           </button>
           <a id="lightbox-download-btn" href="/static/samples/canvas_take1.jpg" download class="bg-dark-700 hover:bg-dark-600 border border-white/15 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-all">
             <i data-lucide="download" class="w-4 h-4 text-cyan-400"></i>
-            <span>Baixar Master</span>
+            <span>Baixar Master 8K</span>
           </a>
         </div>
       </div>
@@ -1628,13 +1884,124 @@
   </div>
 
   <!-- ========================================================================= -->
-  <!-- ROBÔ MASCOTE INTERATIVO E FLUTUANTE (ARRASTÁVEL POR TOQUE OU MOUSE)       -->
+  <!-- MODAL DE ENGENHARIA REVERSA CRIATIVA — REA (4 CAMADAS DO VÍDEO 8.11.40)   -->
+  <!-- ========================================================================= -->
+  <div id="rea-reverse-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-3xl w-full p-6 rounded-3xl border border-purple-400/50 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div>
+          <span class="px-2.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[10px] font-black uppercase tracking-wider">REA &bull; Reverse Engineer Anything (4 Camadas)</span>
+          <h3 class="text-xl font-bold font-display text-white mt-1">Engenharia Reversa de Qualquer Criativo, Foto ou Cena</h3>
+        </div>
+        <button onclick="closeModal('rea-reverse-modal')" class="text-gray-400 hover:text-white">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-gray-300">Suba uma imagem de referência (ou descreva o estilo que você viu) e a IA extrai as <strong>4 Camadas Cinematográficas</strong> para você recriar o mesmo padrão no seu Canvas em 1 clique:</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-purple-300 mb-1">1. Subir Imagem/Frame para Engenharia Reversa (Opcional):</label>
+          <input type="file" id="rea-image-file" accept="image/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-3 py-2 text-xs text-gray-300 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:bg-purple-500/20 file:text-purple-300">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-purple-300 mb-1">2. Ou Descreva a Referência / Link / Estilo:</label>
+          <input type="text" id="rea-desc-input" placeholder="Ex: Estética de comercial automotivo noturno em 70mm com luz neon..." class="w-full bg-dark-800 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
+        </div>
+      </div>
+
+      <button onclick="handleRunReaReverseEngineer()" id="rea-run-btn" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-95 text-white font-extrabold py-2.5 rounded-xl text-xs shadow-lg flex items-center justify-center gap-2">
+        <i data-lucide="scan-eye" class="w-4 h-4"></i>
+        <span>Extrair as 4 Camadas Técnicas + Prompt 8K (2 Créditos)</span>
+      </button>
+
+      <div id="rea-results-box" class="hidden space-y-2.5 pt-2 border-t border-white/10 text-xs">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+          <div class="p-3 rounded-xl bg-dark-800 border border-white/10">
+            <span class="font-bold text-cyan-300 block mb-1">1. Tela & Composição Visual:</span>
+            <p id="rea-layer-1" class="text-gray-300 text-[11px]"></p>
+          </div>
+          <div class="p-3 rounded-xl bg-dark-800 border border-white/10">
+            <span class="font-bold text-amber-300 block mb-1">2. Lógica Óptica & Câmera:</span>
+            <p id="rea-layer-2" class="text-gray-300 text-[11px]"></p>
+          </div>
+        </div>
+        <div class="p-3 rounded-xl bg-dark-800 border border-white/10">
+          <span class="font-bold text-pink-300 block mb-1">3. Dados de Iluminação, Cor & Textura 8K:</span>
+          <p id="rea-layer-3" class="text-gray-300 text-[11px]"></p>
+        </div>
+        <div class="p-3 rounded-xl bg-dark-900 border border-purple-400/40 space-y-2">
+          <span class="font-bold text-emerald-300 block">4. Prompt Mestre 8K Extraído (Pronto para o Canvas):</span>
+          <textarea id="rea-layer-4" rows="2" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2 text-[11px] text-white font-mono"></textarea>
+          <button onclick="applyReaPromptToCanvas()" class="w-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-300 font-bold py-2 rounded-lg text-xs">
+            ✨ Enviar Prompt + Configuração Óptica Direto para o Magnific Canvas
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- CENTRAL INTERATIVA "PERGUNTE AO ROBÔ IABOT" (COMO O SISTEMA FUNCIONA)     -->
+  <!-- ========================================================================= -->
+  <div id="iabot-chat-drawer" class="fixed bottom-28 right-5 z-50 w-[92vw] max-w-md glass-panel rounded-3xl border-2 border-cyan-400/60 shadow-neon-cyan p-4 hidden flex flex-col space-y-3" style="max-height: 78vh;">
+    <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+      <div class="flex items-center gap-2.5">
+        <img src="/static/assets/robot_mascot.png?v=2" class="w-9 h-9 object-contain">
+        <div>
+          <h4 class="text-sm font-extrabold text-white flex items-center gap-1.5">
+            <span>Pergunte ao Robô IABot</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          </h4>
+          <p class="text-[10px] text-cyan-300">Copiloto Oficial &bull; Tira todas as dúvidas do Magnific & IABOX</p>
+        </div>
+      </div>
+      <button onclick="closeIABotAssistant()" class="text-gray-400 hover:text-white p-1">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Botões de Perguntas Rápidas -->
+    <div class="flex flex-wrap gap-1.5">
+      <button onclick="askIABotQuestion('Como funciona o Magnific Canvas Expansivo e como mover ou deletar imagens?')" class="px-2.5 py-1 rounded-lg bg-dark-800 hover:bg-cyan-500/20 border border-cyan-400/30 text-[10px] text-cyan-300 font-semibold transition-all">
+        📐 Como usar o Canvas & Deletar?
+      </button>
+      <button onclick="askIABotQuestion('Como travar 100% da Fidelização de Rosto (Face Lock) nos meus vídeos e fotos?')" class="px-2.5 py-1 rounded-lg bg-dark-800 hover:bg-amber-500/20 border border-amber-400/30 text-[10px] text-amber-300 font-semibold transition-all">
+        🔒 Fidelização de Rosto 100%
+      </button>
+      <button onclick="askIABotQuestion('Como criar um filme de até 1 ou 2 horas com vozes e efeitos sonoros reais (SFX)?')" class="px-2.5 py-1 rounded-lg bg-dark-800 hover:bg-emerald-500/20 border border-emerald-400/30 text-[10px] text-emerald-300 font-semibold transition-all">
+        🎬 Filmes de 2h + Vozes & SFX
+      </button>
+      <button onclick="askIABotQuestion('Como trocar o ângulo de câmera ou iluminação de uma única cena sem refazer o filme todo?')" class="px-2.5 py-1 rounded-lg bg-dark-800 hover:bg-purple-500/20 border border-purple-400/30 text-[10px] text-purple-300 font-semibold transition-all">
+        🎥 Trocar Ângulo sem Refazer
+      </button>
+    </div>
+
+    <!-- Histórico de Mensagens do Chat com o Robô -->
+    <div id="iabot-chat-messages" class="flex-1 overflow-y-auto space-y-2.5 p-2 rounded-2xl bg-dark-900/90 border border-white/10 text-xs max-h-64">
+      <div class="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 text-gray-200 leading-relaxed">
+        🤖 <strong>Olá! Eu sou o IABot!</strong> Com a nova atualização do <strong>Magnific 2.0 & Cinema Studio</strong>, você tem controle total. Clique em uma pergunta acima ou digite sua dúvida abaixo que eu te explico passo a passo!
+      </div>
+    </div>
+
+    <!-- Input para Perguntar ao Robô -->
+    <div class="flex items-center gap-2 pt-1">
+      <input type="text" id="iabot-chat-input" onkeydown="if(event.key==='Enter') sendIABotInput()" placeholder="Pergunte qualquer coisa sobre o sistema..." class="flex-1 bg-dark-800 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+      <button onclick="sendIABotInput()" id="iabot-send-btn" class="bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-extrabold px-3.5 py-2 rounded-xl text-xs shadow-lg">
+        Enviar
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- ROBÔ MASCOTE INTERATIVO E FLUTUANTE (ARRASTÁVEL + ABRE CHAT DE AJUDA)     -->
   <!-- ========================================================================= -->
   <div id="draggable-mascot" class="flex flex-col items-center">
     
     <!-- Balão de Fala do Robô -->
-    <div id="mascot-bubble" class="bg-dark-800/90 text-white text-xs px-3.5 py-2 rounded-2xl border border-cyan-400/40 shadow-neon-cyan-sm mb-2 max-w-[200px] text-center transform scale-95 transition-all">
-      <span id="mascot-msg">Olá! Sou o IABot. Toque em mim para dicas! 🤖</span>
+    <div id="mascot-bubble" onclick="openIABotAssistant()" class="bg-dark-800/95 text-white text-xs px-3.5 py-2 rounded-2xl border border-cyan-400/50 shadow-neon-cyan-sm mb-2 max-w-[220px] text-center transform scale-95 transition-all cursor-pointer hover:border-amber-400">
+      <span id="mascot-msg">Dúvidas no Magnific? Clique em mim e pergunte! 🤖💬</span>
     </div>
 
     <!-- Imagem Transparente 100% Sólida do Robô com Animação de Flutuação e Piscar de Olhos -->
@@ -1940,6 +2307,7 @@
         tipIdx = (tipIdx + 1) % tipsList.length;
         setMascotMessage(tipsList[tipIdx]);
         triggerRobotBlink();
+        openIABotAssistant();
       }
     });
 
@@ -2343,27 +2711,180 @@
     }
 
     // =========================================================================
-    // 14. MOTOR INTERATIVO MAGNIFIC CANVAS + STORYBOARD + HIGGSFIELD TIMELINE
+    // 14. MOTOR INTERATIVO MAGNIFIC 2.0 EXPANSIVE CANVAS + FILM AGENT + SFX + IABOT
     // =========================================================================
     let canvasNodes = [
-      { id: 'node_1', tag: '@Image1', title: 'Take 1: Evandro Close-Up', url: '/static/samples/canvas_take1.jpg?v=real2026', res: '2752 x 1536', x: 90, y: 65, connected: true },
-      { id: 'node_2', tag: '@Image2', title: 'Take 2: Perfil Cinematográfico', url: '/static/samples/canvas_take2.jpg?v=real2026', res: '2752 x 1536', x: 95, y: 245, connected: true },
-      { id: 'node_3', tag: '@Image3', title: 'Take 3: Plano Aberto Estrada', url: '/static/samples/canvas_take3.jpg?v=real2026', res: '2752 x 1536', x: 295, y: 155, connected: true }
+      { id: 'node_1', tag: '@Image1', role: 'Character', title: 'Take 1: Evandro Close-Up (Face Lock)', url: '/static/samples/canvas_take1.jpg?v=real2026', res: '3840 x 2160', x: 75, y: 65, connected: true, camera: 'close_up_85mm', lighting: 'golden_hour', sfx: 'v8_engine_road' },
+      { id: 'node_2', tag: '@Image2', role: 'Prop', title: 'Take 2: Perfil Cinematográfico V8', url: '/static/samples/canvas_take2.jpg?v=real2026', res: '3840 x 2160', x: 75, y: 245, connected: true, camera: 'side_profile', lighting: 'golden_hour', sfx: 'v8_engine_road' },
+      { id: 'node_3', tag: '@Image3', role: 'Scene', title: 'Take 3: Plano Aberto Estrada IMAX', url: '/static/samples/canvas_take3.jpg?v=real2026', res: '3840 x 2160', x: 265, y: 155, connected: true, camera: 'wide_anamorphic', lighting: 'golden_hour', sfx: 'v8_engine_road' }
     ];
     let currentGeneratedNodeUrl = '/static/samples/canvas_take3.jpg?v=real2026';
     let currentLightboxUrl = '/static/samples/canvas_take1.jpg?v=real2026';
+    let selectedCanvasNodeId = 'node_1';
     let selectedCanvasNodeUrl = '/static/samples/canvas_take1.jpg?v=real2026';
+    let customFaceLockFile = null;
+    let currentFaceLockUrl = '/static/samples/canvas_take1.jpg?v=real2026';
+    let canvasZoomLevel = 1.0;
+    let canvasPanX = 0;
+    let canvasPanY = 0;
+    let isCanvasExpanded = false;
+    let lastReaAnalysis = null;
 
     function resetCanvasDemoNodes() {
       canvasNodes = [
-        { id: 'node_1', tag: '@Image1', title: 'Take 1: Evandro Close-Up', url: '/static/samples/canvas_take1.jpg?v=real2026', res: '2752 x 1536', x: 90, y: 65, connected: true },
-        { id: 'node_2', tag: '@Image2', title: 'Take 2: Perfil Cinematográfico', url: '/static/samples/canvas_take2.jpg?v=real2026', res: '2752 x 1536', x: 95, y: 245, connected: true },
-        { id: 'node_3', tag: '@Image3', title: 'Take 3: Plano Aberto Estrada', url: '/static/samples/canvas_take3.jpg?v=real2026', res: '2752 x 1536', x: 295, y: 155, connected: true }
+        { id: 'node_1', tag: '@Image1', role: 'Character', title: 'Take 1: Evandro Close-Up (Face Lock)', url: '/static/samples/canvas_take1.jpg?v=real2026', res: '3840 x 2160', x: 75, y: 65, connected: true, camera: 'close_up_85mm', lighting: 'golden_hour', sfx: 'v8_engine_road' },
+        { id: 'node_2', tag: '@Image2', role: 'Prop', title: 'Take 2: Perfil Cinematográfico V8', url: '/static/samples/canvas_take2.jpg?v=real2026', res: '3840 x 2160', x: 75, y: 245, connected: true, camera: 'side_profile', lighting: 'golden_hour', sfx: 'v8_engine_road' },
+        { id: 'node_3', tag: '@Image3', role: 'Scene', title: 'Take 3: Plano Aberto Estrada IMAX', url: '/static/samples/canvas_take3.jpg?v=real2026', res: '3840 x 2160', x: 265, y: 155, connected: true, camera: 'wide_anamorphic', lighting: 'golden_hour', sfx: 'v8_engine_road' }
       ];
+      selectedCanvasNodeId = 'node_1';
+      selectedCanvasNodeUrl = canvasNodes[0].url;
       const genNode = document.getElementById('canvas-gen-node');
-      if (genNode) { genNode.style.left = '540px'; genNode.style.top = '95px'; }
+      if (genNode) { genNode.style.left = '470px'; genNode.style.top = '75px'; }
+      resetCanvasViewportZoom();
       renderCanvasNodes();
       drawCanvasCables();
+      setMascotMessage('Layout original do Magnific Canvas restaurado! 🎬');
+    }
+
+    // Modo Tela Expansiva Fullscreen (Maior controle sobre todos os elementos)
+    function toggleCanvasExpandMode() {
+      const board = document.getElementById('magnific-canvas-board');
+      const btn = document.getElementById('btn-canvas-fullscreen');
+      if (!board) return;
+      isCanvasExpanded = !isCanvasExpanded;
+      if (isCanvasExpanded) {
+        board.classList.add('fixed', 'inset-2', 'z-50');
+        board.style.height = '96vh';
+        if (btn) btn.innerHTML = '<i data-lucide="minimize" class="w-4 h-4 text-amber-400"></i><span>Sair da Tela Expansiva</span>';
+        setMascotMessage('Modo Tela Expansiva Ativo! Arraste qualquer card, painel, barra ou o próprio fundo livremente! 🖥️✨');
+      } else {
+        board.classList.remove('fixed', 'inset-2', 'z-50');
+        board.style.height = '790px';
+        if (btn) btn.innerHTML = '<i data-lucide="maximize" class="w-4 h-4 text-cyan-400"></i><span>Tela Expansiva (Fullscreen)</span>';
+      }
+      lucide.createIcons();
+      setTimeout(drawCanvasCables, 80);
+    }
+
+    // Controle de Zoom & Pan do Viewport do Canvas
+    function applyCanvasViewportTransform() {
+      const stage = document.getElementById('canvas-viewport-stage');
+      const badge = document.getElementById('canvas-zoom-badge');
+      if (stage) {
+        stage.style.transform = `translate(${canvasPanX}px, ${canvasPanY}px) scale(${canvasZoomLevel})`;
+      }
+      if (badge) {
+        badge.innerText = `${Math.round(canvasZoomLevel * 100)}%`;
+      }
+    }
+
+    function zoomCanvasViewport(delta) {
+      canvasZoomLevel = Math.min(1.6, Math.max(0.55, canvasZoomLevel + delta));
+      applyCanvasViewportTransform();
+    }
+
+    function resetCanvasViewportZoom() {
+      canvasZoomLevel = 1.0;
+      canvasPanX = 0;
+      canvasPanY = 0;
+      applyCanvasViewportTransform();
+    }
+
+    // Permite arrastar o fundo do Canvas (Pan) quando clicar em área vazia
+    (function initCanvasBackgroundPan() {
+      const board = document.getElementById('magnific-canvas-board');
+      if (!board) return;
+      let panning = false;
+      let startPX = 0, startPY = 0, initPX = 0, initPY = 0;
+      board.addEventListener('pointerdown', (e) => {
+        if (e.target !== board && e.target.id !== 'canvas-viewport-stage' && e.target.id !== 'canvas-nodes-layer') return;
+        panning = true;
+        startPX = e.clientX;
+        startPY = e.clientY;
+        initPX = canvasPanX;
+        initPY = canvasPanY;
+        board.setPointerCapture(e.pointerId);
+      });
+      board.addEventListener('pointermove', (e) => {
+        if (!panning) return;
+        canvasPanX = initPX + (e.clientX - startPX);
+        canvasPanY = initPY + (e.clientY - startPY);
+        applyCanvasViewportTransform();
+      });
+      board.addEventListener('pointerup', () => { panning = false; });
+    })();
+
+    // Deletar um nó individual pelo ID (Botão 🗑️ no Card ou na Timeline)
+    function deleteCanvasNode(nodeId, ev) {
+      if (ev) ev.stopPropagation();
+      const target = canvasNodes.find(n => n.id === nodeId);
+      canvasNodes = canvasNodes.filter(n => n.id !== nodeId);
+      // Re-enumera tags @Image1, @Image2...
+      canvasNodes.forEach((n, i) => { n.tag = `@Image${i + 1}`; });
+      if (selectedCanvasNodeId === nodeId) {
+        selectedCanvasNodeId = canvasNodes[0] ? canvasNodes[0].id : null;
+        selectedCanvasNodeUrl = canvasNodes[0] ? canvasNodes[0].url : currentGeneratedNodeUrl;
+      }
+      renderCanvasNodes();
+      const statusEl = document.getElementById('canvas-status-msg');
+      if (statusEl) statusEl.innerText = `🗑️ Nó ${target ? target.tag : ''} deletado do Canvas com sucesso.`;
+    }
+
+    function deleteSelectedCanvasNode() {
+      if (!selectedCanvasNodeId && canvasNodes.length > 0) {
+        selectedCanvasNodeId = canvasNodes[canvasNodes.length - 1].id;
+      }
+      if (!selectedCanvasNodeId) return alert('Nenhum nó selecionado para deletar.');
+      deleteCanvasNode(selectedCanvasNodeId);
+    }
+
+    function clearAllCanvasNodes() {
+      canvasNodes = [];
+      selectedCanvasNodeId = null;
+      renderCanvasNodes();
+      const statusEl = document.getElementById('canvas-status-msg');
+      if (statusEl) statusEl.innerText = '🧹 Todos os nós foram limpos. Suba novas fotos ou use o Agente Diretor de Filmes!';
+    }
+
+    function duplicateSelectedCanvasNode() {
+      const src = canvasNodes.find(n => n.id === selectedCanvasNodeId) || canvasNodes[0];
+      if (!src) return;
+      const nextIdx = canvasNodes.length + 1;
+      const newId = `node_${Date.now()}`;
+      canvasNodes.push({
+        id: newId,
+        tag: `@Image${nextIdx}`,
+        role: src.role || 'Scene',
+        title: `${src.title} (Cópia)`,
+        url: src.url,
+        res: src.res || '3840 x 2160',
+        x: (src.x || 90) + 35,
+        y: (src.y || 90) + 35,
+        connected: true,
+        camera: src.camera || 'default',
+        lighting: src.lighting || 'default',
+        sfx: src.sfx || 'auto_contextual'
+      });
+      selectedCanvasNodeId = newId;
+      selectedCanvasNodeUrl = src.url;
+      renderCanvasNodes();
+      setMascotMessage(`Nó duplicado como @Image${nextIdx}! 📋`);
+    }
+
+    function selectCanvasNode(nodeId) {
+      const node = canvasNodes.find(n => n.id === nodeId);
+      if (!node) return;
+      selectedCanvasNodeId = node.id;
+      selectedCanvasNodeUrl = node.url;
+      const tagBadge = document.getElementById('inspector-selected-tag');
+      if (tagBadge) tagBadge.innerText = `${node.tag} (${node.role || 'Cena'})`;
+      const camSel = document.getElementById('canvas-camera-select');
+      if (camSel && node.camera) camSel.value = node.camera;
+      const lightSel = document.getElementById('canvas-lighting-select');
+      if (lightSel && node.lighting) lightSel.value = node.lighting;
+      const sfxSel = document.getElementById('canvas-sfx-select');
+      if (sfxSel && node.sfx) sfxSel.value = node.sfx;
+      renderCanvasNodes();
     }
 
     function renderCanvasNodes() {
@@ -2376,43 +2897,59 @@
       if (tagsBox) tagsBox.innerHTML = '';
       if (timelineStrip) timelineStrip.innerHTML = '';
 
+      const roleColors = {
+        'Character': 'bg-cyan-500/20 text-cyan-300 border-cyan-400/40',
+        'Prop': 'bg-purple-500/20 text-purple-300 border-purple-400/40',
+        'Background': 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40',
+        'Scene': 'bg-amber-500/20 text-amber-300 border-amber-400/40'
+      };
+
       canvasNodes.forEach((node, idx) => {
-        // 1. Cria o Card Arrastável no Canvas
+        const isSelected = node.id === selectedCanvasNodeId;
+        const roleBadgeClass = roleColors[node.role || 'Scene'] || roleColors['Scene'];
+
+        // 1. Cria o Card Arrastável no Canvas com Botões de Deletar (🗑️) e Vídeo+SFX (🎬)
         const el = document.createElement('div');
         el.id = `dom_${node.id}`;
-        el.className = `absolute w-44 rounded-2xl bg-dark-800/95 backdrop-blur-md border ${node.connected ? 'border-amber-400/70 shadow-lg' : 'border-white/15'} p-2 cursor-grab active:cursor-grabbing transition-shadow`;
+        el.className = `absolute w-48 rounded-2xl bg-dark-800/95 backdrop-blur-md border-2 ${isSelected ? 'border-cyan-400 shadow-neon-cyan-sm' : (node.connected ? 'border-amber-400/70 shadow-lg' : 'border-white/15')} p-2 cursor-grab active:cursor-grabbing transition-shadow`;
         el.style.left = `${node.x}px`;
         el.style.top = `${node.y}px`;
 
         el.innerHTML = `
-          <div class="flex items-center justify-between text-[10px] text-gray-300 mb-1.5 px-1">
-            <span class="font-extrabold text-amber-400">${node.tag}</span>
-            <span class="font-mono text-gray-400">${node.res}</span>
+          <div class="flex items-center justify-between text-[10px] text-gray-300 mb-1.5 px-0.5">
+            <div class="flex items-center gap-1">
+              <span class="font-extrabold text-amber-400">${node.tag}</span>
+              <span class="px-1.5 py-0.2 rounded border text-[9px] font-bold ${roleBadgeClass}">${node.role || 'Cena'}</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <button onclick="handleGenerateSingleNodeVideo('${node.url}', '${node.tag}', event)" title="Gerar Vídeo Real + Efeitos Sonoros deste Nó" class="w-5 h-5 rounded bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 flex items-center justify-center text-[10px]">🎬</button>
+              <button onclick="deleteCanvasNode('${node.id}', event)" title="Deletar esta imagem/nó do Canvas" class="w-5 h-5 rounded bg-red-500/20 hover:bg-red-500/40 text-red-300 flex items-center justify-center text-[10px]">🗑️</button>
+            </div>
           </div>
           <div class="relative w-full h-24 rounded-xl overflow-hidden bg-black border border-white/10 group">
             <img src="${node.url}" alt="${node.tag}" class="w-full h-full object-cover pointer-events-none">
-            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <span class="text-[10px] font-bold text-white bg-black/70 px-2 py-0.5 rounded-md">2x Clique: 4K</span>
+            <div class="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span class="text-[10px] font-bold text-white bg-black/80 px-2 py-0.5 rounded-md">2x Clique: 8K Zoom</span>
             </div>
           </div>
-          <div class="flex items-center justify-between mt-1.5 px-1">
-            <span class="text-[10px] text-gray-400 truncate max-w-[110px]">${node.title}</span>
+          <div class="flex items-center justify-between mt-1.5 px-0.5">
+            <span class="text-[10px] text-gray-300 truncate max-w-[125px]" title="${node.title}">${node.title}</span>
             <button onclick="toggleNodeConnection('${node.id}', event)" title="Conectar/Desconectar cabo Bezier" class="w-5 h-5 rounded-full ${node.connected ? 'bg-amber-400 text-black' : 'bg-dark-600 text-gray-300'} font-black text-xs flex items-center justify-center shadow">+</button>
           </div>
         `;
 
-        // Duplo clique abre o Magnific 4K Cinema Inspector
+        // Duplo clique abre o Magnific 8K Cinema Inspector
         el.addEventListener('dblclick', (e) => {
           e.stopPropagation();
           openCanvasLightbox(node.url, `${node.tag} — ${node.title}`);
         });
 
-        // Clique seleciona nó
-        el.addEventListener('click', () => {
-          selectedCanvasNodeUrl = node.url;
+        // Clique seleciona o nó para editar Ângulo/Luz/Deletar no Inspetor
+        el.addEventListener('click', (e) => {
+          if (e.target.tagName === 'BUTTON') return;
+          selectCanvasNode(node.id);
         });
 
-        // Drag & Drop fluido no Canvas com atualização dos cabos SVG Bezier
         makeCanvasElementDraggable(el, node);
         layer.appendChild(el);
 
@@ -2426,7 +2963,7 @@
           tagsBox.appendChild(pill);
         }
 
-        // 3. Adiciona à Fita de Takes da Timeline Cinematográfica
+        // 3. Adiciona à Fita de Takes da Timeline Cinematográfica (com botão 🗑️ de remover take)
         if (timelineStrip && node.connected) {
           const cameraMoves = ['Dolly Push-In', 'Tracking Pan', 'Crane Pull-Out', 'Anamorphic Drift'];
           const camMove = cameraMoves[idx % cameraMoves.length];
@@ -2435,12 +2972,12 @@
           takeCard.innerHTML = `
             <div class="flex items-center justify-between text-[10px] font-bold text-amber-300 mb-1">
               <span>TAKE 0${idx + 1} (${node.tag})</span>
-              <span class="text-cyan-400">3.5s</span>
+              <button onclick="deleteCanvasNode('${node.id}', event)" title="Deletar Take" class="text-red-400 hover:text-red-300">🗑️</button>
             </div>
             <img src="${node.url}" class="w-full h-20 object-cover rounded-lg border border-white/5 mb-1.5 cursor-pointer" onclick="openCanvasLightbox('${node.url}', 'Take 0${idx+1}')">
             <div class="text-[10px] text-gray-400 flex items-center justify-between">
               <span>🎥 ${camMove}</span>
-              <span class="text-emerald-400">35mm</span>
+              <span class="text-emerald-400">🔊 SFX</span>
             </div>
           `;
           timelineStrip.appendChild(takeCard);
@@ -2449,18 +2986,20 @@
 
       const connectedCount = canvasNodes.filter(n => n.connected).length;
       const countEl = document.getElementById('canvas-connected-count');
-      if (countEl) countEl.innerText = `${connectedCount} Nó(s) Conectado(s) ao Gerador`;
+      if (countEl) countEl.innerText = `${connectedCount} Nó(s) Conectado(s)`;
 
       lucide.createIcons();
       requestAnimationFrame(drawCanvasCables);
     }
 
     function makeCanvasElementDraggable(el, nodeObj = null) {
+      if (!el) return;
       let dragging = false;
       let sX = 0, sY = 0, iX = 0, iY = 0;
 
       el.addEventListener('pointerdown', (e) => {
-        if (e.target.tagName === 'BUTTON') return;
+        if (['BUTTON', 'SELECT', 'INPUT', 'TEXTAREA', 'OPTION', 'LABEL'].includes(e.target.tagName)) return;
+        e.stopPropagation();
         dragging = true;
         sX = e.clientX;
         sY = e.clientY;
@@ -2471,8 +3010,9 @@
 
       el.addEventListener('pointermove', (e) => {
         if (!dragging) return;
-        const nx = Math.max(10, iX + (e.clientX - sX));
-        const ny = Math.max(45, iY + (e.clientY - sY));
+        const scale = nodeObj ? canvasZoomLevel : 1.0;
+        const nx = Math.max(4, iX + (e.clientX - sX) / scale);
+        const ny = Math.max(4, iY + (e.clientY - sY) / scale);
         el.style.left = `${nx}px`;
         el.style.top = `${ny}px`;
         if (nodeObj) {
@@ -2487,9 +3027,11 @@
       });
     }
 
-    // Torna o Nó Central de Geração arrastável também
-    const genNodeEl = document.getElementById('canvas-gen-node');
-    if (genNodeEl) makeCanvasElementDraggable(genNodeEl, null);
+    // Torna TODOS os painéis, barras e nós do Canvas 100% movíveis pelo usuário
+    ['canvas-gen-node', 'canvas-top-hud', 'canvas-left-toolbar', 'canvas-director-inspector', 'canvas-bottom-dock'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) makeCanvasElementDraggable(el, null);
+    });
 
     function drawCanvasCables() {
       const svg = document.getElementById('canvas-svg-cables');
@@ -2497,15 +3039,15 @@
       if (!svg || !genNode) return;
 
       svg.innerHTML = '';
-      const genX = parseInt(genNode.style.left || '540', 10);
-      const genY = parseInt(genNode.style.top || '95', 10) + (genNode.offsetHeight / 2 || 130);
+      const genX = parseInt(genNode.style.left || '470', 10);
+      const genY = parseInt(genNode.style.top || '75', 10) + (genNode.offsetHeight / 2 || 130);
 
       canvasNodes.forEach((node) => {
         if (!node.connected) return;
         const domNode = document.getElementById(`dom_${node.id}`);
         if (!domNode) return;
 
-        const startX = node.x + (domNode.offsetWidth || 176);
+        const startX = node.x + (domNode.offsetWidth || 192);
         const startY = node.y + (domNode.offsetHeight / 2 || 75);
         const endX = genX;
         const endY = genY;
@@ -2513,7 +3055,6 @@
         const ctrlOffset = Math.max(60, Math.abs(endX - startX) * 0.45);
         const pathData = `M ${startX} ${startY} C ${startX + ctrlOffset} ${startY}, ${endX - ctrlOffset} ${endY}, ${endX} ${endY}`;
 
-        // Sombra neon do cabo Bezier
         const glowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         glowPath.setAttribute('d', pathData);
         glowPath.setAttribute('fill', 'none');
@@ -2521,7 +3062,6 @@
         glowPath.setAttribute('stroke-width', '6');
         svg.appendChild(glowPath);
 
-        // Linha principal do cabo Bezier
         const mainPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         mainPath.setAttribute('d', pathData);
         mainPath.setAttribute('fill', 'none');
@@ -2558,17 +3098,54 @@
       if (sec) sec.scrollIntoView({ behavior: 'smooth' });
     }
 
-    function openCanvasLightbox(url, title = 'Magnific 4K Cinema Node') {
+    function openCanvasLightbox(url, title = 'Magnific 8K Cinema Node') {
       currentLightboxUrl = url;
       document.getElementById('lightbox-node-img').src = url;
       document.getElementById('lightbox-node-title').innerText = title;
       document.getElementById('lightbox-download-btn').href = url;
-      document.getElementById('lightbox-status').innerText = 'Super-Resolução Lanczos 4K + Micro-Contraste de Pele & Iluminação Cinematográfica';
+      document.getElementById('lightbox-status').innerText = 'Super-Resolução Lanczos 8K + Micro-Contraste de Pele & Iluminação Cinematográfica';
       openModal('canvas-lightbox-modal');
     }
 
     function openLightboxFromSelected() {
-      openCanvasLightbox(selectedCanvasNodeUrl || currentGeneratedNodeUrl, 'Inspeção de Nó 4K');
+      openCanvasLightbox(selectedCanvasNodeUrl || currentGeneratedNodeUrl, 'Inspeção de Nó 8K');
+    }
+
+    // Controles de Fidelização de Rosto 100% (Face Lock)
+    function handleFaceLockPresetChange() {
+      const sel = document.getElementById('canvas-facelock-preset');
+      const thumb = document.getElementById('canvas-facelock-thumb');
+      const fileInp = document.getElementById('canvas-facelock-file');
+      if (!sel) return;
+      if (sel.value === 'custom') {
+        if (fileInp) fileInp.click();
+      } else {
+        customFaceLockFile = null;
+        currentFaceLockUrl = sel.value;
+        if (thumb) thumb.src = sel.value;
+      }
+    }
+
+    function handleCustomFaceLockUpload(event) {
+      const f = event.target.files[0];
+      if (!f) return;
+      customFaceLockFile = f;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const thumb = document.getElementById('canvas-facelock-thumb');
+        if (thumb) thumb.src = ev.target.result;
+      };
+      reader.readAsDataURL(f);
+      setMascotMessage('Rosto personalizado carregado no Face Lock 100%! 🔒✨');
+    }
+
+    function syncCanvasVoiceAndSfxToTimeline() {
+      const cv = document.getElementById('canvas-voice-select');
+      const cs = document.getElementById('canvas-sfx-select');
+      const tv = document.getElementById('timeline-voice-select');
+      const ts = document.getElementById('timeline-sfx-select');
+      if (cv && tv) tv.value = cv.value;
+      if (cs && ts) ts.value = cs.value;
     }
 
     // Upload gratuito de nova foto de referência (@ImageN) para o Canvas
@@ -2587,16 +3164,20 @@
         const data = await res.json();
         if (data.node_url) {
           const nextIdx = canvasNodes.length + 1;
+          const newId = `node_${Date.now()}`;
           canvasNodes.push({
-            id: `node_${Date.now()}`,
+            id: newId,
             tag: `@Image${nextIdx}`,
+            role: 'Character',
             title: file.name.slice(0, 18),
             url: data.node_url,
-            res: 'HD Ref',
-            x: 120 + ((nextIdx % 3) * 110),
-            y: 80 + ((nextIdx % 2) * 140),
+            res: '8K Ref',
+            x: 90 + ((nextIdx % 3) * 120),
+            y: 80 + ((nextIdx % 3) * 135),
             connected: true
           });
+          selectedCanvasNodeId = newId;
+          selectedCanvasNodeUrl = data.node_url;
           renderCanvasNodes();
           statusEl.innerText = `@Image${nextIdx} adicionado e conectado ao gerador!`;
         }
@@ -2605,19 +3186,24 @@
       }
     }
 
-    // Geração de Nó Conectado (Multi-Reference @Image1 + @Image2 -> NanoBanana Pro / Magnific / Flux)
-    async function handleCanvasGenerateNode() {
+    // Geração de Nó Conectado 8K (Com Fidelização de Rosto + Ângulo de Câmera + Luz)
+    async function handleCanvasGenerateNode(overridePrompt = null, updateSelectedNode = false) {
       if (!requireCredits(3)) return;
-      const prompt = document.getElementById('canvas-prompt-input').value.trim();
+      const prompt = overridePrompt || document.getElementById('canvas-prompt-input').value.trim();
       const modelStyle = document.getElementById('canvas-model-select').value;
       const aspectRatio = document.getElementById('canvas-aspect-select').value;
+      const cameraAngle = document.getElementById('canvas-camera-select').value;
+      const lightingMood = document.getElementById('canvas-lighting-select').value;
+      const faceLockOn = document.getElementById('canvas-facelock-toggle').checked;
+      const faceStrength = document.getElementById('canvas-facelock-slider').value;
+
       if (!prompt) return alert('Digite o comando para o gerador conectado.');
 
       const statusEl = document.getElementById('canvas-status-msg');
       const btn = document.getElementById('canvas-gen-btn');
       const previewImg = document.getElementById('gen-node-img');
 
-      statusEl.innerText = `Analisando nós conectados via Gemini Vision e gerando com ${modelStyle}...`;
+      statusEl.innerText = `Sintetizando em 8K com ${modelStyle} + Face Lock (${faceStrength}%)...`;
       btn.disabled = true;
       previewImg.classList.add('opacity-40', 'animate-pulse');
 
@@ -2626,6 +3212,12 @@
       formData.append('prompt', prompt);
       formData.append('aspect_ratio', aspectRatio);
       formData.append('model_style', modelStyle);
+      formData.append('camera_angle', cameraAngle);
+      formData.append('lighting_mood', lightingMood);
+      formData.append('face_lock_enabled', faceLockOn);
+      formData.append('face_lock_url', currentFaceLockUrl);
+      formData.append('face_strength', faceStrength);
+      if (customFaceLockFile) formData.append('face_file', customFaceLockFile);
       formData.append('reference_urls', JSON.stringify(connectedRefs));
       formData.append('user_id', currentUserId);
 
@@ -2635,8 +3227,17 @@
         if (data.result_url) {
           currentGeneratedNodeUrl = data.result_url;
           previewImg.src = data.result_url;
-          document.getElementById('gen-node-res-badge').innerText = data.resolution || '2560 x 1440';
-          statusEl.innerText = `Cena gerada com sucesso mantendo a consistência dos nós!`;
+          document.getElementById('gen-node-res-badge').innerText = '3840 x 2160 (8K)';
+          if (updateSelectedNode && selectedCanvasNodeId) {
+            const targetNode = canvasNodes.find(n => n.id === selectedCanvasNodeId);
+            if (targetNode) {
+              targetNode.url = data.result_url;
+              targetNode.camera = cameraAngle;
+              targetNode.lighting = lightingMood;
+              renderCanvasNodes();
+            }
+          }
+          statusEl.innerText = `✅ Cena 8K gerada com Fidelização de Rosto (${modelStyle})!`;
           updateCredits();
         } else {
           statusEl.innerText = `Erro: ${data.detail || 'Falha ao gerar cena conectada'}`;
@@ -2649,33 +3250,50 @@
       }
     }
 
+    // Regrava apenas o ângulo de câmera e iluminação do nó selecionado sem refazer o filme inteiro!
+    function reshootSelectedCanvasNode() {
+      const target = canvasNodes.find(n => n.id === selectedCanvasNodeId) || canvasNodes[0];
+      if (!target) return alert('Selecione um nó no Canvas primeiro.');
+      const camText = document.getElementById('canvas-camera-select').selectedOptions[0].text;
+      const lightText = document.getElementById('canvas-lighting-select').selectedOptions[0].text;
+      const prompt = `Re-shoot ${target.tag} (${target.title}) mantendo 100% do mesmo personagem e cenário com novo ângulo (${camText}) e iluminação (${lightText})`;
+      handleCanvasGenerateNode(prompt, true);
+    }
+
     // Transforma a cena gerada em um novo nó @ImageN na árvore do Storyboard
     function branchGeneratedToNewNode() {
       const nextIdx = canvasNodes.length + 1;
+      const newId = `node_${Date.now()}`;
       canvasNodes.push({
-        id: `node_${Date.now()}`,
+        id: newId,
         tag: `@Image${nextIdx}`,
-        title: `Take ${nextIdx}: Ramificação IA`,
+        role: 'Scene',
+        title: `Take ${nextIdx}: Cena 8K`,
         url: currentGeneratedNodeUrl,
-        res: '2560 x 1440',
-        x: 310,
+        res: '3840 x 2160',
+        x: 275,
         y: 260,
-        connected: true
+        connected: true,
+        camera: document.getElementById('canvas-camera-select').value,
+        lighting: document.getElementById('canvas-lighting-select').value,
+        sfx: document.getElementById('canvas-sfx-select').value
       });
+      selectedCanvasNodeId = newId;
+      selectedCanvasNodeUrl = currentGeneratedNodeUrl;
       renderCanvasNodes();
-      setMascotMessage(`Cena transformada em @Image${nextIdx} e adicionada à Timeline do Filme! 🎬`);
+      setMascotMessage(`Cena transformada em @Image${nextIdx} e adicionada à Timeline! 🎬`);
     }
 
-    // Magnific 4K Upscaler & Micro-Contrast Skin/Detail Enhancer
+    // Magnific 8K Upscaler & Micro-Contrast Skin/Detail Enhancer
     async function handleMagnificUpscale(imageUrl, insideModal = false) {
       if (!requireCredits(4)) return;
       const statusEl = insideModal ? document.getElementById('lightbox-status') : document.getElementById('canvas-status-msg');
-      statusEl.innerText = '✨ Aplicando Super-Resolução Magnific 4K Lanczos + Micro-Contraste...';
+      statusEl.innerText = '✨ Aplicando Super-Resolução Magnific 8K Lanczos + Micro-Poros...';
 
       const formData = new FormData();
       formData.append('image_url', imageUrl);
-      formData.append('scale_factor', 2);
-      formData.append('creativity_strength', 'high');
+      formData.append('scale_target', '8k');
+      formData.append('creativity_strength', 'ultra');
       formData.append('user_id', currentUserId);
 
       try {
@@ -2684,12 +3302,12 @@
         if (data.result_url) {
           currentGeneratedNodeUrl = data.result_url;
           document.getElementById('gen-node-img').src = data.result_url;
-          document.getElementById('gen-node-res-badge').innerText = '3840 x 2160 (4K)';
+          document.getElementById('gen-node-res-badge').innerText = '7680 x 4320 (8K)';
           if (insideModal) {
             document.getElementById('lightbox-node-img').src = data.result_url;
             document.getElementById('lightbox-download-btn').href = data.result_url;
           }
-          statusEl.innerText = '✅ Upscale Magnific 4K Ultra-HD concluído com sucesso!';
+          statusEl.innerText = '✅ Upscale Magnific 8K Ultra-HD concluído com sucesso!';
           updateCredits();
         } else {
           statusEl.innerText = 'Erro no Upscale: ' + (data.detail || 'Falha no processamento');
@@ -2699,24 +3317,210 @@
       }
     }
 
-    // Compilador de Filme do Storyboard (Canvas Nodes -> MP4 com Câmera Higgsfield & Trilha)
+    // Gera Vídeo em Movimento Real + Efeitos Sonoros Reais (SFX) + Voz a partir de um único nó do Canvas!
+    async function handleGenerateSingleNodeVideo(nodeUrl, nodeLabel = 'Take', ev = null) {
+      if (ev) ev.stopPropagation();
+      if (!requireCredits(6)) return;
+
+      const voice = document.getElementById('canvas-voice-select').value;
+      const sfx = document.getElementById('canvas-sfx-select').value;
+      const videoModel = document.getElementById('timeline-video-model-select').value;
+      const aspect = document.getElementById('canvas-aspect-select').value === '9:16' ? '9:16' : '16:9';
+      const narration = document.getElementById('timeline-narration-input').value.trim();
+      const prompt = document.getElementById('canvas-prompt-input').value.trim();
+
+      scrollToTimelineCompiler();
+      const box = document.getElementById('timeline-movie-box');
+      box.innerHTML = `<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-emerald-400 animate-spin mb-2"></i> Renderizando Vídeo Real (${videoModel}) do nó <strong>${nodeLabel}</strong> + Efeitos Sonoros Reais (${sfx}) + Voz (${voice})...</div>`;
+      lucide.createIcons();
+
+      const formData = new FormData();
+      formData.append('node_url', nodeUrl || selectedCanvasNodeUrl || currentGeneratedNodeUrl);
+      formData.append('scene_prompt', prompt);
+      formData.append('voice_name', voice);
+      formData.append('narration_text', narration);
+      formData.append('sfx_preset', sfx);
+      formData.append('video_model', videoModel);
+      formData.append('aspect_ratio', aspect);
+      formData.append('user_id', currentUserId);
+
+      try {
+        const res = await fetch('/api/canvas/node-to-video', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.job_id) {
+          pollJob(data.job_id, box, 'video');
+          updateCredits();
+        } else {
+          box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${data.detail || 'Falha ao gerar vídeo do nó'}</span>`;
+        }
+      } catch (e) {
+        box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`;
+      }
+    }
+
+    // Agente Diretor de Filmes IA (1 Frase -> Filme de até 1 a 2 Horas com Atos, Capítulos e Nós no Canvas)
+    async function handleRunFilmDirectorAgent() {
+      if (!requireCredits(5)) return;
+      const idea = document.getElementById('film-agent-idea-input').value.trim();
+      const scale = document.getElementById('film-agent-scale-select').value;
+      const modelStyle = document.getElementById('canvas-model-select').value;
+      if (!idea) return alert('Digite a ideia do seu filme em 1 frase.');
+
+      const btn = document.getElementById('film-agent-btn');
+      const statusEl = document.getElementById('canvas-status-msg');
+      btn.disabled = true;
+      statusEl.innerText = '🎬 Agente Diretor IA criando Roteiro Multi-Capítulos, Fichas de Personagem, Objetos e Cenas no Canvas...';
+
+      const formData = new FormData();
+      formData.append('movie_idea', idea);
+      formData.append('duration_scale', scale);
+      formData.append('model_style', modelStyle);
+      formData.append('face_lock_url', currentFaceLockUrl);
+      formData.append('user_id', currentUserId);
+
+      try {
+        const res = await fetch('/api/canvas/agent-project', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.project) {
+          const p = data.project;
+          if (p.built_nodes && p.built_nodes.length > 0) {
+            canvasNodes = p.built_nodes;
+            selectedCanvasNodeId = canvasNodes[0].id;
+            selectedCanvasNodeUrl = canvasNodes[0].url;
+            renderCanvasNodes();
+          }
+          if (p.narration_script_ptbr) {
+            document.getElementById('timeline-narration-input').value = p.narration_script_ptbr;
+          }
+          if (p.recommended_sfx) {
+            document.getElementById('canvas-sfx-select').value = p.recommended_sfx;
+            document.getElementById('timeline-sfx-select').value = p.recommended_sfx;
+          }
+          document.getElementById('timeline-duration-scale-select').value = scale;
+
+          // Exibe Painel de Atos & Capítulos (Filmes de até 2 horas)
+          const chapPanel = document.getElementById('film-agent-chapters-panel');
+          const chapGrid = document.getElementById('film-project-chapters-grid');
+          document.getElementById('film-project-scale-badge').innerText = `${p.scale_label || scale} • ~${p.estimated_runtime_min || 110} Minutos`;
+          document.getElementById('film-project-title').innerText = p.movie_title || 'Projeto de Filme IA';
+          document.getElementById('film-project-logline').innerText = p.logline || '';
+          if (chapGrid && p.chapters_outline) {
+            chapGrid.innerHTML = p.chapters_outline.map(ch => `
+              <div class="p-3.5 rounded-2xl bg-dark-800/90 border border-white/10 space-y-1">
+                <div class="flex items-center justify-between text-[10px] font-bold text-amber-300">
+                  <span>${ch.act || 'Ato'} &bull; ${ch.chapter || 'Capítulo'}</span>
+                  <span class="text-cyan-400">~${ch.duration_min || 10} min</span>
+                </div>
+                <h4 class="text-xs font-bold text-white">${ch.title || ''}</h4>
+                <p class="text-[11px] text-gray-400">${ch.summary || ''}</p>
+              </div>
+            `).join('');
+          }
+          if (chapPanel) chapPanel.classList.remove('hidden');
+
+          statusEl.innerText = `✅ Projeto "${p.movie_title}" (${p.total_planned_chapters || 24} capítulos) montado no Canvas!`;
+          setMascotMessage(`Agente Diretor criou ${canvasNodes.length} nós conectados e roteiro para ${p.estimated_runtime_min || 110} min! 🎬🏆`);
+          updateCredits();
+        }
+      } catch (e) {
+        statusEl.innerText = 'Erro no Agente Diretor: ' + e.message;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // Engenharia Reversa Criativa — REA (4 Camadas)
+    async function handleRunReaReverseEngineer() {
+      if (!requireCredits(2)) return;
+      const desc = document.getElementById('rea-desc-input').value.trim();
+      const fileInp = document.getElementById('rea-image-file');
+      const btn = document.getElementById('rea-run-btn');
+      btn.disabled = true;
+      btn.innerText = '🔍 Analisando as 4 Camadas Ópticas e de Iluminação...';
+
+      const formData = new FormData();
+      formData.append('reference_description', desc);
+      formData.append('image_url', selectedCanvasNodeUrl);
+      if (fileInp && fileInp.files[0]) {
+        formData.append('image_file', fileInp.files[0]);
+      }
+      formData.append('user_id', currentUserId);
+
+      try {
+        const res = await fetch('/api/canvas/reverse-engineer', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.rea_layers) {
+          lastReaAnalysis = data.rea_layers;
+          document.getElementById('rea-layer-1').innerText = data.rea_layers.layer_1_composition || '';
+          document.getElementById('rea-layer-2').innerText = data.rea_layers.layer_2_optics_camera || '';
+          document.getElementById('rea-layer-3').innerText = data.rea_layers.layer_3_lighting_color || '';
+          document.getElementById('rea-layer-4').value = data.rea_layers.layer_4_master_prompt || '';
+          document.getElementById('rea-results-box').classList.remove('hidden');
+          updateCredits();
+        }
+      } catch (e) {
+        alert('Erro na Engenharia Reversa: ' + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Extrair as 4 Camadas Técnicas + Prompt 8K (2 Créditos)';
+      }
+    }
+
+    function applyReaPromptToCanvas() {
+      const masterPrompt = document.getElementById('rea-layer-4').value.trim();
+      if (masterPrompt) {
+        document.getElementById('canvas-prompt-input').value = masterPrompt;
+      }
+      if (lastReaAnalysis) {
+        if (lastReaAnalysis.detected_camera_key) {
+          document.getElementById('canvas-camera-select').value = lastReaAnalysis.detected_camera_key;
+        }
+        if (lastReaAnalysis.detected_lighting_key) {
+          document.getElementById('canvas-lighting-select').value = lastReaAnalysis.detected_lighting_key;
+        }
+        if (lastReaAnalysis.detected_sfx_key) {
+          document.getElementById('canvas-sfx-select').value = lastReaAnalysis.detected_sfx_key;
+          document.getElementById('timeline-sfx-select').value = lastReaAnalysis.detected_sfx_key;
+        }
+      }
+      closeModal('rea-reverse-modal');
+      setMascotMessage('4 Camadas REA aplicadas no Canvas! Clique em Gerar Nó 8K! 🔍✨');
+    }
+
+    // Compilador de Filme do Storyboard (Com Movimento Real, Escolha de Voz e Efeitos Sonoros Reais SFX)
     async function handleRenderStoryboardMovie() {
-      if (!requireCredits(12)) return;
+      const durationScale = document.getElementById('timeline-duration-scale-select').value;
+      const costMap = { 'short_3m': 12, 'medium_30m': 25, 'feature_2h': 45 };
+      const cost = costMap[durationScale] || 12;
+      if (!requireCredits(cost)) return;
+
       const connectedTakes = canvasNodes.filter(n => n.connected).map(n => n.url);
       if (connectedTakes.length === 0) return alert('Conecte pelo menos 1 nó (@Image) no Canvas para compilar o filme.');
 
       const aspect = document.getElementById('timeline-aspect-select').value;
       const narration = document.getElementById('timeline-narration-input').value.trim();
+      const voiceName = document.getElementById('timeline-voice-select').value;
+      const sfxPreset = document.getElementById('timeline-sfx-select').value;
+      const videoModel = document.getElementById('timeline-video-model-select').value;
+      const clonedFileInp = document.getElementById('timeline-cloned-voice-file');
       const box = document.getElementById('timeline-movie-box');
 
-      box.innerHTML = '<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-amber-400 animate-spin mb-2"></i> Renderizando movimentos de câmera Higgsfield (Dolly In / Pan / Crane), Color Grading 35mm e áudio...</div>';
+      box.innerHTML = `<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-amber-400 animate-spin mb-2"></i> Renderizando Filme em Movimento Real (${videoModel}) + Efeitos Sonoros Reais (${sfxPreset}) + Voz (${voiceName})...</div>`;
       lucide.createIcons();
 
       const formData = new FormData();
       formData.append('node_urls_json', JSON.stringify(connectedTakes));
       formData.append('narration_ptbr', narration);
+      formData.append('voice_name', voiceName);
+      formData.append('sfx_preset', sfxPreset);
+      formData.append('video_model', videoModel);
+      formData.append('movie_duration_mode', durationScale);
+      formData.append('scene_prompt', document.getElementById('canvas-prompt-input').value);
       formData.append('aspect_ratio', aspect);
       formData.append('seconds_per_take', 3.5);
+      if (clonedFileInp && clonedFileInp.files[0]) {
+        formData.append('cloned_voice_file', clonedFileInp.files[0]);
+      }
       formData.append('user_id', currentUserId);
 
       try {
@@ -2731,6 +3535,64 @@
       } catch (e) {
         box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`;
       }
+    }
+
+    // =========================================================================
+    // 15. ROBÔ ASSISTENTE INTERATIVO "PERGUNTE AO ROBÔ IABOT"
+    // =========================================================================
+    function openIABotAssistant(prefillQuestion = '') {
+      const drawer = document.getElementById('iabot-chat-drawer');
+      if (drawer) drawer.classList.remove('hidden');
+      lucide.createIcons();
+      if (prefillQuestion) {
+        askIABotQuestion(prefillQuestion);
+      }
+    }
+
+    function closeIABotAssistant() {
+      const drawer = document.getElementById('iabot-chat-drawer');
+      if (drawer) drawer.classList.add('hidden');
+    }
+
+    function sendIABotInput() {
+      const inp = document.getElementById('iabot-chat-input');
+      if (!inp || !inp.value.trim()) return;
+      const q = inp.value.trim();
+      inp.value = '';
+      askIABotQuestion(q);
+    }
+
+    async function askIABotQuestion(questionText) {
+      const msgBox = document.getElementById('iabot-chat-messages');
+      if (!msgBox) return;
+
+      // Adiciona pergunta do usuário
+      const userDiv = document.createElement('div');
+      userDiv.className = 'p-2.5 rounded-2xl bg-amber-500/15 border border-amber-400/30 text-amber-200 text-right ml-8';
+      userDiv.innerText = `🧑 Você: ${questionText}`;
+      msgBox.appendChild(userDiv);
+
+      // Adiciona indicador de digitação do robô
+      const botDiv = document.createElement('div');
+      botDiv.className = 'p-3 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 text-gray-200 mr-4 leading-relaxed whitespace-pre-line';
+      botDiv.innerText = '🤖 IABot está analisando sua dúvida...';
+      msgBox.appendChild(botDiv);
+      msgBox.scrollTop = msgBox.scrollHeight;
+      triggerRobotBlink();
+
+      const formData = new FormData();
+      formData.append('question', questionText);
+      formData.append('active_tab', 'canvas');
+      formData.append('user_id', currentUserId);
+
+      try {
+        const res = await fetch('/api/assistant/chat', { method: 'POST', body: formData });
+        const data = await res.json();
+        botDiv.innerText = data.answer || '🤖 Estou pronto para ajudar!';
+      } catch (e) {
+        botDiv.innerText = '🤖 Erro ao conectar ao servidor: ' + e.message;
+      }
+      msgBox.scrollTop = msgBox.scrollHeight;
     }
 
     // Inicializa nós do Canvas e redesenha cabos ao redimensionar a janela

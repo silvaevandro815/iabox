@@ -970,7 +970,7 @@ async def edit_viral_video(
     }
 
 # ----------------------------------------------------------------------------------------
-# 7. MAGNIFIC & HIGGSFIELD INFINITE CANVAS (BEATDESIGN STORYBOARD & CINEMA STUDIO)
+# 7. MAGNIFIC 2.0, HIGGSFIELD & BUZZY AI FILM DIRECTOR (INFINITE CANVAS & CINEMA STUDIO)
 # ----------------------------------------------------------------------------------------
 def _resolve_local_media_path(url_or_path: str) -> Optional[str]:
     if not url_or_path:
@@ -996,8 +996,14 @@ async def upload_canvas_node(
 @app.post("/api/canvas/generate-node")
 async def generate_canvas_node(
     prompt: str = Form(...),
-    model_style: str = Form("NanoBanana Pro"),
+    model_style: str = Form("Seedream 5 Pro"),
     aspect_ratio: str = Form("16:9"),
+    camera_angle: str = Form("default"),
+    lighting_mood: str = Form("default"),
+    face_lock_enabled: bool = Form(True),
+    face_lock_url: str = Form(""),
+    face_strength: int = Form(100),
+    face_file: Optional[UploadFile] = File(None),
     ref_urls: str = Form(""),
     reference_urls: str = Form(""),
     user_id: str = Form("default_user")
@@ -1021,6 +1027,20 @@ async def generate_canvas_node(
         if p:
             ref_paths.append(p)
 
+    # Resolução da Foto de Fidelização de Rosto (Face Lock 100%)
+    face_path = None
+    if face_file and face_file.filename:
+        ext = os.path.splitext(face_file.filename)[1] or ".jpg"
+        face_path = os.path.join(UPLOAD_DIR, f"facelock_{job_id[:8]}{ext}")
+        with open(face_path, "wb") as f:
+            shutil.copyfileobj(face_file.file, f)
+    elif face_lock_enabled:
+        resolved_face = _resolve_local_media_path(face_lock_url) if face_lock_url else None
+        if resolved_face and os.path.exists(resolved_face):
+            face_path = resolved_face
+        elif os.path.exists("static/samples/canvas_take1.jpg"):
+            face_path = "static/samples/canvas_take1.jpg"
+
     try:
         from scripts.magnific_canvas_engine import MagnificCanvasEngine
         engine = MagnificCanvasEngine()
@@ -1029,15 +1049,27 @@ async def generate_canvas_node(
             reference_images=ref_paths,
             model_style=model_style,
             aspect_ratio=aspect_ratio,
+            camera_angle=camera_angle,
+            lighting_mood=lighting_mood,
+            face_lock_path=face_path,
+            face_strength=face_strength,
             output_path=out_path
         )
         save_job(job_id, "canvas_node", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
-        save_user_creation(user_id, "canvas_node", f"Canvas Node ({model_style})", prompt, f"/output/{out_filename}", {"model_style": model_style, "aspect_ratio": aspect_ratio})
+        save_user_creation(
+            user_id,
+            "canvas_node",
+            f"Canvas 8K ({model_style})",
+            prompt,
+            f"/output/{out_filename}",
+            {"model_style": model_style, "aspect_ratio": aspect_ratio, "camera": camera_angle, "lighting": lighting_mood, "face_locked": bool(face_path)}
+        )
         return {
             "status": "success",
             "job_id": job_id,
             "result_url": f"/output/{out_filename}",
             "compiled_prompt": info.get("compiled_prompt", prompt),
+            "face_locked": bool(face_path),
             "remaining_credits": get_user_credits(user_id)
         }
     except Exception as e:
@@ -1051,6 +1083,7 @@ async def magnific_upscale_node(
     image_file: Optional[UploadFile] = File(None),
     creativity_level: str = Form("ultra"),
     creativity_strength: str = Form("ultra"),
+    scale_target: str = Form("8k"),
     user_id: str = Form("default_user")
 ):
     if not deduct_credits(user_id, amount=4):
@@ -1069,7 +1102,7 @@ async def magnific_upscale_node(
     if not in_path or not os.path.exists(in_path):
         raise HTTPException(status_code=400, detail="Imagem de origem não encontrada para o Magnific Upscaler.")
 
-    out_filename = f"magnific_4k_{job_id[:8]}.jpg"
+    out_filename = f"magnific_8k_{job_id[:8]}.jpg"
     out_path = os.path.join(OUTPUT_DIR, out_filename)
 
     try:
@@ -1079,9 +1112,9 @@ async def magnific_upscale_node(
             image_path=in_path,
             output_path=out_path,
             creativity_level=creativity_level or creativity_strength,
-            scale_target="4k"
+            scale_target=scale_target or "8k"
         )
-        save_user_creation(user_id, "magnific_4k", "Magnific Upscale 4K", f"Criatividade: {creativity_level}", f"/output/{out_filename}", {"scale": "4k"})
+        save_user_creation(user_id, "magnific_8k", "Magnific Upscale 8K", f"Criatividade: {creativity_level}", f"/output/{out_filename}", {"scale": scale_target})
         return {
             "status": "success",
             "result_url": f"/output/{out_filename}",
@@ -1090,6 +1123,72 @@ async def magnific_upscale_node(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/canvas/node-to-video")
+async def canvas_single_node_to_video(
+    node_url: str = Form(...),
+    scene_prompt: str = Form("Cena de cinema em movimento real 8K"),
+    voice_name: str = Form("antonio"),
+    narration_text: str = Form(""),
+    sfx_preset: str = Form("auto_contextual"),
+    video_model: str = Form("Seedance 2.5 4K"),
+    aspect_ratio: str = Form("16:9"),
+    cloned_voice_file: Optional[UploadFile] = File(None),
+    user_id: str = Form("default_user")
+):
+    if not deduct_credits(user_id, amount=6):
+        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 6 créditos).")
+
+    img_path = _resolve_local_media_path(node_url)
+    if not img_path or not os.path.exists(img_path):
+        img_path = "static/samples/canvas_take1.jpg"
+
+    req_ip = client_ip_var.get()
+    job_id = str(uuid.uuid4())
+    out_filename = f"node_video_sfx_{job_id[:8]}.mp4"
+    out_path = os.path.join(OUTPUT_DIR, out_filename)
+
+    cloned_path = None
+    if cloned_voice_file and cloned_voice_file.filename:
+        ext = os.path.splitext(cloned_voice_file.filename)[1] or ".mp3"
+        cloned_path = os.path.join(UPLOAD_DIR, f"canvas_clone_{job_id[:8]}{ext}")
+        with open(cloned_path, "wb") as f:
+            shutil.copyfileobj(cloned_voice_file.file, f)
+
+    save_job(job_id, "node_video", status="processing", progress=25, user_id=user_id)
+
+    def _task():
+        try:
+            from scripts.magnific_canvas_engine import MagnificCanvasEngine
+            engine = MagnificCanvasEngine()
+            engine.render_storyboard_timeline(
+                image_paths=[img_path],
+                output_path=out_path,
+                narration_text=narration_text,
+                voice_name=voice_name,
+                cloned_voice_path=cloned_path,
+                sfx_preset=sfx_preset,
+                scene_prompt=scene_prompt,
+                aspect_ratio=aspect_ratio,
+                sec_per_take=4.0,
+                video_model=video_model
+            )
+            save_job(job_id, "node_video", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
+            save_user_creation(
+                user_id,
+                "video",
+                f"Take Real + SFX ({video_model})",
+                f"SFX: {sfx_preset} | Voz: {voice_name}",
+                f"/output/{out_filename}",
+                {"sfx": sfx_preset, "voice": voice_name, "video_model": video_model},
+                ip_override=req_ip
+            )
+        except Exception as e:
+            save_job(job_id, "node_video", status="failed", error=str(e), user_id=user_id)
+
+    t = threading.Thread(target=_task)
+    t.start()
+    return {"status": "started", "job_id": job_id, "message": "Gerando Vídeo Real com Efeitos Sonoros (SFX)...", "cost": 6}
+
 @app.post("/api/canvas/render-storyboard")
 async def render_canvas_storyboard(
     node_urls: str = Form(""),
@@ -1097,13 +1196,20 @@ async def render_canvas_storyboard(
     narration_text: str = Form(""),
     narration_ptbr: str = Form(""),
     voice_name: str = Form("antonio"),
+    sfx_preset: str = Form("auto_contextual"),
+    scene_prompt: str = Form(""),
+    video_model: str = Form("Seedance 2.5 4K"),
+    movie_duration_mode: str = Form("short_3m"),
     aspect_ratio: str = Form("16:9"),
     sec_per_take: float = Form(3.5),
     seconds_per_take: float = Form(3.5),
+    cloned_voice_file: Optional[UploadFile] = File(None),
     user_id: str = Form("default_user")
 ):
-    if not deduct_credits(user_id, amount=12):
-        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 12 créditos).")
+    cost_map = {"short_3m": 12, "medium_30m": 25, "feature_2h": 45}
+    cost = cost_map.get(movie_duration_mode, 12)
+    if not deduct_credits(user_id, amount=cost):
+        raise HTTPException(status_code=402, detail=f"Saldo insuficiente (necessário {cost} créditos para esta escala de filme).")
 
     raw_nodes = node_urls_json or node_urls or "[]"
     try:
@@ -1126,6 +1232,13 @@ async def render_canvas_storyboard(
     out_path = os.path.join(OUTPUT_DIR, out_filename)
     save_job(job_id, "storyboard", status="processing", progress=20, user_id=user_id)
 
+    cloned_path = None
+    if cloned_voice_file and cloned_voice_file.filename:
+        ext = os.path.splitext(cloned_voice_file.filename)[1] or ".mp3"
+        cloned_path = os.path.join(UPLOAD_DIR, f"storyboard_clone_{job_id[:8]}{ext}")
+        with open(cloned_path, "wb") as f:
+            shutil.copyfileobj(cloned_voice_file.file, f)
+
     final_narration = narration_ptbr or narration_text
     final_sec = seconds_per_take or sec_per_take
 
@@ -1138,19 +1251,157 @@ async def render_canvas_storyboard(
                 output_path=out_path,
                 narration_text=final_narration,
                 voice_name=voice_name,
+                cloned_voice_path=cloned_path,
+                sfx_preset=sfx_preset,
+                scene_prompt=scene_prompt or final_narration,
                 aspect_ratio=aspect_ratio,
-                sec_per_take=final_sec
+                sec_per_take=final_sec,
+                video_model=video_model
             )
             save_job(job_id, "storyboard", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
-            save_user_creation(user_id, "storyboard", f"Filme Storyboard ({len(image_paths)} takes)", final_narration or "Cinema Motion", f"/output/{out_filename}", {"takes": len(image_paths)}, ip_override=req_ip)
+            save_user_creation(
+                user_id,
+                "storyboard",
+                f"Filme Cinema ({len(image_paths)} takes | SFX: {sfx_preset})",
+                final_narration or f"Motor: {video_model} + Efeitos Sonoros Reais",
+                f"/output/{out_filename}",
+                {"takes": len(image_paths), "voice": voice_name, "sfx_preset": sfx_preset, "video_model": video_model, "scale": movie_duration_mode},
+                ip_override=req_ip
+            )
         except Exception as e:
             save_job(job_id, "storyboard", status="failed", error=str(e), user_id=user_id)
 
-    import threading
     t = threading.Thread(target=_task)
     t.start()
 
-    return {"status": "started", "job_id": job_id, "message": "Renderização de Filme do Storyboard iniciada.", "cost": 12}
+    return {"status": "started", "job_id": job_id, "message": "Renderização de Filme com Efeitos Sonoros Reais (SFX) e Voz iniciada.", "cost": cost}
+
+@app.post("/api/canvas/agent-project")
+async def create_agent_film_project(
+    movie_idea: str = Form(...),
+    duration_scale: str = Form("feature_2h"),
+    model_style: str = Form("Seedream 5 Pro"),
+    face_lock_url: str = Form("/static/samples/canvas_take1.jpg"),
+    user_id: str = Form("default_user")
+):
+    """
+    Agente Diretor de Cinema IA (Buzzy / Magnific Film Agent):
+    A partir de 1 frase, cria o roteiro multi-capítulos (para curta até longa-metragem de 1 a 2 horas)
+    e popula o Infinite Canvas com nós de [Personagem], [Objeto], [Cenário] e [Cenas] conectados.
+    """
+    if not deduct_credits(user_id, amount=5):
+        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 5 créditos para o Agente Diretor de Filmes).")
+
+    try:
+        from scripts.magnific_canvas_engine import MagnificCanvasEngine
+        engine = MagnificCanvasEngine()
+        project = engine.generate_film_project(
+            movie_idea=movie_idea,
+            duration_scale=duration_scale,
+            model_style=model_style,
+            face_lock_url=face_lock_url
+        )
+        save_user_creation(
+            user_id,
+            "film_project",
+            project.get("movie_title", "Projeto de Filme IA"),
+            project.get("logline", movie_idea),
+            face_lock_url or "/static/samples/canvas_take1.jpg",
+            {"scale": duration_scale, "chapters": project.get("total_planned_chapters", 24)}
+        )
+        return {
+            "status": "success",
+            "project": project,
+            "remaining_credits": get_user_credits(user_id)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/canvas/reverse-engineer")
+async def reverse_engineer_creative_endpoint(
+    reference_description: str = Form(""),
+    image_url: str = Form(""),
+    image_file: Optional[UploadFile] = File(None),
+    user_id: str = Form("default_user")
+):
+    """
+    Engenharia Reversa Criativa (REA — 4 Camadas do vídeo de referência):
+    Desconstrói qualquer imagem ou referência em:
+    1. Tela & Composição
+    2. Lógica Óptica & Câmera
+    3. Iluminação, Cor & Textura 8K
+    4. Prompt Mestre pronto para o Canvas
+    """
+    if not deduct_credits(user_id, amount=2):
+        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 2 créditos).")
+
+    img_path = None
+    if image_file and image_file.filename:
+        ext = os.path.splitext(image_file.filename)[1] or ".jpg"
+        img_path = os.path.join(UPLOAD_DIR, f"rea_{uuid.uuid4().hex[:8]}{ext}")
+        with open(img_path, "wb") as f:
+            shutil.copyfileobj(image_file.file, f)
+    elif image_url:
+        img_path = _resolve_local_media_path(image_url)
+
+    try:
+        from scripts.magnific_canvas_engine import MagnificCanvasEngine
+        engine = MagnificCanvasEngine()
+        analysis = engine.reverse_engineer_creative(image_path=img_path, reference_description=reference_description)
+        return {
+            "status": "success",
+            "rea_layers": analysis,
+            "remaining_credits": get_user_credits(user_id)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/assistant/chat")
+async def iabot_assistant_chat(
+    question: str = Form(...),
+    active_tab: str = Form("canvas"),
+    user_id: str = Form("default_user")
+):
+    """
+    Robô Assistente Interativo IABot ("Pergunte ao Robô"):
+    Explica como funciona qualquer tecnologia do sistema (Magnific Canvas Expansivo,
+    Fidelização de Rosto 100%, Efeitos Sonoros Reais SFX, Filmes de 1 a 2 Horas,
+    Engenharia Reversa REA, Suno, Clonagem de Voz e Tokens).
+    """
+    system_guide = f"""Você é o IABot 🤖, o Robô Engenheiro e Diretor de Cinema Oficial da plataforma IABOX (criada por Evandro Silva Gallina).
+Responda em Português do Brasil de forma clara, prática, entusiasmada e didática (máximo de 4 parágrafos curtos ou tópicos diretos).
+O usuário está atualmente na aba '{active_tab}' e perguntou: "{question}"
+
+Conhecimento Técnico Completo do Sistema IABOX que você domina:
+1. MAGNIFIC CANVAS EXPANSIVO (Tela Cheia & Controle Total):
+   - Tudo no Canvas pode ser movido/arrastado (nós @Image1, @Image2, Painel Inspetor, Dock de Prompt, Barra de Ferramentas).
+   - Clique em "Tela Expansiva (Fullscreen)" ou use os botões de Zoom (+/-) para ter controle amplo de dezenas de cenas.
+   - Para DELETAR qualquer imagem/nó: clique no ícone de lixeira (🗑️) no canto do card ou no botão "Deletar Nó Selecionado".
+2. FIDELIZAÇÃO DE ROSTO 100% (Face Lock Biométrico):
+   - No Painel de Fidelização de Rosto do Canvas, ative "Travar Identidade Facial (100%)" e escolha o Rosto Oficial ou suba sua foto.
+   - O motor Flux.1 Kontext Pro + Gemini Vision trava os traços faciais em todos os capítulos do filme.
+3. EFEITOS SONOROS REAIS (Real SFX) & ESCOLHA DE VOZES:
+   - Todos os vídeos saem com efeitos sonoros reais de cinema (Ronco de Motor V8, Chuva e Trovão, Impactos IMAX, Vento, Sci-Fi ou Passos) mixados com a voz que você escolher (Antonio, Francisca, Thalita ou sua Voz Clonada).
+4. FILMES DE ATÉ 1 A 2 HORAS (Agente Diretor de Filmes IA):
+   - Digite 1 única frase no "Agente Diretor de Filmes", escolha a escala (Curta 5min, Série 30min ou Longa-Metragem 1h a 2h) e a IA gera o Roteiro em Atos/Capítulos + fichas de [Personagem], [Objeto], [Cenário] e [Cenas] conectadas.
+   - Para mudar o ângulo de câmera ou iluminação de apenas 1 cena sem refazer o filme, clique no nó e troque a Lente/Luz no Inspetor!
+5. ENGENHARIA REVERSA CRIATIVA (REA — 4 Camadas):
+   - Suba qualquer foto ou referência no botão "Engenharia Reversa REA" e a IA extrai as 4 camadas (Composição, Lente/Câmera, Luz/Cor 8K e Prompt Mestre) para clonar o visual em 1 clique."""
+
+    from scripts.magnific_canvas_engine import MagnificCanvasEngine
+    engine = MagnificCanvasEngine()
+    answer = engine._call_llm_text(system_guide, timeout=20)
+    if not answer:
+        answer = (
+            "🤖 **Olá! Eu sou o IABot, seu Copiloto no Magnific Studio!**\n\n"
+            "• **Mover e Deletar no Canvas Expansivo:** Arraste qualquer card, painel ou barra livremente pela tela. Use o botão **Tela Expansiva (Fullscreen)** no topo do Canvas para ampliar seu espaço e clique no ícone **🗑️** em qualquer nó `@Image` para deletá-lo.\n"
+            "• **Fidelização de Rosto 100% (Face Lock):** No painel **Fidelização de Rosto & Direção**, mantenha o Face Lock ativo (ou envie sua foto) e use os motores **Seedream 5 Pro** ou **Flux.1 Kontext Pro** para manter o mesmo rosto em todo o filme.\n"
+            "• **Vozes e Efeitos Sonoros Reais (SFX):** Escolha entre **Antonio, Francisca, Thalita ou Voz Clonada** e selecione o pacote de **SFX Real** (Motor V8, Chuva & Trovão, Impacto IMAX, etc.) antes de renderizar.\n"
+            "• **Filmes de 1 a 2 Horas:** Digite sua ideia na barra **Agente Diretor de Filmes IA**, escolha **Longa-Metragem (1h–2h)** e a IA criará todos os Atos, Capítulos e Nós conectados automaticamente!"
+        )
+
+    return {"status": "success", "answer": answer}
+
 
 # ----------------------------------------------------------------------------------------
 # 8. STRIPE CHECKOUT (SISTEMA PRÉ-PAGO)
