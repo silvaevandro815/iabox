@@ -54,15 +54,19 @@ Formate a letra com timestamps em segundos para cada linha:
 [00:18.00] Refrão marcante
 Retorne APENAS o bloco de timestamps e letra, sem explicações."""
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={self.gemini_key}"
-        try:
-            r = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=25)
-            if r.status_code == 200:
-                lyrics = r.json()['candidates'][0]['content']['parts'][0]['text'].strip()
-                if lyrics:
-                    return lyrics
-        except Exception as e:
-            print(f"[Suno Lyricist] Aviso API ({e}). Usando métrica padrão.")
+        for m_name in ("gemini-3.6-flash", "gemini-3.5-flash", "gemini-3-flash-preview"):
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{m_name}:generateContent?key={self.gemini_key}"
+            try:
+                r = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=20)
+                if r.status_code == 200:
+                    c_parts = r.json().get("candidates", [{}])[0].get("content", {}).get("parts", [])
+                    for cp in c_parts:
+                        if "text" in cp and not cp.get("thought", False):
+                            lyrics = cp["text"].strip()
+                            if lyrics:
+                                return lyrics
+            except Exception as e:
+                print(f"[Suno Lyricist] Info ({e}).")
         return self._fallback_lyrics(theme, genre)
 
     def _fallback_lyrics(self, theme, genre):

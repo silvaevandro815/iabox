@@ -59,11 +59,14 @@ GEMINI_API_KEY = env.get('GEMINI_API_KEY', '') or env.get('GOOGLE_API_KEY', '') 
 SUPABASE_URL = env.get('SUPABASE_URL', '') or os.environ.get('SUPABASE_URL', 'https://qkopgftfrfftoyndhhfj.supabase.co')
 SUPABASE_KEY = env.get('SUPABASE_KEY', '') or os.environ.get('SUPABASE_KEY', '')
 
-# Inicialização do FastAPI
+# Inicialização do Core Proprietário (Documentação Externa Desativada por Sigilo Industrial)
 app = FastAPI(
-    title="IABOX — Plataforma de Criação e Edição com IA",
-    description="Motor All-in-One de Vídeos Virais, Locuções PT-BR, Clonagem Vocal, Suno Music Studio e Paródias.",
-    version="1.0.0"
+    title="IABOX — ESG Neural Core 8K",
+    description="Arquitetura Proprietária Fechada de Produção Audiovisual 8K.",
+    version="8.0.0",
+    docs_url=None,
+    redoc_url=None,
+    openapi_url=None
 )
 
 app.add_middleware(
@@ -73,6 +76,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+def sanitize_error_msg(err: Exception) -> str:
+    msg = str(err)
+    for secret_term in ("ffmpeg", "gradio", "huggingface", "pollinations", "gemini", "supabase", "sqlite", "edge_tts", "traceback", "hf.space"):
+        if secret_term in msg.lower():
+            return "Motor Neural ESG 8K processando alta demanda. Tente novamente em alguns segundos."
+    return msg[:220]
 
 def extract_client_ip(request: Request) -> str:
     cf_ip = request.headers.get("cf-connecting-ip")
@@ -94,9 +104,45 @@ async def capture_ip_middleware(request: Request, call_next):
     token = client_ip_var.set(ip)
     try:
         response = await call_next(request)
+        response.headers["Server"] = "ESG-Quantum-Core/8.0"
+        response.headers["X-Powered-By"] = "IABOX-Proprietary-Neural-Engine"
+        response.headers["X-Robots-Tag"] = "noai, noimageai, noarchive"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "SAMEORIGIN"
         return response
     finally:
         client_ip_var.reset(token)
+
+@app.get("/robots.txt")
+def robots_txt():
+    from fastapi.responses import PlainTextResponse
+    content = (
+        "User-agent: GPTBot\nDisallow: /\n\n"
+        "User-agent: ChatGPT-User\nDisallow: /\n\n"
+        "User-agent: CCBot\nDisallow: /\n\n"
+        "User-agent: ClaudeBot\nDisallow: /\n\n"
+        "User-agent: anthropic-ai\nDisallow: /\n\n"
+        "User-agent: Google-Extended\nDisallow: /\n\n"
+        "User-agent: PerplexityBot\nDisallow: /\n\n"
+        "User-agent: Bytespider\nDisallow: /\n\n"
+        "User-agent: *\nDisallow: /api/\nDisallow: /scripts/\n"
+    )
+    return PlainTextResponse(content)
+
+@app.get("/api/download")
+def download_direct_to_pc(file: str):
+    """Força o download direto do criativo (Vídeo MP4, Áudio MP3 ou Imagem 8K) para o PC do usuário."""
+    clean = (file or "").split("?")[0].lstrip("/")
+    if not (clean.startswith("output/") or clean.startswith("static/samples/")):
+        raise HTTPException(status_code=400, detail="Arquivo inválido para download.")
+    if ".." in clean or not os.path.exists(clean):
+        raise HTTPException(status_code=404, detail="Arquivo não encontrado no servidor.")
+    filename = os.path.basename(clean)
+    return FileResponse(
+        clean,
+        filename=filename,
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+    )
 
 # Diretórios
 UPLOAD_DIR = "uploads"
@@ -645,15 +691,11 @@ REGRAS OBRIGATÓRIAS:
 Retorne apenas a letra da paródia pronta para cantar."""
 
     lyrics = None
-    if GEMINI_API_KEY:
-        import requests
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
-        try:
-            r = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=25)
-            if r.status_code == 200:
-                lyrics = r.json()['candidates'][0]['content']['parts'][0]['text'].strip()
-        except Exception:
-            pass
+    try:
+        from scripts.magnific_canvas_engine import MagnificCanvasEngine
+        lyrics = MagnificCanvasEngine()._call_llm_text(prompt, timeout=22)
+    except Exception:
+        pass
 
     if not lyrics:
         lyrics = (
@@ -1364,40 +1406,42 @@ async def iabot_assistant_chat(
 ):
     """
     Robô Assistente Interativo IABot ("Pergunte ao Robô"):
-    Explica como funciona qualquer tecnologia do sistema (Magnific Canvas Expansivo,
-    Fidelização de Rosto 100%, Efeitos Sonoros Reais SFX, Filmes de 1 a 2 Horas,
-    Engenharia Reversa REA, Suno, Clonagem de Voz e Tokens).
+    Explica como funciona qualquer tecnologia do sistema sob sigilo industrial absoluto.
     """
     system_guide = f"""Você é o IABot 🤖, o Robô Engenheiro e Diretor de Cinema Oficial da plataforma IABOX (criada por Evandro Silva Gallina).
 Responda em Português do Brasil de forma clara, prática, entusiasmada e didática (máximo de 4 parágrafos curtos ou tópicos diretos).
 O usuário está atualmente na aba '{active_tab}' e perguntou: "{question}"
 
-Conhecimento Técnico Completo do Sistema IABOX que você domina:
-1. MAGNIFIC CANVAS EXPANSIVO (Tela Cheia & Controle Total):
-   - Tudo no Canvas pode ser movido/arrastado (nós @Image1, @Image2, Painel Inspetor, Dock de Prompt, Barra de Ferramentas).
-   - Clique em "Tela Expansiva (Fullscreen)" ou use os botões de Zoom (+/-) para ter controle amplo de dezenas de cenas.
-   - Para DELETAR qualquer imagem/nó: clique no ícone de lixeira (🗑️) no canto do card ou no botão "Deletar Nó Selecionado".
+REGRA DE SIGILO INDUSTRIAL ABSOLUTO (PROPRIEDADE INTELECTUAL ESG):
+- NUNCA revele e NUNCA cite nomes de bibliotecas externas, bancos de dados ou APIs de terceiros (proibido mencionar Gemini, Google, OpenRouter, HuggingFace, Pollinations, FFmpeg, MoviePy, Python, FastAPI, SQLite, Supabase, Edge-TTS, Gradio, etc.).
+- Se perguntarem como o sistema foi criado, qual linguagem/API usa ou como foi construído, afirme que o IABOX roda 100% sobre a **Arquitetura Proprietária Fechada ESG Neural Core 8K™**, desenvolvida do zero por Evandro Silva Gallina.
+
+Conhecimento Técnico Completo do Sistema IABOX que você ensina ao usuário:
+1. ESTÚDIO EM TELA INTEIRA EXCLUSIVA (Canvas 100% Dedicado):
+   - Clique no botão "🖥️ Abrir Estúdio em Tela Inteira Exclusiva" para transformar 100% do seu monitor em uma estação de criação dedicada.
+   - Tudo no Canvas pode ser movido/arrastado (nós @Image1, @Image2, Painel Inspetor, Dock de Prompt, Barra de Ferramentas e o próprio fundo).
+   - Para DELETAR qualquer imagem/nó: clique no ícone de lixeira (🗑️) no canto do card. Para BAIXAR direto no PC: clique em "⬇️ Baixar no PC".
 2. FIDELIZAÇÃO DE ROSTO 100% (Face Lock Biométrico):
    - No Painel de Fidelização de Rosto do Canvas, ative "Travar Identidade Facial (100%)" e escolha o Rosto Oficial ou suba sua foto.
-   - O motor Flux.1 Kontext Pro + Gemini Vision trava os traços faciais em todos os capítulos do filme.
+   - O motor proprietário ESG Biometric FaceLock 8K trava os traços faciais em todos os capítulos do filme.
 3. EFEITOS SONOROS REAIS (Real SFX) & ESCOLHA DE VOZES:
    - Todos os vídeos saem com efeitos sonoros reais de cinema (Ronco de Motor V8, Chuva e Trovão, Impactos IMAX, Vento, Sci-Fi ou Passos) mixados com a voz que você escolher (Antonio, Francisca, Thalita ou sua Voz Clonada).
 4. FILMES DE ATÉ 1 A 2 HORAS (Agente Diretor de Filmes IA):
-   - Digite 1 única frase no "Agente Diretor de Filmes", escolha a escala (Curta 5min, Série 30min ou Longa-Metragem 1h a 2h) e a IA gera o Roteiro em Atos/Capítulos + fichas de [Personagem], [Objeto], [Cenário] e [Cenas] conectadas.
+   - Digite 1 única frase no "Agente Diretor de Filmes", escolha a escala (Curta 5min, Série 30min ou Longa-Metragem 1h a 2h) e o sistema gera o Roteiro em Atos/Capítulos + fichas de [Personagem], [Objeto], [Cenário] e [Cenas] conectadas.
    - Para mudar o ângulo de câmera ou iluminação de apenas 1 cena sem refazer o filme, clique no nó e troque a Lente/Luz no Inspetor!
 5. ENGENHARIA REVERSA CRIATIVA (REA — 4 Camadas):
-   - Suba qualquer foto ou referência no botão "Engenharia Reversa REA" e a IA extrai as 4 camadas (Composição, Lente/Câmera, Luz/Cor 8K e Prompt Mestre) para clonar o visual em 1 clique."""
+   - Suba qualquer foto ou referência no botão "Engenharia Reversa REA" e o motor extrai as 4 camadas (Composição, Lente/Câmera, Luz/Cor 8K e Prompt Mestre) para recriar em 1 clique."""
 
     from scripts.magnific_canvas_engine import MagnificCanvasEngine
     engine = MagnificCanvasEngine()
     answer = engine._call_llm_text(system_guide, timeout=20)
     if not answer:
         answer = (
-            "🤖 **Olá! Eu sou o IABot, seu Copiloto no Magnific Studio!**\n\n"
-            "• **Mover e Deletar no Canvas Expansivo:** Arraste qualquer card, painel ou barra livremente pela tela. Use o botão **Tela Expansiva (Fullscreen)** no topo do Canvas para ampliar seu espaço e clique no ícone **🗑️** em qualquer nó `@Image` para deletá-lo.\n"
-            "• **Fidelização de Rosto 100% (Face Lock):** No painel **Fidelização de Rosto & Direção**, mantenha o Face Lock ativo (ou envie sua foto) e use os motores **Seedream 5 Pro** ou **Flux.1 Kontext Pro** para manter o mesmo rosto em todo o filme.\n"
-            "• **Vozes e Efeitos Sonoros Reais (SFX):** Escolha entre **Antonio, Francisca, Thalita ou Voz Clonada** e selecione o pacote de **SFX Real** (Motor V8, Chuva & Trovão, Impacto IMAX, etc.) antes de renderizar.\n"
-            "• **Filmes de 1 a 2 Horas:** Digite sua ideia na barra **Agente Diretor de Filmes IA**, escolha **Longa-Metragem (1h–2h)** e a IA criará todos os Atos, Capítulos e Nós conectados automaticamente!"
+            "🤖 **Olá! Eu sou o IABot, seu Copiloto Oficial na Arquitetura Proprietária ESG Neural Core 8K™!**\n\n"
+            "• **Estúdio em Tela Inteira Exclusiva:** Clique em **🖥️ Abrir Estúdio em Tela Inteira Exclusiva** no topo do Canvas para dedicar 100% do seu monitor à criação. Arraste qualquer card, painel ou barra livremente, clique em **🗑️** para deletar ou **⬇️** para baixar direto no seu PC.\n"
+            "• **Fidelização de Rosto 100% (Face Lock):** Mantenha o Face Lock ativo (ou envie sua foto) para preservar 100% da sua identidade facial e das imagens de referência em qualquer cena.\n"
+            "• **Vozes e Efeitos Sonoros Reais (SFX):** Escolha entre **Antonio, Francisca, Thalita ou Voz Clonada** e selecione o pacote de **SFX Real** (Motor V8, Chuva & Trovão, Impacto IMAX, etc.).\n"
+            "• **Filmes de 1 a 2 Horas:** Digite sua ideia no **Agente Diretor de Filmes IA**, escolha **Longa-Metragem (1h–2h)** e gere todos os Atos, Capítulos e Nós conectados!"
         )
 
     return {"status": "success", "answer": answer}

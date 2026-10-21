@@ -138,6 +138,12 @@ class VoiceCloneEngine:
         print(f"[VoiceEngine] Clonagem vocal concluída: {output_path}")
         return output_path
 
+    def clone_voice_openvoice(self, text_or_ref, ref_or_text, output_path="output/cloned_voice.mp3"):
+        """Alias blindado compatível com qualquer ordem de parâmetros (ref, text) ou (text, ref)."""
+        if os.path.exists(str(text_or_ref)):
+            return self.clone_voice_sample(text_or_ref, ref_or_text, output_path=output_path)
+        return self.clone_voice_sample(ref_or_text, text_or_ref, output_path=output_path)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Motor Autônomo de Vozes e Clonagem (PT-BR Nativo)")

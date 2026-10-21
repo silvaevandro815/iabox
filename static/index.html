@@ -7,7 +7,7 @@
   <meta name="description" content="Crie vídeos virais, locuções neurais 100% brasileiras, clonagem vocal, músicas completas estilo Suno e paródias musicais com inteligência artificial.">
   <link rel="icon" href="/static/assets/logo_esg.jpg">
   
-  <!-- Tailwind CSS & Lucide Icons -->
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -144,15 +144,15 @@
 </head>
 <body class="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
 
-  <!-- ========================================================================= -->
-  <!-- NAVBAR SUPERIOR EM DOIS NÍVEIS (100% VISÍVEL EM QUALQUER ZOOM E TELA)     -->
-  <!-- ========================================================================= -->
+  
+  
+  
   <header class="sticky top-0 z-50 glass-panel border-b border-cyan-500/25 px-3 lg:px-6 py-2 transition-all">
     <div class="max-w-[1400px] mx-auto flex flex-col gap-2">
       
-      <!-- NÍVEL 1: LOGO QUADRADA ESG + SALDO VIP/TOKENS + BOTÃO RECARREGAR -->
+      
       <div class="flex items-center justify-between gap-2">
-        <!-- Logo Quadrada IABOX & ESG (3 cliques ou 3 toques liberam acesso total exclusivo no aparelho) -->
+        
         <div id="esg-logo-trigger" onpointerdown="handleLogoSecretClick(event)" class="flex items-center gap-2.5 group cursor-pointer select-none shrink-0" title="Toque ou clique 3 vezes para Acesso Total VIP neste aparelho">
           <div style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px;" class="shrink-0 overflow-hidden border-2 border-cyan-400 shadow-neon-cyan-sm group-hover:scale-105 transition-transform bg-white p-0.5 flex items-center justify-center">
             <img src="/static/assets/logo_esg_square.png?v=3" alt="ESG Logo Quadrada" class="w-full h-full object-contain">
@@ -165,7 +165,7 @@
           </div>
         </div>
 
-        <!-- Botão Rápido Perguntar ao Robô + Memória + Saldo de Créditos + Botão Recarga -->
+        
         <div class="flex items-center gap-2 shrink-0">
           <button onclick="openIABotAssistant()" class="flex items-center gap-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/40 text-emerald-200 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
             <i data-lucide="bot" class="w-3.5 h-3.5 text-emerald-400"></i>
@@ -195,7 +195,7 @@
         </div>
       </div>
 
-      <!-- NÍVEL 2: MENU COMPLETO COM QUEBRA INTELIGENTE (SEMPRE 100% VISÍVEL EM ZOOM 100%) -->
+      
       <nav class="flex flex-wrap items-center justify-center gap-1.5 pt-1.5 border-t border-white/10">
         <button data-tab="dashboard" onclick="switchTab('dashboard')" class="nav-btn active whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold transition-all text-cyan-400 bg-cyan-500/15 border border-cyan-400/30">🏠 Início</button>
         <button data-tab="canvas" onclick="switchTab('canvas')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all">⚡ Magnific Canvas</button>
@@ -212,22 +212,22 @@
     </div>
   </header>
 
-  <!-- ========================================== -->
-  <!-- CONTEÚDO PRINCIPAL (TABS)                 -->
-  <!-- ========================================== -->
+  
+  
+  
   <main class="flex-grow max-w-7xl mx-auto w-full px-4 lg:px-8 py-8">
 
-    <!-- ---------------------------------------- -->
-    <!-- 1. TAB: DASHBOARD (HOME)                 -->
-    <!-- ---------------------------------------- -->
+    
+    
+    
     <section id="tab-dashboard" class="tab-content block space-y-10">
       
-      <!-- Hero Banner Estilo Artlist / Kling AI (Didático + Preview de Cinema ao Vivo) -->
+      
       <div class="relative overflow-hidden rounded-3xl glass-panel p-6 md:p-10 border border-cyan-500/30 shadow-card-glow">
         <div class="absolute -right-20 -top-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
           
-          <!-- Coluna Esquerda: Títulos Claros e Didáticos -->
+          
           <div class="lg:col-span-7 space-y-4">
             <div id="hero-bonus-badge" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 text-xs font-extrabold tracking-wide uppercase">
               <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
@@ -255,7 +255,7 @@
             </div>
           </div>
 
-          <!-- Coluna Direita: Reel de Cinema Auto-Play com o Rosto Fiel de Evandro (lado2.jpg) em Movimento Real LTX-Video -->
+          
           <div class="lg:col-span-5">
             <div class="relative rounded-2xl overflow-hidden border-2 border-amber-400/50 shadow-2xl bg-black group">
               <video autoplay loop muted playsinline poster="/static/samples/canvas_take1.jpg?v=real2026" class="w-full h-64 md:h-72 object-cover">
@@ -280,7 +280,7 @@
         </div>
       </div>
 
-      <!-- PASSO A PASSO DIDÁTICO: TODAS AS 7 FERRAMENTAS COM ÍCONES FUTURISTAS NEON -->
+      
       <div class="space-y-4">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-white/10 pb-3">
           <div>
@@ -290,10 +290,10 @@
           <span class="text-xs text-gray-400">Todas as ferramentas estão liberadas para você testar com seus <strong>50 Tokens de Bônus</strong></span>
         </div>
 
-      <!-- Grid de Módulos / Ferramentas com Ícones Neon Cyberpunk -->
+      
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <!-- Card Destaque: Magnific Canvas (Higgsfield & Storyboard) -->
+        
         <div onclick="switchTab('canvas')" class="glass-card rounded-2xl p-6 cursor-pointer group border-amber-400/40 relative overflow-hidden">
           <div class="absolute top-3 right-3 bg-amber-400 text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full">Novo &bull; Cinema</div>
           <div class="neon-icon-box neon-amber mb-5">
@@ -306,14 +306,14 @@
             </svg>
           </div>
           <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-amber-300 transition-colors">Magnific Canvas & Storyboard</h3>
-          <p class="text-sm text-gray-400 leading-relaxed mb-4">Canvas infinito de nós conectados (@Image1, @Image2), consistência de personagem, Upscale 4K Magnific e compilador de filme com câmera Higgsfield.</p>
+          <p class="text-sm text-gray-400 leading-relaxed mb-4">Canvas infinito de nós conectados (@Image1, @Image2), consistência de personagem, Upscale 4K Magnific e compilador de filme com câmera IABOX Cinema™.</p>
           <div class="flex items-center justify-between text-xs font-semibold text-amber-400 pt-3 border-t border-white/5">
             <span>Custo: 3 a 12 créditos</span>
             <span class="flex items-center gap-1">Abrir Estúdio <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
           </div>
         </div>
         
-        <!-- Card 1: Suno Music Studio -->
+        
         <div onclick="switchTab('suno')" class="glass-card rounded-2xl p-6 cursor-pointer group">
           <div class="neon-icon-box neon-cyan mb-5">
             <svg class="w-7 h-7 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -331,7 +331,7 @@
           </div>
         </div>
 
-        <!-- Card 2: Fábrica de Paródias -->
+        
         <div onclick="switchTab('parody')" class="glass-card rounded-2xl p-6 cursor-pointer group">
           <div class="neon-icon-box neon-purple mb-5">
             <svg class="w-7 h-7 text-purple-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -348,7 +348,7 @@
           </div>
         </div>
 
-        <!-- Card 3: Vozes Neurais do Brasil -->
+        
         <div onclick="switchTab('voice')" class="glass-card rounded-2xl p-6 cursor-pointer group">
           <div class="neon-icon-box neon-emerald mb-5">
             <svg class="w-7 h-7 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -363,7 +363,7 @@
           </div>
         </div>
 
-        <!-- Card 4: Clonagem de Voz -->
+        
         <div onclick="switchTab('clone')" class="glass-card rounded-2xl p-6 cursor-pointer group">
           <div class="neon-icon-box neon-amber mb-5">
             <svg class="w-7 h-7 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -380,7 +380,7 @@
           </div>
         </div>
 
-        <!-- Card 5: Gerador de Imagens & Fotos IA -->
+        
         <div onclick="switchTab('image')" class="glass-card rounded-2xl p-6 cursor-pointer group">
           <div class="neon-icon-box neon-pink mb-5">
             <svg class="w-7 h-7 text-pink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -397,7 +397,7 @@
           </div>
         </div>
 
-        <!-- Card 6: Editor de Vídeo Viral -->
+        
         <div onclick="switchTab('video')" class="glass-card rounded-2xl p-6 cursor-pointer group">
           <div class="neon-icon-box neon-blue mb-5">
             <svg class="w-7 h-7 text-blue-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -414,7 +414,7 @@
           </div>
         </div>
 
-        <!-- Card 7: Conheça o Criador -->
+        
         <div onclick="switchTab('about')" class="glass-card rounded-2xl p-6 cursor-pointer group border-cyan-500/30">
           <div class="neon-icon-box neon-cyan mb-5">
             <svg class="w-7 h-7 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -434,15 +434,15 @@
       </div>
       </div>
 
-      <!-- ========================================================================= -->
-      <!-- GALERIA DE CINEMA & VÍDEOS IA (ESTILO ARTLIST / KLING AI / MAGNIFIC 8K)   -->
-      <!-- ========================================================================= -->
+      
+      
+      
       <div class="mt-10 space-y-6">
         <div class="border-b border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 text-xs font-extrabold uppercase tracking-wider mb-2">
               <i data-lucide="clapperboard" class="w-3.5 h-3.5 text-amber-400"></i>
-              Padrão Hollywood &bull; Inspirado em Kling AI, Magnific 8K & Higgsfield
+              Padrão Hollywood &bull; Inspirado em Kling AI, Magnific 8K & IABOX Cinema™
             </div>
             <h2 class="text-2xl md:text-4xl font-extrabold font-display text-white">Vídeos & Imagens Cinematográficas Ultra-Realistas</h2>
             <p class="text-gray-300 text-sm mt-1">Veja exemplos reais gerados pela nossa tecnologia e clique em <strong>"Usar Este Estilo Agora"</strong> para criar o seu com um clique.</p>
@@ -453,10 +453,10 @@
           </button>
         </div>
 
-        <!-- BLOCO 1: VÍDEOS GERADOS PELA TECNOLOGIA (AUTO-PLAY ESTILO ARTLIST KLING AI) -->
+        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
-          <!-- Vídeo 1: Cyberpunk Ronin Motion (Kling / LTX-Video Real Motion) -->
+          
           <div class="glass-panel rounded-2xl overflow-hidden border border-amber-400/30 flex flex-col justify-between group">
             <div class="relative aspect-video bg-black overflow-hidden">
               <video autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
@@ -476,7 +476,7 @@
             </div>
           </div>
 
-          <!-- Vídeo 2: Sci-Fi IMAX Odyssey (Kling / LTX-Video Real Motion) -->
+          
           <div class="glass-panel rounded-2xl overflow-hidden border border-cyan-400/30 flex flex-col justify-between group">
             <div class="relative aspect-video bg-black overflow-hidden">
               <video autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
@@ -496,7 +496,7 @@
             </div>
           </div>
 
-          <!-- Vídeo 3: Consistência de Personagem em Movimento Real (Take 2) -->
+          
           <div class="glass-panel rounded-2xl overflow-hidden border border-purple-400/30 flex flex-col justify-between group">
             <div class="relative aspect-video bg-black overflow-hidden">
               <video autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
@@ -516,7 +516,7 @@
             </div>
           </div>
 
-          <!-- Card 4: Imagem Oficial do Canvas do Magnific (BeatDesign Node Graph) -->
+          
           <div class="glass-panel rounded-2xl overflow-hidden border border-pink-400/30 flex flex-col justify-between group">
             <div class="relative aspect-video bg-black overflow-hidden cursor-pointer" onclick="openCanvasLightbox('/static/samples/magnific_canvas_preview.jpg?v=real2026', 'Arquitetura Magnific Canvas & Storyboard')">
               <img src="/static/samples/magnific_canvas_preview.jpg?v=real2026" alt="Canvas do Magnific" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
@@ -536,7 +536,7 @@
 
         </div>
 
-        <!-- BLOCO 2: IMAGENS CINEMATOGRÁFICAS ULTRA-REALISTAS 8K (CLIQUE PARA DAR ZOOM 4K OU USAR O PROMPT) -->
+        
         <div class="pt-4">
           <div class="flex items-center justify-between mb-4">
             <div>
@@ -548,7 +548,7 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
-            <!-- Foto 8K 1: Retrato Brasileiro Ultra-Realista -->
+            
             <div class="glass-panel rounded-2xl overflow-hidden border border-white/10 group flex flex-col justify-between">
               <div class="relative aspect-video bg-black overflow-hidden cursor-pointer" onclick="openCanvasLightbox('/static/samples/cinema_magnific_portrait.jpg', 'Retrato 8K Magnific — Micro-Textura de Pele')">
                 <img src="/static/samples/cinema_magnific_portrait.jpg" alt="Retrato 8K Magnific" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -563,7 +563,7 @@
               </div>
             </div>
 
-            <!-- Foto 8K 2: Comercial Automotivo de Luxo -->
+            
             <div class="glass-panel rounded-2xl overflow-hidden border border-white/10 group flex flex-col justify-between">
               <div class="relative aspect-video bg-black overflow-hidden cursor-pointer" onclick="openCanvasLightbox('/static/samples/cinema_luxury_car.jpg', 'Comercial Automotivo RED V-Raptor 8K')">
                 <img src="/static/samples/cinema_luxury_car.jpg" alt="Hypercar 8K" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -578,7 +578,7 @@
               </div>
             </div>
 
-            <!-- Foto 8K 3: Cyberpunk Tóquio Anamórfico -->
+            
             <div class="glass-panel rounded-2xl overflow-hidden border border-white/10 group flex flex-col justify-between">
               <div class="relative aspect-video bg-black overflow-hidden cursor-pointer" onclick="openCanvasLightbox('/static/samples/cinema_kling_cyberpunk.jpg', 'Cinema Cyberpunk ARRI Alexa 65mm')">
                 <img src="/static/samples/cinema_kling_cyberpunk.jpg" alt="Cyberpunk 8K" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -593,7 +593,7 @@
               </div>
             </div>
 
-            <!-- Foto 8K 4: Epopeia Espacial IMAX -->
+            
             <div class="glass-panel rounded-2xl overflow-hidden border border-white/10 group flex flex-col justify-between">
               <div class="relative aspect-video bg-black overflow-hidden cursor-pointer" onclick="openCanvasLightbox('/static/samples/cinema_scifi_odyssey.jpg', 'Epopeia Espacial IMAX 70mm')">
                 <img src="/static/samples/cinema_scifi_odyssey.jpg" alt="Sci-Fi 8K" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -612,7 +612,7 @@
         </div>
       </div>
 
-      <!-- SEÇÃO VITRINE & DEMONSTRAÇÕES INTERATIVAS (ACESSO PÚBLICO LIVRE) -->
+      
       <div class="mt-12 space-y-6">
         <div class="border-b border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -631,7 +631,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          <!-- Vitrine 1: Locução Antônio -->
+          
           <div class="glass-panel p-5 rounded-2xl border border-emerald-500/30 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-3">
@@ -654,7 +654,7 @@
             </button>
           </div>
 
-          <!-- Vitrine 2: Locução Francisca -->
+          
           <div class="glass-panel p-5 rounded-2xl border border-cyan-500/30 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-3">
@@ -677,7 +677,7 @@
             </button>
           </div>
 
-          <!-- Vitrine 3: Vídeo Viral 9:16 -->
+          
           <div class="glass-panel p-5 rounded-2xl border border-blue-500/30 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-3">
@@ -705,9 +705,9 @@
 
     </section>
 
-    <!-- ---------------------------------------- -->
-    <!-- 2. TAB: SUNO MUSIC STUDIO                -->
-    <!-- ---------------------------------------- -->
+    
+    
+    
     <section id="tab-suno" class="tab-content hidden space-y-6">
       <div class="border-b border-white/10 pb-4">
         <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
@@ -718,7 +718,7 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Formulário -->
+        
         <div class="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-5">
           <div>
             <label class="block text-sm font-semibold text-gray-200 mb-2">Tema ou História da Canção</label>
@@ -743,7 +743,7 @@
           </button>
         </div>
 
-        <!-- Painel Lateral de Resultado -->
+        
         <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
           <div>
             <h3 class="text-lg font-bold text-white mb-3">Player de Áudio</h3>
@@ -760,9 +760,9 @@
       </div>
     </section>
 
-    <!-- ---------------------------------------- -->
-    <!-- 3. TAB: PARÓDIAS & AI SONG COVERS        -->
-    <!-- ---------------------------------------- -->
+    
+    
+    
     <section id="tab-parody" class="tab-content hidden space-y-6">
       <div class="border-b border-white/10 pb-4">
         <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
@@ -772,7 +772,7 @@
         <p class="text-gray-400 text-sm mt-1">Tire a voz do cantor original de qualquer música famosa e coloque a SUA voz clonada mantendo o instrumental original, ou crie paródias com letras alteradas na mesma batida.</p>
       </div>
 
-      <!-- Assistente de Letra de Paródia com IA -->
+      
       <div class="glass-panel p-6 rounded-2xl border border-purple-500/30 space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-bold text-white flex items-center gap-2">
@@ -823,19 +823,19 @@
             <h3 class="text-lg font-bold text-white mb-3">Música Final Masterizada</h3>
             <div id="parody-player-box" class="bg-dark-800/80 rounded-xl p-4 border border-white/5 text-center text-gray-400 text-sm">
               <i data-lucide="music-2" class="w-10 h-10 mx-auto text-purple-400 mb-2"></i>
-              Envie a música original e sua voz para iniciar a separação de stems (Demucs v4) e transferência vocal (Seed-VC).
+              Envie a música original e sua voz para iniciar a separação de stems (ESG Stem Core™) e transferência vocal (ESG Timbre Core™).
             </div>
           </div>
           <div class="p-4 rounded-xl bg-purple-500/5 border border-purple-400/20 mt-4 text-xs text-gray-300">
-            <strong>Tecnologia Dupla:</strong> O Demucs v4 (Meta AI) isola o instrumental original limpo, enquanto o Seed-VC transfere seu timbre vocal preservando todas as notas e afinação.
+            <strong>Tecnologia Dupla:</strong> O ESG Stem Core™ (Meta AI) isola o instrumental original limpo, enquanto o ESG Timbre Core™ transfere seu timbre vocal preservando todas as notas e afinação.
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ---------------------------------------- -->
-    <!-- 4. TAB: VOZES NEURAIS DO BRASIL          -->
-    <!-- ---------------------------------------- -->
+    
+    
+    
     <section id="tab-voice" class="tab-content hidden space-y-6">
       <div class="border-b border-white/10 pb-4">
         <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
@@ -900,9 +900,9 @@
       </div>
     </section>
 
-    <!-- ---------------------------------------- -->
-    <!-- 5. TAB: CLONADOR DE VOZ                  -->
-    <!-- ---------------------------------------- -->
+    
+    
+    
     <section id="tab-clone" class="tab-content hidden space-y-6">
       <div class="border-b border-white/10 pb-4">
         <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
@@ -946,9 +946,9 @@
       </div>
     </section>
 
-    <!-- ------------------------------------------------------------ -->
-    <!-- 6. TAB: ESTÚDIO DE VÍDEOS & VFX (ATÉ 5 MIN + 3-5 IMAGENS REF)-->
-    <!-- ------------------------------------------------------------ -->
+    
+    
+    
     <section id="tab-video" class="tab-content hidden space-y-6">
       <div class="border-b border-white/10 pb-4">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 border border-blue-400/40 text-blue-300 text-xs font-extrabold uppercase tracking-wider mb-2">
@@ -963,7 +963,7 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Coluna Formulário -->
+        
         <div class="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-5">
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1021,7 +1021,7 @@
               <input type="checkbox" id="video-jumpcuts" checked class="rounded text-cyan-400">
               <div>
                 <span class="text-xs font-bold text-white block">Jump Cuts Automáticos (Corte de Silêncio)</span>
-                <span class="text-[11px] text-gray-400">Remove pausas longas via FFmpeg (até 5 min).</span>
+                <span class="text-[11px] text-gray-400">Remove pausas longas via ESG Cinema Render™ (até 5 min).</span>
               </div>
             </label>
             <label class="flex items-center gap-3 p-3 rounded-xl bg-dark-800/80 border border-white/5 cursor-pointer">
@@ -1039,7 +1039,7 @@
           </button>
         </div>
 
-        <!-- Coluna Resultado / Demonstração -->
+        
         <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
           <div>
             <h3 class="text-lg font-bold text-white mb-3">Monitor de Vídeo & VFX</h3>
@@ -1054,15 +1054,15 @@
             <strong class="text-blue-300 block">Capacidades do Motor de Vídeo:</strong>
             <p>&bull; Recebe vídeos longos de <strong>até 5 minutos</strong>.</p>
             <p>&bull; Recebe de <strong>3 a 5 imagens</strong> e vídeos auxiliares para inserir design, objetos, motion graphics e troca de personagem.</p>
-            <p>&bull; Salva automaticamente na sua <strong>Memória Cloud (Supabase + SQLite)</strong>.</p>
+            <p>&bull; Salva automaticamente na sua <strong>Memória Cloud (ESG Quantum Cloud™)</strong>.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ------------------------------------------------------------ -->
-    <!-- 7. TAB: IMAGENS & FOTOS IA (COM 3 A 5 IMAGENS DE REFERÊNCIA) -->
-    <!-- ------------------------------------------------------------ -->
+    
+    
+    
     <section id="tab-image" class="tab-content hidden space-y-6">
       <div class="border-b border-white/10 pb-4">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/15 border border-pink-400/40 text-pink-300 text-xs font-extrabold uppercase tracking-wider mb-2">
@@ -1083,7 +1083,7 @@
             <textarea id="image-prompt" rows="3" placeholder="Ex: Foto cinematográfica 8K mantendo exatamente a pessoa e o estilo das imagens de referência em um cenário de cinema ao pôr do sol, lente 85mm f/1.2..." class="w-full bg-dark-800 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-pink-400 transition-colors"></textarea>
           </div>
 
-          <!-- Upload de 3 a 5 Imagens de Referência -->
+          
           <div class="p-4 rounded-2xl bg-dark-800/90 border border-pink-400/30 space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-2">
               <label class="block text-sm font-bold text-pink-300">2. Imagens de Referência para a IA (Selecione de 3 a 5 Imagens — Opcional)</label>
@@ -1104,7 +1104,7 @@
                 <option value="Magnific Cinema 8K">✨ Magnific Cinema 8K (Micro-Textura de Pele & Poros)</option>
                 <option value="GPT Image 2 Ultra">🧠 GPT Image 2 Ultra (Precisão Espacial & Composição)</option>
                 <option value="Qwen Image Edit Pro">🎨 Qwen Image Edit Pro (Re-Iluminação & Figurino)</option>
-                <option value="Higgsfield Dark Cinema">🎬 Higgsfield Dark Cinema (Anamórfico 35mm Hollywood)</option>
+                <option value="IABOX Cinema™ Dark Cinema">🎬 IABOX Cinema™ Dark Cinema (Anamórfico 35mm Hollywood)</option>
               </select>
             </div>
 
@@ -1142,15 +1142,15 @@
             </div>
           </div>
           <div class="p-4 rounded-xl bg-pink-500/5 border border-pink-400/20 mt-4 text-xs text-gray-300">
-            Todas as imagens geradas ficam salvas automaticamente na sua aba <strong>Memória & Acessos</strong> (Supabase + SQLite).
+            Todas as imagens geradas ficam salvas automaticamente na sua aba <strong>Memória & Acessos</strong> (ESG Quantum Cloud™).
           </div>
         </div>
       </div>
     </section>
 
-    <!-- -------------------------------------------------------------------------------- -->
-    <!-- 6B. TAB: MAGNIFIC 2.0 INFINITE CANVAS EXPANSIVO & DIRETOR DE FILMES ATÉ 2 HORAS -->
-    <!-- -------------------------------------------------------------------------------- -->
+    
+    
+    
     <section id="tab-canvas" class="tab-content hidden space-y-6">
       <div class="border-b border-white/10 pb-4 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
         <div>
@@ -1164,11 +1164,16 @@
           </p>
         </div>
 
-        <!-- Botões Superiores de Comando Rápido do Canvas -->
+        
         <div class="flex flex-wrap items-center gap-2">
-          <button onclick="toggleCanvasExpandMode()" id="btn-canvas-fullscreen" class="bg-gradient-to-r from-cyan-500/25 to-blue-600/25 hover:from-cyan-500/40 hover:to-blue-600/40 border border-cyan-400/50 text-cyan-200 font-extrabold px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-lg">
-            <i data-lucide="maximize" class="w-4 h-4 text-cyan-400"></i>
-            <span>Tela Expansiva (Fullscreen)</span>
+          <button onclick="toggleCanvasExpandMode()" id="btn-canvas-fullscreen" class="bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 hover:opacity-95 text-black font-extrabold px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-neon-cyan">
+            <i data-lucide="monitor" class="w-4 h-4 text-black"></i>
+            <span>🖥️ Abrir Estúdio em Tela Inteira Exclusiva (100% Dedicada)</span>
+          </button>
+
+          <button onclick="downloadDirectToPC(currentGeneratedNodeUrl)" class="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-200 font-extrabold px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5">
+            <i data-lucide="download" class="w-4 h-4 text-amber-400"></i>
+            <span>Baixar Criativo no PC</span>
           </button>
 
           <button onclick="openModal('rea-reverse-modal')" class="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/40 text-purple-200 font-bold px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5">
@@ -1176,7 +1181,7 @@
             <span>Engenharia Reversa REA</span>
           </button>
 
-          <button onclick="openIABotAssistant('Como funciona o novo Magnific Canvas Expansivo, Fidelização de Rosto, SFX Reais e criação de filmes de até 2 horas?')" class="bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-200 font-bold px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5">
+          <button onclick="openIABotAssistant('Como funciona o Estúdio em Tela Inteira Exclusiva, Fidelização de Rosto, SFX Reais e criação de filmes de até 2 horas?')" class="bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-200 font-bold px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5">
             <i data-lucide="bot" class="w-4 h-4 text-emerald-400"></i>
             <span>Perguntar ao Robô IABot</span>
           </button>
@@ -1204,14 +1209,14 @@
         </div>
       </div>
 
-      <!-- ================================================================================= -->
-      <!-- BARRA DO AGENTE DIRETOR DE FILMES IA (DE 1 FRASE A FILME DE 1 A 2 HORAS NO CANVAS)-->
-      <!-- ================================================================================= -->
+      
+      
+      
       <div class="glass-panel p-4 md:p-5 rounded-2xl border border-amber-400/40 bg-gradient-to-r from-amber-500/10 via-dark-900 to-cyan-500/10">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div class="flex-1 space-y-1">
             <div class="flex flex-wrap items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded-md bg-amber-400 text-black text-[10px] font-black uppercase tracking-wider">Agente Diretor de Filmes IA (Magnific / Buzzy Clone)</span>
+              <span class="px-2.5 py-0.5 rounded-md bg-amber-400 text-black text-[10px] font-black uppercase tracking-wider">Agente Diretor de Filmes IA (ESG Neural Core 8K™)</span>
               <span class="text-xs text-cyan-300 font-semibold">👑 VIP Evandro: Uso Infinito 8K &bull; Visitantes: Escalonado pelos Tokens</span>
             </div>
             <p class="text-xs text-gray-300">Digite <strong>uma única frase</strong> e a IA gera o Roteiro Multi-Capítulos + Nós de <strong>[Personagem Fiel]</strong>, <strong>[Objeto/Veículo]</strong>, <strong>[Cenário]</strong> e <strong>[Cenas Conectadas]</strong> para filmes de até 2 horas:</p>
@@ -1234,15 +1239,12 @@
         </div>
       </div>
 
-      <!-- ================================================================================= -->
-      <!-- QUADRO DO INFINITE CANVAS EXPANSIVO (TUDO NELE PODE SER MOVIDO E CONTROLADO)      -->
-      <!-- ================================================================================= -->
-      <div id="magnific-canvas-board" class="relative w-full h-[790px] rounded-3xl border-2 border-amber-400/30 overflow-hidden select-none shadow-2xl transition-all duration-300" style="background-color: #07090e; background-image: radial-gradient(rgba(255,255,255,0.13) 1px, transparent 1px); background-size: 24px 24px;">
+      <div id="canvas-board-placeholder"></div>
+      <div id="magnific-canvas-board" class="relative w-full h-[820px] rounded-3xl border-2 border-amber-400/35 overflow-hidden select-none shadow-2xl transition-all duration-300" style="background-color: #06080f; background-image: radial-gradient(rgba(255,255,255,0.13) 1px, transparent 1px); background-size: 24px 24px;">
 
-        <!-- BARRA SUPERIOR INTERNA FLUTUANTE E MOVÍVEL (ZOOM, PAN, FULLSCREEN E STATUS) -->
-        <div id="canvas-top-hud" class="absolute top-3 left-4 z-30 flex flex-wrap items-center gap-2 bg-dark-900/90 backdrop-blur-xl border border-white/15 px-3 py-1.5 rounded-2xl shadow-xl cursor-move">
+        <div id="canvas-top-hud" class="absolute top-3 left-4 z-30 flex flex-wrap items-center gap-2 bg-dark-900/95 backdrop-blur-xl border border-cyan-400/30 px-3.5 py-1.5 rounded-2xl shadow-xl cursor-move">
           <span class="text-[10px] font-black text-amber-400 uppercase tracking-wider flex items-center gap-1">
-            <i data-lucide="move" class="w-3.5 h-3.5"></i> HUD Movível
+            <i data-lucide="move" class="w-3.5 h-3.5"></i> Estúdio 8K
           </span>
           <div class="h-3 w-[1px] bg-white/15"></div>
           <button onclick="zoomCanvasViewport(-0.12)" class="px-2 py-0.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-xs text-gray-200 font-bold" title="Diminuir Zoom (-)">−</button>
@@ -1251,22 +1253,16 @@
           <button onclick="resetCanvasViewportZoom()" class="px-2 py-0.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-[10px] text-amber-300 font-semibold">Centralizar</button>
           <div class="h-3 w-[1px] bg-white/15"></div>
           <span id="canvas-connected-count" class="text-[11px] text-emerald-300 font-bold">3 Nós Conectados</span>
-          <button onclick="toggleCanvasExpandMode()" class="px-2.5 py-0.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-[10px] text-cyan-300 font-extrabold">⛶ Expandir/Reduzir Tela</button>
+          <button onclick="downloadDirectToPC(currentGeneratedNodeUrl)" class="px-2.5 py-0.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/50 text-[10px] text-amber-300 font-extrabold">⬇️ Baixar Criativo no PC</button>
+          <button onclick="toggleCanvasExpandMode()" id="hud-expand-btn" class="px-3 py-1 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 text-[10px] text-black font-black shadow">🖥️ Tela Inteira Dedicada (100%)</button>
         </div>
 
-        <!-- CAMADA DE VIEWPORT COM SUPORTE A PAN (ARRASTAR FUNDO) E ZOOM -->
         <div id="canvas-viewport-stage" class="absolute inset-0 w-full h-full origin-top-left transition-transform duration-75">
-          <!-- Camada SVG para Cabos Bezier Dinâmicos entre Nós -->
           <svg id="canvas-svg-cables" class="absolute inset-0 w-full h-full pointer-events-none z-10"></svg>
 
-          <!-- CONTAINER DOS NÓS ARRASTÁVEIS DE REFERÊNCIA E CENAS (@Image1, @Image2, @Image3...) -->
-          <div id="canvas-nodes-layer" class="absolute inset-0 z-20">
-            <!-- Renderizado dinamicamente via JS -->
-          </div>
+          <div id="canvas-nodes-layer" class="absolute inset-0 z-20"></div>
 
-          <!-- NÓ CENTRAL DE GERAÇÃO CONECTADA 8K (IMAGE / TAKE GENERATION NODE — MOVÍVEL) -->
-          <div id="canvas-gen-node" class="absolute z-20 w-72 md:w-80 rounded-2xl bg-dark-800/95 backdrop-blur-xl border-2 border-cyan-400/70 shadow-neon-cyan p-3 cursor-grab active:cursor-grabbing" style="left: 470px; top: 75px;">
-            <!-- Porta de Entrada (Esquerda) -->
+          <div id="canvas-gen-node" class="absolute z-20 w-72 md:w-80 rounded-2xl bg-dark-800/95 backdrop-blur-xl border-2 border-cyan-400/70 shadow-neon-cyan p-3 cursor-grab active:cursor-grabbing" style="left: 420px; top: 75px;">
             <div id="gen-node-in-port" class="absolute -left-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-cyan-400 text-black font-black flex items-center justify-center shadow-lg border-2 border-dark-900 text-xs" title="Conector de Entrada Multi-Referência">+</div>
 
             <div class="flex items-center justify-between text-xs text-gray-300 mb-2 px-1">
@@ -1277,16 +1273,14 @@
               <span id="gen-node-res-badge" class="text-[10px] font-mono bg-cyan-500/15 text-cyan-300 px-2 py-0.5 rounded-md border border-cyan-400/30">3840 x 2160 (8K)</span>
             </div>
 
-            <!-- Preview da Cena Gerada no Nó -->
-            <div id="gen-node-preview-box" ondblclick="openCanvasLightbox(currentGeneratedNodeUrl, 'Cena Conectada 8K (Magnific Studio)')" class="relative w-full h-44 rounded-xl overflow-hidden bg-black border border-white/10 group cursor-pointer">
+            <div id="gen-node-preview-box" ondblclick="openCanvasLightbox(currentGeneratedNodeUrl, 'Cena Conectada 8K (ESG Studio)')" class="relative w-full h-44 rounded-xl overflow-hidden bg-black border border-white/10 group cursor-pointer">
               <img id="gen-node-img" src="/static/samples/canvas_take3.jpg?v=real2026" alt="Generated Scene" class="w-full h-full object-cover">
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-2.5">
                 <span class="text-[10px] text-white font-semibold bg-black/70 px-2 py-1 rounded-lg">2x Clique: Zoom 8K & Upscale</span>
               </div>
             </div>
 
-            <!-- Ações Rápidas do Nó Gerado -->
-            <div class="grid grid-cols-3 gap-1.5 mt-2.5">
+            <div class="grid grid-cols-2 gap-1.5 mt-2.5">
               <button onclick="branchGeneratedToNewNode()" class="bg-dark-700 hover:bg-dark-600 border border-white/10 text-[11px] text-amber-300 font-bold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition-all" title="Adicionar esta cena como um novo nó @Image no Canvas">
                 <i data-lucide="git-branch" class="w-3 h-3"></i>
                 <span>+Virar Nó</span>
@@ -1299,12 +1293,15 @@
                 <i data-lucide="film" class="w-3 h-3"></i>
                 <span>Vídeo+SFX</span>
               </button>
+              <button onclick="downloadDirectToPC(currentGeneratedNodeUrl)" class="bg-cyan-500/20 hover:bg-cyan-500/35 border border-cyan-400/40 text-[11px] text-cyan-300 font-bold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition-all" title="Baixar Criativo 8K Direto no seu PC">
+                <i data-lucide="download" class="w-3 h-3"></i>
+                <span>Baixar PC</span>
+              </button>
             </div>
           </div>
         </div>
 
-        <!-- BARRA DE FERRAMENTAS ESQUERDA (100% MOVÍVEL / ARRASTÁVEL) -->
-        <div id="canvas-left-toolbar" class="absolute z-30 bg-dark-900/95 backdrop-blur-xl border border-white/15 rounded-2xl p-2 flex flex-col gap-2 shadow-2xl cursor-move" style="left: 14px; top: 90px;">
+        <div id="canvas-left-toolbar" class="absolute z-30 bg-dark-900/95 backdrop-blur-xl border border-white/15 rounded-2xl p-2 flex flex-col gap-2 shadow-2xl cursor-move" style="left: 12px; top: 68px;">
           <div class="text-[9px] text-center font-mono text-gray-400 border-b border-white/10 pb-1">⠿ MOVER</div>
           <button onclick="document.getElementById('canvas-upload-input').click()" title="Subir Nova Imagem (@Image)" class="w-10 h-10 rounded-xl bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/30 text-amber-300 flex items-center justify-center transition-all">
             <i data-lucide="plus" class="w-5 h-5"></i>
@@ -1318,6 +1315,9 @@
           <button onclick="openLightboxFromSelected()" title="Inspeção e Upscale 8K" class="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 text-purple-400 flex items-center justify-center transition-all">
             <i data-lucide="maximize-2" class="w-4 h-4"></i>
           </button>
+          <button onclick="downloadDirectToPC(selectedCanvasNodeUrl || currentGeneratedNodeUrl)" title="Baixar Imagem Direto no PC" class="w-10 h-10 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/30 border border-cyan-400/30 text-cyan-300 flex items-center justify-center transition-all">
+            <i data-lucide="download" class="w-4 h-4"></i>
+          </button>
           <button onclick="openModal('rea-reverse-modal')" title="Engenharia Reversa Criativa (REA 4 Camadas)" class="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 text-pink-400 flex items-center justify-center transition-all">
             <i data-lucide="scan-eye" class="w-4 h-4"></i>
           </button>
@@ -1326,11 +1326,7 @@
           </button>
         </div>
 
-        <!-- ============================================================================= -->
-        <!-- PAINEL INSPETOR DIREITO (100% MOVÍVEL): ROSTO FIEL + CÂMERA/LUZ + VOZ & SFX   -->
-        <!-- ============================================================================= -->
-        <div id="canvas-director-inspector" class="absolute z-30 w-80 rounded-2xl bg-dark-900/95 backdrop-blur-2xl border border-amber-400/40 p-3.5 shadow-2xl space-y-3 text-xs" style="left: 815px; top: 55px;">
-          <!-- Cabeçalho Arrastável do Inspetor -->
+        <div id="canvas-director-inspector" class="absolute z-30 w-80 rounded-2xl bg-dark-900/95 backdrop-blur-2xl border border-amber-400/40 p-3.5 shadow-2xl space-y-2.5 text-xs overflow-y-auto" style="right: 14px; top: 52px; max-height: calc(100% - 66px);">
           <div class="flex items-center justify-between border-b border-white/10 pb-2 cursor-move">
             <span class="font-extrabold text-amber-300 flex items-center gap-1.5">
               <i data-lucide="sliders" class="w-4 h-4 text-amber-400"></i>
@@ -1339,7 +1335,6 @@
             <span id="inspector-selected-tag" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold">@Image1</span>
           </div>
 
-          <!-- 1. OPÇÕES DE FIDELIZAÇÃO DE ROSTO 100% (FACE LOCK BIOMÉTRICO) -->
           <div class="p-2.5 rounded-xl bg-dark-800/90 border border-cyan-400/30 space-y-2">
             <div class="flex items-center justify-between">
               <label class="font-bold text-cyan-300 flex items-center gap-1.5 cursor-pointer">
@@ -1363,7 +1358,6 @@
             </div>
           </div>
 
-          <!-- 2. CONTROLE INDIVIDUAL DE CENA: ÂNGULO DE CÂMERA & ILUMINAÇÃO (COMO NO VÍDEO MAGNIFIC) -->
           <div class="p-2.5 rounded-xl bg-dark-800/90 border border-white/10 space-y-2">
             <span class="font-bold text-gray-200 block text-[11px]">🎥 Ângulo & Luz da Cena (Sem Refazer o Filme):</span>
             <select id="canvas-camera-select" class="w-full bg-dark-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-[11px] text-white focus:outline-none">
@@ -1398,7 +1392,6 @@
             </div>
           </div>
 
-          <!-- 3. ESCOLHA DE VOZES & EFEITOS SONOROS REAIS (REAL SFX) NO CANVAS -->
           <div class="p-2.5 rounded-xl bg-dark-800/90 border border-emerald-400/30 space-y-2">
             <span class="font-bold text-emerald-300 block text-[11px]">🔊 Voz da Cena & Efeitos Sonoros Reais (SFX):</span>
             <select id="canvas-voice-select" onchange="syncCanvasVoiceAndSfxToTimeline()" class="w-full bg-dark-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-[11px] text-white focus:outline-none">
@@ -1421,23 +1414,16 @@
           </div>
         </div>
 
-        <!-- ============================================================================= -->
-        <!-- DOCK INFERIOR FLUTUANTE E MOVÍVEL DE PROMPT & MELHORES LLMs 8K DO MERCADO    -->
-        <!-- ============================================================================= -->
-        <div id="canvas-bottom-dock" class="absolute z-30 w-[92%] max-w-3xl bg-dark-900/95 backdrop-blur-2xl border border-white/15 rounded-2xl p-3.5 shadow-2xl" style="left: 28px; top: 585px;">
+        <div id="canvas-bottom-dock" class="absolute z-30 bg-dark-900/95 backdrop-blur-2xl border border-white/15 rounded-2xl p-3 shadow-2xl" style="left: 68px; bottom: 14px; width: calc(100% - 415px); max-width: 760px;">
           
-          <!-- Linha de Referências Conectadas (@Image1, @Image2...) + Handle para Mover Dock -->
           <div class="flex flex-wrap items-center justify-between gap-2 mb-2 cursor-move">
             <div class="flex flex-wrap items-center gap-1.5">
               <span class="text-[10px] font-mono text-gray-400 bg-white/5 px-2 py-0.5 rounded">⠿ Mover Dock</span>
-              <div id="canvas-prompt-tags" class="flex flex-wrap items-center gap-1.5">
-                <!-- Preenchido via JS com miniaturas de @Image1, @Image2, @Image3 -->
-              </div>
+              <div id="canvas-prompt-tags" class="flex flex-wrap items-center gap-1.5"></div>
             </div>
-            <span class="text-[11px] text-gray-400">Clique em <code class="text-amber-300">@Image</code> para citar &bull; <code class="text-red-400">🗑️</code> em qualquer card para deletar</span>
+            <span class="text-[11px] text-gray-400">Clique em <code class="text-amber-300">@Image</code> para citar &bull; <code class="text-red-400">🗑️</code> para deletar</span>
           </div>
 
-          <!-- Caixa de Prompt com Menções @Image -->
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <input type="text" id="canvas-prompt-input" value="Crie um novo take cinematográfico 8K mantendo 100% do rosto fiel de @Image1 e a iluminação dramática de @Image2 em plano aberto 35mm" placeholder="Ex: Crie um novo ângulo câmera baixa de @Image1 mantendo o cenário de @Image2..." class="flex-1 bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
             
@@ -1447,7 +1433,6 @@
             </button>
           </div>
 
-          <!-- Seletores Inferiores: Melhores LLMs 8K (Seedream 5 Pro / NanoBanana 2 / Flux Kontext / GPT Image 2 / Qwen) -->
           <div class="flex flex-wrap items-center justify-between gap-3 mt-2.5 pt-2 border-t border-white/10 text-xs">
             <div class="flex flex-wrap items-center gap-2">
               <div class="flex items-center gap-1.5 bg-dark-800 border border-amber-400/30 rounded-lg px-2.5 py-1 text-gray-200">
@@ -1459,7 +1444,7 @@
                   <option value="Magnific Cinema 8K" class="bg-dark-900 text-white">✨ Magnific Cinema 8K (Optical Skin & Detail)</option>
                   <option value="GPT Image 2 Ultra" class="bg-dark-900 text-white">🧠 GPT Image 2 Ultra (High-Precision Scene)</option>
                   <option value="Qwen Image Edit Pro" class="bg-dark-900 text-white">🎨 Qwen Image Edit Pro (Relighting & Costume)</option>
-                  <option value="Higgsfield Dark Cinema" class="bg-dark-900 text-white">🎬 Higgsfield Dark Cinema (Anamorphic 35mm)</option>
+                  <option value="IABOX Cinema™ Dark Cinema" class="bg-dark-900 text-white">🎬 IABOX Cinema™ Dark Cinema (Anamorphic 35mm)</option>
                 </select>
               </div>
 
@@ -1481,9 +1466,9 @@
 
       </div>
 
-      <!-- ========================================================================= -->
-      <!-- PAINEL DE ROTEIRO MULTI-CAPÍTULOS (FILMES DE ATÉ 1 A 2 HORAS)             -->
-      <!-- ========================================================================= -->
+      
+      
+      
       <div id="film-agent-chapters-panel" class="glass-panel p-5 rounded-3xl border border-cyan-500/30 hidden space-y-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-white/10 pb-3">
           <div>
@@ -1499,9 +1484,9 @@
         <div id="film-project-chapters-grid" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
       </div>
 
-      <!-- ========================================================================= -->
-      <!-- COMPILADOR DE STORYBOARD, VOZES, EFEITOS SONOROS REAIS (SFX) & FILME MP4  -->
-      <!-- ========================================================================= -->
+      
+      
+      
       <div id="canvas-timeline-section" class="glass-panel p-6 rounded-3xl border border-amber-400/30 space-y-6">
         <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 border-b border-white/10 pb-4">
           <div>
@@ -1536,22 +1521,22 @@
           </div>
         </div>
 
-        <!-- Fita de Takes na Timeline + Controles de Voz/SFX + Player do Filme -->
+        
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          <!-- Esquerda: Sequência de Takes do Canvas + Escolha de Voz + Efeitos Sonoros Reais -->
+          
           <div class="lg:col-span-7 space-y-4">
             <div class="flex items-center justify-between text-xs text-gray-300">
               <span class="font-bold uppercase tracking-wider text-amber-300">Sequência de Takes Conectados na Timeline (Clique em 🗑️ para remover qualquer take):</span>
               <span class="text-emerald-400 font-semibold">Movimento Real + SFX Estéreo</span>
             </div>
 
-            <!-- Filmstrip dos Nós -->
+            
             <div id="timeline-takes-strip" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <!-- Preenchido dinamicamente pelo JS com os nós do canvas -->
+              
             </div>
 
-            <!-- Seletores de Voz, Upload de Voz Clonada e Pacote de Efeitos Sonoros Reais (SFX) -->
+            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
               <div class="p-3 rounded-xl bg-dark-800/90 border border-white/10 space-y-1.5">
                 <label class="block text-[11px] font-bold text-cyan-300 uppercase">1. Escolha da Voz do Filme:</label>
@@ -1580,14 +1565,14 @@
               </div>
             </div>
 
-            <!-- Roteiro de Narração Cinematográfica PT-BR -->
+            
             <div>
               <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">3. Roteiro de Fala / Narração do Filme em Português (Opcional):</label>
               <input type="text" id="timeline-narration-input" value="A estrada chama quem nasceu para criar o futuro. Bem-vindo à nova era do cinema com inteligência artificial." placeholder="Digite a fala ou narração do filme em português (ou deixe em branco para apenas efeitos sonoros reais)..." class="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
             </div>
           </div>
 
-          <!-- Direita: Player do Filme Renderizado com Efeitos Sonoros Reais -->
+          
           <div class="lg:col-span-5 bg-dark-800/90 rounded-2xl p-4 border border-white/10 flex flex-col justify-between min-h-[290px]">
             <div class="flex items-center justify-between mb-2">
               <h4 class="text-sm font-bold text-white flex items-center gap-2">
@@ -1608,9 +1593,9 @@
       </div>
     </section>
 
-    <!-- ---------------------------------------- -->
-    <!-- 7. TAB: O CRIADOR (EVANDRO SILVA GALLINA) -->
-    <!-- ---------------------------------------- -->
+    
+    
+    
     <section id="tab-about" class="tab-content hidden space-y-8">
       
       <div class="glass-panel p-8 md:p-12 rounded-3xl border border-cyan-500/30 relative overflow-hidden">
@@ -1618,7 +1603,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
           
-          <!-- Foto Oficial de Evandro -->
+          
           <div class="lg:col-span-5 flex flex-col items-center">
             <div class="relative group">
               <div class="absolute -inset-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-2xl blur-lg opacity-70 group-hover:opacity-100 transition duration-500"></div>
@@ -1633,7 +1618,7 @@
             </div>
           </div>
 
-          <!-- Currículo & Biografia de Autoridade -->
+          
           <div class="lg:col-span-7 space-y-5">
             <div>
               <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase block mb-1">Quem Sou Eu &bull; Criador da Plataforma</span>
@@ -1653,7 +1638,7 @@
               </p>
             </div>
 
-            <!-- Badges de Competências -->
+            
             <div class="flex flex-wrap gap-2 pt-2">
               <span class="px-3 py-1 rounded-lg bg-dark-800 border border-white/10 text-xs text-gray-300">Arquitetura de Agentes de IA</span>
               <span class="px-3 py-1 rounded-lg bg-dark-800 border border-white/10 text-xs text-gray-300">Automações N8N & APIs</span>
@@ -1662,7 +1647,7 @@
               <span class="px-3 py-1 rounded-lg bg-dark-800 border border-white/10 text-xs text-gray-300">Marketing Digital & Performance</span>
             </div>
 
-            <!-- Links de Conexão (Sem GitHub e com LinkedIn Oficial Atualizado) -->
+            
             <div class="flex flex-wrap gap-3 pt-3">
               <a href="https://instagram.com/evandrosilvagallina" target="_blank" class="px-4 py-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 border border-white/10 text-white text-xs font-semibold flex items-center gap-2 transition-all hover:border-cyan-400">
                 <i data-lucide="instagram" class="w-4 h-4 text-cyan-400"></i>
@@ -1686,15 +1671,15 @@
 
     </section>
 
-    <!-- ------------------------------------------------------------ -->
-    <!-- 8. TAB: MEMÓRIA DE CONTEÚDOS & AUDITORIA DE ACESSOS (SUPABASE)-->
-    <!-- ------------------------------------------------------------ -->
+    
+    
+    
     <section id="tab-memory" class="tab-content hidden space-y-8">
       <div class="border-b border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-400/40 text-purple-300 text-xs font-extrabold uppercase tracking-wider mb-2">
             <i data-lucide="database" class="w-3.5 h-3.5 text-purple-400"></i>
-            Persistência Dupla Ativa &bull; Supabase Cloud + SQLite Local
+            Persistência Dupla Ativa &bull; ESG Cloud Vault™ Cloud + ESG Local Vault™ Local
           </div>
           <h2 class="text-3xl font-bold font-display text-white">Memória de Conteúdos dos Clientes & Painel de Acessos</h2>
           <p class="text-gray-400 text-sm mt-1">Todos os vídeos, imagens, áudios, músicas, paródias e o registro de quem acessou a plataforma ficam salvos com segurança na memória.</p>
@@ -1705,7 +1690,7 @@
         </button>
       </div>
 
-      <!-- Bloco 1: Galeria de Conteúdos Salvos (Imagens, Vídeos, Vozes, Músicas, Paródias) -->
+      
       <div class="glass-panel p-6 rounded-3xl border border-purple-400/30 space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-xl font-bold font-display text-white flex items-center gap-2">
@@ -1719,7 +1704,7 @@
         </div>
       </div>
 
-      <!-- Bloco 2: Auditoria de Quem Teve Acesso & Carteiras por IP -->
+      
       <div class="glass-panel p-6 rounded-3xl border border-cyan-400/30 space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
@@ -1729,7 +1714,7 @@
             </h3>
             <p class="text-xs text-gray-400">Monitoramento em tempo real de IPs conectados, dispositivos VIP desbloqueados e saldo de tokens.</p>
           </div>
-          <span id="memory-supabase-status" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">Supabase Sincronizado</span>
+          <span id="memory-supabase-status" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">ESG Cloud Vault™ Sincronizado</span>
         </div>
 
         <div class="overflow-x-auto">
@@ -1753,9 +1738,9 @@
 
   </main>
 
-  <!-- ========================================== -->
-  <!-- MODAL DE RECARGA DE CRÉDITOS (STRIPE/PIX)  -->
-  <!-- ========================================== -->
+  
+  
+  
   <div id="recharge-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-panel max-w-3xl w-full p-6 md:p-8 rounded-3xl border border-cyan-500/40 shadow-2xl relative">
       <button onclick="closeModal('recharge-modal')" class="absolute top-5 right-5 text-gray-400 hover:text-white">
@@ -1769,7 +1754,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         
-        <!-- Pacote 1 -->
+        
         <div class="glass-card rounded-2xl p-5 border border-white/10 flex flex-col justify-between text-center">
           <div>
             <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Starter</span>
@@ -1786,7 +1771,7 @@
           </button>
         </div>
 
-        <!-- Pacote 2 (Destaque) -->
+        
         <div class="glass-card rounded-2xl p-5 border-2 border-cyan-400 shadow-neon-cyan-sm flex flex-col justify-between text-center relative bg-dark-800">
           <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-cyan-400 text-black text-[10px] font-black uppercase tracking-widest px-3 py-0.5 rounded-full">
             Mais Popular
@@ -1807,7 +1792,7 @@
           </button>
         </div>
 
-        <!-- Pacote 3 -->
+        
         <div class="glass-card rounded-2xl p-5 border border-white/10 flex flex-col justify-between text-center">
           <div>
             <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Agência / Viral</span>
@@ -1827,7 +1812,7 @@
 
       </div>
 
-      <!-- Sincronização de Carteira Pré-Paga entre PC, Celular, Tablet e iPhone -->
+      
       <div class="mt-6 p-4 rounded-2xl bg-dark-800/90 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div class="text-xs text-gray-300">
           <span class="font-bold text-cyan-400 block">Chave da Sua Carteira (PC / Mobile / iPhone):</span>
@@ -1848,9 +1833,9 @@
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL DE ZOOM 8K & MAGNIFIC UPSCALER (DUPLO CLIQUE EM QUALQUER NÓ)         -->
-  <!-- ========================================================================= -->
+  
+  
+  
   <div id="canvas-lightbox-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="glass-panel max-w-4xl w-full p-5 md:p-6 rounded-3xl border border-amber-400/40 shadow-2xl relative">
       <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
@@ -1883,9 +1868,9 @@
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- MODAL DE ENGENHARIA REVERSA CRIATIVA — REA (4 CAMADAS DO VÍDEO 8.11.40)   -->
-  <!-- ========================================================================= -->
+  
+  
+  
   <div id="rea-reverse-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="glass-panel max-w-3xl w-full p-6 rounded-3xl border border-purple-400/50 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
@@ -1942,9 +1927,9 @@
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- CENTRAL INTERATIVA "PERGUNTE AO ROBÔ IABOT" (COMO O SISTEMA FUNCIONA)     -->
-  <!-- ========================================================================= -->
+  
+  
+  
   <div id="iabot-chat-drawer" class="fixed bottom-28 right-5 z-50 w-[92vw] max-w-md glass-panel rounded-3xl border-2 border-cyan-400/60 shadow-neon-cyan p-4 hidden flex flex-col space-y-3" style="max-height: 78vh;">
     <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
       <div class="flex items-center gap-2.5">
@@ -1962,7 +1947,7 @@
       </button>
     </div>
 
-    <!-- Botões de Perguntas Rápidas -->
+    
     <div class="flex flex-wrap gap-1.5">
       <button onclick="askIABotQuestion('Como funciona o Magnific Canvas Expansivo e como mover ou deletar imagens?')" class="px-2.5 py-1 rounded-lg bg-dark-800 hover:bg-cyan-500/20 border border-cyan-400/30 text-[10px] text-cyan-300 font-semibold transition-all">
         📐 Como usar o Canvas & Deletar?
@@ -1978,14 +1963,14 @@
       </button>
     </div>
 
-    <!-- Histórico de Mensagens do Chat com o Robô -->
+    
     <div id="iabot-chat-messages" class="flex-1 overflow-y-auto space-y-2.5 p-2 rounded-2xl bg-dark-900/90 border border-white/10 text-xs max-h-64">
       <div class="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 text-gray-200 leading-relaxed">
         🤖 <strong>Olá! Eu sou o IABot!</strong> Com a nova atualização do <strong>Magnific 2.0 & Cinema Studio</strong>, você tem controle total. Clique em uma pergunta acima ou digite sua dúvida abaixo que eu te explico passo a passo!
       </div>
     </div>
 
-    <!-- Input para Perguntar ao Robô -->
+    
     <div class="flex items-center gap-2 pt-1">
       <input type="text" id="iabot-chat-input" onkeydown="if(event.key==='Enter') sendIABotInput()" placeholder="Pergunte qualquer coisa sobre o sistema..." class="flex-1 bg-dark-800 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
       <button onclick="sendIABotInput()" id="iabot-send-btn" class="bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-extrabold px-3.5 py-2 rounded-xl text-xs shadow-lg">
@@ -1994,26 +1979,26 @@
     </div>
   </div>
 
-  <!-- ========================================================================= -->
-  <!-- ROBÔ MASCOTE INTERATIVO E FLUTUANTE (ARRASTÁVEL + ABRE CHAT DE AJUDA)     -->
-  <!-- ========================================================================= -->
+  
+  
+  
   <div id="draggable-mascot" class="flex flex-col items-center">
     
-    <!-- Balão de Fala do Robô -->
+    
     <div id="mascot-bubble" onclick="openIABotAssistant()" class="bg-dark-800/95 text-white text-xs px-3.5 py-2 rounded-2xl border border-cyan-400/50 shadow-neon-cyan-sm mb-2 max-w-[220px] text-center transform scale-95 transition-all cursor-pointer hover:border-amber-400">
       <span id="mascot-msg">Dúvidas no Magnific? Clique em mim e pergunte! 🤖💬</span>
     </div>
 
-    <!-- Imagem Transparente 100% Sólida do Robô com Animação de Flutuação e Piscar de Olhos -->
+    
     <div id="mascot-img-wrapper" class="w-24 h-24 md:w-28 md:h-28 mascot-float filter drop-shadow-[0_10px_20px_rgba(0,240,255,0.45)]">
       <img id="mascot-img" src="/static/assets/robot_mascot.png?v=2" alt="IABot Mascote" class="w-full h-full object-contain pointer-events-none">
     </div>
 
   </div>
 
-  <!-- ========================================== -->
-  <!-- FOOTER                                     -->
-  <!-- ========================================== -->
+  
+  
+  
   <footer class="border-t border-white/10 glass-panel py-8 mt-12 px-4">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400">
       <div class="flex items-center gap-3">
@@ -2028,11 +2013,10 @@
     </div>
   </footer>
 
-  <!-- ========================================== -->
-  <!-- SCRIPTS JAVASCRIPT: LÓGICA E INTERAÇÃO     -->
-  <!-- ========================================== -->
+  
+  
+  
   <script>
-    // Inicializa ícones do Lucide
     lucide.createIcons();
 
     let userCredits = 50;
@@ -2040,7 +2024,6 @@
     let logoClickCount = 0;
     let logoClickTimer = null;
 
-    // Identificador Único de Carteira Pré-Paga por Visitante/Cliente + Ativação Automática VIP
     function getOrInitUserId() {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('vip') === 'evandro') {
@@ -2058,7 +2041,6 @@
 
     let currentUserId = getOrInitUserId();
 
-    // 3 cliques ou 3 toques na Logo Quadrada ESG liberam Acesso Total e Exclusivo no aparelho conectado
     function handleLogoSecretClick(e) {
       if (e) e.stopPropagation();
       logoClickCount++;
@@ -2077,7 +2059,6 @@
       }
     }
 
-    // Abre ferramenta já preenchida com o estilo da Vitrine Artlist / Kling AI
     function useShowcasePreset(targetTab, promptText) {
       switchTab(targetTab);
       setTimeout(() => {
@@ -2101,7 +2082,6 @@
       setMascotMessage('Carteira sincronizada com sucesso! ⚡');
     }
 
-    // 1. Navegação de Abas
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       const activeTab = document.getElementById(`tab-${tabId}`);
@@ -2116,16 +2096,15 @@
         }
       });
 
-      // Atualiza dica do robô
       const tips = {
-        'canvas': 'Arraste os nós @Image1 e @Image2, dê duplo-clique para 4K ou compile seu filme!',
-        'image': 'Anexe de 3 a 5 fotos de referência para a IA manter 100% da fidelidade visual!',
-        'suno': 'No Suno Studio, você pode criar desde modão sertanejo até trap e funk!',
-        'parody': 'Crie um AI Cover na música do seu cantor favorito ou gere uma paródia!',
+        'canvas': 'Use o Estúdio em Tela Inteira Dedicada para criar cenas 8K ultra-realistas e baixar direto no PC!',
+        'image': 'Anexe de 3 a 5 fotos de referência para o motor manter 100% da fidelidade visual!',
+        'suno': 'No Suno Studio, você pode criar desde modão sertanejo até trap e funk e baixar em MP3!',
+        'parody': 'Crie um AI Cover na música do seu cantor favorito ou gere uma paródia completa!',
         'voice': 'Nossas vozes neurais brasileiras não têm nenhum sotaque estrangeiro!',
         'clone': 'Com apenas 1 minuto de áudio você já tem seu clone vocal perfeito!',
         'video': 'Envie vídeos de até 5 min + 3 a 5 imagens para inserir criativos, objetos e trocar personagem!',
-        'memory': 'Aqui ficam salvos todos os seus criativos e o histórico de acessos no Supabase + SQLite!',
+        'memory': 'Aqui ficam salvos todos os seus criativos para baixar direto no seu computador quando quiser!',
         'about': 'Conheça o Evandro, o especialista que desenvolveu toda essa tecnologia!',
         'dashboard': 'Clique no robô ou arraste-o pela tela para onde quiser!'
       };
@@ -2139,7 +2118,24 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Preview de Miniaturas de 3 a 5 Imagens de Referência (Imagens e Vídeos)
+    function getDownloadUrl(url) {
+      if (!url) return '#';
+      const cleanUrl = url.split('?')[0];
+      return `/api/download?file=${encodeURIComponent(cleanUrl)}`;
+    }
+
+    function downloadDirectToPC(url) {
+      if (!url) return;
+      const dlUrl = getDownloadUrl(url);
+      const a = document.createElement('a');
+      a.href = dlUrl;
+      a.download = '';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setMascotMessage('⬇️ Download direto em qualidade Master iniciado para o seu PC!');
+    }
+
     function previewRefFiles(inputId, previewBoxId, badgeId) {
       const input = document.getElementById(inputId);
       const preview = document.getElementById(previewBoxId);
@@ -2165,7 +2161,6 @@
       });
     }
 
-    // Carrega Biblioteca de Conteúdos dos Clientes & Painel de Acessos (Supabase + SQLite)
     async function loadMemoryAndAccessLogs() {
       const grid = document.getElementById('memory-creations-grid');
       const countBadge = document.getElementById('memory-creations-count');
@@ -2183,7 +2178,7 @@
         const creations = memData.creations || [];
         if (countBadge) countBadge.innerText = `${creations.length} arquivo(s) na memória`;
         if (supaBadge) {
-          supaBadge.innerText = memData.supabase_synced ? '☁️ Supabase + SQLite Sincronizados' : '💾 SQLite Local Ativo';
+          supaBadge.innerText = memData.supabase_synced ? '☁️ ESG Quantum Cloud Sincronizada' : '💾 Cofre Neural Ativo';
         }
 
         if (grid) {
@@ -2193,6 +2188,7 @@
             grid.innerHTML = creations.map(c => {
               let mediaHtml = '';
               const url = c.result_url || '';
+              const dlUrl = getDownloadUrl(url);
               if (url.endsWith('.mp4') || c.category === 'video' || c.category === 'storyboard') {
                 mediaHtml = `<video controls playsinline class="w-full h-40 object-cover rounded-xl bg-black border border-white/10"><source src="${url}" type="video/mp4"></video>`;
               } else if (url.endsWith('.mp3') || url.endsWith('.wav') || ['voice', 'clone', 'suno', 'parody'].includes(c.category)) {
@@ -2213,7 +2209,7 @@
                   </div>
                   <div class="flex items-center justify-between pt-2 border-t border-white/5 text-xs">
                     <span class="text-[10px] text-gray-500 font-mono">IP: ${c.ip || '-'}</span>
-                    <a href="${url}" download class="text-cyan-400 hover:underline font-bold flex items-center gap-1">Baixar Arquivo</a>
+                    <a href="${dlUrl}" download class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 font-bold flex items-center gap-1">⬇️ Baixar no PC</a>
                   </div>
                 </div>
               `;
@@ -2245,7 +2241,6 @@
       lucide.createIcons();
     }
 
-    // 2. Modais
     function openModal(id) {
       const walletInput = document.getElementById('wallet-id-input');
       if (walletInput) walletInput.value = currentUserId;
@@ -2253,7 +2248,6 @@
     }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-    // 3. Mascote Interativo Arrastável (Touch & Mouse Drag)
     const mascot = document.getElementById('draggable-mascot');
     const bubble = document.getElementById('mascot-bubble');
     const msgEl = document.getElementById('mascot-msg');
@@ -2311,7 +2305,6 @@
       }
     });
 
-    // Animação Natural do Robô Piscando os Olhos (Duplo Piscar Suave)
     const robotImgEl = document.getElementById('mascot-img');
     const preloadBlink = new Image();
     preloadBlink.src = '/static/assets/robot_mascot_blink.png?v=2';
@@ -2331,7 +2324,6 @@
     }
     setInterval(triggerRobotBlink, 3800);
 
-    // 4. Gestão de Saldo, Bônus de 50 Tokens por IP e Acesso VIP Exclusivo no Aparelho
     async function updateCredits() {
       try {
         const res = await fetch(`/api/user/credits?user_id=${encodeURIComponent(currentUserId)}`);
@@ -2375,7 +2367,6 @@
       return true;
     }
 
-    // 5. Verificação Automática de Retorno do Stripe
     async function checkStripeCallback() {
       const params = new URLSearchParams(window.location.search);
       const sessionId = params.get('session_id');
@@ -2404,7 +2395,6 @@
     }
     checkStripeCallback();
 
-    // 6. Gerador de Vozes PT-BR
     async function handleGenerateVoice() {
       if (!requireCredits(1)) return;
       const text = document.getElementById('voice-text').value.trim();
@@ -2424,12 +2414,13 @@
         const res = await fetch('/api/voice/generate', { method: 'POST', body: formData });
         const data = await res.json();
         if (data.result_url) {
+          const dlUrl = getDownloadUrl(data.result_url);
           box.innerHTML = `
             <div class="space-y-3">
-              <span class="text-xs font-bold text-emerald-400 block">Áudio Gerado com Sucesso!</span>
+              <span class="text-xs font-bold text-emerald-400 block">Áudio Masterizado Gerado com Sucesso!</span>
               <audio controls autoplay class="w-full"><source src="${data.result_url}" type="audio/mpeg"></audio>
-              <a href="${data.result_url}" download class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:underline">
-                <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar MP3
+              <a href="${dlUrl}" download class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-xs font-extrabold text-emerald-300 hover:bg-emerald-500/30">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i> ⬇️ Baixar Áudio Master no PC (MP3)
               </a>
             </div>`;
           updateCredits();
@@ -2440,7 +2431,6 @@
       lucide.createIcons();
     }
 
-    // 7. Clonagem de Voz (1 Minuto)
     async function handleCloneVoice() {
       if (!requireCredits(5)) return;
       const audioFile = document.getElementById('clone-audio').files[0];
@@ -2461,12 +2451,13 @@
         const res = await fetch('/api/voice/clone', { method: 'POST', body: formData });
         const data = await res.json();
         if (data.result_url) {
+          const dlUrl = getDownloadUrl(data.result_url);
           box.innerHTML = `
             <div class="space-y-3">
               <span class="text-xs font-bold text-amber-400 block">Clone Vocal Sintetizado com Sucesso!</span>
               <audio controls autoplay class="w-full"><source src="${data.result_url}" type="audio/mpeg"></audio>
-              <a href="${data.result_url}" download class="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-400 hover:underline">
-                <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar MP3
+              <a href="${dlUrl}" download class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-xs font-extrabold text-amber-300 hover:bg-amber-500/30">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i> ⬇️ Baixar Voz Clonada no PC (MP3)
               </a>
             </div>`;
           updateCredits();
@@ -2477,7 +2468,6 @@
       lucide.createIcons();
     }
 
-    // 8. Suno Studio
     async function handleGenerateSuno() {
       const voiceFile = document.getElementById('suno-voice').files[0];
       const cost = voiceFile ? 20 : 15;
@@ -2509,7 +2499,6 @@
       } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`; }
     }
 
-    // 9. Gerador de Letra de Paródia + Paródias & AI Song Covers
     async function handleGenerateParodyLyrics() {
       if (!requireCredits(1)) return;
       const songName = document.getElementById('parody-song-name').value.trim();
@@ -2547,7 +2536,7 @@
       if (!song || !voice) return alert('Envie pelo menos a Música Original (1) e o Áudio da Sua Voz (2).');
 
       const box = document.getElementById('parody-player-box');
-      const modeDesc = guide ? 'Isolando instrumental e aplicando sua paródia afinada...' : 'Isolando instrumental original (Demucs v4) e transferindo sua voz para o cantor (Seed-VC)...';
+      const modeDesc = guide ? 'Isolando instrumental e aplicando sua paródia afinada...' : 'Isolando instrumental original (ESG Stem Core™) e transferindo seu timbre vocal...';
       box.innerHTML = `<div class="py-6"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-purple-400 animate-spin mb-2"></i> ${modeDesc}</div>`;
       lucide.createIcons();
 
@@ -2569,7 +2558,6 @@
       } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`; }
     }
 
-    // 10. Estúdio de Vídeo & VFX (Até 5 Minutos + 3 a 5 Imagens de Referência + Vídeo Auxiliar)
     async function handleGenerateVideo() {
       if (!requireCredits(10)) return;
       const fileInput = document.getElementById('video-file');
@@ -2611,7 +2599,6 @@
       } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`; }
     }
 
-    // 11. Gerador de Imagens & Fotos IA (Com 3 a 5 Imagens de Referência)
     async function handleGenerateImage() {
       if (!requireCredits(2)) return;
       const prompt = document.getElementById('image-prompt').value.trim();
@@ -2624,7 +2611,7 @@
       if (!prompt) return alert('Por favor, descreva a foto ou imagem que deseja gerar.');
 
       const box = document.getElementById('image-player-box');
-      box.innerHTML = `<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-pink-400 animate-spin mb-2"></i> Analisando ${refFiles.length} referência(s) e gerando imagem 8K (${modelStyle})...</div>`;
+      box.innerHTML = `<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-pink-400 animate-spin mb-2"></i> Analisando ${refFiles.length} referência(s) e gerando imagem 8K ultra-realista (${modelStyle})...</div>`;
       lucide.createIcons();
 
       const formData = new FormData();
@@ -2638,12 +2625,13 @@
         const res = await fetch('/api/image/generate', { method: 'POST', body: formData });
         const data = await res.json();
         if (data.result_url) {
+          const dlUrl = getDownloadUrl(data.result_url);
           box.innerHTML = `
             <div class="space-y-3 w-full">
-              <span class="text-xs font-bold text-pink-400 block">Imagem 8K Renderizada (${data.ref_count || 0} ref usadas) & Salva na Memória!</span>
-              <img src="${data.result_url}" alt="Imagem Gerada por IA" class="rounded-xl w-full max-h-72 object-contain bg-black/40 border border-white/10 shadow-lg cursor-pointer" onclick="openCanvasLightbox('${data.result_url}', 'Imagem Gerada com IA')">
-              <a href="${data.result_url}" download class="inline-flex items-center gap-1.5 text-xs font-semibold text-pink-400 hover:underline">
-                <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar Imagem HD
+              <span class="text-xs font-bold text-pink-400 block">Imagem 8K Ultra-Realista Renderizada (${data.ref_count || 0} ref usadas)!</span>
+              <img src="${data.result_url}" alt="Imagem Gerada por IA" class="rounded-xl w-full max-h-72 object-contain bg-black/40 border border-white/10 shadow-lg cursor-pointer" onclick="openCanvasLightbox('${data.result_url}', 'Imagem 8K Ultra-Realista')">
+              <a href="${dlUrl}" download class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-pink-500/20 border border-pink-400/40 text-xs font-extrabold text-pink-300 hover:bg-pink-500/30">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i> ⬇️ Baixar Imagem 8K Direto no PC
               </a>
             </div>`;
           updateCredits();
@@ -2654,7 +2642,6 @@
       lucide.createIcons();
     }
 
-    // 12. Polling Universal de Jobs Assíncronos
     function pollJob(jobId, element, mediaType = 'audio') {
       const interval = setInterval(async () => {
         try {
@@ -2662,22 +2649,23 @@
           const job = await res.json();
           if (job.status === 'completed') {
             clearInterval(interval);
+            const dlUrl = getDownloadUrl(job.result_url);
             if (mediaType === 'video') {
               element.innerHTML = `
                 <div class="space-y-3">
-                  <span class="text-xs font-bold text-cyan-400 block">Vídeo Processado com Sucesso!</span>
+                  <span class="text-xs font-bold text-cyan-400 block">🎬 Vídeo Masterizado com Movimento Real & SFX Concluído!</span>
                   <video controls playsinline autoplay class="w-full rounded-xl"><source src="${job.result_url}" type="video/mp4"></video>
-                  <a href="${job.result_url}" download class="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:underline">
-                    <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar Vídeo Viral 9:16
+                  <a href="${dlUrl}" download class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500/20 border border-cyan-400/50 text-xs font-extrabold text-cyan-300 hover:bg-cyan-500/30 shadow">
+                    <i data-lucide="download" class="w-4 h-4"></i> ⬇️ Baixar Vídeo Master no PC (MP4)
                   </a>
                 </div>`;
             } else {
               element.innerHTML = `
                 <div class="space-y-3">
-                  <span class="text-xs font-bold text-cyan-400 block">Produção Concluída com Sucesso!</span>
+                  <span class="text-xs font-bold text-cyan-400 block">🎵 Produção de Áudio Masterizada Concluída!</span>
                   <audio controls autoplay class="w-full"><source src="${job.result_url}" type="audio/mpeg"></audio>
-                  <a href="${job.result_url}" download class="inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-400 hover:underline">
-                    <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar Arquivo Masterizado
+                  <a href="${dlUrl}" download class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500/20 border border-cyan-400/50 text-xs font-extrabold text-cyan-300 hover:bg-cyan-500/30 shadow">
+                    <i data-lucide="download" class="w-4 h-4"></i> ⬇️ Baixar Áudio Master no PC (MP3)
                   </a>
                 </div>`;
             }
@@ -2687,10 +2675,9 @@
             element.innerHTML = `<span class="text-red-400 text-xs">Falha na produção: ${job.error || 'Erro desconhecido'}</span>`;
           }
         } catch (e) {}
-      }, 4000);
+      }, 3500);
     }
 
-    // 13. Checkout Stripe (Sistema Pré-Pago)
     async function handleStripeCheckout(pkgId) {
       try {
         const formData = new FormData();
@@ -2710,9 +2697,6 @@
       } catch (e) { alert('Erro ao abrir checkout: ' + e.message); }
     }
 
-    // =========================================================================
-    // 14. MOTOR INTERATIVO MAGNIFIC 2.0 EXPANSIVE CANVAS + FILM AGENT + SFX + IABOT
-    // =========================================================================
     let canvasNodes = [
       { id: 'node_1', tag: '@Image1', role: 'Character', title: 'Take 1: Evandro Close-Up (Face Lock)', url: '/static/samples/canvas_take1.jpg?v=real2026', res: '3840 x 2160', x: 75, y: 65, connected: true, camera: 'close_up_85mm', lighting: 'golden_hour', sfx: 'v8_engine_road' },
       { id: 'node_2', tag: '@Image2', role: 'Prop', title: 'Take 2: Perfil Cinematográfico V8', url: '/static/samples/canvas_take2.jpg?v=real2026', res: '3840 x 2160', x: 75, y: 245, connected: true, camera: 'side_profile', lighting: 'golden_hour', sfx: 'v8_engine_road' },
@@ -2739,34 +2723,107 @@
       selectedCanvasNodeId = 'node_1';
       selectedCanvasNodeUrl = canvasNodes[0].url;
       const genNode = document.getElementById('canvas-gen-node');
-      if (genNode) { genNode.style.left = '470px'; genNode.style.top = '75px'; }
+      if (genNode) { genNode.style.left = '465px'; genNode.style.top = '72px'; }
+      const inspector = document.getElementById('canvas-director-inspector');
+      if (inspector) { inspector.style.left = 'auto'; inspector.style.right = '14px'; inspector.style.top = '52px'; }
+      const dock = document.getElementById('canvas-bottom-dock');
+      if (dock) { dock.style.left = '68px'; dock.style.top = 'auto'; dock.style.bottom = '14px'; }
       resetCanvasViewportZoom();
       renderCanvasNodes();
       drawCanvasCables();
       setMascotMessage('Layout original do Magnific Canvas restaurado! 🎬');
     }
 
-    // Modo Tela Expansiva Fullscreen (Maior controle sobre todos os elementos)
-    function toggleCanvasExpandMode() {
+    function toggleCanvasExpandMode(forceState = null) {
       const board = document.getElementById('magnific-canvas-board');
-      const btn = document.getElementById('btn-canvas-fullscreen');
+      const placeholder = document.getElementById('canvas-board-placeholder');
+      const btnTop = document.getElementById('btn-canvas-fullscreen');
+      const btnHud = document.getElementById('hud-fullscreen-btn');
+      const inspector = document.getElementById('canvas-director-inspector');
+      const dock = document.getElementById('canvas-bottom-dock');
       if (!board) return;
-      isCanvasExpanded = !isCanvasExpanded;
+
+      isCanvasExpanded = (forceState !== null) ? forceState : !isCanvasExpanded;
+
       if (isCanvasExpanded) {
-        board.classList.add('fixed', 'inset-2', 'z-50');
-        board.style.height = '96vh';
-        if (btn) btn.innerHTML = '<i data-lucide="minimize" class="w-4 h-4 text-amber-400"></i><span>Sair da Tela Expansiva</span>';
-        setMascotMessage('Modo Tela Expansiva Ativo! Arraste qualquer card, painel, barra ou o próprio fundo livremente! 🖥️✨');
+        document.body.appendChild(board);
+        board.style.position = 'fixed';
+        board.style.inset = '0px';
+        board.style.width = '100vw';
+        board.style.height = '100vh';
+        board.style.zIndex = '99990';
+        board.style.borderRadius = '0px';
+        board.style.margin = '0px';
+
+        ['canvas-lightbox-modal', 'rea-reverse-modal', 'iabot-chat-drawer', 'recharge-modal', 'draggable-mascot'].forEach(id => {
+          const m = document.getElementById(id);
+          if (m) m.style.zIndex = '100020';
+        });
+
+        if (inspector) {
+          inspector.style.left = 'auto';
+          inspector.style.right = '16px';
+          inspector.style.top = '56px';
+          inspector.style.maxHeight = 'calc(100vh - 76px)';
+        }
+        if (dock) {
+          dock.style.left = '72px';
+          dock.style.top = 'auto';
+          dock.style.bottom = '16px';
+          dock.style.width = 'calc(100vw - 425px)';
+        }
+
+        if (btnTop) btnTop.innerHTML = '<i data-lucide="minimize" class="w-4 h-4"></i><span>Sair do Estúdio em Tela Inteira (ESC)</span>';
+        if (btnHud) btnHud.innerHTML = '🗗 Sair da Tela Inteira (ESC)';
+        if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        }
+        setMascotMessage('🖥️ Estúdio em Tela Inteira Dedicada e Exclusiva Ativo! Crie em 8K e baixe direto no PC!');
       } else {
-        board.classList.remove('fixed', 'inset-2', 'z-50');
-        board.style.height = '790px';
-        if (btn) btn.innerHTML = '<i data-lucide="maximize" class="w-4 h-4 text-cyan-400"></i><span>Tela Expansiva (Fullscreen)</span>';
+        if (placeholder && placeholder.parentNode) {
+          placeholder.parentNode.insertBefore(board, placeholder.nextSibling);
+        }
+        board.style.position = 'relative';
+        board.style.inset = 'auto';
+        board.style.width = '100%';
+        board.style.height = '820px';
+        board.style.zIndex = '10';
+        board.style.borderRadius = '1.5rem';
+
+        if (inspector) {
+          inspector.style.left = 'auto';
+          inspector.style.right = '14px';
+          inspector.style.top = '52px';
+          inspector.style.maxHeight = 'calc(100% - 66px)';
+        }
+        if (dock) {
+          dock.style.left = '68px';
+          dock.style.top = 'auto';
+          dock.style.bottom = '14px';
+          dock.style.width = 'calc(100% - 415px)';
+        }
+
+        if (btnTop) btnTop.innerHTML = '<i data-lucide="maximize" class="w-4 h-4"></i><span>🖥️ Abrir Estúdio em Tela Inteira Dedicada (100% Exclusivo)</span>';
+        if (btnHud) btnHud.innerHTML = '🖥️ Tela Inteira Dedicada';
+        if (document.fullscreenElement && document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
       }
       lucide.createIcons();
       setTimeout(drawCanvasCables, 80);
     }
 
-    // Controle de Zoom & Pan do Viewport do Canvas
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isCanvasExpanded) {
+        toggleCanvasExpandMode(false);
+      }
+    });
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement && isCanvasExpanded) {
+        toggleCanvasExpandMode(false);
+      }
+    });
+
     function applyCanvasViewportTransform() {
       const stage = document.getElementById('canvas-viewport-stage');
       const badge = document.getElementById('canvas-zoom-badge');
@@ -2790,7 +2847,6 @@
       applyCanvasViewportTransform();
     }
 
-    // Permite arrastar o fundo do Canvas (Pan) quando clicar em área vazia
     (function initCanvasBackgroundPan() {
       const board = document.getElementById('magnific-canvas-board');
       if (!board) return;
@@ -2814,12 +2870,10 @@
       board.addEventListener('pointerup', () => { panning = false; });
     })();
 
-    // Deletar um nó individual pelo ID (Botão 🗑️ no Card ou na Timeline)
     function deleteCanvasNode(nodeId, ev) {
       if (ev) ev.stopPropagation();
       const target = canvasNodes.find(n => n.id === nodeId);
       canvasNodes = canvasNodes.filter(n => n.id !== nodeId);
-      // Re-enumera tags @Image1, @Image2...
       canvasNodes.forEach((n, i) => { n.tag = `@Image${i + 1}`; });
       if (selectedCanvasNodeId === nodeId) {
         selectedCanvasNodeId = canvasNodes[0] ? canvasNodes[0].id : null;
@@ -2908,7 +2962,6 @@
         const isSelected = node.id === selectedCanvasNodeId;
         const roleBadgeClass = roleColors[node.role || 'Scene'] || roleColors['Scene'];
 
-        // 1. Cria o Card Arrastável no Canvas com Botões de Deletar (🗑️) e Vídeo+SFX (🎬)
         const el = document.createElement('div');
         el.id = `dom_${node.id}`;
         el.className = `absolute w-48 rounded-2xl bg-dark-800/95 backdrop-blur-md border-2 ${isSelected ? 'border-cyan-400 shadow-neon-cyan-sm' : (node.connected ? 'border-amber-400/70 shadow-lg' : 'border-white/15')} p-2 cursor-grab active:cursor-grabbing transition-shadow`;
@@ -2922,6 +2975,7 @@
               <span class="px-1.5 py-0.2 rounded border text-[9px] font-bold ${roleBadgeClass}">${node.role || 'Cena'}</span>
             </div>
             <div class="flex items-center gap-1">
+              <button onclick="downloadDirectToPC('${node.url}'); event.stopPropagation();" title="Baixar esta Imagem 8K Direto no PC" class="w-5 h-5 rounded bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 flex items-center justify-center text-[10px]">⬇️</button>
               <button onclick="handleGenerateSingleNodeVideo('${node.url}', '${node.tag}', event)" title="Gerar Vídeo Real + Efeitos Sonoros deste Nó" class="w-5 h-5 rounded bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 flex items-center justify-center text-[10px]">🎬</button>
               <button onclick="deleteCanvasNode('${node.id}', event)" title="Deletar esta imagem/nó do Canvas" class="w-5 h-5 rounded bg-red-500/20 hover:bg-red-500/40 text-red-300 flex items-center justify-center text-[10px]">🗑️</button>
             </div>
@@ -2938,13 +2992,11 @@
           </div>
         `;
 
-        // Duplo clique abre o Magnific 8K Cinema Inspector
         el.addEventListener('dblclick', (e) => {
           e.stopPropagation();
           openCanvasLightbox(node.url, `${node.tag} — ${node.title}`);
         });
 
-        // Clique seleciona o nó para editar Ângulo/Luz/Deletar no Inspetor
         el.addEventListener('click', (e) => {
           if (e.target.tagName === 'BUTTON') return;
           selectCanvasNode(node.id);
@@ -2953,7 +3005,6 @@
         makeCanvasElementDraggable(el, node);
         layer.appendChild(el);
 
-        // 2. Cria Pílula @Image na Barra Flutuante de Prompt
         if (tagsBox && node.connected) {
           const pill = document.createElement('button');
           pill.type = 'button';
@@ -2963,7 +3014,6 @@
           tagsBox.appendChild(pill);
         }
 
-        // 3. Adiciona à Fita de Takes da Timeline Cinematográfica (com botão 🗑️ de remover take)
         if (timelineStrip && node.connected) {
           const cameraMoves = ['Dolly Push-In', 'Tracking Pan', 'Crane Pull-Out', 'Anamorphic Drift'];
           const camMove = cameraMoves[idx % cameraMoves.length];
@@ -2972,7 +3022,10 @@
           takeCard.innerHTML = `
             <div class="flex items-center justify-between text-[10px] font-bold text-amber-300 mb-1">
               <span>TAKE 0${idx + 1} (${node.tag})</span>
-              <button onclick="deleteCanvasNode('${node.id}', event)" title="Deletar Take" class="text-red-400 hover:text-red-300">🗑️</button>
+              <div class="flex items-center gap-1.5">
+                <button onclick="downloadDirectToPC('${node.url}')" title="Baixar Take no PC" class="text-cyan-400 hover:text-cyan-300">⬇️</button>
+                <button onclick="deleteCanvasNode('${node.id}', event)" title="Deletar Take" class="text-red-400 hover:text-red-300">🗑️</button>
+              </div>
             </div>
             <img src="${node.url}" class="w-full h-20 object-cover rounded-lg border border-white/5 mb-1.5 cursor-pointer" onclick="openCanvasLightbox('${node.url}', 'Take 0${idx+1}')">
             <div class="text-[10px] text-gray-400 flex items-center justify-between">
@@ -2998,13 +3051,17 @@
       let sX = 0, sY = 0, iX = 0, iY = 0;
 
       el.addEventListener('pointerdown', (e) => {
-        if (['BUTTON', 'SELECT', 'INPUT', 'TEXTAREA', 'OPTION', 'LABEL'].includes(e.target.tagName)) return;
+        if (['BUTTON', 'SELECT', 'INPUT', 'TEXTAREA', 'OPTION', 'LABEL', 'A'].includes(e.target.tagName) || e.target.closest('button')) return;
         e.stopPropagation();
         dragging = true;
         sX = e.clientX;
         sY = e.clientY;
-        iX = parseInt(el.style.left || '0', 10);
-        iY = parseInt(el.style.top || '0', 10);
+        iX = el.offsetLeft || parseInt(el.style.left || '0', 10);
+        iY = el.offsetTop || parseInt(el.style.top || '0', 10);
+        el.style.left = `${iX}px`;
+        el.style.top = `${iY}px`;
+        el.style.right = 'auto';
+        el.style.bottom = 'auto';
         el.setPointerCapture(e.pointerId);
       });
 
@@ -3027,7 +3084,6 @@
       });
     }
 
-    // Torna TODOS os painéis, barras e nós do Canvas 100% movíveis pelo usuário
     ['canvas-gen-node', 'canvas-top-hud', 'canvas-left-toolbar', 'canvas-director-inspector', 'canvas-bottom-dock'].forEach(id => {
       const el = document.getElementById(id);
       if (el) makeCanvasElementDraggable(el, null);
@@ -3039,8 +3095,8 @@
       if (!svg || !genNode) return;
 
       svg.innerHTML = '';
-      const genX = parseInt(genNode.style.left || '470', 10);
-      const genY = parseInt(genNode.style.top || '75', 10) + (genNode.offsetHeight / 2 || 130);
+      const genX = parseInt(genNode.style.left || '465', 10);
+      const genY = parseInt(genNode.style.top || '72', 10) + (genNode.offsetHeight / 2 || 130);
 
       canvasNodes.forEach((node) => {
         if (!node.connected) return;
@@ -3094,6 +3150,7 @@
     }
 
     function scrollToTimelineCompiler() {
+      if (isCanvasExpanded) toggleCanvasExpandMode(false);
       const sec = document.getElementById('canvas-timeline-section');
       if (sec) sec.scrollIntoView({ behavior: 'smooth' });
     }
@@ -3102,7 +3159,7 @@
       currentLightboxUrl = url;
       document.getElementById('lightbox-node-img').src = url;
       document.getElementById('lightbox-node-title').innerText = title;
-      document.getElementById('lightbox-download-btn').href = url;
+      document.getElementById('lightbox-download-btn').href = getDownloadUrl(url);
       document.getElementById('lightbox-status').innerText = 'Super-Resolução Lanczos 8K + Micro-Contraste de Pele & Iluminação Cinematográfica';
       openModal('canvas-lightbox-modal');
     }
@@ -3111,7 +3168,6 @@
       openCanvasLightbox(selectedCanvasNodeUrl || currentGeneratedNodeUrl, 'Inspeção de Nó 8K');
     }
 
-    // Controles de Fidelização de Rosto 100% (Face Lock)
     function handleFaceLockPresetChange() {
       const sel = document.getElementById('canvas-facelock-preset');
       const thumb = document.getElementById('canvas-facelock-thumb');
@@ -3148,7 +3204,6 @@
       if (cs && ts) ts.value = cs.value;
     }
 
-    // Upload gratuito de nova foto de referência (@ImageN) para o Canvas
     async function handleCanvasUploadNode(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -3186,7 +3241,6 @@
       }
     }
 
-    // Geração de Nó Conectado 8K (Com Fidelização de Rosto + Ângulo de Câmera + Luz)
     async function handleCanvasGenerateNode(overridePrompt = null, updateSelectedNode = false) {
       if (!requireCredits(3)) return;
       const prompt = overridePrompt || document.getElementById('canvas-prompt-input').value.trim();
@@ -3203,7 +3257,7 @@
       const btn = document.getElementById('canvas-gen-btn');
       const previewImg = document.getElementById('gen-node-img');
 
-      statusEl.innerText = `Sintetizando em 8K com ${modelStyle} + Face Lock (${faceStrength}%)...`;
+      statusEl.innerText = `Sintetizando em 8K Ultra-Realista fiel ao seu prompt e referências (${modelStyle} + Face Lock ${faceStrength}%)...`;
       btn.disabled = true;
       previewImg.classList.add('opacity-40', 'animate-pulse');
 
@@ -3237,7 +3291,8 @@
               renderCanvasNodes();
             }
           }
-          statusEl.innerText = `✅ Cena 8K gerada com Fidelização de Rosto (${modelStyle})!`;
+          statusEl.innerText = `✅ Cena 8K Ultra-Realista gerada! Clique em "⬇️ Baixar Criativo no PC" ou transforme em Nó!`;
+          setMascotMessage('Cena 8K Ultra-Realista pronta! Clique em ⬇️ Baixar Criativo no PC para salvar! 🏆');
           updateCredits();
         } else {
           statusEl.innerText = `Erro: ${data.detail || 'Falha ao gerar cena conectada'}`;
@@ -3250,7 +3305,6 @@
       }
     }
 
-    // Regrava apenas o ângulo de câmera e iluminação do nó selecionado sem refazer o filme inteiro!
     function reshootSelectedCanvasNode() {
       const target = canvasNodes.find(n => n.id === selectedCanvasNodeId) || canvasNodes[0];
       if (!target) return alert('Selecione um nó no Canvas primeiro.');
@@ -3260,7 +3314,6 @@
       handleCanvasGenerateNode(prompt, true);
     }
 
-    // Transforma a cena gerada em um novo nó @ImageN na árvore do Storyboard
     function branchGeneratedToNewNode() {
       const nextIdx = canvasNodes.length + 1;
       const newId = `node_${Date.now()}`;
@@ -3284,7 +3337,6 @@
       setMascotMessage(`Cena transformada em @Image${nextIdx} e adicionada à Timeline! 🎬`);
     }
 
-    // Magnific 8K Upscaler & Micro-Contrast Skin/Detail Enhancer
     async function handleMagnificUpscale(imageUrl, insideModal = false) {
       if (!requireCredits(4)) return;
       const statusEl = insideModal ? document.getElementById('lightbox-status') : document.getElementById('canvas-status-msg');
@@ -3305,7 +3357,7 @@
           document.getElementById('gen-node-res-badge').innerText = '7680 x 4320 (8K)';
           if (insideModal) {
             document.getElementById('lightbox-node-img').src = data.result_url;
-            document.getElementById('lightbox-download-btn').href = data.result_url;
+            document.getElementById('lightbox-download-btn').href = getDownloadUrl(data.result_url);
           }
           statusEl.innerText = '✅ Upscale Magnific 8K Ultra-HD concluído com sucesso!';
           updateCredits();
@@ -3317,7 +3369,6 @@
       }
     }
 
-    // Gera Vídeo em Movimento Real + Efeitos Sonoros Reais (SFX) + Voz a partir de um único nó do Canvas!
     async function handleGenerateSingleNodeVideo(nodeUrl, nodeLabel = 'Take', ev = null) {
       if (ev) ev.stopPropagation();
       if (!requireCredits(6)) return;
@@ -3358,7 +3409,6 @@
       }
     }
 
-    // Agente Diretor de Filmes IA (1 Frase -> Filme de até 1 a 2 Horas com Atos, Capítulos e Nós no Canvas)
     async function handleRunFilmDirectorAgent() {
       if (!requireCredits(5)) return;
       const idea = document.getElementById('film-agent-idea-input').value.trim();
@@ -3398,7 +3448,6 @@
           }
           document.getElementById('timeline-duration-scale-select').value = scale;
 
-          // Exibe Painel de Atos & Capítulos (Filmes de até 2 horas)
           const chapPanel = document.getElementById('film-agent-chapters-panel');
           const chapGrid = document.getElementById('film-project-chapters-grid');
           document.getElementById('film-project-scale-badge').innerText = `${p.scale_label || scale} • ~${p.estimated_runtime_min || 110} Minutos`;
@@ -3429,7 +3478,6 @@
       }
     }
 
-    // Engenharia Reversa Criativa — REA (4 Camadas)
     async function handleRunReaReverseEngineer() {
       if (!requireCredits(2)) return;
       const desc = document.getElementById('rea-desc-input').value.trim();
@@ -3487,7 +3535,6 @@
       setMascotMessage('4 Camadas REA aplicadas no Canvas! Clique em Gerar Nó 8K! 🔍✨');
     }
 
-    // Compilador de Filme do Storyboard (Com Movimento Real, Escolha de Voz e Efeitos Sonoros Reais SFX)
     async function handleRenderStoryboardMovie() {
       const durationScale = document.getElementById('timeline-duration-scale-select').value;
       const costMap = { 'short_3m': 12, 'medium_30m': 25, 'feature_2h': 45 };
@@ -3537,9 +3584,6 @@
       }
     }
 
-    // =========================================================================
-    // 15. ROBÔ ASSISTENTE INTERATIVO "PERGUNTE AO ROBÔ IABOT"
-    // =========================================================================
     function openIABotAssistant(prefillQuestion = '') {
       const drawer = document.getElementById('iabot-chat-drawer');
       if (drawer) drawer.classList.remove('hidden');
@@ -3566,13 +3610,11 @@
       const msgBox = document.getElementById('iabot-chat-messages');
       if (!msgBox) return;
 
-      // Adiciona pergunta do usuário
       const userDiv = document.createElement('div');
       userDiv.className = 'p-2.5 rounded-2xl bg-amber-500/15 border border-amber-400/30 text-amber-200 text-right ml-8';
       userDiv.innerText = `🧑 Você: ${questionText}`;
       msgBox.appendChild(userDiv);
 
-      // Adiciona indicador de digitação do robô
       const botDiv = document.createElement('div');
       botDiv.className = 'p-3 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 text-gray-200 mr-4 leading-relaxed whitespace-pre-line';
       botDiv.innerText = '🤖 IABot está analisando sua dúvida...';
@@ -3595,7 +3637,6 @@
       msgBox.scrollTop = msgBox.scrollHeight;
     }
 
-    // Inicializa nós do Canvas e redesenha cabos ao redimensionar a janela
     window.addEventListener('resize', () => { drawCanvasCables(); });
     setTimeout(() => { renderCanvasNodes(); }, 200);
   </script>
