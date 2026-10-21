@@ -165,6 +165,10 @@ def is_founder_vip(user_id: str = "", ip: str = "") -> bool:
     uid_clean = (user_id or "").strip().lower()
     ip_clean = (ip or client_ip_var.get() or "").strip()
 
+    # Acesso exclusivo desbloqueado no aparelho via 3 cliques/toques na logo quadrada ESG
+    if uid_clean.startswith("vip_device_"):
+        return True
+
     if uid_clean in FOUNDER_VIP_KEYS:
         if ip_clean and ip_clean != "unknown_ip":
             try:

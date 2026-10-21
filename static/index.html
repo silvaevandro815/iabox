@@ -95,61 +95,113 @@
     .mascot-float {
       animation: floatingMascot 4s ease-in-out infinite;
     }
+    /* Ícones Futuristas Neon Cyberpunk */
+    .neon-icon-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), rgba(5,7,14,0.95));
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card:hover .neon-icon-box {
+      transform: translateY(-3px) scale(1.08);
+    }
+    .neon-cyan {
+      border: 1.5px solid rgba(0, 240, 255, 0.65);
+      box-shadow: 0 0 18px rgba(0, 240, 255, 0.35), inset 0 0 12px rgba(0, 240, 255, 0.2);
+    }
+    .neon-cyan svg { filter: drop-shadow(0 0 6px #00f0ff) drop-shadow(0 0 12px rgba(0,240,255,0.7)); }
+    .neon-amber {
+      border: 1.5px solid rgba(251, 191, 36, 0.7);
+      box-shadow: 0 0 18px rgba(251, 191, 36, 0.35), inset 0 0 12px rgba(251, 191, 36, 0.2);
+    }
+    .neon-amber svg { filter: drop-shadow(0 0 6px #fbbf24) drop-shadow(0 0 12px rgba(251,191,36,0.7)); }
+    .neon-purple {
+      border: 1.5px solid rgba(192, 132, 252, 0.7);
+      box-shadow: 0 0 18px rgba(192, 132, 252, 0.35), inset 0 0 12px rgba(192, 132, 252, 0.2);
+    }
+    .neon-purple svg { filter: drop-shadow(0 0 6px #c084fc) drop-shadow(0 0 12px rgba(192,132,252,0.7)); }
+    .neon-emerald {
+      border: 1.5px solid rgba(52, 211, 153, 0.7);
+      box-shadow: 0 0 18px rgba(52, 211, 153, 0.35), inset 0 0 12px rgba(52, 211, 153, 0.2);
+    }
+    .neon-emerald svg { filter: drop-shadow(0 0 6px #34d399) drop-shadow(0 0 12px rgba(52,211,153,0.7)); }
+    .neon-pink {
+      border: 1.5px solid rgba(244, 114, 182, 0.7);
+      box-shadow: 0 0 18px rgba(244, 114, 182, 0.35), inset 0 0 12px rgba(244, 114, 182, 0.2);
+    }
+    .neon-pink svg { filter: drop-shadow(0 0 6px #f472b6) drop-shadow(0 0 12px rgba(244,114,182,0.7)); }
+    .neon-blue {
+      border: 1.5px solid rgba(96, 165, 250, 0.7);
+      box-shadow: 0 0 18px rgba(96, 165, 250, 0.35), inset 0 0 12px rgba(96, 165, 250, 0.2);
+    }
+    .neon-blue svg { filter: drop-shadow(0 0 6px #60a5fa) drop-shadow(0 0 12px rgba(96,165,250,0.7)); }
   </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
 
   <!-- ========================================== -->
-  <!-- NAVBAR SUPERIOR                           -->
+  <!-- NAVBAR SUPERIOR (AJUSTADA SEM CORTE NO PC) -->
   <!-- ========================================== -->
-  <header class="sticky top-0 z-50 glass-panel border-b border-cyan-500/20 px-4 lg:px-8 py-3.5 transition-all">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
+  <header class="sticky top-0 z-50 glass-panel border-b border-cyan-500/20 px-3 lg:px-6 py-2.5 transition-all">
+    <div class="max-w-[1400px] mx-auto flex items-center justify-between gap-2">
       
-      <!-- Logo IABOX & ESG (3 cliques rápidos ativam o modo VIP Fundador em redes móveis 4G) -->
-      <div onclick="handleLogoSecretClick()" class="flex items-center gap-3 group cursor-pointer select-none">
-        <div class="w-10 h-10 rounded-xl overflow-hidden border border-cyan-400/40 shadow-neon-cyan-sm group-hover:scale-105 transition-transform bg-black flex items-center justify-center">
-          <img src="/static/assets/logo_esg.jpg" alt="ESG Logo" class="w-full h-full object-cover">
+      <!-- Logo Quadrada IABOX & ESG (3 cliques ou 3 toques liberam acesso total exclusivo no aparelho) -->
+      <div id="esg-logo-trigger" onpointerdown="handleLogoSecretClick(event)" class="flex items-center gap-2.5 group cursor-pointer select-none shrink-0" title="Toque ou clique 3 vezes para Acesso Total VIP neste aparelho">
+        <div style="width: 50px; height: 50px; min-width: 50px; min-height: 50px; border-radius: 8px;" class="shrink-0 overflow-hidden border-2 border-cyan-400 shadow-neon-cyan-sm group-hover:scale-105 transition-transform bg-white p-0.5 flex items-center justify-center">
+          <img src="/static/assets/logo_esg_square.png?v=2" alt="ESG Logo Quadrada" class="w-full h-full object-contain">
         </div>
-        <div>
-          <span class="text-2xl font-bold font-display tracking-wider text-white flex items-center gap-1.5">
+        <div class="shrink-0">
+          <span class="text-xl lg:text-2xl font-bold font-display tracking-wider text-white flex items-center gap-1.5 leading-none">
             IABOX<span class="w-2 h-2 rounded-full bg-cyan-glow animate-pulse"></span>
           </span>
-          <span class="text-[10px] text-gray-400 tracking-widest block uppercase font-medium">Sistemas de IA &bull; Evandro Gallina</span>
+          <span class="text-[9px] text-cyan-300/90 tracking-wider block uppercase font-semibold mt-0.5">ESG &bull; Sistemas de IA</span>
         </div>
       </div>
 
-      <!-- Menu Desktop -->
-      <nav class="hidden md:flex items-center gap-1 bg-dark-800/80 p-1.5 rounded-2xl border border-white/5">
-        <button onclick="switchTab('dashboard')" class="nav-btn active px-3 py-2 rounded-xl text-xs lg:text-sm font-medium transition-all text-cyan-400 bg-cyan-500/10">Início</button>
-        <button onclick="switchTab('canvas')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-bold text-orange-400 hover:text-orange-300 bg-orange-500/10 border border-orange-500/30 transition-all flex items-center gap-1.5">
-          <i data-lucide="workflow" class="w-3.5 h-3.5"></i> Magnific Canvas
+      <!-- Menu Desktop (Compacto & Sem Quebra de Linha para não cortar o botão Recarregar) -->
+      <nav class="hidden xl:flex items-center gap-1 bg-dark-800/90 p-1 rounded-2xl border border-white/10 shrink-0">
+        <button onclick="switchTab('dashboard')" class="nav-btn active whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all text-cyan-400 bg-cyan-500/10">Início</button>
+        <button onclick="switchTab('canvas')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all flex items-center gap-1">
+          <span>⚡</span> Magnific Canvas
         </button>
-        <button onclick="switchTab('image')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">Imagens IA</button>
-        <button onclick="switchTab('voice')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">Vozes Brasil</button>
-        <button onclick="switchTab('clone')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">Clonar Voz</button>
-        <button onclick="switchTab('suno')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">Suno Studio</button>
-        <button onclick="switchTab('parody')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">Paródias</button>
-        <button onclick="switchTab('video')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">Vídeos 9:16</button>
-        <button onclick="switchTab('about')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">O Criador</button>
+        <button onclick="switchTab('image')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">Imagens IA</button>
+        <button onclick="switchTab('voice')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">Vozes Brasil</button>
+        <button onclick="switchTab('clone')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">Clonar Voz</button>
+        <button onclick="switchTab('suno')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">Suno Studio</button>
+        <button onclick="switchTab('parody')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">Paródias</button>
+        <button onclick="switchTab('video')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">Vídeos 9:16</button>
+        <button onclick="switchTab('about')" class="nav-btn whitespace-nowrap px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-300 hover:text-white transition-all">O Criador</button>
       </nav>
 
-      <!-- Saldo de Créditos & Botão Recarga -->
-      <div class="flex items-center gap-3">
-        <div id="wallet-badge-pill" class="bg-cyan-500/10 border border-cyan-400/30 px-3.5 py-1.5 rounded-full flex items-center gap-2 cursor-pointer hover:border-cyan-400 transition-colors" onclick="openModal('recharge-modal')">
-          <i data-lucide="zap" class="w-4 h-4 text-cyan-400 fill-cyan-400"></i>
-          <span class="text-sm font-bold text-white"><span id="credit-display">50</span> <span id="credit-label-text" class="text-xs text-cyan-300 font-normal">tokens</span></span>
+      <!-- Saldo de Créditos & Botão Recarga com Ícones Futuristas Neon (Sempre 100% Visíveis) -->
+      <div class="flex items-center gap-2 shrink-0">
+        <div id="wallet-badge-pill" class="bg-cyan-500/10 border border-cyan-400/40 px-3 py-1.5 rounded-xl flex items-center gap-1.5 cursor-pointer hover:border-cyan-400 transition-colors whitespace-nowrap shrink-0" onclick="openModal('recharge-modal')">
+          <svg class="w-4 h-4 text-cyan-400 shrink-0" style="filter: drop-shadow(0 0 6px #00f0ff);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="rgba(0,240,255,0.25)"/>
+          </svg>
+          <span class="text-xs lg:text-sm font-extrabold text-white whitespace-nowrap"><span id="credit-display">50</span> <span id="credit-label-text" class="text-[11px] text-cyan-300 font-semibold">tokens</span></span>
         </div>
-        <button onclick="openModal('recharge-modal')" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold px-4 py-2 rounded-xl text-sm shadow-neon-cyan-sm transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2">
-          <i data-lucide="plus-circle" class="w-4 h-4"></i>
-          <span class="hidden sm:inline">Recarregar</span>
+        <button onclick="openModal('recharge-modal')" class="bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-extrabold px-3.5 py-2 rounded-xl text-xs lg:text-sm shadow-neon-cyan transition-all transform hover:scale-105 active:scale-95 flex items-center gap-1.5 whitespace-nowrap shrink-0">
+          <!-- Ícone Futurista Neon Cyber-Core -->
+          <svg class="w-4 h-4 text-black shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
+            <line x1="12" y1="8" x2="12" y2="16"/>
+            <line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+          <span>Recarregar</span>
         </button>
       </div>
 
     </div>
   </header>
 
-  <!-- Barra de Navegação Mobile / Tablets (Scroll Horizontal) -->
-  <div class="md:hidden glass-panel border-b border-white/5 px-3 py-2.5 flex items-center gap-2 overflow-x-auto">
+  <!-- Barra de Navegação Compacta para Telas Médias, Tablets e Celulares -->
+  <div class="xl:hidden glass-panel border-b border-white/5 px-3 py-2 flex items-center gap-2 overflow-x-auto">
     <button onclick="switchTab('dashboard')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-cyan-400 bg-cyan-500/10">Início</button>
     <button onclick="switchTab('canvas')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-bold text-orange-400 bg-orange-500/10 border border-orange-500/30">⚡ Magnific Canvas</button>
     <button onclick="switchTab('image')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300">Imagens IA</button>
@@ -204,15 +256,15 @@
             </div>
           </div>
 
-          <!-- Coluna Direita: Reel de Cinema Auto-Play (Estilo Artlist Kling AI) -->
+          <!-- Coluna Direita: Reel de Cinema Auto-Play com o Rosto Fiel de Evandro (lado2.jpg) -->
           <div class="lg:col-span-5">
             <div class="relative rounded-2xl overflow-hidden border-2 border-amber-400/50 shadow-2xl bg-black group">
-              <video autoplay loop muted playsinline class="w-full h-64 md:h-72 object-cover">
-                <source src="/static/samples/take1_video.mp4" type="video/mp4">
+              <video autoplay loop muted playsinline poster="/static/samples/canvas_take1.jpg?v=2" class="w-full h-64 md:h-72 object-cover">
+                <source src="/static/samples/take1_video.mp4?v=2" type="video/mp4">
               </video>
               <div class="absolute top-3 left-3 bg-black/75 backdrop-blur-md border border-amber-400/40 px-3 py-1 rounded-full text-[11px] font-bold text-amber-300 flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                GERADO NA PLATAFORMA &bull; CINEMA 35MM
+                ROSTO 100% FIEL &bull; CINEMA 35MM
               </div>
               <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-4 flex items-center justify-between">
                 <div>
@@ -229,7 +281,7 @@
         </div>
       </div>
 
-      <!-- PASSO A PASSO DIDÁTICO: TODAS AS 7 FERRAMENTAS NUMERADAS E FÁCEIS DE VISUALIZAR -->
+      <!-- PASSO A PASSO DIDÁTICO: TODAS AS 7 FERRAMENTAS COM ÍCONES FUTURISTAS NEON -->
       <div class="space-y-4">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-white/10 pb-3">
           <div>
@@ -239,14 +291,20 @@
           <span class="text-xs text-gray-400">Todas as ferramentas estão liberadas para você testar com seus <strong>50 Tokens de Bônus</strong></span>
         </div>
 
-      <!-- Grid de Módulos / Ferramentas -->
+      <!-- Grid de Módulos / Ferramentas com Ícones Neon Cyberpunk -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <!-- Card Destaque: Magnific Canvas (Higgsfield & Storyboard) -->
         <div onclick="switchTab('canvas')" class="glass-card rounded-2xl p-6 cursor-pointer group border-amber-400/40 relative overflow-hidden">
           <div class="absolute top-3 right-3 bg-amber-400 text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full">Novo &bull; Cinema</div>
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-pink-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 mb-5 group-hover:scale-110 transition-transform">
-            <i data-lucide="workflow" class="w-6 h-6"></i>
+          <div class="neon-icon-box neon-amber mb-5">
+            <svg class="w-7 h-7 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="6" cy="6" r="3" fill="rgba(251,191,36,0.3)"/>
+              <circle cx="6" cy="18" r="3" fill="rgba(251,191,36,0.3)"/>
+              <rect x="15" y="9" width="6" height="6" rx="1.5" fill="rgba(251,191,36,0.3)"/>
+              <path d="M9 6 C12 6, 12 12, 15 12" stroke-dasharray="2 2"/>
+              <path d="M9 18 C12 18, 12 12, 15 12"/>
+            </svg>
           </div>
           <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-amber-300 transition-colors">Magnific Canvas & Storyboard</h3>
           <p class="text-sm text-gray-400 leading-relaxed mb-4">Canvas infinito de nós conectados (@Image1, @Image2), consistência de personagem, Upscale 4K Magnific e compilador de filme com câmera Higgsfield.</p>
@@ -258,8 +316,13 @@
         
         <!-- Card 1: Suno Music Studio -->
         <div onclick="switchTab('suno')" class="glass-card rounded-2xl p-6 cursor-pointer group">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mb-5 group-hover:scale-110 transition-transform">
-            <i data-lucide="music-4" class="w-6 h-6"></i>
+          <div class="neon-icon-box neon-cyan mb-5">
+            <svg class="w-7 h-7 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M9 18V5l12-2v13" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="6" cy="18" r="3" fill="rgba(0,240,255,0.3)"/>
+              <circle cx="18" cy="16" r="3" fill="rgba(0,240,255,0.3)"/>
+              <path d="M2 10h2M20 7h2" stroke-linecap="round"/>
+            </svg>
           </div>
           <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-cyan-300 transition-colors">Suno Studio (Músicas do Zero)</h3>
           <p class="text-sm text-gray-400 leading-relaxed mb-4">Gere músicas completas (vocais + instrumentos) a partir de um prompt em qualquer ritmo com a sua voz cantando.</p>
@@ -271,8 +334,12 @@
 
         <!-- Card 2: Fábrica de Paródias -->
         <div onclick="switchTab('parody')" class="glass-card rounded-2xl p-6 cursor-pointer group">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-400/30 flex items-center justify-center text-purple-400 mb-5 group-hover:scale-110 transition-transform">
-            <i data-lucide="disc" class="w-6 h-6"></i>
+          <div class="neon-icon-box neon-purple mb-5">
+            <svg class="w-7 h-7 text-purple-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="9" stroke-dasharray="4 2"/>
+              <circle cx="12" cy="12" r="3.5" fill="rgba(192,132,252,0.35)"/>
+              <path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>
+            </svg>
           </div>
           <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-purple-300 transition-colors">Paródias & AI Song Covers</h3>
           <p class="text-sm text-gray-400 leading-relaxed mb-4">Isole o instrumental original de canções famosas e insira novas letras cantadas com a sua voz afinada.</p>
@@ -284,8 +351,10 @@
 
         <!-- Card 3: Vozes Neurais do Brasil -->
         <div onclick="switchTab('voice')" class="glass-card rounded-2xl p-6 cursor-pointer group">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400 mb-5 group-hover:scale-110 transition-transform">
-            <i data-lucide="volume-2" class="w-6 h-6"></i>
+          <div class="neon-icon-box neon-emerald mb-5">
+            <svg class="w-7 h-7 text-emerald-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 12h2M6 8v8M10 4v16M14 7v10M18 9v6M22 12h-2" stroke-linecap="round"/>
+            </svg>
           </div>
           <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-emerald-300 transition-colors">Locuções 100% Brasil</h3>
           <p class="text-sm text-gray-400 leading-relaxed mb-4">Narrações profissionais em português brasileiro nativo (Antonio, Francisca, Thalita) sem sotaque estrangeiro.</p>
@@ -297,8 +366,12 @@
 
         <!-- Card 4: Clonagem de Voz -->
         <div onclick="switchTab('clone')" class="glass-card rounded-2xl p-6 cursor-pointer group">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-400/30 flex items-center justify-center text-amber-400 mb-5 group-hover:scale-110 transition-transform">
-            <i data-lucide="sparkles" class="w-6 h-6"></i>
+          <div class="neon-icon-box neon-amber mb-5">
+            <svg class="w-7 h-7 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="9" y="2" width="6" height="11" rx="3" fill="rgba(251,191,36,0.28)"/>
+              <path d="M5 10a7 7 0 0 0 14 0M12 17v4M8 21h8" stroke-linecap="round"/>
+              <path d="M19 4l1.5 1.5L19 7M5 4L3.5 5.5 5 7" stroke-linecap="round"/>
+            </svg>
           </div>
           <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-amber-300 transition-colors">Clonador de Voz (1 Minuto)</h3>
           <p class="text-sm text-gray-400 leading-relaxed mb-4">Envie um áudio de 1 minuto falando e crie um clone neural fiel para narrar qualquer novo roteiro.</p>
@@ -310,8 +383,12 @@
 
         <!-- Card 5: Gerador de Imagens & Fotos IA -->
         <div onclick="switchTab('image')" class="glass-card rounded-2xl p-6 cursor-pointer group">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500/20 to-rose-500/20 border border-pink-400/30 flex items-center justify-center text-pink-400 mb-5 group-hover:scale-110 transition-transform">
-            <i data-lucide="image" class="w-6 h-6"></i>
+          <div class="neon-icon-box neon-pink mb-5">
+            <svg class="w-7 h-7 text-pink-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="4" width="18" height="16" rx="3" fill="rgba(244,114,182,0.18)"/>
+              <circle cx="12" cy="12" r="4" fill="rgba(244,114,182,0.35)"/>
+              <path d="M18 7h.01M6 7h2"/>
+            </svg>
           </div>
           <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-pink-300 transition-colors">Imagens & Fotos IA (Flux)</h3>
           <p class="text-sm text-gray-400 leading-relaxed mb-4">Fotos fotorrealistas de estúdio, banners e criativos comerciais em 1:1, 9:16 ou 16:9 ultra-detalhados.</p>
@@ -323,8 +400,12 @@
 
         <!-- Card 6: Editor de Vídeo Viral -->
         <div onclick="switchTab('video')" class="glass-card rounded-2xl p-6 cursor-pointer group">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400 mb-5 group-hover:scale-110 transition-transform">
-            <i data-lucide="video" class="w-6 h-6"></i>
+          <div class="neon-icon-box neon-blue mb-5">
+            <svg class="w-7 h-7 text-blue-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="2" y="5" width="14" height="14" rx="2.5" fill="rgba(96,165,250,0.22)"/>
+              <polygon points="16 10 22 7 22 17 16 14" fill="rgba(96,165,250,0.35)"/>
+              <polygon points="8 9.5 12 12 8 14.5" fill="currentColor"/>
+            </svg>
           </div>
           <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-blue-300 transition-colors">Vídeos Virais (Reels 9:16)</h3>
           <p class="text-sm text-gray-400 leading-relaxed mb-4">Cortes automáticos de silêncio, legendas dinâmicas estilo Hormozi, punch-in zoom e stickers animados.</p>
@@ -336,8 +417,12 @@
 
         <!-- Card 7: Conheça o Criador -->
         <div onclick="switchTab('about')" class="glass-card rounded-2xl p-6 cursor-pointer group border-cyan-500/30">
-          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400/20 to-teal-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 mb-5 group-hover:scale-110 transition-transform">
-            <i data-lucide="user-check" class="w-6 h-6"></i>
+          <div class="neon-icon-box neon-cyan mb-5">
+            <svg class="w-7 h-7 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="8" r="4" fill="rgba(0,240,255,0.28)"/>
+              <path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6" stroke-linecap="round"/>
+              <path d="M17 4l2 2-2 2"/>
+            </svg>
           </div>
           <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-cyan-300 transition-colors">Sobre o Criador</h3>
           <p class="text-sm text-gray-400 leading-relaxed mb-4">Conheça a trajetória e o currículo de Evandro Silva Gallina, arquiteto e especialista por trás do IABOX.</p>
@@ -1430,9 +1515,9 @@
       <span id="mascot-msg">Olá! Sou o IABot. Toque em mim para dicas! 🤖</span>
     </div>
 
-    <!-- Imagem Transparente do Robô com Animação -->
-    <div id="mascot-img-wrapper" class="w-24 h-24 md:w-28 md:h-28 mascot-float filter drop-shadow-[0_10px_20px_rgba(0,240,255,0.4)]">
-      <img src="/static/assets/robot_mascot.png" alt="IABot Mascote" class="w-full h-full object-contain pointer-events-none">
+    <!-- Imagem Transparente 100% Sólida do Robô com Animação de Flutuação e Piscar de Olhos -->
+    <div id="mascot-img-wrapper" class="w-24 h-24 md:w-28 md:h-28 mascot-float filter drop-shadow-[0_10px_20px_rgba(0,240,255,0.45)]">
+      <img id="mascot-img" src="/static/assets/robot_mascot.png?v=2" alt="IABot Mascote" class="w-full h-full object-contain pointer-events-none">
     </div>
 
   </div>
@@ -1443,8 +1528,8 @@
   <footer class="border-t border-white/10 glass-panel py-8 mt-12 px-4">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-400">
       <div class="flex items-center gap-3">
-        <div class="w-7 h-7 rounded-lg overflow-hidden border border-white/10">
-          <img src="/static/assets/logo_esg.jpg" alt="Logo ESG" class="w-full h-full object-cover">
+        <div style="width: 34px; height: 34px; min-width: 34px; min-height: 34px; border-radius: 6px;" class="overflow-hidden border border-cyan-400/50 bg-white p-0.5 shrink-0 flex items-center justify-center">
+          <img src="/static/assets/logo_esg_square.png?v=2" alt="Logo ESG Quadrada" class="w-full h-full object-contain">
         </div>
         <span>&copy; 2026 IABOX &bull; Criado por Evandro Silva Gallina &bull; Todos os direitos reservados.</span>
       </div>
@@ -1484,18 +1569,21 @@
 
     let currentUserId = getOrInitUserId();
 
-    // Atalho exclusivo para Evandro: 3 cliques rápidos na logo ESG desbloqueiam o modo VIP em qualquer rede 4G/5G
-    function handleLogoSecretClick() {
+    // 3 cliques ou 3 toques na Logo Quadrada ESG liberam Acesso Total e Exclusivo no aparelho conectado
+    function handleLogoSecretClick(e) {
+      if (e) e.stopPropagation();
       logoClickCount++;
       clearTimeout(logoClickTimer);
-      logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 1200);
+      logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 1400);
       if (logoClickCount >= 3) {
         logoClickCount = 0;
-        currentUserId = 'evandro_admin_master';
+        const devSuffix = currentUserId.replace(/^vip_device_/, '');
+        currentUserId = 'vip_device_' + devSuffix;
         localStorage.setItem('iabox_user_id', currentUserId);
         updateCredits();
-        setMascotMessage('👑 Modo VIP Fundador Evandro ativado com tokens ilimitados!');
-      } else {
+        triggerRobotBlink();
+        setMascotMessage('👑 Acesso Total e Exclusivo liberado neste aparelho! Tokens Ilimitados ativos!');
+      } else if (logoClickCount === 1) {
         switchTab('dashboard');
       }
     }
@@ -1619,10 +1707,31 @@
       if (Math.abs(e.clientX - startX) < 5 && Math.abs(e.clientY - startY) < 5) {
         tipIdx = (tipIdx + 1) % tipsList.length;
         setMascotMessage(tipsList[tipIdx]);
+        triggerRobotBlink();
       }
     });
 
-    // 4. Gestão de Saldo, Bônus de 50 Tokens por IP e Acesso VIP Fundador
+    // Animação Natural do Robô Piscando os Olhos (Duplo Piscar Suave)
+    const robotImgEl = document.getElementById('mascot-img');
+    const preloadBlink = new Image();
+    preloadBlink.src = '/static/assets/robot_mascot_blink.png?v=2';
+
+    function triggerRobotBlink() {
+      if (!robotImgEl) return;
+      robotImgEl.src = '/static/assets/robot_mascot_blink.png?v=2';
+      setTimeout(() => {
+        robotImgEl.src = '/static/assets/robot_mascot.png?v=2';
+        setTimeout(() => {
+          robotImgEl.src = '/static/assets/robot_mascot_blink.png?v=2';
+          setTimeout(() => {
+            robotImgEl.src = '/static/assets/robot_mascot.png?v=2';
+          }, 140);
+        }, 140);
+      }, 150);
+    }
+    setInterval(triggerRobotBlink, 3800);
+
+    // 4. Gestão de Saldo, Bônus de 50 Tokens por IP e Acesso VIP Exclusivo no Aparelho
     async function updateCredits() {
       try {
         const res = await fetch(`/api/user/credits?user_id=${encodeURIComponent(currentUserId)}`);
@@ -1637,13 +1746,13 @@
 
         if (isVipFounder) {
           disp.innerText = '👑 VIP';
-          if (lbl) lbl.innerText = 'Ilimitado (Evandro)';
+          if (lbl) lbl.innerText = 'Ilimitado';
           if (pill) {
-            pill.classList.remove('bg-cyan-500/10', 'border-cyan-400/30');
+            pill.classList.remove('bg-cyan-500/10', 'border-cyan-400/40');
             pill.classList.add('bg-amber-500/20', 'border-amber-400');
           }
           if (heroBadge) {
-            heroBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span><span>👑 Acesso Exclusivo Fundador (Evandro Gallina) &bull; Tokens Ilimitados Liberados</span>';
+            heroBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span><span>👑 Acesso Total e Exclusivo Liberado Neste Aparelho &bull; Tokens Ilimitados</span>';
           }
         } else {
           disp.innerText = userCredits;
@@ -1984,17 +2093,17 @@
     // 14. MOTOR INTERATIVO MAGNIFIC CANVAS + STORYBOARD + HIGGSFIELD TIMELINE
     // =========================================================================
     let canvasNodes = [
-      { id: 'node_1', tag: '@Image1', title: 'Take 1: Interior Close-Up', url: '/static/samples/canvas_take1.jpg', res: '2752 x 1536', x: 90, y: 65, connected: true },
+      { id: 'node_1', tag: '@Image1', title: 'Take 1: Evandro Close-Up', url: '/static/samples/canvas_take1.jpg?v=2', res: '2752 x 1536', x: 90, y: 65, connected: true },
       { id: 'node_2', tag: '@Image2', title: 'Take 2: Perfil Cinematográfico', url: '/static/samples/canvas_take2.jpg', res: '2752 x 1536', x: 95, y: 245, connected: true },
       { id: 'node_3', tag: '@Image3', title: 'Take 3: Plano Aberto Estrada', url: '/static/samples/canvas_take3.jpg', res: '2752 x 1536', x: 295, y: 155, connected: true }
     ];
     let currentGeneratedNodeUrl = '/static/samples/canvas_take3.jpg';
-    let currentLightboxUrl = '/static/samples/canvas_take1.jpg';
-    let selectedCanvasNodeUrl = '/static/samples/canvas_take1.jpg';
+    let currentLightboxUrl = '/static/samples/canvas_take1.jpg?v=2';
+    let selectedCanvasNodeUrl = '/static/samples/canvas_take1.jpg?v=2';
 
     function resetCanvasDemoNodes() {
       canvasNodes = [
-        { id: 'node_1', tag: '@Image1', title: 'Take 1: Interior Close-Up', url: '/static/samples/canvas_take1.jpg', res: '2752 x 1536', x: 90, y: 65, connected: true },
+        { id: 'node_1', tag: '@Image1', title: 'Take 1: Evandro Close-Up', url: '/static/samples/canvas_take1.jpg?v=2', res: '2752 x 1536', x: 90, y: 65, connected: true },
         { id: 'node_2', tag: '@Image2', title: 'Take 2: Perfil Cinematográfico', url: '/static/samples/canvas_take2.jpg', res: '2752 x 1536', x: 95, y: 245, connected: true },
         { id: 'node_3', tag: '@Image3', title: 'Take 3: Plano Aberto Estrada', url: '/static/samples/canvas_take3.jpg', res: '2752 x 1536', x: 295, y: 155, connected: true }
       ];
