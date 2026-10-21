@@ -1,0 +1,40 @@
+﻿version: '3.8'
+
+services:
+  iabox-app:
+    build: .
+    image: iabox-app:latest
+    container_name: iabox-app
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - PORT=8000
+      - DATA_DIR=/app/data
+    volumes:
+      - iabox_uploads:/app/uploads
+      - iabox_output:/app/output
+      - iabox_data:/app/data
+    networks:
+      - coolify
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=coolify"
+      - "traefik.http.routers.iabox-http.entrypoints=http"
+      - "traefik.http.routers.iabox-http.rule=Host(`iabox.evandrosilvagallina.cloud`)"
+      - "traefik.http.routers.iabox-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.iabox-https.entrypoints=https"
+      - "traefik.http.routers.iabox-https.rule=Host(`iabox.evandrosilvagallina.cloud`)"
+      - "traefik.http.routers.iabox-https.tls=true"
+      - "traefik.http.routers.iabox-https.tls.certresolver=letsencrypt"
+      - "traefik.http.services.iabox.loadbalancer.server.port=8000"
+
+volumes:
+  iabox_uploads:
+  iabox_output:
+  iabox_data:
+
+networks:
+  coolify:
+    external: true

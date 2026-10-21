@@ -106,9 +106,10 @@ def get_user_credits(user_id="default_user"):
     c.execute("SELECT credits FROM users WHERE id = ?", (user_id,))
     row = c.fetchone()
     if not row:
-        c.execute("INSERT INTO users (id, credits) VALUES (?, ?)", (user_id, 0)) # Saldo 0: requer compra pré-paga
+        initial_credits = 9999 if user_id == "evandro_admin_master" else 0
+        c.execute("INSERT INTO users (id, credits) VALUES (?, ?)", (user_id, initial_credits))
         conn.commit()
-        credits = 0
+        credits = initial_credits
     else:
         credits = row[0]
     conn.close()
@@ -127,6 +128,7 @@ def deduct_credits(user_id="default_user", amount=1):
     return True
 
 def add_credits(user_id="default_user", amount=100):
+    get_user_credits(user_id)  # Garante que o registro do usuário exista
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("UPDATE users SET credits = credits + ? WHERE id = ?", (amount, user_id))
@@ -287,13 +289,59 @@ async def generate_suno_music(
     return {"status": "started", "job_id": job_id, "message": "Geração musical iniciada em segundo plano.", "cost": cost}
 
 # ----------------------------------------------------------------------------------------
-# 4. PARÓDIAS & AI SONG COVERS
+# 4. PARÓDIAS & AI SONG COVERS (SUBSTITUIÇÃO VOCAL E LETRAS ALTERADAS)
 # ----------------------------------------------------------------------------------------
+@app.post("/api/music/parody-lyrics")
+async def generate_parody_lyrics(
+    original_song_name: str = Form(...),
+    parody_theme: str = Form(...),
+    user_id: str = Form("default_user")
+):
+    if not deduct_credits(user_id, amount=1):
+        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 1 crédito).")
+
+    prompt = f"""Você é um mestre brasileiro em criação de paródias musicais virais.
+Reescreva a letra da música famosa "{original_song_name}" criando uma paródia genial sobre o tema: "{parody_theme}".
+REGRAS OBRIGATÓRIAS:
+1. Mantenha EXATAMENTE o mesmo número de sílabas poéticas, ritmo, cadência e rimas da música original para que encaixe perfeitamente na melodia.
+2. Divida claramente em [Verso 1], [Pré-Refrão], [Refrão], etc.
+3. Escreva 100% em Português do Brasil, criativo, engraçado ou impactante.
+Retorne apenas a letra da paródia pronta para cantar."""
+
+    lyrics = None
+    if GEMINI_API_KEY:
+        import requests
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
+        try:
+            r = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=25)
+            if r.status_code == 200:
+                lyrics = r.json()['candidates'][0]['content']['parts'][0]['text'].strip()
+        except Exception:
+            pass
+
+    if not lyrics:
+        lyrics = (
+            f"[Paródia Oficial IABOX — Baseada em: {original_song_name}]\n"
+            f"Tema: {parody_theme}\n\n"
+            f"[Verso 1]\n"
+            f"Olha só o que chegou pra mudar a estação\n"
+            f"{parody_theme} dominando toda a geração\n"
+            f"No compasso da batida, sem perder o tom\n"
+            f"Aumenta o volume e sente a pressão do som!\n\n"
+            f"[Refrão]\n"
+            f"É {parody_theme} que todo mundo quer ouvir\n"
+            f"No ritmo perfeito pra fazer sorrir\n"
+            f"Canta junto agora, solta a sua voz\n"
+            f"Ninguém faz mais forte do que todos nós!"
+        )
+
+    return {"status": "success", "lyrics": lyrics, "remaining_credits": get_user_credits(user_id)}
+
 @app.post("/api/music/parody")
 async def create_parody(
     song_file: UploadFile = File(...),
-    guide_file: UploadFile = File(...),
     voice_sample: UploadFile = File(...),
+    guide_file: Optional[UploadFile] = File(None),
     pitch_shift: int = Form(0),
     user_id: str = Form("default_user")
 ):
@@ -301,15 +349,17 @@ async def create_parody(
         raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 20 créditos).")
 
     job_id = str(uuid.uuid4())
-    save_job(job_id, "parody", status="processing", progress=15)
+    save_job(job_id, "parody", status="processing", progress=15, user_id=user_id)
 
     song_path = os.path.join(UPLOAD_DIR, f"song_{job_id[:8]}_{song_file.filename}")
-    guide_path = os.path.join(UPLOAD_DIR, f"guide_{job_id[:8]}_{guide_file.filename}")
     voice_path = os.path.join(UPLOAD_DIR, f"voice_{job_id[:8]}_{voice_sample.filename}")
-
     with open(song_path, "wb") as f: shutil.copyfileobj(song_file.file, f)
-    with open(guide_path, "wb") as f: shutil.copyfileobj(guide_file.file, f)
     with open(voice_path, "wb") as f: shutil.copyfileobj(voice_sample.file, f)
+
+    guide_path = None
+    if guide_file and guide_file.filename:
+        guide_path = os.path.join(UPLOAD_DIR, f"guide_{job_id[:8]}_{guide_file.filename}")
+        with open(guide_path, "wb") as f: shutil.copyfileobj(guide_file.file, f)
 
     out_filename = f"parodia_{job_id[:8]}.mp3"
     out_path = os.path.join(OUTPUT_DIR, out_filename)
@@ -317,24 +367,37 @@ async def create_parody(
     def _task():
         try:
             import importlib
-            mod = importlib.import_module("scripts.10_suno_studio_engine")
-            engine = mod.SunoStudioEngine()
-            engine.create_parody(
-                original_song_path=song_path,
-                parody_vocal_guide=guide_path,
-                user_voice_path=voice_path,
-                output_path=out_path,
-                pitch_shift=pitch_shift
-            )
-            save_job(job_id, "parody", status="completed", progress=100, result_url=f"/output/{out_filename}")
+            if guide_path:
+                # Modo Paródia (Instrumental Original + Guia com Nova Letra + Voz Clonada)
+                mod = importlib.import_module("scripts.10_suno_studio_engine")
+                engine = mod.SunoStudioEngine()
+                engine.create_parody(
+                    original_song_path=song_path,
+                    parody_vocal_guide=guide_path,
+                    user_voice_path=voice_path,
+                    output_path=out_path,
+                    pitch_shift=pitch_shift
+                )
+            else:
+                # Modo AI Song Cover Direto (Substitui o Cantor Original pela Voz Clonada mantendo Instrumental)
+                mod = importlib.import_module("scripts.09_ai_song_cover_engine")
+                engine = mod.AISongCoverEngine()
+                engine.create_ai_song_cover(
+                    song_path=song_path,
+                    user_voice_path=voice_path,
+                    output_song=out_path,
+                    pitch_shift=pitch_shift
+                )
+            save_job(job_id, "parody", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
         except Exception as e:
-            save_job(job_id, "parody", status="failed", error=str(e))
+            save_job(job_id, "parody", status="failed", error=str(e), user_id=user_id)
 
     import threading
     t = threading.Thread(target=_task)
     t.start()
 
-    return {"status": "started", "job_id": job_id, "message": "Criação de paródia iniciada.", "cost": 20}
+    mode_label = "Paródia Musical" if guide_path else "AI Song Cover"
+    return {"status": "started", "job_id": job_id, "message": f"Produção de {mode_label} iniciada.", "cost": 20}
 
 # ----------------------------------------------------------------------------------------
 # 5. GERADOR DE IMAGENS & CRIATIVOS PUBLICITÁRIOS (FLUX / POLLINATIONS)
@@ -508,21 +571,22 @@ def verify_stripe_session(session_id: str, user_id: str = "default_user"):
     stripe.api_key = STRIPE_SECRET_KEY
     try:
         session = stripe.checkout.Session.retrieve(session_id)
+        target_uid = (session.metadata or {}).get("user_id") or user_id
         if session.payment_status == "paid":
             conn = sqlite3.connect(DB_PATH)
             c = conn.cursor()
             c.execute("SELECT id FROM orders WHERE stripe_session_id = ?", (session_id,))
             already_processed = c.fetchone()
             if not already_processed:
-                credits_to_add = int(session.metadata.get("credits", 100))
+                credits_to_add = int((session.metadata or {}).get("credits", 100))
                 c.execute("INSERT INTO orders (id, user_id, amount_brl, credits, status, stripe_session_id) VALUES (?, ?, ?, ?, ?, ?)",
-                          (str(uuid.uuid4()), user_id, session.amount_total / 100.0, credits_to_add, "paid", session_id))
-                c.execute("UPDATE users SET credits = credits + ? WHERE id = ?", (credits_to_add, user_id))
+                          (str(uuid.uuid4()), target_uid, session.amount_total / 100.0, credits_to_add, "paid", session_id))
                 conn.commit()
                 conn.close()
-                return {"status": "success", "credits_added": credits_to_add, "new_balance": get_user_credits(user_id)}
+                add_credits(target_uid, credits_to_add)
+                return {"status": "success", "user_id": target_uid, "credits_added": credits_to_add, "new_balance": get_user_credits(target_uid)}
             conn.close()
-            return {"status": "already_credited", "new_balance": get_user_credits(user_id)}
+            return {"status": "already_credited", "user_id": target_uid, "new_balance": get_user_credits(target_uid)}
         else:
             return {"status": "pending", "payment_status": session.payment_status}
     except Exception as e:

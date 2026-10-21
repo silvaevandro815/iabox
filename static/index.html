@@ -445,46 +445,67 @@
       <div class="border-b border-white/10 pb-4">
         <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
           <i data-lucide="disc" class="w-8 h-8 text-purple-400"></i>
-          Fábrica de Paródias Musicais & Covers
+          Fábrica de Paródias Musicais & AI Song Covers
         </h2>
-        <p class="text-gray-400 text-sm mt-1">Isole o instrumental original de qualquer música comercial e cante sua paródia afinada.</p>
+        <p class="text-gray-400 text-sm mt-1">Tire a voz do cantor original de qualquer música famosa e coloque a SUA voz clonada mantendo o instrumental original, ou crie paródias com letras alteradas na mesma batida.</p>
+      </div>
+
+      <!-- Assistente de Letra de Paródia com IA -->
+      <div class="glass-panel p-6 rounded-2xl border border-purple-500/30 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="wand-2" class="w-5 h-5 text-purple-400"></i>
+            Passo Opcional: Gerador de Letra de Paródia na Mesma Métrica
+          </h3>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300">1 Crédito</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <input type="text" id="parody-song-name" placeholder="Música original (Ex: Meteoro - Luan Santana)" class="bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-400">
+          <input type="text" id="parody-theme-input" placeholder="Tema da paródia (Ex: Vida de quem trabalha com IA)" class="bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-400">
+          <button onclick="handleGenerateParodyLyrics()" class="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/40 text-purple-200 font-bold py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center gap-2">
+            <i data-lucide="file-text" class="w-4 h-4 text-purple-400"></i>
+            <span>Gerar Letra na Mesma Batida</span>
+          </button>
+        </div>
+        <div id="parody-lyrics-box" class="hidden bg-dark-900/90 border border-white/10 rounded-xl p-4 text-xs text-gray-200 whitespace-pre-wrap font-mono max-h-48 overflow-y-auto"></div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-5">
           <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">1. Música Original (MP3/WAV)</label>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">1. Música Original Famosa (MP3/WAV) <span class="text-purple-400">*Obrigatório</span></label>
             <input type="file" id="parody-song" accept="audio/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500/20 file:text-purple-300">
-            <p class="text-xs text-gray-400 mt-1">Ex: O arquivo da música original (Luan Santana, Gusttavo Lima, Queen, etc.).</p>
+            <p class="text-xs text-gray-400 mt-1">A IA removerá a voz do cantor original (ex: Luan Santana, Gusttavo Lima) mantendo 100% do instrumental original.</p>
           </div>
 
           <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">2. Áudio Guia da Paródia (Gravado por você no ritmo)</label>
-            <input type="file" id="parody-guide" accept="audio/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500/20 file:text-purple-300">
-            <p class="text-xs text-gray-400 mt-1">Pode ser gravado no WhatsApp ou celular cantando a nova letra na cadência da música.</p>
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">3. Áudio de Referência da Sua Voz (1 minuto)</label>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">2. Áudio de Referência da Sua Voz (1 minuto) <span class="text-purple-400">*Obrigatório</span></label>
             <input type="file" id="parody-voice" accept="audio/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500/20 file:text-purple-300">
+            <p class="text-xs text-gray-400 mt-1">Sua voz que será clonada e afinada para cantar a música.</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-200 mb-2">3. Áudio Guia Cantando a Nova Letra <span class="text-cyan-400">(Opcional — Apenas para Paródia com Letra Alterada)</span></label>
+            <input type="file" id="parody-guide" accept="audio/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-gray-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500/20 file:text-purple-300">
+            <p class="text-xs text-gray-400 mt-1"><strong>Deixe em branco</strong> se quiser um <em>AI Song Cover</em> (sua voz cantando a letra original do cantor). Envie um áudio guia apenas se quiser cantar uma letra de paródia diferente.</p>
           </div>
 
           <button onclick="handleGenerateParody()" class="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
             <i data-lucide="sparkles" class="w-5 h-5"></i>
-            <span>Criar Paródia Masterizada (20 Créditos)</span>
+            <span>Produzir Cover / Paródia Masterizada (20 Créditos)</span>
           </button>
         </div>
 
         <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
           <div>
-            <h3 class="text-lg font-bold text-white mb-3">Paródia Final</h3>
+            <h3 class="text-lg font-bold text-white mb-3">Música Final Masterizada</h3>
             <div id="parody-player-box" class="bg-dark-800/80 rounded-xl p-4 border border-white/5 text-center text-gray-400 text-sm">
               <i data-lucide="music-2" class="w-10 h-10 mx-auto text-purple-400 mb-2"></i>
-              Envie os 3 arquivos para iniciar a separação de stems e afinamento da sua voz.
+              Envie a música original e sua voz para iniciar a separação de stems (Demucs v4) e transferência vocal (Seed-VC).
             </div>
           </div>
           <div class="p-4 rounded-xl bg-purple-500/5 border border-purple-400/20 mt-4 text-xs text-gray-300">
-            <strong>Como funciona:</strong> O Demucs v4 separa o instrumental original limpo, enquanto o Seed-VC transfere o seu timbre vocal mantendo as notas e afinação.
+            <strong>Tecnologia Dupla:</strong> O Demucs v4 (Meta AI) isola o instrumental original limpo, enquanto o Seed-VC transfere seu timbre vocal preservando todas as notas e afinação.
           </div>
         </div>
       </div>
@@ -891,7 +912,21 @@
 
       </div>
 
-      <div class="text-center mt-6 text-xs text-gray-400 flex items-center justify-center gap-2">
+      <!-- Sincronização de Carteira Pré-Paga entre PC, Celular, Tablet e iPhone -->
+      <div class="mt-6 p-4 rounded-2xl bg-dark-800/90 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="text-xs text-gray-300">
+          <span class="font-bold text-cyan-400 block">Chave da Sua Carteira (PC / Mobile / iPhone):</span>
+          <span>Use seu e-mail ou código abaixo para acessar seus créditos em qualquer aparelho.</span>
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <input type="text" id="wallet-id-input" placeholder="Seu e-mail ou chave" class="bg-dark-900 border border-white/15 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400 w-full sm:w-52">
+          <button onclick="syncWalletId()" class="bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 font-bold px-3 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all">
+            Sincronizar
+          </button>
+        </div>
+      </div>
+
+      <div class="text-center mt-5 text-xs text-gray-400 flex items-center justify-center gap-2">
         <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
         Pagamento seguro processado via Stripe &bull; Cartão, Boleto e PIX
       </div>
@@ -941,6 +976,29 @@
 
     let userCredits = 0;
 
+    // Identificador Único de Carteira Pré-Paga por Visitante/Cliente
+    function getOrInitUserId() {
+      let uid = localStorage.getItem('iabox_user_id');
+      if (!uid || uid === 'default_user') {
+        uid = 'usr_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36).slice(-4);
+        localStorage.setItem('iabox_user_id', uid);
+      }
+      const walletInput = document.getElementById('wallet-id-input');
+      if (walletInput) walletInput.value = uid;
+      return uid;
+    }
+
+    let currentUserId = getOrInitUserId();
+
+    function syncWalletId() {
+      const val = document.getElementById('wallet-id-input').value.trim();
+      if (!val) return alert('Digite um e-mail ou código de carteira válido.');
+      currentUserId = val;
+      localStorage.setItem('iabox_user_id', currentUserId);
+      updateCredits();
+      setMascotMessage('Carteira sincronizada com sucesso! ⚡');
+    }
+
     // 1. Navegação de Abas
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -960,7 +1018,7 @@
       const tips = {
         'image': 'O motor Flux cria fotos ultra-realistas com iluminação de cinema!',
         'suno': 'No Suno Studio, você pode criar desde modão sertanejo até trap e funk!',
-        'parody': 'Quer viralizar no TikTok? Use o modo Paródia com a sua voz cantando!',
+        'parody': 'Crie um AI Cover na música do seu cantor favorito ou gere uma paródia!',
         'voice': 'Nossas vozes neurais brasileiras não têm nenhum sotaque estrangeiro!',
         'clone': 'Com apenas 1 minuto de áudio você já tem seu clone vocal perfeito!',
         'video': 'Os cortes de silêncio (jump cuts) aumentam a retenção em até 40%!',
@@ -972,7 +1030,11 @@
     }
 
     // 2. Modais
-    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function openModal(id) {
+      const walletInput = document.getElementById('wallet-id-input');
+      if (walletInput) walletInput.value = currentUserId;
+      document.getElementById(id).classList.remove('hidden');
+    }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
     // 3. Mascote Interativo Arrastável (Touch & Mouse Drag)
@@ -991,8 +1053,8 @@
     }
 
     const tipsList = [
-      "Arraste-me para onde quiser na tela!",
-      "Sabia que você pode criar paródias perfeitas com o instrumental original?",
+      "Arraste-me para onde quiser na tela pelo mouse ou toque!",
+      "Sabia que você pode colocar sua voz na música de qualquer cantor famoso?",
       "Nossas vozes masculinas e femininas são 100% brasileiras!",
       "Experimente criar uma música sertaneja ou trap no Suno Studio!",
       "Acesse a aba 'O Criador' para ver o currículo do Evandro Gallina!",
@@ -1034,7 +1096,7 @@
     // 4. Gestão de Saldo e Créditos Pré-Pagos
     async function updateCredits() {
       try {
-        const res = await fetch('/api/user/credits?user_id=default_user');
+        const res = await fetch(`/api/user/credits?user_id=${encodeURIComponent(currentUserId)}`);
         const data = await res.json();
         userCredits = data.credits;
         document.getElementById('credit-display').innerText = userCredits;
@@ -1044,7 +1106,7 @@
 
     function requireCredits(cost) {
       if (userCredits < cost) {
-        setMascotMessage(`Você precisa de ${cost} créditos para gerar. Faça uma recarga rápida via Stripe! 💳`);
+        setMascotMessage(`Você precisa de ${cost} créditos para gerar. Escolha seu plano pré-pago via Stripe! 💳`);
         openModal('recharge-modal');
         return false;
       }
@@ -1058,9 +1120,13 @@
       const payment = params.get('payment');
       if (payment === 'success' && sessionId) {
         try {
-          const res = await fetch(`/api/stripe/verify-session?session_id=${sessionId}&user_id=default_user`);
+          const res = await fetch(`/api/stripe/verify-session?session_id=${encodeURIComponent(sessionId)}&user_id=${encodeURIComponent(currentUserId)}`);
           const data = await res.json();
           if (data.status === 'success' || data.status === 'already_credited') {
+            if (data.user_id) {
+              currentUserId = data.user_id;
+              localStorage.setItem('iabox_user_id', currentUserId);
+            }
             setMascotMessage(`🎉 Pagamento confirmado! Créditos adicionados ao seu saldo.`);
             alert(`🎉 Pagamento confirmado com sucesso via Stripe!\nSaldo atualizado: ${data.new_balance} créditos.\nAproveite todos os motores de IA do IABOX!`);
             window.history.replaceState({}, document.title, window.location.pathname);
@@ -1090,6 +1156,7 @@
       const formData = new FormData();
       formData.append('text', text);
       formData.append('voice', voice);
+      formData.append('user_id', currentUserId);
 
       try {
         const res = await fetch('/api/voice/generate', { method: 'POST', body: formData });
@@ -1126,6 +1193,7 @@
       const formData = new FormData();
       formData.append('audio_sample', audioFile);
       formData.append('text', text);
+      formData.append('user_id', currentUserId);
 
       try {
         const res = await fetch('/api/voice/clone', { method: 'POST', body: formData });
@@ -1149,10 +1217,11 @@
 
     // 8. Suno Studio
     async function handleGenerateSuno() {
-      if (!requireCredits(15)) return;
+      const voiceFile = document.getElementById('suno-voice').files[0];
+      const cost = voiceFile ? 20 : 15;
+      if (!requireCredits(cost)) return;
       const theme = document.getElementById('suno-theme').value.trim();
       const genre = document.getElementById('suno-genre').value.trim();
-      const voiceFile = document.getElementById('suno-voice').files[0];
       if (!theme) return alert('Informe o tema da canção.');
 
       const box = document.getElementById('suno-player-box');
@@ -1163,6 +1232,7 @@
       formData.append('theme', theme);
       formData.append('genre', genre);
       formData.append('duration', 95);
+      formData.append('user_id', currentUserId);
       if (voiceFile) formData.append('voice_sample', voiceFile);
 
       try {
@@ -1177,22 +1247,53 @@
       } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`; }
     }
 
-    // 9. Paródias & Covers
+    // 9. Gerador de Letra de Paródia + Paródias & AI Song Covers
+    async function handleGenerateParodyLyrics() {
+      if (!requireCredits(1)) return;
+      const songName = document.getElementById('parody-song-name').value.trim();
+      const theme = document.getElementById('parody-theme-input').value.trim();
+      if (!songName || !theme) return alert('Informe o nome da música original e o tema da paródia.');
+
+      const lyricsBox = document.getElementById('parody-lyrics-box');
+      lyricsBox.classList.remove('hidden');
+      lyricsBox.innerText = 'Compondo letra de paródia na mesma métrica e ritmo da música original...';
+
+      const formData = new FormData();
+      formData.append('original_song_name', songName);
+      formData.append('parody_theme', theme);
+      formData.append('user_id', currentUserId);
+
+      try {
+        const res = await fetch('/api/music/parody-lyrics', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.lyrics) {
+          lyricsBox.innerText = data.lyrics;
+          updateCredits();
+        } else {
+          lyricsBox.innerText = 'Erro: ' + (data.detail || 'Falha ao gerar letra.');
+        }
+      } catch (e) {
+        lyricsBox.innerText = 'Erro de conexão: ' + e.message;
+      }
+    }
+
     async function handleGenerateParody() {
       if (!requireCredits(20)) return;
       const song = document.getElementById('parody-song').files[0];
-      const guide = document.getElementById('parody-guide').files[0];
       const voice = document.getElementById('parody-voice').files[0];
-      if (!song || !guide || !voice) return alert('Envie os 3 arquivos necessários.');
+      const guide = document.getElementById('parody-guide').files[0];
+      if (!song || !voice) return alert('Envie pelo menos a Música Original (1) e o Áudio da Sua Voz (2).');
 
       const box = document.getElementById('parody-player-box');
-      box.innerHTML = '<div class="py-6"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-purple-400 animate-spin mb-2"></i> Isolando instrumentos (Demucs) e afinando sua voz (Seed-VC)...</div>';
+      const modeDesc = guide ? 'Isolando instrumental e aplicando sua paródia afinada...' : 'Isolando instrumental original (Demucs v4) e transferindo sua voz para o cantor (Seed-VC)...';
+      box.innerHTML = `<div class="py-6"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-purple-400 animate-spin mb-2"></i> ${modeDesc}</div>`;
       lucide.createIcons();
 
       const formData = new FormData();
       formData.append('song_file', song);
-      formData.append('guide_file', guide);
       formData.append('voice_sample', voice);
+      formData.append('user_id', currentUserId);
+      if (guide) formData.append('guide_file', guide);
 
       try {
         const res = await fetch('/api/music/parody', { method: 'POST', body: formData });
@@ -1201,7 +1302,7 @@
           pollJob(data.job_id, box);
           updateCredits();
         } else {
-          box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${data.detail || 'Falha ao iniciar paródia'}</span>`;
+          box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${data.detail || 'Falha ao iniciar produção'}</span>`;
         }
       } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`; }
     }
@@ -1220,6 +1321,7 @@
       formData.append('video_file', fileInput.files[0]);
       formData.append('silence_removal', document.getElementById('video-jumpcuts').checked);
       formData.append('subtitles_karaoke', document.getElementById('video-subtitles').checked);
+      formData.append('user_id', currentUserId);
 
       try {
         const res = await fetch('/api/video/edit', { method: 'POST', body: formData });
@@ -1247,6 +1349,7 @@
       const formData = new FormData();
       formData.append('prompt', prompt);
       formData.append('aspect_ratio', aspect);
+      formData.append('user_id', currentUserId);
 
       try {
         const res = await fetch('/api/image/generate', { method: 'POST', body: formData });
@@ -1309,7 +1412,7 @@
       try {
         const formData = new FormData();
         formData.append('package_id', pkgId);
-        formData.append('user_id', 'default_user');
+        formData.append('user_id', currentUserId);
 
         const res = await fetch('/api/stripe/create-checkout', { method: 'POST', body: formData });
         const data = await res.json();
