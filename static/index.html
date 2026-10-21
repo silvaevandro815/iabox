@@ -120,14 +120,17 @@
 
       <!-- Menu Desktop -->
       <nav class="hidden md:flex items-center gap-1 bg-dark-800/80 p-1.5 rounded-2xl border border-white/5">
-        <button onclick="switchTab('dashboard')" class="nav-btn active px-3.5 py-2 rounded-xl text-sm font-medium transition-all text-cyan-400 bg-cyan-500/10">Início</button>
-        <button onclick="switchTab('image')" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-all">Imagens IA</button>
-        <button onclick="switchTab('voice')" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-all">Vozes Brasil</button>
-        <button onclick="switchTab('clone')" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-all">Clonar Voz</button>
-        <button onclick="switchTab('suno')" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-all">Suno Studio</button>
-        <button onclick="switchTab('parody')" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-all">Paródias & Covers</button>
-        <button onclick="switchTab('video')" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-all">Vídeos Virais</button>
-        <button onclick="switchTab('about')" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white transition-all">O Criador</button>
+        <button onclick="switchTab('dashboard')" class="nav-btn active px-3 py-2 rounded-xl text-xs lg:text-sm font-medium transition-all text-cyan-400 bg-cyan-500/10">Início</button>
+        <button onclick="switchTab('canvas')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-bold text-orange-400 hover:text-orange-300 bg-orange-500/10 border border-orange-500/30 transition-all flex items-center gap-1.5">
+          <i data-lucide="workflow" class="w-3.5 h-3.5"></i> Magnific Canvas
+        </button>
+        <button onclick="switchTab('image')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">Imagens IA</button>
+        <button onclick="switchTab('voice')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">Vozes Brasil</button>
+        <button onclick="switchTab('clone')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">Clonar Voz</button>
+        <button onclick="switchTab('suno')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">Suno Studio</button>
+        <button onclick="switchTab('parody')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">Paródias</button>
+        <button onclick="switchTab('video')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">Vídeos 9:16</button>
+        <button onclick="switchTab('about')" class="nav-btn px-3 py-2 rounded-xl text-xs lg:text-sm font-medium text-gray-300 hover:text-white transition-all">O Criador</button>
       </nav>
 
       <!-- Saldo de Créditos & Botão Recarga -->
@@ -148,6 +151,7 @@
   <!-- Barra de Navegação Mobile / Tablets (Scroll Horizontal) -->
   <div class="md:hidden glass-panel border-b border-white/5 px-3 py-2.5 flex items-center gap-2 overflow-x-auto">
     <button onclick="switchTab('dashboard')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-cyan-400 bg-cyan-500/10">Início</button>
+    <button onclick="switchTab('canvas')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-bold text-orange-400 bg-orange-500/10 border border-orange-500/30">⚡ Magnific Canvas</button>
     <button onclick="switchTab('image')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300">Imagens IA</button>
     <button onclick="switchTab('voice')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300">Vozes Brasil</button>
     <button onclick="switchTab('clone')" class="nav-btn-mobile whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300">Clonar Voz</button>
@@ -182,6 +186,10 @@
             O ecossistema oficial do Brasil para criadores, empresas e agências. Sem mensalidade obrigatória: use o modelo pré-pago e pague apenas o que gerar.
           </p>
           <div class="flex flex-wrap gap-4 pt-2">
+            <button onclick="switchTab('canvas')" class="bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 text-black font-extrabold px-6 py-3 rounded-xl shadow-lg transition-all hover:scale-105 flex items-center gap-2">
+              <i data-lucide="workflow" class="w-5 h-5"></i>
+              Magnific Canvas (Storyboard IA)
+            </button>
             <button onclick="switchTab('suno')" class="bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-bold px-6 py-3 rounded-xl shadow-neon-cyan transition-all hover:scale-105 flex items-center gap-2">
               <i data-lucide="music" class="w-5 h-5"></i>
               Criar Música Estilo Suno
@@ -196,6 +204,20 @@
 
       <!-- Grid de Módulos / Ferramentas -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Card Destaque: Magnific Canvas (Higgsfield & Storyboard) -->
+        <div onclick="switchTab('canvas')" class="glass-card rounded-2xl p-6 cursor-pointer group border-amber-400/40 relative overflow-hidden">
+          <div class="absolute top-3 right-3 bg-amber-400 text-black text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full">Novo &bull; Cinema</div>
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-pink-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 mb-5 group-hover:scale-110 transition-transform">
+            <i data-lucide="workflow" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-amber-300 transition-colors">Magnific Canvas & Storyboard</h3>
+          <p class="text-sm text-gray-400 leading-relaxed mb-4">Canvas infinito de nós conectados (@Image1, @Image2), consistência de personagem, Upscale 4K Magnific e compilador de filme com câmera Higgsfield.</p>
+          <div class="flex items-center justify-between text-xs font-semibold text-amber-400 pt-3 border-t border-white/5">
+            <span>Custo: 3 a 12 créditos</span>
+            <span class="flex items-center gap-1">Abrir Estúdio <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></span>
+          </div>
+        </div>
         
         <!-- Card 1: Suno Music Studio -->
         <div onclick="switchTab('suno')" class="glass-card rounded-2xl p-6 cursor-pointer group">
@@ -754,6 +776,218 @@
       </div>
     </section>
 
+    <!-- ------------------------------------------------------------ -->
+    <!-- 6B. TAB: MAGNIFIC CANVAS (STORYBOARD DE NÓS & HIGGSFIELD IA) -->
+    <!-- ------------------------------------------------------------ -->
+    <section id="tab-canvas" class="tab-content hidden space-y-6">
+      <div class="border-b border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-2">
+            <i data-lucide="workflow" class="w-3.5 h-3.5 text-amber-400"></i>
+            Arquitetura Clonada &bull; Magnific AI + Higgsfield + BeatDesign
+          </div>
+          <h2 class="text-3xl font-bold font-display text-white">Magnific Canvas & Storyboard Cinematográfico</h2>
+          <p class="text-gray-400 text-sm mt-1">Arraste os nós no Canvas Infinito, conecte múltiplas referências (<code class="text-amber-300">@Image1</code>, <code class="text-amber-300">@Image2</code>), dê <strong>duplo-clique</strong> para Super-Resolução 4K e compile todos os takes em um filme .MP4.</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <label class="cursor-pointer bg-dark-700 hover:bg-dark-600 border border-amber-400/40 text-amber-300 font-bold px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2">
+            <i data-lucide="upload-cloud" class="w-4 h-4 text-amber-400"></i>
+            <span>+ Subir Foto (@Image)</span>
+            <input type="file" id="canvas-upload-input" accept="image/*" class="hidden" onchange="handleCanvasUploadNode(event)">
+          </label>
+          <button onclick="resetCanvasDemoNodes()" class="bg-dark-800 hover:bg-dark-700 border border-white/10 text-gray-300 font-semibold px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-cyan-400"></i>
+            Resetar Layout
+          </button>
+        </div>
+      </div>
+
+      <!-- QUADRO DO INFINITE CANVAS (ESTILO BEATDESIGN / HIGGSFIELD / MAGNIFIC) -->
+      <div id="magnific-canvas-board" class="relative w-full h-[640px] rounded-3xl border border-white/15 overflow-hidden select-none shadow-2xl" style="background-color: #080a10; background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px); background-size: 24px 24px;">
+
+        <!-- Camada SVG para Cabos Bezier Dinâmicos entre Nós -->
+        <svg id="canvas-svg-cables" class="absolute inset-0 w-full h-full pointer-events-none z-10"></svg>
+
+        <!-- Barra Lateral Flutuante Esquerda (Ferramentas do Canvas) -->
+        <div class="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-dark-800/90 backdrop-blur-md border border-white/10 rounded-2xl p-2 flex flex-col gap-2 shadow-xl">
+          <button onclick="document.getElementById('canvas-upload-input').click()" title="Adicionar Nó de Imagem" class="w-10 h-10 rounded-xl bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/30 text-amber-300 flex items-center justify-center transition-all">
+            <i data-lucide="plus" class="w-5 h-5"></i>
+          </button>
+          <button onclick="focusCanvasPrompt()" title="Gerador Conectado" class="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 text-cyan-400 flex items-center justify-center transition-all">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </button>
+          <button onclick="openLightboxFromSelected()" title="Zoom Cinema 4K (Duplo Clique)" class="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 text-purple-400 flex items-center justify-center transition-all">
+            <i data-lucide="maximize-2" class="w-5 h-5"></i>
+          </button>
+          <button onclick="scrollToTimelineCompiler()" title="Compilar Storyboard em Vídeo MP4" class="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 text-emerald-400 flex items-center justify-center transition-all">
+            <i data-lucide="film" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Contador e Dica no Topo do Canvas -->
+        <div class="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between pointer-events-none gap-2">
+          <div class="bg-dark-900/85 backdrop-blur-md border border-white/10 px-3.5 py-1.5 rounded-xl text-xs text-gray-300 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            <span>Arraste os cards livremente &bull; <strong>Duplo-clique</strong> em qualquer imagem abre o <strong>Magnific 4K Upscaler</strong></span>
+          </div>
+          <div class="bg-dark-900/85 backdrop-blur-md border border-cyan-500/30 px-3.5 py-1.5 rounded-xl text-xs text-cyan-300 font-semibold">
+            <span id="canvas-connected-count">3 Nós Conectados ao Gerador</span>
+          </div>
+        </div>
+
+        <!-- CONTAINER DOS NÓS ARRASTÁVEIS DE REFERÊNCIA (@Image1, @Image2, @Image3...) -->
+        <div id="canvas-nodes-layer" class="absolute inset-0 z-20">
+          <!-- Renderizado dinamicamente via JS -->
+        </div>
+
+        <!-- NÓ CENTRAL DE GERAÇÃO CONECTADA (IMAGE / VIDEO GENERATION NODE) -->
+        <div id="canvas-gen-node" class="absolute z-20 w-72 md:w-80 rounded-2xl bg-dark-800/95 backdrop-blur-xl border-2 border-cyan-400/60 shadow-neon-cyan p-3 cursor-grab active:cursor-grabbing" style="left: 540px; top: 95px;">
+          <!-- Porta de Entrada (Esquerda) -->
+          <div id="gen-node-in-port" class="absolute -left-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-cyan-400 text-black font-black flex items-center justify-center shadow-lg border-2 border-dark-900 text-xs" title="Conector de Entrada Multi-Referência">+</div>
+
+          <div class="flex items-center justify-between text-xs text-gray-300 mb-2 px-1">
+            <span class="font-bold text-cyan-300 flex items-center gap-1.5">
+              <i data-lucide="image" class="w-3.5 h-3.5 text-cyan-400"></i>
+              Image / Take Generation
+            </span>
+            <span id="gen-node-res-badge" class="text-[10px] font-mono bg-cyan-500/15 text-cyan-300 px-2 py-0.5 rounded-md border border-cyan-400/30">2560 x 1440</span>
+          </div>
+
+          <!-- Preview da Cena Gerada no Nó -->
+          <div id="gen-node-preview-box" ondblclick="openCanvasLightbox(currentGeneratedNodeUrl, 'Cena Conectada (Magnific Studio)')" class="relative w-full h-44 rounded-xl overflow-hidden bg-black border border-white/10 group cursor-pointer">
+            <img id="gen-node-img" src="/static/samples/canvas_take3.jpg" alt="Generated Scene" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-2.5">
+              <span class="text-[10px] text-white font-semibold bg-black/60 px-2 py-1 rounded-lg">Duplo-clique: Zoom & Upscale 4K</span>
+            </div>
+          </div>
+
+          <!-- Ações Rápidas do Nó Gerado -->
+          <div class="grid grid-cols-2 gap-2 mt-2.5">
+            <button onclick="branchGeneratedToNewNode()" class="bg-dark-700 hover:bg-dark-600 border border-white/10 text-xs text-amber-300 font-semibold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition-all">
+              <i data-lucide="git-branch" class="w-3.5 h-3.5"></i>
+              Virar @Image
+            </button>
+            <button onclick="handleMagnificUpscale(currentGeneratedNodeUrl)" class="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-xs text-amber-300 font-bold py-1.5 px-2 rounded-lg flex items-center justify-center gap-1 transition-all">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+              Upscale 4K (4 cr)
+            </button>
+          </div>
+        </div>
+
+        <!-- DOCK INFERIOR FLUTUANTE DE PROMPT & MODELOS (EXATO COMO NO VÍDEO MAGNIFIC) -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 w-[94%] max-w-3xl bg-dark-900/95 backdrop-blur-2xl border border-white/15 rounded-2xl p-3.5 shadow-2xl">
+          
+          <!-- Linha de Referências Conectadas (@Image1, @Image2...) -->
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <div id="canvas-prompt-tags" class="flex flex-wrap items-center gap-1.5">
+              <!-- Preenchido via JS com miniaturas de @Image1, @Image2, @Image3 -->
+            </div>
+            <span class="text-[11px] text-gray-400">Clique em um <code class="text-amber-300">@Image</code> para citar no prompt</span>
+          </div>
+
+          <!-- Caixa de Prompt com Menções @Image -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <input type="text" id="canvas-prompt-input" value="Crie um novo take cinematográfico mantendo o personagem de @Image1 e a iluminação dramática de @Image2 em plano aberto de cinema 35mm" placeholder="Ex: Crie um novo ângulo câmera baixa de @Image1 mantendo o cenário de @Image2..." class="flex-1 bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
+            
+            <button onclick="handleCanvasGenerateNode()" id="canvas-gen-btn" class="bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 hover:opacity-95 text-black font-extrabold px-5 py-2.5 rounded-xl text-xs md:text-sm shadow-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap">
+              <i data-lucide="wand-2" class="w-4 h-4"></i>
+              <span>Gerar Nó (3 Cr)</span>
+            </button>
+          </div>
+
+          <!-- Seletores Inferiores: Modelo (NanoBanana Pro / Magnific 8K / Flux) + Aspect Ratio -->
+          <div class="flex flex-wrap items-center justify-between gap-3 mt-2.5 pt-2 border-t border-white/10 text-xs">
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="flex items-center gap-1.5 bg-dark-800 border border-white/10 rounded-lg px-2.5 py-1 text-gray-200">
+                <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                <select id="canvas-model-select" class="bg-transparent text-xs font-bold text-amber-300 focus:outline-none cursor-pointer">
+                  <option value="NanoBanana Pro" class="bg-dark-900 text-white">🍌 NanoBanana Pro (Multi-Node Vision)</option>
+                  <option value="Magnific Cinema 8K" class="bg-dark-900 text-white">✨ Magnific Cinema 8K (Skin & Micro-Detail)</option>
+                  <option value="Higgsfield Dark Cinema" class="bg-dark-900 text-white">🎬 Higgsfield Dark Cinema (Anamorphic 35mm)</option>
+                  <option value="Flux Realism Pro" class="bg-dark-900 text-white">📸 Flux Realism Pro (Estúdio Fotorrealista)</option>
+                </select>
+              </div>
+
+              <select id="canvas-aspect-select" class="bg-dark-800 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-gray-300 focus:outline-none cursor-pointer">
+                <option value="16:9">▭ 16:9 Cinema Horizontal</option>
+                <option value="9:16">▯ 9:16 Reels / Shorts Vertical</option>
+                <option value="1:1">□ 1:1 Quadrado</option>
+              </select>
+
+              <span class="px-2 py-1 rounded-lg bg-white/5 text-gray-400 text-[11px] font-mono">2K / 4K Ready</span>
+            </div>
+
+            <div id="canvas-status-msg" class="text-[11px] text-cyan-400 font-semibold">
+              Pronto para gerar com consistência de personagem
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========================================================================= -->
+      <!-- COMPILADOR DE STORYBOARD & TIMELINE DE VÍDEO (ESTILO HIGGSFIELD / MOVIE)  -->
+      <!-- ========================================================================= -->
+      <div id="canvas-timeline-section" class="glass-panel p-6 rounded-3xl border border-amber-400/30 space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
+          <div>
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block">Canvas-to-Movie Timeline &bull; Vídeo Cinematográfico</span>
+            <h3 class="text-2xl font-bold font-display text-white">Timeline do Storyboard (Compilador de Filme .MP4)</h3>
+            <p class="text-xs text-gray-400 mt-1">Converte automaticamente todos os nós ativos do seu Canvas em um filme contínuo com movimento de câmera (Dolly Push-In, Tracking Pan, Crane Pull-Out), color grading 35mm e locução PT-BR opcional.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <select id="timeline-aspect-select" class="bg-dark-800 border border-white/15 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+              <option value="16:9">Formato do Filme: 16:9 Cinema (1920x1080)</option>
+              <option value="9:16">Formato do Filme: 9:16 Reels/TikTok (1080x1920)</option>
+            </select>
+            <button onclick="handleRenderStoryboardMovie()" class="bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-black font-extrabold px-5 py-2.5 rounded-xl text-xs md:text-sm shadow-lg transition-all flex items-center gap-2">
+              <i data-lucide="clapperboard" class="w-4 h-4"></i>
+              <span>Renderizar Filme do Storyboard (12 Créditos)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Fita de Takes na Timeline + Player do Filme -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          <!-- Esquerda: Sequência de Takes do Canvas + Locução Opcional -->
+          <div class="lg:col-span-7 space-y-4">
+            <div class="flex items-center justify-between text-xs text-gray-300">
+              <span class="font-bold uppercase tracking-wider text-amber-300">Sequência de Takes Conectados na Timeline:</span>
+              <span class="text-gray-400">3.5s por Take + Transição Suave</span>
+            </div>
+
+            <!-- Filmstrip dos Nós -->
+            <div id="timeline-takes-strip" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <!-- Preenchido dinamicamente pelo JS com os nós do canvas -->
+            </div>
+
+            <!-- Locução Cinematográfica PT-BR Opcional -->
+            <div class="pt-2">
+              <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1.5">Roteiro de Narração Cinematográfica PT-BR (Opcional — Voz Neural Antonio):</label>
+              <input type="text" id="timeline-narration-input" placeholder="Deixe em branco para apenas trilha sonora ambiente, ou digite a narração do trailer em português..." class="w-full bg-dark-800 border border-white/10 rounded-xl p-3 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
+            </div>
+          </div>
+
+          <!-- Direita: Player do Filme Renderizado -->
+          <div class="lg:col-span-5 bg-dark-800/90 rounded-2xl p-4 border border-white/10 flex flex-col justify-between min-h-[250px]">
+            <h4 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
+              <i data-lucide="film" class="w-4 h-4 text-amber-400"></i>
+              Monitor de Direção (Preview do Filme)
+            </h4>
+            <div id="timeline-movie-box" class="flex-1 flex flex-col items-center justify-center text-center p-2">
+              <video controls playsinline class="w-full rounded-xl max-h-52 bg-black border border-white/10 mb-2" poster="/static/samples/canvas_take1.jpg">
+                <source src="/static/samples/demo_cinema_1970.mp4" type="video/mp4">
+              </video>
+              <span class="text-[11px] text-gray-400">Exemplo de Storyboard compilado a partir dos 3 Takes do Canvas acima.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
     <!-- ---------------------------------------- -->
     <!-- 7. TAB: O CRIADOR (EVANDRO SILVA GALLINA) -->
     <!-- ---------------------------------------- -->
@@ -934,6 +1168,41 @@
   </div>
 
   <!-- ========================================================================= -->
+  <!-- MODAL DE ZOOM 4K & MAGNIFIC UPSCALER (DUPLO CLIQUE EM QUALQUER NÓ)         -->
+  <!-- ========================================================================= -->
+  <div id="canvas-lightbox-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-4xl w-full p-5 md:p-6 rounded-3xl border border-amber-400/40 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-400/30">Magnific 4K Cinema Inspector</span>
+          <h4 id="lightbox-node-title" class="text-base md:text-lg font-bold text-white">@Image1</h4>
+        </div>
+        <button onclick="closeModal('canvas-lightbox-modal')" class="text-gray-400 hover:text-white">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+      <div class="bg-black rounded-2xl overflow-hidden border border-white/10 flex items-center justify-center max-h-[65vh]">
+        <img id="lightbox-node-img" src="/static/samples/canvas_take1.jpg" alt="Zoom 4K" class="max-h-[65vh] w-auto object-contain">
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-3 mt-4 pt-3 border-t border-white/10">
+        <span id="lightbox-status" class="text-xs text-gray-400">Super-Resolução Lanczos 4K + Micro-Contraste de Pele & Iluminação Cinematográfica</span>
+        <div class="flex items-center gap-2.5">
+          <button onclick="handleMagnificUpscale(currentLightboxUrl, true)" class="bg-gradient-to-r from-amber-400 to-orange-500 text-black font-extrabold px-4 py-2 rounded-xl text-xs shadow-lg hover:scale-105 transition-all flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>Aplicar Magnific 4K Upscale (4 Créditos)</span>
+          </button>
+          <a id="lightbox-download-btn" href="/static/samples/canvas_take1.jpg" download class="bg-dark-700 hover:bg-dark-600 border border-white/15 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition-all">
+            <i data-lucide="download" class="w-4 h-4 text-cyan-400"></i>
+            <span>Baixar Master</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
   <!-- ROBÔ MASCOTE INTERATIVO E FLUTUANTE (ARRASTÁVEL POR TOQUE OU MOUSE)       -->
   <!-- ========================================================================= -->
   <div id="draggable-mascot" class="flex flex-col items-center">
@@ -1016,6 +1285,7 @@
 
       // Atualiza dica do robô
       const tips = {
+        'canvas': 'Arraste os nós @Image1 e @Image2, dê duplo-clique para 4K ou compile seu filme!',
         'image': 'O motor Flux cria fotos ultra-realistas com iluminação de cinema!',
         'suno': 'No Suno Studio, você pode criar desde modão sertanejo até trap e funk!',
         'parody': 'Crie um AI Cover na música do seu cantor favorito ou gere uma paródia!',
@@ -1026,6 +1296,9 @@
         'dashboard': 'Clique no robô ou arraste-o pela tela para onde quiser!'
       };
       if (tips[tabId]) setMascotMessage(tips[tabId]);
+      if (tabId === 'canvas') {
+        setTimeout(() => { renderCanvasNodes(); drawCanvasCables(); }, 60);
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1426,6 +1699,401 @@
         }
       } catch (e) { alert('Erro ao abrir checkout: ' + e.message); }
     }
+
+    // =========================================================================
+    // 14. MOTOR INTERATIVO MAGNIFIC CANVAS + STORYBOARD + HIGGSFIELD TIMELINE
+    // =========================================================================
+    let canvasNodes = [
+      { id: 'node_1', tag: '@Image1', title: 'Take 1: Interior Close-Up', url: '/static/samples/canvas_take1.jpg', res: '2752 x 1536', x: 90, y: 65, connected: true },
+      { id: 'node_2', tag: '@Image2', title: 'Take 2: Perfil Cinematográfico', url: '/static/samples/canvas_take2.jpg', res: '2752 x 1536', x: 95, y: 245, connected: true },
+      { id: 'node_3', tag: '@Image3', title: 'Take 3: Plano Aberto Estrada', url: '/static/samples/canvas_take3.jpg', res: '2752 x 1536', x: 295, y: 155, connected: true }
+    ];
+    let currentGeneratedNodeUrl = '/static/samples/canvas_take3.jpg';
+    let currentLightboxUrl = '/static/samples/canvas_take1.jpg';
+    let selectedCanvasNodeUrl = '/static/samples/canvas_take1.jpg';
+
+    function resetCanvasDemoNodes() {
+      canvasNodes = [
+        { id: 'node_1', tag: '@Image1', title: 'Take 1: Interior Close-Up', url: '/static/samples/canvas_take1.jpg', res: '2752 x 1536', x: 90, y: 65, connected: true },
+        { id: 'node_2', tag: '@Image2', title: 'Take 2: Perfil Cinematográfico', url: '/static/samples/canvas_take2.jpg', res: '2752 x 1536', x: 95, y: 245, connected: true },
+        { id: 'node_3', tag: '@Image3', title: 'Take 3: Plano Aberto Estrada', url: '/static/samples/canvas_take3.jpg', res: '2752 x 1536', x: 295, y: 155, connected: true }
+      ];
+      const genNode = document.getElementById('canvas-gen-node');
+      if (genNode) { genNode.style.left = '540px'; genNode.style.top = '95px'; }
+      renderCanvasNodes();
+      drawCanvasCables();
+    }
+
+    function renderCanvasNodes() {
+      const layer = document.getElementById('canvas-nodes-layer');
+      const tagsBox = document.getElementById('canvas-prompt-tags');
+      const timelineStrip = document.getElementById('timeline-takes-strip');
+      if (!layer) return;
+
+      layer.innerHTML = '';
+      if (tagsBox) tagsBox.innerHTML = '';
+      if (timelineStrip) timelineStrip.innerHTML = '';
+
+      canvasNodes.forEach((node, idx) => {
+        // 1. Cria o Card Arrastável no Canvas
+        const el = document.createElement('div');
+        el.id = `dom_${node.id}`;
+        el.className = `absolute w-44 rounded-2xl bg-dark-800/95 backdrop-blur-md border ${node.connected ? 'border-amber-400/70 shadow-lg' : 'border-white/15'} p-2 cursor-grab active:cursor-grabbing transition-shadow`;
+        el.style.left = `${node.x}px`;
+        el.style.top = `${node.y}px`;
+
+        el.innerHTML = `
+          <div class="flex items-center justify-between text-[10px] text-gray-300 mb-1.5 px-1">
+            <span class="font-extrabold text-amber-400">${node.tag}</span>
+            <span class="font-mono text-gray-400">${node.res}</span>
+          </div>
+          <div class="relative w-full h-24 rounded-xl overflow-hidden bg-black border border-white/10 group">
+            <img src="${node.url}" alt="${node.tag}" class="w-full h-full object-cover pointer-events-none">
+            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <span class="text-[10px] font-bold text-white bg-black/70 px-2 py-0.5 rounded-md">2x Clique: 4K</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between mt-1.5 px-1">
+            <span class="text-[10px] text-gray-400 truncate max-w-[110px]">${node.title}</span>
+            <button onclick="toggleNodeConnection('${node.id}', event)" title="Conectar/Desconectar cabo Bezier" class="w-5 h-5 rounded-full ${node.connected ? 'bg-amber-400 text-black' : 'bg-dark-600 text-gray-300'} font-black text-xs flex items-center justify-center shadow">+</button>
+          </div>
+        `;
+
+        // Duplo clique abre o Magnific 4K Cinema Inspector
+        el.addEventListener('dblclick', (e) => {
+          e.stopPropagation();
+          openCanvasLightbox(node.url, `${node.tag} — ${node.title}`);
+        });
+
+        // Clique seleciona nó
+        el.addEventListener('click', () => {
+          selectedCanvasNodeUrl = node.url;
+        });
+
+        // Drag & Drop fluido no Canvas com atualização dos cabos SVG Bezier
+        makeCanvasElementDraggable(el, node);
+        layer.appendChild(el);
+
+        // 2. Cria Pílula @Image na Barra Flutuante de Prompt
+        if (tagsBox && node.connected) {
+          const pill = document.createElement('button');
+          pill.type = 'button';
+          pill.onclick = () => insertTagIntoCanvasPrompt(node.tag);
+          pill.className = 'flex items-center gap-1.5 bg-dark-800 hover:bg-amber-500/20 border border-amber-400/40 rounded-lg px-2 py-1 text-xs text-amber-300 font-bold transition-all';
+          pill.innerHTML = `<img src="${node.url}" class="w-4 h-4 rounded object-cover"><span>${node.tag}</span>`;
+          tagsBox.appendChild(pill);
+        }
+
+        // 3. Adiciona à Fita de Takes da Timeline Cinematográfica
+        if (timelineStrip && node.connected) {
+          const cameraMoves = ['Dolly Push-In', 'Tracking Pan', 'Crane Pull-Out', 'Anamorphic Drift'];
+          const camMove = cameraMoves[idx % cameraMoves.length];
+          const takeCard = document.createElement('div');
+          takeCard.className = 'bg-dark-800 border border-white/10 rounded-xl p-2 relative group';
+          takeCard.innerHTML = `
+            <div class="flex items-center justify-between text-[10px] font-bold text-amber-300 mb-1">
+              <span>TAKE 0${idx + 1} (${node.tag})</span>
+              <span class="text-cyan-400">3.5s</span>
+            </div>
+            <img src="${node.url}" class="w-full h-20 object-cover rounded-lg border border-white/5 mb-1.5 cursor-pointer" onclick="openCanvasLightbox('${node.url}', 'Take 0${idx+1}')">
+            <div class="text-[10px] text-gray-400 flex items-center justify-between">
+              <span>🎥 ${camMove}</span>
+              <span class="text-emerald-400">35mm</span>
+            </div>
+          `;
+          timelineStrip.appendChild(takeCard);
+        }
+      });
+
+      const connectedCount = canvasNodes.filter(n => n.connected).length;
+      const countEl = document.getElementById('canvas-connected-count');
+      if (countEl) countEl.innerText = `${connectedCount} Nó(s) Conectado(s) ao Gerador`;
+
+      lucide.createIcons();
+      requestAnimationFrame(drawCanvasCables);
+    }
+
+    function makeCanvasElementDraggable(el, nodeObj = null) {
+      let dragging = false;
+      let sX = 0, sY = 0, iX = 0, iY = 0;
+
+      el.addEventListener('pointerdown', (e) => {
+        if (e.target.tagName === 'BUTTON') return;
+        dragging = true;
+        sX = e.clientX;
+        sY = e.clientY;
+        iX = parseInt(el.style.left || '0', 10);
+        iY = parseInt(el.style.top || '0', 10);
+        el.setPointerCapture(e.pointerId);
+      });
+
+      el.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const nx = Math.max(10, iX + (e.clientX - sX));
+        const ny = Math.max(45, iY + (e.clientY - sY));
+        el.style.left = `${nx}px`;
+        el.style.top = `${ny}px`;
+        if (nodeObj) {
+          nodeObj.x = nx;
+          nodeObj.y = ny;
+        }
+        drawCanvasCables();
+      });
+
+      el.addEventListener('pointerup', () => {
+        dragging = false;
+      });
+    }
+
+    // Torna o Nó Central de Geração arrastável também
+    const genNodeEl = document.getElementById('canvas-gen-node');
+    if (genNodeEl) makeCanvasElementDraggable(genNodeEl, null);
+
+    function drawCanvasCables() {
+      const svg = document.getElementById('canvas-svg-cables');
+      const genNode = document.getElementById('canvas-gen-node');
+      if (!svg || !genNode) return;
+
+      svg.innerHTML = '';
+      const genX = parseInt(genNode.style.left || '540', 10);
+      const genY = parseInt(genNode.style.top || '95', 10) + (genNode.offsetHeight / 2 || 130);
+
+      canvasNodes.forEach((node) => {
+        if (!node.connected) return;
+        const domNode = document.getElementById(`dom_${node.id}`);
+        if (!domNode) return;
+
+        const startX = node.x + (domNode.offsetWidth || 176);
+        const startY = node.y + (domNode.offsetHeight / 2 || 75);
+        const endX = genX;
+        const endY = genY;
+
+        const ctrlOffset = Math.max(60, Math.abs(endX - startX) * 0.45);
+        const pathData = `M ${startX} ${startY} C ${startX + ctrlOffset} ${startY}, ${endX - ctrlOffset} ${endY}, ${endX} ${endY}`;
+
+        // Sombra neon do cabo Bezier
+        const glowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        glowPath.setAttribute('d', pathData);
+        glowPath.setAttribute('fill', 'none');
+        glowPath.setAttribute('stroke', 'rgba(251, 191, 36, 0.25)');
+        glowPath.setAttribute('stroke-width', '6');
+        svg.appendChild(glowPath);
+
+        // Linha principal do cabo Bezier
+        const mainPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        mainPath.setAttribute('d', pathData);
+        mainPath.setAttribute('fill', 'none');
+        mainPath.setAttribute('stroke', '#fbbf24');
+        mainPath.setAttribute('stroke-width', '2.2');
+        mainPath.setAttribute('stroke-dasharray', '6 4');
+        svg.appendChild(mainPath);
+      });
+    }
+
+    function toggleNodeConnection(nodeId, ev) {
+      if (ev) ev.stopPropagation();
+      const target = canvasNodes.find(n => n.id === nodeId);
+      if (target) {
+        target.connected = !target.connected;
+        renderCanvasNodes();
+      }
+    }
+
+    function insertTagIntoCanvasPrompt(tag) {
+      const inp = document.getElementById('canvas-prompt-input');
+      if (!inp) return;
+      inp.value = `${inp.value.trim()} ${tag} `;
+      inp.focus();
+    }
+
+    function focusCanvasPrompt() {
+      const inp = document.getElementById('canvas-prompt-input');
+      if (inp) inp.focus();
+    }
+
+    function scrollToTimelineCompiler() {
+      const sec = document.getElementById('canvas-timeline-section');
+      if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function openCanvasLightbox(url, title = 'Magnific 4K Cinema Node') {
+      currentLightboxUrl = url;
+      document.getElementById('lightbox-node-img').src = url;
+      document.getElementById('lightbox-node-title').innerText = title;
+      document.getElementById('lightbox-download-btn').href = url;
+      document.getElementById('lightbox-status').innerText = 'Super-Resolução Lanczos 4K + Micro-Contraste de Pele & Iluminação Cinematográfica';
+      openModal('canvas-lightbox-modal');
+    }
+
+    function openLightboxFromSelected() {
+      openCanvasLightbox(selectedCanvasNodeUrl || currentGeneratedNodeUrl, 'Inspeção de Nó 4K');
+    }
+
+    // Upload gratuito de nova foto de referência (@ImageN) para o Canvas
+    async function handleCanvasUploadNode(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById('canvas-status-msg');
+      statusEl.innerText = 'Subindo novo nó @Image para o Canvas...';
+
+      const formData = new FormData();
+      formData.append('image_file', file);
+
+      try {
+        const res = await fetch('/api/canvas/upload-node', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.node_url) {
+          const nextIdx = canvasNodes.length + 1;
+          canvasNodes.push({
+            id: `node_${Date.now()}`,
+            tag: `@Image${nextIdx}`,
+            title: file.name.slice(0, 18),
+            url: data.node_url,
+            res: 'HD Ref',
+            x: 120 + ((nextIdx % 3) * 110),
+            y: 80 + ((nextIdx % 2) * 140),
+            connected: true
+          });
+          renderCanvasNodes();
+          statusEl.innerText = `@Image${nextIdx} adicionado e conectado ao gerador!`;
+        }
+      } catch (e) {
+        statusEl.innerText = 'Erro ao enviar imagem: ' + e.message;
+      }
+    }
+
+    // Geração de Nó Conectado (Multi-Reference @Image1 + @Image2 -> NanoBanana Pro / Magnific / Flux)
+    async function handleCanvasGenerateNode() {
+      if (!requireCredits(3)) return;
+      const prompt = document.getElementById('canvas-prompt-input').value.trim();
+      const modelStyle = document.getElementById('canvas-model-select').value;
+      const aspectRatio = document.getElementById('canvas-aspect-select').value;
+      if (!prompt) return alert('Digite o comando para o gerador conectado.');
+
+      const statusEl = document.getElementById('canvas-status-msg');
+      const btn = document.getElementById('canvas-gen-btn');
+      const previewImg = document.getElementById('gen-node-img');
+
+      statusEl.innerText = `Analisando nós conectados via Gemini Vision e gerando com ${modelStyle}...`;
+      btn.disabled = true;
+      previewImg.classList.add('opacity-40', 'animate-pulse');
+
+      const connectedRefs = canvasNodes.filter(n => n.connected).map(n => n.url);
+      const formData = new FormData();
+      formData.append('prompt', prompt);
+      formData.append('aspect_ratio', aspectRatio);
+      formData.append('model_style', modelStyle);
+      formData.append('reference_urls', JSON.stringify(connectedRefs));
+      formData.append('user_id', currentUserId);
+
+      try {
+        const res = await fetch('/api/canvas/generate-node', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.result_url) {
+          currentGeneratedNodeUrl = data.result_url;
+          previewImg.src = data.result_url;
+          document.getElementById('gen-node-res-badge').innerText = data.resolution || '2560 x 1440';
+          statusEl.innerText = `Cena gerada com sucesso mantendo a consistência dos nós!`;
+          updateCredits();
+        } else {
+          statusEl.innerText = `Erro: ${data.detail || 'Falha ao gerar cena conectada'}`;
+        }
+      } catch (e) {
+        statusEl.innerText = `Erro de conexão: ${e.message}`;
+      } finally {
+        btn.disabled = false;
+        previewImg.classList.remove('opacity-40', 'animate-pulse');
+      }
+    }
+
+    // Transforma a cena gerada em um novo nó @ImageN na árvore do Storyboard
+    function branchGeneratedToNewNode() {
+      const nextIdx = canvasNodes.length + 1;
+      canvasNodes.push({
+        id: `node_${Date.now()}`,
+        tag: `@Image${nextIdx}`,
+        title: `Take ${nextIdx}: Ramificação IA`,
+        url: currentGeneratedNodeUrl,
+        res: '2560 x 1440',
+        x: 310,
+        y: 260,
+        connected: true
+      });
+      renderCanvasNodes();
+      setMascotMessage(`Cena transformada em @Image${nextIdx} e adicionada à Timeline do Filme! 🎬`);
+    }
+
+    // Magnific 4K Upscaler & Micro-Contrast Skin/Detail Enhancer
+    async function handleMagnificUpscale(imageUrl, insideModal = false) {
+      if (!requireCredits(4)) return;
+      const statusEl = insideModal ? document.getElementById('lightbox-status') : document.getElementById('canvas-status-msg');
+      statusEl.innerText = '✨ Aplicando Super-Resolução Magnific 4K Lanczos + Micro-Contraste...';
+
+      const formData = new FormData();
+      formData.append('image_url', imageUrl);
+      formData.append('scale_factor', 2);
+      formData.append('creativity_strength', 'high');
+      formData.append('user_id', currentUserId);
+
+      try {
+        const res = await fetch('/api/canvas/upscale', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.result_url) {
+          currentGeneratedNodeUrl = data.result_url;
+          document.getElementById('gen-node-img').src = data.result_url;
+          document.getElementById('gen-node-res-badge').innerText = '3840 x 2160 (4K)';
+          if (insideModal) {
+            document.getElementById('lightbox-node-img').src = data.result_url;
+            document.getElementById('lightbox-download-btn').href = data.result_url;
+          }
+          statusEl.innerText = '✅ Upscale Magnific 4K Ultra-HD concluído com sucesso!';
+          updateCredits();
+        } else {
+          statusEl.innerText = 'Erro no Upscale: ' + (data.detail || 'Falha no processamento');
+        }
+      } catch (e) {
+        statusEl.innerText = 'Erro: ' + e.message;
+      }
+    }
+
+    // Compilador de Filme do Storyboard (Canvas Nodes -> MP4 com Câmera Higgsfield & Trilha)
+    async function handleRenderStoryboardMovie() {
+      if (!requireCredits(12)) return;
+      const connectedTakes = canvasNodes.filter(n => n.connected).map(n => n.url);
+      if (connectedTakes.length === 0) return alert('Conecte pelo menos 1 nó (@Image) no Canvas para compilar o filme.');
+
+      const aspect = document.getElementById('timeline-aspect-select').value;
+      const narration = document.getElementById('timeline-narration-input').value.trim();
+      const box = document.getElementById('timeline-movie-box');
+
+      box.innerHTML = '<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-amber-400 animate-spin mb-2"></i> Renderizando movimentos de câmera Higgsfield (Dolly In / Pan / Crane), Color Grading 35mm e áudio...</div>';
+      lucide.createIcons();
+
+      const formData = new FormData();
+      formData.append('node_urls_json', JSON.stringify(connectedTakes));
+      formData.append('narration_ptbr', narration);
+      formData.append('aspect_ratio', aspect);
+      formData.append('seconds_per_take', 3.5);
+      formData.append('user_id', currentUserId);
+
+      try {
+        const res = await fetch('/api/canvas/render-storyboard', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.job_id) {
+          pollJob(data.job_id, box, 'video');
+          updateCredits();
+        } else {
+          box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${data.detail || 'Falha ao iniciar renderização do filme'}</span>`;
+        }
+      } catch (e) {
+        box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`;
+      }
+    }
+
+    // Inicializa nós do Canvas e redesenha cabos ao redimensionar a janela
+    window.addEventListener('resize', () => { drawCanvasCables(); });
+    setTimeout(() => { renderCanvasNodes(); }, 200);
   </script>
 </body>
 </html>

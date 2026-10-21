@@ -512,7 +512,174 @@ async def edit_viral_video(
     return {"status": "started", "job_id": job_id, "message": "Edição de vídeo viral iniciada em segundo plano.", "cost": 10}
 
 # ----------------------------------------------------------------------------------------
-# 7. STRIPE CHECKOUT (SISTEMA PRÉ-PAGO)
+# 7. MAGNIFIC & HIGGSFIELD INFINITE CANVAS (BEATDESIGN STORYBOARD & CINEMA STUDIO)
+# ----------------------------------------------------------------------------------------
+def _resolve_local_media_path(url_or_path: str) -> Optional[str]:
+    if not url_or_path:
+        return None
+    clean = url_or_path.split("?")[0].lstrip("/")
+    if clean.startswith("static/") or clean.startswith("output/") or clean.startswith("uploads/"):
+        if os.path.exists(clean):
+            return clean
+    return None
+
+@app.post("/api/canvas/upload-node")
+async def upload_canvas_node(
+    image_file: UploadFile = File(...)
+):
+    node_id = str(uuid.uuid4())[:8]
+    ext = os.path.splitext(image_file.filename or ".jpg")[1] or ".jpg"
+    out_filename = f"node_ref_{node_id}{ext}"
+    out_path = os.path.join(OUTPUT_DIR, out_filename)
+    with open(out_path, "wb") as f:
+        shutil.copyfileobj(image_file.file, f)
+    return {"status": "success", "node_url": f"/output/{out_filename}"}
+
+@app.post("/api/canvas/generate-node")
+async def generate_canvas_node(
+    prompt: str = Form(...),
+    model_style: str = Form("NanoBanana Pro"),
+    aspect_ratio: str = Form("16:9"),
+    ref_urls: str = Form("[]"),
+    user_id: str = Form("default_user")
+):
+    if not deduct_credits(user_id, amount=3):
+        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 3 créditos).")
+
+    job_id = str(uuid.uuid4())
+    out_filename = f"canvas_node_{job_id[:8]}.jpg"
+    out_path = os.path.join(OUTPUT_DIR, out_filename)
+
+    try:
+        urls_list = json.loads(ref_urls) if ref_urls else []
+    except Exception:
+        urls_list = []
+
+    ref_paths = []
+    for u in urls_list:
+        p = _resolve_local_media_path(u)
+        if p:
+            ref_paths.append(p)
+
+    try:
+        from scripts.magnific_canvas_engine import MagnificCanvasEngine
+        engine = MagnificCanvasEngine()
+        info = engine.generate_connected_node(
+            prompt=prompt,
+            reference_images=ref_paths,
+            model_style=model_style,
+            aspect_ratio=aspect_ratio,
+            output_path=out_path
+        )
+        save_job(job_id, "canvas_node", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
+        return {
+            "status": "success",
+            "job_id": job_id,
+            "result_url": f"/output/{out_filename}",
+            "compiled_prompt": info.get("compiled_prompt", prompt),
+            "remaining_credits": get_user_credits(user_id)
+        }
+    except Exception as e:
+        save_job(job_id, "canvas_node", status="failed", error=str(e), user_id=user_id)
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/canvas/upscale")
+async def magnific_upscale_node(
+    node_url: Optional[str] = Form(None),
+    image_file: Optional[UploadFile] = File(None),
+    creativity_level: str = Form("ultra"),
+    user_id: str = Form("default_user")
+):
+    if not deduct_credits(user_id, amount=4):
+        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 4 créditos).")
+
+    job_id = str(uuid.uuid4())
+    in_path = None
+    if image_file and image_file.filename:
+        in_path = os.path.join(UPLOAD_DIR, f"upscale_in_{job_id[:8]}_{image_file.filename}")
+        with open(in_path, "wb") as f:
+            shutil.copyfileobj(image_file.file, f)
+    elif node_url:
+        in_path = _resolve_local_media_path(node_url)
+
+    if not in_path or not os.path.exists(in_path):
+        raise HTTPException(status_code=400, detail="Imagem de origem não encontrada para o Magnific Upscaler.")
+
+    out_filename = f"magnific_4k_{job_id[:8]}.jpg"
+    out_path = os.path.join(OUTPUT_DIR, out_filename)
+
+    try:
+        from scripts.magnific_canvas_engine import MagnificCanvasEngine
+        engine = MagnificCanvasEngine()
+        engine.magnific_upscale_enhance(
+            image_path=in_path,
+            output_path=out_path,
+            creativity_level=creativity_level,
+            scale_target="4k"
+        )
+        return {
+            "status": "success",
+            "result_url": f"/output/{out_filename}",
+            "remaining_credits": get_user_credits(user_id)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/canvas/render-storyboard")
+async def render_canvas_storyboard(
+    node_urls: str = Form(...),
+    narration_text: str = Form(""),
+    voice_name: str = Form("antonio"),
+    aspect_ratio: str = Form("16:9"),
+    sec_per_take: float = Form(4.0),
+    user_id: str = Form("default_user")
+):
+    if not deduct_credits(user_id, amount=12):
+        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 12 créditos).")
+
+    try:
+        urls_list = json.loads(node_urls)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Lista de nós inválida.")
+
+    image_paths = []
+    for u in urls_list:
+        p = _resolve_local_media_path(u)
+        if p:
+            image_paths.append(p)
+
+    if not image_paths:
+        raise HTTPException(status_code=400, detail="Nenhum nó de imagem válido selecionado no Storyboard.")
+
+    job_id = str(uuid.uuid4())
+    out_filename = f"storyboard_cinema_{job_id[:8]}.mp4"
+    out_path = os.path.join(OUTPUT_DIR, out_filename)
+    save_job(job_id, "storyboard", status="processing", progress=20, user_id=user_id)
+
+    def _task():
+        try:
+            from scripts.magnific_canvas_engine import MagnificCanvasEngine
+            engine = MagnificCanvasEngine()
+            engine.render_storyboard_timeline(
+                image_paths=image_paths,
+                output_path=out_path,
+                narration_text=narration_text,
+                voice_name=voice_name,
+                aspect_ratio=aspect_ratio,
+                sec_per_take=sec_per_take
+            )
+            save_job(job_id, "storyboard", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
+        except Exception as e:
+            save_job(job_id, "storyboard", status="failed", error=str(e), user_id=user_id)
+
+    import threading
+    t = threading.Thread(target=_task)
+    t.start()
+
+    return {"status": "started", "job_id": job_id, "message": "Renderização de Filme do Storyboard iniciada.", "cost": 12}
+
+# ----------------------------------------------------------------------------------------
+# 8. STRIPE CHECKOUT (SISTEMA PRÉ-PAGO)
 # ----------------------------------------------------------------------------------------
 PACKAGES = {
     "starter": {"name": "Pacote Starter (100 Créditos)", "credits": 100, "price_brl": 29.90, "cents": 2990},
