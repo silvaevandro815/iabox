@@ -48,10 +48,6 @@ FOUNDER_VIP_PREFIXES = (
 )
 FOUNDER_VIP_KEYS = {
     "evandro_admin_master",
-    "evandro",
-    "evandrogallina",
-    "silvaevandro815@gmail.com",
-    "evandrosilvagallina@gmail.com",
     "vip_evandro",
 }
 
