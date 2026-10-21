@@ -177,6 +177,12 @@
             <span>Memória & Acessos</span>
           </button>
 
+          <div id="user-session-pill" onclick="openAuthModal()" class="flex items-center gap-1.5 bg-dark-800/90 hover:bg-dark-700 border border-white/15 px-2.5 py-1.5 rounded-xl text-xs whitespace-nowrap shrink-0 cursor-pointer transition-all" title="Sua Conta do Google Gmail">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span id="user-session-email" class="text-gray-300 font-semibold max-w-[130px] md:max-w-[170px] truncate">Entrar com Gmail</span>
+            <button id="user-logout-btn" type="button" onclick="event.stopPropagation(); handleLogout();" title="Desconectar da conta" class="text-red-400 hover:text-red-300 font-bold ml-1 hidden">✕</button>
+          </div>
+
           <div id="wallet-badge-pill" class="bg-cyan-500/10 border border-cyan-400/40 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 cursor-pointer hover:border-cyan-400 transition-colors whitespace-nowrap shrink-0" onclick="openModal('recharge-modal')">
             <svg class="w-4 h-4 text-cyan-400 shrink-0" style="filter: drop-shadow(0 0 6px #00f0ff);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="rgba(0,240,255,0.25)"/>
@@ -985,7 +991,7 @@
               <label class="block text-sm font-bold text-blue-300">3. Imagens de Referência (Selecione de 3 a 5 Imagens para Criativos, Objetos ou Personagem)</label>
               <span id="video-ref-count-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">0 / 5 selecionadas</span>
             </div>
-            <input type="file" id="video-ref-images" accept="image/*" multiple onchange="previewRefFiles('video-ref-images', 'video-ref-preview', 'video-ref-count-badge')" class="w-full bg-dark-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500/20 file:text-amber-300">
+            <input type="file" id="video-ref-images" accept="image/*" multiple onchange="handleRefFilesAdded('video', this)" class="w-full bg-dark-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500/20 file:text-amber-300">
             <p class="text-[11px] text-gray-400">Envie de <strong>3 a 5 fotos</strong> (produtos, logos, objetos de design ou ângulos do rosto do personagem para substituição e inserção automática no vídeo).</p>
             <div id="video-ref-preview" class="flex flex-wrap gap-2 pt-1"></div>
           </div>
@@ -1089,7 +1095,7 @@
               <label class="block text-sm font-bold text-pink-300">2. Imagens de Referência para a IA (Selecione de 3 a 5 Imagens — Opcional)</label>
               <span id="image-ref-count-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pink-500/20 text-pink-300 border border-pink-400/30">0 / 5 selecionadas</span>
             </div>
-            <input type="file" id="image-ref-files" accept="image/*" multiple onchange="previewRefFiles('image-ref-files', 'image-ref-preview', 'image-ref-count-badge')" class="w-full bg-dark-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-pink-500/20 file:text-pink-300">
+            <input type="file" id="image-ref-files" accept="image/*" multiple onchange="handleRefFilesAdded('image', this)" class="w-full bg-dark-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-pink-500/20 file:text-pink-300">
             <p class="text-[11px] text-gray-400">Envie de <strong>3 a 5 imagens de referência</strong> (rosto de múltiplos ângulos, produto, roupa ou cenário). O motor Gemini Vision + Flux + Magnific 8K analisa todas as fotos para gerar sua imagem.</p>
             <div id="image-ref-preview" class="flex flex-wrap gap-2 pt-1"></div>
           </div>
@@ -1741,6 +1747,103 @@
   
   
   
+    <!-- ========================================================================= -->
+  <!-- BARREIRA DE ENTRADA OBRIGATÓRIA (GMAIL DO GOOGLE + RECUPERADOR DE SENHA)   -->
+  <!-- ========================================================================= -->
+  <div id="auth-gate-modal" class="fixed inset-0 z-[100000] bg-black/90 backdrop-blur-2xl hidden flex items-center justify-center p-4 transition-all">
+    <div class="glass-panel max-w-md w-full p-6 md:p-8 rounded-3xl border-2 border-cyan-400/60 shadow-neon-cyan relative space-y-5">
+      
+      <div class="text-center space-y-2">
+        <div class="mx-auto w-14 h-14 rounded-2xl border-2 border-cyan-400 bg-white p-1 shadow-neon-cyan flex items-center justify-center">
+          <img src="/static/assets/logo_esg_square.png?v=3" alt="Logo ESG" class="w-full h-full object-contain">
+        </div>
+        <h3 class="text-2xl font-black font-display text-white tracking-wider">
+          IABOX <span class="text-cyan-400">&bull;</span> STUDIO 8K
+        </h3>
+        <p class="text-xs text-gray-300">
+          Acesso individual para criadores. Conecte sua conta vinculada ao <strong>Google Gmail</strong> para acessar seus criativos e o estúdio.
+        </p>
+      </div>
+
+      <div class="flex rounded-xl bg-dark-900/90 p-1 border border-white/10 text-xs font-bold">
+        <button type="button" id="auth-tab-btn-login" onclick="switchAuthView('login')" class="flex-1 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 transition-all">
+          Entrar
+        </button>
+        <button type="button" id="auth-tab-btn-register" onclick="switchAuthView('register')" class="flex-1 py-2 rounded-lg text-gray-400 hover:text-white transition-all">
+          Criar Conta
+        </button>
+        <button type="button" id="auth-tab-btn-recover" onclick="switchAuthView('recover')" class="flex-1 py-2 rounded-lg text-gray-400 hover:text-white transition-all">
+          Recuperar
+        </button>
+      </div>
+
+      <!-- 1. FORMULÁRIO DE LOGIN -->
+      <form id="auth-form-login" onsubmit="handleAuthLogin(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">Seu Gmail do Google:</label>
+          <input type="email" id="login-email" required placeholder="seuemail@gmail.com" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400">
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-xs font-bold text-gray-300">Sua Senha:</label>
+            <a href="javascript:void(0)" onclick="switchAuthView('recover')" class="text-[11px] text-cyan-400 hover:underline">Esqueci minha senha</a>
+          </div>
+          <input type="password" id="login-password" required placeholder="Digite sua senha" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400">
+        </div>
+        <button type="submit" id="login-submit-btn" class="w-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 text-black font-extrabold py-3 rounded-xl text-xs tracking-wider uppercase shadow-neon-cyan hover:opacity-95 transition-all">
+          🚀 Entrar no IABOX Studio
+        </button>
+      </form>
+
+      <!-- 2. FORMULÁRIO DE CADASTRO (REGISTER) -->
+      <form id="auth-form-register" onsubmit="handleAuthRegister(event)" class="space-y-3 hidden">
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">Seu Nome Completo:</label>
+          <input type="text" id="register-name" required placeholder="Ex: Evandro Silva" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">Seu Gmail do Google (Obrigatório):</label>
+          <input type="email" id="register-email" required placeholder="seuemail@gmail.com" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400">
+          <p class="text-[10px] text-amber-300 mt-1">⚠️ Apenas contas <strong>@gmail.com</strong> são aceitas pelo sistema.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-300 mb-1">Crie sua Senha (Mínimo 6 dígitos):</label>
+          <input type="password" id="register-password" required minlength="6" placeholder="Mínimo 6 caracteres" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400">
+        </div>
+        <div class="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-400/30 text-[11px] text-gray-300 space-y-1">
+          <p class="text-cyan-300 font-bold">🎁 Bônus de 50 Tokens Grátis:</p>
+          <p class="text-[10px] text-gray-400 leading-tight">Concedido apenas para novas contas de Gmail em aparelhos/IPs que nunca tenham utilizado o bônus antes.</p>
+        </div>
+        <button type="submit" id="register-submit-btn" class="w-full bg-gradient-to-r from-emerald-400 to-cyan-500 text-black font-extrabold py-3 rounded-xl text-xs tracking-wider uppercase shadow-lg hover:opacity-95 transition-all">
+          ✨ Criar Minha Conta & Começar
+        </button>
+      </form>
+
+      <!-- 3. FORMULÁRIO DE RECUPERAR SENHA -->
+      <div id="auth-form-recover" class="space-y-3.5 hidden">
+        <div id="recover-step-1" class="space-y-3">
+          <p class="text-xs text-gray-300">Digite seu Gmail cadastrado para receber o código de 6 dígitos de recuperação:</p>
+          <input type="email" id="recover-email" placeholder="seuemail@gmail.com" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+          <button type="button" onclick="handleSendRecoverCode()" id="recover-send-btn" class="w-full bg-amber-400 hover:bg-amber-300 text-black font-extrabold py-2.5 rounded-xl text-xs">
+            Enviar Código de 6 Dígitos
+          </button>
+        </div>
+        <div id="recover-step-2" class="space-y-3 hidden">
+          <p class="text-xs text-emerald-300 font-semibold">Código gerado! Digite o código de 6 dígitos e sua nova senha:</p>
+          <input type="text" id="recover-code" placeholder="Código de 6 dígitos (ex: 839201)" class="w-full bg-dark-900 border border-amber-400/50 rounded-xl px-3.5 py-2 text-xs text-center font-mono tracking-widest text-amber-300 focus:outline-none">
+          <input type="password" id="recover-new-password" minlength="6" placeholder="Nova senha (mínimo 6 dígitos)" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+          <button type="button" onclick="handleConfirmPasswordReset()" id="recover-reset-btn" class="w-full bg-gradient-to-r from-emerald-400 to-cyan-400 text-black font-extrabold py-2.5 rounded-xl text-xs">
+            Confirmar Nova Senha & Entrar
+          </button>
+        </div>
+      </div>
+
+      <!-- Status / Mensagem de Erro ou Sucesso -->
+      <div id="auth-status-msg" class="hidden text-center text-xs py-2 px-3 rounded-xl font-semibold"></div>
+
+    </div>
+  </div>
+
   <div id="recharge-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="glass-panel max-w-3xl w-full p-6 md:p-8 rounded-3xl border border-cyan-500/40 shadow-2xl relative">
       <button onclick="closeModal('recharge-modal')" class="absolute top-5 right-5 text-gray-400 hover:text-white">
@@ -2030,12 +2133,12 @@
         localStorage.setItem('iabox_user_id', 'evandro_admin_master');
       }
       let uid = localStorage.getItem('iabox_user_id');
-      if (!uid || uid === 'default_user') {
-        uid = 'usr_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36).slice(-4);
-        localStorage.setItem('iabox_user_id', uid);
+      if (!uid || uid === 'default_user' || uid.startsWith('usr_')) {
+        // Exige login ou conta Gmail para usuários normais
+        uid = '';
       }
       const walletInput = document.getElementById('wallet-id-input');
-      if (walletInput) walletInput.value = uid;
+      if (walletInput && uid) walletInput.value = uid;
       return uid;
     }
 
@@ -2048,12 +2151,32 @@
       logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 1400);
       if (logoClickCount >= 3) {
         logoClickCount = 0;
-        const devSuffix = currentUserId.replace(/^vip_device_/, '');
-        currentUserId = 'vip_device_' + devSuffix;
-        localStorage.setItem('iabox_user_id', currentUserId);
-        updateCredits();
-        triggerRobotBlink();
-        setMascotMessage('👑 Acesso Total e Exclusivo liberado neste aparelho! Tokens Ilimitados ativos!');
+        const fd = new FormData();
+        fd.append('email', currentUserId || '');
+        fd.append('user_id', currentUserId || '');
+        fetch('/api/auth/unlock-vip', { method: 'POST', body: fd })
+          .then(r => r.json())
+          .then(data => {
+            isVipFounder = true;
+            userCredits = 999999;
+            const disp = document.getElementById('credit-display');
+            const lbl = document.getElementById('credit-label-text');
+            const pill = document.getElementById('wallet-badge-pill');
+            if (disp) disp.innerText = '👑 VIP';
+            if (lbl) lbl.innerText = 'Ilimitado';
+            if (pill) {
+              pill.classList.remove('bg-cyan-500/10', 'border-cyan-400/40');
+              pill.classList.add('bg-amber-500/20', 'border-amber-400');
+            }
+            triggerRobotBlink();
+            setMascotMessage('👑 Acesso VIP Ilimitado Permanente ativado para este aparelho e para o Gmail vinculado!');
+            alert('👑 VIP ILIMITADO ATIVADO!\n\nEste aparelho e a sua conta Google Gmail vinculada (' + (currentUserId || 'seu acesso') + ') agora têm Acesso Ilimitado Permanente!');
+            updateCredits();
+          })
+          .catch(err => {
+            console.error('Erro ao desbloquear VIP:', err);
+            updateCredits();
+          });
       } else if (logoClickCount === 1) {
         switchTab('dashboard');
       }
@@ -2136,30 +2259,383 @@
       setMascotMessage('⬇️ Download direto em qualidade Master iniciado para o seu PC!');
     }
 
-    function previewRefFiles(inputId, previewBoxId, badgeId) {
-      const input = document.getElementById(inputId);
-      const preview = document.getElementById(previewBoxId);
-      const badge = document.getElementById(badgeId);
-      if (!input || !preview) return;
+    // ------------------------------------------------------------------------
+    // GERENCIAMENTO AVANÇADO DE FOTOS DE REFERÊNCIA COM BOTÃO '✕' DE EXCLUSÃO
+    // ------------------------------------------------------------------------
+    let imageRefFilesList = [];
+    let videoRefFilesList = [];
 
-      preview.innerHTML = '';
-      const files = Array.from(input.files || []).slice(0, 5);
-      if (badge) badge.innerText = `${files.length} / 5 selecionadas`;
-
-      files.forEach((f, idx) => {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          const item = document.createElement('div');
-          item.className = 'relative w-16 h-16 rounded-xl overflow-hidden border border-cyan-400/50 bg-black shadow';
-          item.innerHTML = `
-            <img src="${ev.target.result}" class="w-full h-full object-cover">
-            <span class="absolute bottom-0 inset-x-0 bg-black/80 text-[9px] text-center font-bold text-amber-300">@Ref${idx + 1}</span>
-          `;
-          preview.appendChild(item);
-        };
-        reader.readAsDataURL(f);
-      });
+    function handleRefFilesAdded(type, inputEl) {
+      if (!inputEl || !inputEl.files) return;
+      const targetList = (type === 'image') ? imageRefFilesList : videoRefFilesList;
+      const newFiles = Array.from(inputEl.files);
+      for (const f of newFiles) {
+        if (targetList.length >= 5) break;
+        const exists = targetList.some(item => item.name === f.name && item.size === f.size);
+        if (!exists) {
+          targetList.push(f);
+        }
+      }
+      inputEl.value = '';
+      renderRefPreviews(type);
     }
+
+    function removeRefPhoto(type, idx) {
+      if (type === 'image') {
+        imageRefFilesList.splice(idx, 1);
+        renderRefPreviews('image');
+      } else {
+        videoRefFilesList.splice(idx, 1);
+        renderRefPreviews('video');
+      }
+    }
+
+    function renderRefPreviews(type) {
+      const isImg = (type === 'image');
+      const targetList = isImg ? imageRefFilesList : videoRefFilesList;
+      const previewBoxId = isImg ? 'image-ref-preview' : 'video-ref-preview';
+      const badgeId = isImg ? 'image-ref-count-badge' : 'video-ref-count-badge';
+      const inputId = isImg ? 'image-ref-files' : 'video-ref-images';
+
+      const previewEl = document.getElementById(previewBoxId);
+      const badgeEl = document.getElementById(badgeId);
+      if (!previewEl) return;
+
+      if (badgeEl) {
+        badgeEl.innerText = `${targetList.length} / 5 selecionadas`;
+        if (targetList.length > 0) {
+          badgeEl.className = isImg
+            ? 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pink-500/20 text-pink-300 border border-pink-400/40 animate-pulse'
+            : 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 animate-pulse';
+        } else {
+          badgeEl.className = isImg
+            ? 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pink-500/10 text-pink-400 border border-pink-400/20'
+            : 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-400/20';
+        }
+      }
+
+      previewEl.innerHTML = '';
+      if (targetList.length === 0) {
+        previewEl.innerHTML = `<span class="text-xs text-gray-500 flex items-center gap-1.5 py-2 px-1">📷 Nenhuma foto selecionada. Adicione até 5 fotos para a IA extrair contexto e fidelidade.</span>`;
+        return;
+      }
+
+      targetList.forEach((file, idx) => {
+        const reader = new FileReader();
+        const card = document.createElement('div');
+        card.className = 'relative group w-20 h-20 rounded-2xl overflow-hidden border-2 border-cyan-400/70 bg-dark-900 shadow-lg shrink-0 transform hover:scale-105 transition-all';
+        card.innerHTML = `
+          <div class="w-full h-full flex items-center justify-center bg-black/60">
+            <span class="text-[9px] text-gray-400">Carregando...</span>
+          </div>
+          <button type="button" onclick="removeRefPhoto('${type}', ${idx})" title="Remover esta foto de referência (✕)" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center text-xs font-black shadow-lg border border-white/50 cursor-pointer z-20 transition-transform active:scale-90">
+            ✕
+          </button>
+          <span class="absolute bottom-0 inset-x-0 bg-black/85 text-[10px] font-bold text-center text-amber-300 py-0.5 font-mono">
+            @Ref ${idx + 1}
+          </span>
+        `;
+
+        reader.onload = (e) => {
+          const imgEl = document.createElement('img');
+          imgEl.src = e.target.result;
+          imgEl.className = 'w-full h-full object-cover';
+          card.replaceChild(imgEl, card.firstElementChild);
+        };
+        reader.readAsDataURL(file);
+        previewEl.appendChild(card);
+      });
+
+      if (targetList.length < 5) {
+        const addCard = document.createElement('label');
+        addCard.className = 'cursor-pointer w-20 h-20 rounded-2xl border-2 border-dashed border-cyan-400/40 hover:border-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/15 flex flex-col items-center justify-center gap-1 text-cyan-300 transition-all shrink-0';
+        addCard.title = 'Adicionar mais uma foto de referência';
+        addCard.innerHTML = `
+          <span class="text-xl font-black leading-none">+</span>
+          <span class="text-[9px] font-bold tracking-tight">Mais Foto</span>
+        `;
+        addCard.onclick = () => {
+          const inp = document.getElementById(inputId);
+          if (inp) inp.click();
+        };
+        previewEl.appendChild(addCard);
+      }
+    }
+
+    // ------------------------------------------------------------------------
+    // BARREIRA DE ENTRADA OBRIGATÓRIA (GOOGLE GMAIL + RECUPERAÇÃO DE SENHA)
+    // ------------------------------------------------------------------------
+    function checkAuthGate() {
+      const storedUser = localStorage.getItem('iabox_user_id');
+      const modal = document.getElementById('auth-gate-modal');
+      
+      const isGmail = storedUser && (storedUser.toLowerCase().endsWith('@gmail.com') || storedUser.toLowerCase().endsWith('@googlemail.com'));
+      const isVip = storedUser && (storedUser.startsWith('vip_') || storedUser === 'evandro_admin_master');
+
+      if (!isGmail && !isVip) {
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        }
+      } else {
+        if (modal) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        }
+        currentUserId = storedUser;
+        updateUserAccountBadge();
+        updateCredits();
+      }
+    }
+
+    function openAuthModal() {
+      const modal = document.getElementById('auth-gate-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeAuthModal() {
+      const storedUser = localStorage.getItem('iabox_user_id');
+      const isGmail = storedUser && (storedUser.toLowerCase().endsWith('@gmail.com') || storedUser.toLowerCase().endsWith('@googlemail.com'));
+      const isVip = storedUser && (storedUser.startsWith('vip_') || storedUser === 'evandro_admin_master');
+      if (!isGmail && !isVip) {
+        alert('É obrigatório entrar ou criar uma conta com o seu Gmail do Google (@gmail.com) para acessar.');
+        return;
+      }
+      const modal = document.getElementById('auth-gate-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function switchAuthView(view) {
+      const formLogin = document.getElementById('auth-form-login');
+      const formRegister = document.getElementById('auth-form-register');
+      const formRecover = document.getElementById('auth-form-recover');
+      const tabLogin = document.getElementById('auth-tab-btn-login');
+      const tabRegister = document.getElementById('auth-tab-btn-register');
+      const tabRecover = document.getElementById('auth-tab-btn-recover');
+      const msgBox = document.getElementById('auth-status-msg');
+      if (msgBox) msgBox.className = 'hidden';
+
+      const resetTabs = () => {
+        [tabLogin, tabRegister, tabRecover].forEach(t => {
+          if (t) t.className = 'flex-1 py-2 rounded-lg text-gray-400 hover:text-white transition-all';
+        });
+      };
+
+      resetTabs();
+      formLogin.classList.add('hidden');
+      formRegister.classList.add('hidden');
+      formRecover.classList.add('hidden');
+
+      if (view === 'login') {
+        formLogin.classList.remove('hidden');
+        tabLogin.className = 'flex-1 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 transition-all font-bold';
+      } else if (view === 'register') {
+        formRegister.classList.remove('hidden');
+        tabRegister.className = 'flex-1 py-2 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 transition-all font-bold';
+      } else if (view === 'recover') {
+        formRecover.classList.remove('hidden');
+        tabRecover.className = 'flex-1 py-2 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-400/40 transition-all font-bold';
+      }
+    }
+
+    function showAuthMsg(msg, isSuccess = false) {
+      const box = document.getElementById('auth-status-msg');
+      if (!box) return;
+      box.innerText = msg;
+      box.className = isSuccess
+        ? 'text-center text-xs py-2 px-3 rounded-xl font-bold bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 block'
+        : 'text-center text-xs py-2 px-3 rounded-xl font-bold bg-red-500/20 border border-red-500/40 text-red-300 block';
+    }
+
+    async function handleAuthLogin(e) {
+      if (e) e.preventDefault();
+      const email = document.getElementById('login-email').value.trim().toLowerCase();
+      const pass = document.getElementById('login-password').value;
+      if (!email || !pass) return showAuthMsg('Preencha seu Gmail e sua senha.');
+
+      const fd = new FormData();
+      fd.append('email', email);
+      fd.append('password', pass);
+
+      try {
+        const res = await fetch('/api/auth/login', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (res.ok && data.status === 'success') {
+          currentUserId = email;
+          localStorage.setItem('iabox_user_id', email);
+          if (data.user && data.user.name) {
+            localStorage.setItem('iabox_user_name', data.user.name);
+          }
+          showAuthMsg('Login realizado com sucesso! Carregando estúdio...', true);
+          setTimeout(() => {
+            closeAuthModal();
+            updateUserAccountBadge();
+            updateCredits();
+            loadMemoryAndAccessLogs();
+            setMascotMessage(`Bem-vindo de volta, ${data.user.name || email.split('@')[0]}! 🎬`);
+          }, 700);
+        } else {
+          showAuthMsg(data.detail || 'Email ou senha incorretos.');
+        }
+      } catch (err) {
+        showAuthMsg('Erro de conexão ao autenticar: ' + err.message);
+      }
+    }
+
+    async function handleAuthRegister(e) {
+      if (e) e.preventDefault();
+      const name = document.getElementById('register-name').value.trim();
+      const email = document.getElementById('register-email').value.trim().toLowerCase();
+      const pass = document.getElementById('register-password').value;
+
+      if (!email.endsWith('@gmail.com') && !email.endsWith('@googlemail.com')) {
+        return showAuthMsg('Atenção: Apenas e-mails do Google (@gmail.com) são aceitos!');
+      }
+      if (pass.length < 6) {
+        return showAuthMsg('A senha precisa ter no mínimo 6 dígitos.');
+      }
+
+      const fd = new FormData();
+      fd.append('name', name);
+      fd.append('email', email);
+      fd.append('password', pass);
+
+      try {
+        const res = await fetch('/api/auth/register', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (res.ok && data.status === 'success') {
+          currentUserId = email;
+          localStorage.setItem('iabox_user_id', email);
+          localStorage.setItem('iabox_user_name', name);
+          showAuthMsg(data.message, true);
+          setTimeout(() => {
+            closeAuthModal();
+            updateUserAccountBadge();
+            updateCredits();
+            loadMemoryAndAccessLogs();
+            setMascotMessage(`Conta criada com sucesso! Aproveite o IABOX Studio 8K! 🚀`);
+          }, 900);
+        } else {
+          showAuthMsg(data.detail || 'Erro ao criar conta.');
+        }
+      } catch (err) {
+        showAuthMsg('Erro de conexão ao cadastrar: ' + err.message);
+      }
+    }
+
+    async function handleSendRecoverCode() {
+      const email = document.getElementById('recover-email').value.trim().toLowerCase();
+      if (!email || (!email.endsWith('@gmail.com') && !email.endsWith('@googlemail.com'))) {
+        return showAuthMsg('Digite um Gmail válido (@gmail.com).');
+      }
+      const fd = new FormData();
+      fd.append('email', email);
+
+      const btn = document.getElementById('recover-send-btn');
+      if (btn) btn.innerText = 'Enviando código...';
+
+      try {
+        const res = await fetch('/api/auth/forgot-password', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (res.ok && data.status === 'success') {
+          showAuthMsg(data.message, true);
+          document.getElementById('recover-step-1').classList.add('hidden');
+          document.getElementById('recover-step-2').classList.remove('hidden');
+          const codeVal = data.recovery_code || data.dev_code;
+          if (codeVal) {
+            document.getElementById('recover-code').value = codeVal;
+          }
+        } else {
+          showAuthMsg(data.detail || 'Erro ao enviar código de recuperação.');
+        }
+      } catch (err) {
+        showAuthMsg('Erro de conexão: ' + err.message);
+      } finally {
+        if (btn) btn.innerText = 'Enviar Código de 6 Dígitos';
+      }
+    }
+
+    async function handleConfirmPasswordReset() {
+      const email = document.getElementById('recover-email').value.trim().toLowerCase();
+      const code = document.getElementById('recover-code').value.trim();
+      const newPass = document.getElementById('recover-new-password').value;
+
+      if (!code || code.length !== 6) return showAuthMsg('Digite o código de 6 dígitos.');
+      if (!newPass || newPass.length < 6) return showAuthMsg('A nova senha deve ter no mínimo 6 caracteres.');
+
+      const fd = new FormData();
+      fd.append('email', email);
+      fd.append('code', code);
+      fd.append('new_password', newPass);
+
+      try {
+        const res = await fetch('/api/auth/reset-password', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (res.ok && data.status === 'success') {
+          showAuthMsg(data.message, true);
+          setTimeout(() => {
+            switchAuthView('login');
+            document.getElementById('login-email').value = email;
+            document.getElementById('login-password').value = newPass;
+          }, 1500);
+        } else {
+          showAuthMsg(data.detail || 'Código inválido ou expirado.');
+        }
+      } catch (err) {
+        showAuthMsg('Erro de conexão: ' + err.message);
+      }
+    }
+
+    function handleLogout() {
+      if (!confirm('Deseja realmente sair da sua conta Google Gmail?')) return;
+      localStorage.removeItem('iabox_user_id');
+      localStorage.removeItem('iabox_user_name');
+      currentUserId = '';
+      updateUserAccountBadge();
+      checkAuthGate();
+    }
+
+    function updateUserAccountBadge() {
+      const emailEl = document.getElementById('user-session-email');
+      const logoutBtn = document.getElementById('user-logout-btn');
+      const storedUser = localStorage.getItem('iabox_user_id');
+      if (storedUser && (storedUser.includes('@gmail.com') || storedUser.includes('@googlemail.com') || storedUser.startsWith('vip_') || storedUser === 'evandro_admin_master')) {
+        if (emailEl) {
+          emailEl.innerText = storedUser.split('@')[0];
+          emailEl.title = storedUser;
+        }
+        if (logoutBtn) logoutBtn.classList.remove('hidden');
+      } else {
+        if (emailEl) {
+          emailEl.innerText = 'Entrar com Gmail';
+          emailEl.title = 'Entrar com Gmail';
+        }
+        if (logoutBtn) logoutBtn.classList.add('hidden');
+      }
+    }
+
+    async function deleteMemoryItem(id) {
+      if (!confirm('Deseja realmente excluir este criativo da sua memória?')) return;
+      try {
+        const res = await fetch(`/api/user/memory/${id}?user_id=${encodeURIComponent(currentUserId)}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (res.ok) {
+          setMascotMessage('🗑️ Arquivo excluído com sucesso da sua memória!');
+          loadMemoryAndAccessLogs();
+        } else {
+          alert(data.detail || 'Erro ao excluir da memória.');
+        }
+      } catch (e) {
+        alert('Erro ao excluir item: ' + e.message);
+      }
+    }
+
 
     async function loadMemoryAndAccessLogs() {
       const grid = document.getElementById('memory-creations-grid');
@@ -2194,7 +2670,7 @@
               } else if (url.endsWith('.mp3') || url.endsWith('.wav') || ['voice', 'clone', 'suno', 'parody'].includes(c.category)) {
                 mediaHtml = `<div class="p-3 rounded-xl bg-dark-900 border border-white/10"><audio controls class="w-full h-9"><source src="${url}" type="audio/mpeg"></audio></div>`;
               } else {
-                mediaHtml = `<img src="${url}" class="w-full h-40 object-cover rounded-xl bg-black border border-white/10 cursor-pointer" onclick="openCanvasLightbox('${url}', '${(c.title || 'Criativo').replace(/'/g, '')}')">`;
+                mediaHtml = `<img src="${url}" onerror="this.onerror=null; this.src='/static/samples/canvas_take1.jpg';" class="w-full h-40 object-cover rounded-xl bg-black border border-white/10 cursor-pointer" onclick="openCanvasLightbox('${url}', '${(c.title || 'Criativo').replace(/'/g, '')}')">`;
               }
               return `
                 <div class="bg-dark-800/90 border border-white/10 rounded-2xl p-4 flex flex-col justify-between space-y-3">
@@ -2209,7 +2685,10 @@
                   </div>
                   <div class="flex items-center justify-between pt-2 border-t border-white/5 text-xs">
                     <span class="text-[10px] text-gray-500 font-mono">IP: ${c.ip || '-'}</span>
-                    <a href="${dlUrl}" download class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 font-bold flex items-center gap-1">⬇️ Baixar no PC</a>
+                    <div class="flex items-center gap-1.5">
+                      <button type="button" onclick="deleteMemoryItem('${c.id}')" title="Excluir este criativo da memória" class="px-2 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/35 border border-red-500/40 text-red-300 font-bold flex items-center gap-1 transition-all">🗑️</button>
+                      <a href="${dlUrl}" download class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 font-bold flex items-center gap-1">⬇️ Baixar no PC</a>
+                    </div>
                   </div>
                 </div>
               `;
@@ -2569,7 +3048,7 @@
       const aspectRatio = document.getElementById('video-aspect-ratio').value;
       const creativePrompt = document.getElementById('video-creative-prompt').value.trim();
 
-      const refFiles = Array.from((refInput && refInput.files) || []).slice(0, 5);
+      const refFiles = videoRefFilesList.length > 0 ? videoRefFilesList : Array.from((refInput && refInput.files) || []).slice(0, 5);
       const box = document.getElementById('video-player-box');
       box.innerHTML = `<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-cyan-400 animate-spin mb-2"></i> Renderizando vídeo (${vfxMode}) com ${refFiles.length} imagem(ns) de referência (suporte até 5 min)...</div>`;
       lucide.createIcons();
@@ -2606,7 +3085,7 @@
       const modelStyleEl = document.getElementById('image-model-style');
       const modelStyle = modelStyleEl ? modelStyleEl.value : 'NanoBanana Pro';
       const refInput = document.getElementById('image-ref-files');
-      const refFiles = Array.from((refInput && refInput.files) || []).slice(0, 5);
+      const refFiles = imageRefFilesList.length > 0 ? imageRefFilesList : Array.from((refInput && refInput.files) || []).slice(0, 5);
 
       if (!prompt) return alert('Por favor, descreva a foto ou imagem que deseja gerar.');
 
@@ -3638,7 +4117,12 @@
     }
 
     window.addEventListener('resize', () => { drawCanvasCables(); });
-    setTimeout(() => { renderCanvasNodes(); }, 200);
+    setTimeout(() => { 
+      renderCanvasNodes();
+      checkAuthGate();
+      renderRefPreviews('image');
+      renderRefPreviews('video');
+    }, 200);
   </script>
 </body>
 </html>

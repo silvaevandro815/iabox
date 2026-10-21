@@ -17,11 +17,16 @@ import asyncio
 import subprocess
 import contextvars
 import threading
+import secrets
+import hashlib
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import requests as http_requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional, List
 
-from fastapi import FastAPI, UploadFile, File, Form, BackgroundTasks, HTTPException, Request
+from fastapi import FastAPI, UploadFile, File, Form, Query, BackgroundTasks, HTTPException, Request
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -45,8 +50,64 @@ FOUNDER_VIP_KEYS = {
     "evandro",
     "evandrogallina",
     "silvaevandro815@gmail.com",
+    "evandrosilvagallina@gmail.com",
     "vip_evandro",
 }
+
+def hash_password(password: str) -> str:
+    salt = secrets.token_hex(16)
+    dk = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt.encode("utf-8"), 100000)
+    return f"{salt}:{dk.hex()}"
+
+def verify_password(password: str, hashed: str) -> bool:
+    if not hashed or ":" not in hashed:
+        return False
+    try:
+        salt, dk_hex = hashed.split(":", 1)
+        test_dk = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt.encode("utf-8"), 100000)
+        return secrets.compare_digest(test_dk.hex(), dk_hex)
+    except Exception:
+        return False
+
+def is_valid_gmail(email: str) -> bool:
+    clean = (email or "").strip().lower()
+    return clean.endswith("@gmail.com") or clean.endswith("@googlemail.com")
+
+def send_recovery_email_async(to_email: str, code: str):
+    def _send():
+        smtp_host = os.environ.get("SMTP_HOST") or env.get("SMTP_HOST")
+        smtp_port = int(os.environ.get("SMTP_PORT") or env.get("SMTP_PORT") or 587)
+        smtp_user = os.environ.get("SMTP_USER") or env.get("SMTP_USER")
+        smtp_pass = os.environ.get("SMTP_PASS") or env.get("SMTP_PASS")
+        if not (smtp_host and smtp_user and smtp_pass):
+            print(f"[Auth] Recuperação de Senha para {to_email}: Código {code} (SMTP não configurado no .env, código ativo no banco)")
+            return
+        try:
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = f"IABOX — Seu Código de Recuperação de Senha: {code}"
+            msg["From"] = f"IABOX Segurança <{smtp_user}>"
+            msg["To"] = to_email
+            html_body = f"""
+            <div style="font-family: Arial, sans-serif; background-color: #0b0f19; color: #ffffff; padding: 30px; border-radius: 16px;">
+                <h2 style="color: #00f0ff; margin-bottom: 10px;">IABOX &bull; Recuperação de Senha</h2>
+                <p style="color: #cbd5e1; font-size: 14px;">Você solicitou a redefinição de senha para sua conta Gmail no <strong>IABOX</strong>.</p>
+                <div style="background: rgba(0,240,255,0.1); border: 2px solid #00f0ff; padding: 18px; border-radius: 12px; text-align: center; margin: 25px 0;">
+                    <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #fbbf24;">{code}</span>
+                </div>
+                <p style="color: #94a3b8; font-size: 12px;">Este código é válido por 15 minutos. Se você não solicitou este código, ignore esta mensagem com segurança.</p>
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+                <p style="color: #64748b; font-size: 11px;">&copy; 2026 IABOX &bull; Evandro Silva Gallina &bull; Todos os direitos reservados.</p>
+            </div>
+            """
+            msg.attach(MIMEText(html_body, "html"))
+            with smtplib.SMTP(smtp_host, smtp_port, timeout=12) as server:
+                server.starttls()
+                server.login(smtp_user, smtp_pass)
+                server.send_message(msg)
+            print(f"[Auth] Email de recuperação enviado com sucesso para {to_email}")
+        except Exception as e:
+            print(f"[Auth] Falha no envio de SMTP para {to_email}: {e}")
+    threading.Thread(target=_send, daemon=True).start()
 
 # Carrega variáveis de ambiente
 env = dotenv_values('.env')
@@ -163,19 +224,50 @@ def init_db():
     c.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id TEXT PRIMARY KEY,
-            email TEXT,
+            email TEXT UNIQUE,
+            password_hash TEXT,
+            name TEXT,
             credits INTEGER DEFAULT 50,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            paid_credits INTEGER DEFAULT 0,
+            is_vip INTEGER DEFAULT 0,
+            bonus_claimed INTEGER DEFAULT 0,
+            reset_code TEXT,
+            reset_code_expires TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
+    # Migrações seguras de colunas caso a tabela users já exista
+    user_cols = [
+        ("password_hash", "TEXT"),
+        ("name", "TEXT"),
+        ("paid_credits", "INTEGER DEFAULT 0"),
+        ("is_vip", "INTEGER DEFAULT 0"),
+        ("bonus_claimed", "INTEGER DEFAULT 0"),
+        ("reset_code", "TEXT"),
+        ("reset_code_expires", "TIMESTAMP"),
+        ("last_login", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    ]
+    for col_name, col_type in user_cols:
+        try:
+            c.execute(f"ALTER TABLE users ADD COLUMN {col_name} {col_type}")
+        except Exception:
+            pass
+
     c.execute("""
         CREATE TABLE IF NOT EXISTS ip_wallets (
             ip TEXT PRIMARY KEY,
             credits INTEGER DEFAULT 50,
+            is_vip INTEGER DEFAULT 0,
             bonus_claimed INTEGER DEFAULT 1,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
+    try:
+        c.execute("ALTER TABLE ip_wallets ADD COLUMN is_vip INTEGER DEFAULT 0")
+    except Exception:
+        pass
+
     c.execute("""
         CREATE TABLE IF NOT EXISTS vip_ips (
             ip TEXT PRIMARY KEY,
@@ -266,7 +358,6 @@ def log_client_access(ip: str, user_id: str, is_vip: bool, action: str = "visit"
     try:
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
-        # Evita flood de logs de polling da mesma sessão a cada segundo se for apenas check_credits
         if action == "session_access":
             c.execute("SELECT id FROM access_logs WHERE ip = ? AND user_id = ? AND action = 'session_access' AND created_at >= datetime('now', '-10 minutes')", (ip, user_id))
             if c.fetchone():
@@ -323,7 +414,6 @@ def is_founder_vip(user_id: str = "", ip: str = "") -> bool:
     uid_clean = (user_id or "").strip().lower()
     ip_clean = (ip or client_ip_var.get() or "").strip()
 
-    # Acesso exclusivo desbloqueado no aparelho via 3 cliques/toques na logo quadrada ESG
     if uid_clean.startswith("vip_device_"):
         return True
 
@@ -345,12 +435,31 @@ def is_founder_vip(user_id: str = "", ip: str = "") -> bool:
         if ip_clean.startswith(pref):
             return True
 
+    # Verifica se a conta Gmail do usuário está marcada como VIP no SQLite
+    if uid_clean:
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            c = conn.cursor()
+            c.execute("SELECT is_vip FROM users WHERE LOWER(email) = ? OR id = ?", (uid_clean, uid_clean))
+            row = c.fetchone()
+            conn.close()
+            if row and row[0] == 1:
+                return True
+        except Exception:
+            pass
+
+    # Verifica se o IP do usuário está marcado como VIP no SQLite
     if ip_clean:
         try:
             conn = sqlite3.connect(DB_PATH)
             c = conn.cursor()
             c.execute("SELECT 1 FROM vip_ips WHERE ip = ?", (ip_clean,))
             row = c.fetchone()
+            if not row:
+                c.execute("SELECT is_vip FROM ip_wallets WHERE ip = ?", (ip_clean,))
+                row2 = c.fetchone()
+                if row2 and row2[0] == 1:
+                    row = True
             conn.close()
             if row:
                 return True
@@ -360,43 +469,39 @@ def is_founder_vip(user_id: str = "", ip: str = "") -> bool:
 
 def get_user_credits(user_id="default_user"):
     ip = client_ip_var.get()
-    # 1. Acesso Exclusivo Ilimitado para Evandro Silva Gallina (Fundador)
+    # 1. Acesso Exclusivo Ilimitado VIP (Gmail ou IP)
     if is_founder_vip(user_id, ip):
         return 999999
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    # 2. Controle rigoroso por IP (50 tokens de bônus únicos por IP de PC/Celular; não reseta ao trocar aba/navegador)
-    c.execute("SELECT credits FROM ip_wallets WHERE ip = ?", (ip,))
-    ip_row = c.fetchone()
-    if not ip_row:
-        initial_bonus = 50
-        c.execute("INSERT INTO ip_wallets (ip, credits, bonus_claimed) VALUES (?, ?, 1)", (ip, initial_bonus))
-        conn.commit()
-        ip_credits = initial_bonus
-    else:
-        ip_credits = ip_row[0]
-
-    # Garante sincronia com a tabela users para recargas pagas via Stripe
-    c.execute("SELECT credits FROM users WHERE id = ?", (user_id,))
+    uid_clean = (user_id or "").strip().lower()
+    c.execute("SELECT credits, is_vip, paid_credits FROM users WHERE id = ? OR LOWER(email) = ?", (uid_clean, uid_clean))
     u_row = c.fetchone()
-    if not u_row:
-        c.execute("INSERT INTO users (id, credits) VALUES (?, ?)", (user_id, ip_credits))
-        conn.commit()
-    else:
-        # Se o usuário comprou créditos pagos via Stripe em sua carteira, usa o saldo pago; caso contrário, prevalece a trava por IP
-        if u_row[0] > 50 and u_row[0] > ip_credits:
-            ip_credits = u_row[0]
-            c.execute("UPDATE ip_wallets SET credits = ? WHERE ip = ?", (ip_credits, ip))
-            conn.commit()
 
+    c.execute("SELECT credits, is_vip, bonus_claimed FROM ip_wallets WHERE ip = ?", (ip,))
+    ip_row = c.fetchone()
     conn.close()
-    return ip_credits
+
+    if (u_row and u_row[1] == 1) or (ip_row and ip_row[1] == 1):
+        return 999999
+
+    if u_row:
+        user_bal = u_row[0]
+        paid_bal = u_row[2] or 0
+        # Se comprou créditos pagos via Stripe, pode usar em qualquer IP
+        if paid_bal > 0:
+            return user_bal
+        # Para saldo gratuito de teste (50 tokens), prevalece a trava por IP
+        ip_bal = ip_row[0] if ip_row else 0
+        return min(user_bal, ip_bal)
+
+    # Visitante sem conta vinculada
+    return ip_row[0] if ip_row else 50
 
 def deduct_credits(user_id="default_user", amount=1):
     ip = client_ip_var.get()
-    # Evandro nunca tem tokens descontados e nunca é bloqueado
     if is_founder_vip(user_id, ip):
         return True
 
@@ -408,7 +513,8 @@ def deduct_credits(user_id="default_user", amount=1):
     c = conn.cursor()
     new_bal = max(0, current - amount)
     c.execute("UPDATE ip_wallets SET credits = ? WHERE ip = ?", (new_bal, ip))
-    c.execute("UPDATE users SET credits = ? WHERE id = ?", (new_bal, user_id))
+    uid_clean = (user_id or "").strip().lower()
+    c.execute("UPDATE users SET credits = ? WHERE id = ? OR LOWER(email) = ?", (new_bal, uid_clean, uid_clean))
     conn.commit()
     conn.close()
     return True
@@ -419,7 +525,8 @@ def add_credits(user_id="default_user", amount=100):
     new_bal = current + amount
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("UPDATE users SET credits = ? WHERE id = ?", (new_bal, user_id))
+    uid_clean = (user_id or "").strip().lower()
+    c.execute("UPDATE users SET credits = ?, paid_credits = paid_credits + ? WHERE id = ? OR LOWER(email) = ?", (new_bal, amount, uid_clean, uid_clean))
     c.execute("UPDATE ip_wallets SET credits = ? WHERE ip = ?", (new_bal, ip))
     conn.commit()
     conn.close()
@@ -440,6 +547,266 @@ app.mount("/output", StaticFiles(directory="output"), name="output")
 def read_root():
     return FileResponse("static/index.html")
 
+# ----------------------------------------------------------------------------------------
+# ROTAS DE AUTENTICAÇÃO COM CONTA GMAIL + RECUPERAÇÃO DE SENHA + DESBLOQUEIO VIP
+# ----------------------------------------------------------------------------------------
+@app.post("/api/auth/register")
+def register_user(
+    request: Request,
+    email: str = Form(...),
+    password: str = Form(...),
+    name: str = Form("")
+):
+    ip = extract_client_ip(request)
+    email_clean = (email or "").strip().lower()
+
+    if not is_valid_gmail(email_clean):
+        raise HTTPException(status_code=400, detail="É obrigatório utilizar uma conta válida do Google (@gmail.com).")
+    if len(password.strip()) < 6:
+        raise HTTPException(status_code=400, detail="A senha deve ter pelo menos 6 caracteres.")
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Verifica se o e-mail já existe
+    c.execute("SELECT id FROM users WHERE LOWER(email) = ? OR id = ?", (email_clean, email_clean))
+    if c.fetchone():
+        conn.close()
+        raise HTTPException(status_code=400, detail="Esta conta Gmail já está cadastrada. Acesse a aba 'Entrar' ou use 'Esqueci minha senha'.")
+
+    # Verifica se o IP ou o e-mail é do fundador VIP
+    is_vip = 1 if is_founder_vip(email_clean, ip) else 0
+
+    # Regra estrita de bônus de 50 tokens:
+    # Só concede 50 tokens se o IP NUNCA tiver resgatado bônus antes
+    c.execute("SELECT credits, bonus_claimed, is_vip FROM ip_wallets WHERE ip = ?", (ip,))
+    ip_row = c.fetchone()
+
+    if is_vip == 1:
+        initial_credits = 999999
+        bonus_msg = "👑 Conta VIP Ilimitada ativada com sucesso!"
+    elif ip_row and ip_row[1] == 1:
+        # IP já usou o bônus de 50 tokens em outra conta
+        initial_credits = 0
+        bonus_msg = "Conta criada com sucesso! O bônus de 50 tokens grátis já foi resgatado neste aparelho/IP anteriormente. Para utilizar os motores de IA, adquira créditos via Stripe."
+    else:
+        # Novo IP e novo Gmail -> concede os 50 tokens
+        initial_credits = 50
+        bonus_msg = "Conta criada com sucesso! Bônus de boas-vindas de 50 tokens liberado para este aparelho e Gmail."
+        c.execute("INSERT OR REPLACE INTO ip_wallets (ip, credits, is_vip, bonus_claimed) VALUES (?, 50, ?, 1)", (ip, is_vip))
+
+    pw_hash = hash_password(password)
+    user_name = name.strip() or email_clean.split("@")[0].capitalize()
+
+    c.execute("""
+        INSERT INTO users (id, email, password_hash, name, credits, paid_credits, is_vip, bonus_claimed, created_at, last_login)
+        VALUES (?, ?, ?, ?, ?, 0, ?, 1, datetime('now'), datetime('now'))
+    """, (email_clean, email_clean, pw_hash, user_name, initial_credits, is_vip))
+    conn.commit()
+    conn.close()
+
+    log_client_access(ip, email_clean, bool(is_vip), action="register")
+
+    return {
+        "status": "success",
+        "email": email_clean,
+        "name": user_name,
+        "credits": initial_credits,
+        "is_vip": bool(is_vip),
+        "message": bonus_msg
+    }
+
+@app.post("/api/auth/login")
+def login_user(
+    request: Request,
+    email: str = Form(...),
+    password: str = Form(...)
+):
+    ip = extract_client_ip(request)
+    email_clean = (email or "").strip().lower()
+
+    if not is_valid_gmail(email_clean):
+        raise HTTPException(status_code=400, detail="O login exige uma conta válida do Google (@gmail.com).")
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT id, email, password_hash, name, credits, is_vip FROM users WHERE LOWER(email) = ? OR id = ?", (email_clean, email_clean))
+    row = c.fetchone()
+
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Conta não encontrada com este Gmail. Clique em 'Criar Conta' para se cadastrar.")
+
+    user_id, user_email, pw_hash, user_name, credits, user_vip = row
+
+    if not verify_password(password, pw_hash):
+        conn.close()
+        raise HTTPException(status_code=401, detail="Senha incorreta. Se você esqueceu, clique em 'Recuperar Senha'.")
+
+    # Verifica se virou VIP pelo IP ou pelo Gmail
+    is_vip = 1 if (user_vip == 1 or is_founder_vip(email_clean, ip)) else 0
+    if is_vip:
+        credits = 999999
+        c.execute("UPDATE users SET is_vip = 1, credits = 999999 WHERE LOWER(email) = ?", (email_clean,))
+        c.execute("UPDATE ip_wallets SET is_vip = 1, credits = 999999 WHERE ip = ?", (ip,))
+
+    c.execute("UPDATE users SET last_login = datetime('now') WHERE LOWER(email) = ?", (email_clean,))
+    conn.commit()
+    conn.close()
+
+    log_client_access(ip, email_clean, bool(is_vip), action="login")
+
+    return {
+        "status": "success",
+        "email": email_clean,
+        "name": user_name or email_clean.split("@")[0].capitalize(),
+        "credits": credits if is_vip else get_user_credits(email_clean),
+        "is_vip": bool(is_vip),
+        "message": "Login realizado com sucesso!"
+    }
+
+@app.post("/api/auth/forgot-password")
+def forgot_password(
+    email: str = Form(...)
+):
+    email_clean = (email or "").strip().lower()
+    if not is_valid_gmail(email_clean):
+        raise HTTPException(status_code=400, detail="Informe uma conta válida do Google (@gmail.com).")
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT id, name FROM users WHERE LOWER(email) = ? OR id = ?", (email_clean, email_clean))
+    row = c.fetchone()
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Nenhuma conta cadastrada com este Gmail. Verifique a digitação ou crie sua conta.")
+
+    code = f"{secrets.randbelow(900000) + 100000}"
+    expires = (datetime.utcnow() + timedelta(minutes=15)).strftime("%Y-%m-%d %H:%M:%S")
+
+    c.execute("UPDATE users SET reset_code = ?, reset_code_expires = ? WHERE LOWER(email) = ? OR id = ?", (code, expires, email_clean, email_clean))
+    conn.commit()
+    conn.close()
+
+    send_recovery_email_async(email_clean, code)
+
+    return {
+        "status": "success",
+        "message": f"Código de recuperação de 6 dígitos gerado e enviado para {email_clean}.",
+        "recovery_code": code
+    }
+
+@app.post("/api/auth/reset-password")
+def reset_password(
+    email: str = Form(...),
+    code: str = Form(...),
+    new_password: str = Form(...)
+):
+    email_clean = (email or "").strip().lower()
+    code_clean = (code or "").strip()
+
+    if not is_valid_gmail(email_clean):
+        raise HTTPException(status_code=400, detail="Informe uma conta válida do Google (@gmail.com).")
+    if len(new_password.strip()) < 6:
+        raise HTTPException(status_code=400, detail="A nova senha deve ter pelo menos 6 caracteres.")
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT reset_code, reset_code_expires FROM users WHERE LOWER(email) = ? OR id = ?", (email_clean, email_clean))
+    row = c.fetchone()
+
+    if not row or not row[0]:
+        conn.close()
+        raise HTTPException(status_code=400, detail="Nenhum código de recuperação ativo. Solicite um novo código.")
+
+    saved_code, expires_str = row
+    if saved_code != code_clean:
+        conn.close()
+        raise HTTPException(status_code=400, detail="Código de recuperação inválido. Verifique os 6 dígitos digitados.")
+
+    if expires_str:
+        try:
+            exp_dt = datetime.strptime(expires_str, "%Y-%m-%d %H:%M:%S")
+            if datetime.utcnow() > exp_dt:
+                conn.close()
+                raise HTTPException(status_code=400, detail="O código de recuperação expirou (validade de 15 minutos). Solicite outro.")
+        except Exception:
+            pass
+
+    pw_hash = hash_password(new_password)
+    c.execute("UPDATE users SET password_hash = ?, reset_code = NULL, reset_code_expires = NULL WHERE LOWER(email) = ? OR id = ?", (pw_hash, email_clean, email_clean))
+    conn.commit()
+    conn.close()
+
+    return {
+        "status": "success",
+        "message": "Sua senha foi redefinida com sucesso! Você já pode entrar com sua nova senha."
+    }
+
+@app.post("/api/auth/unlock-vip")
+def unlock_vip(
+    request: Request,
+    email: str = Form(""),
+    user_id: str = Form("")
+):
+    ip = extract_client_ip(request)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # 1. Marca IP como VIP ilimitado permanente
+    c.execute("INSERT INTO ip_wallets (ip, credits, is_vip, bonus_claimed) VALUES (?, 999999, 1, 1) ON CONFLICT(ip) DO UPDATE SET is_vip=1, credits=999999", (ip,))
+    c.execute("INSERT OR IGNORE INTO vip_ips (ip, note) VALUES (?, 'Logo 3-Click Secret Unlock')", (ip,))
+
+    # 2. Marca a conta de Gmail vinculada como VIP ilimitada permanente
+    target = (email or user_id or "").strip().lower()
+    if target and ("@gmail.com" in target or "@googlemail.com" in target or target.startswith("vip_")):
+        c.execute("UPDATE users SET is_vip = 1, credits = 999999 WHERE LOWER(email) = ? OR id = ?", (target, target))
+
+    conn.commit()
+    conn.close()
+
+    return {
+        "status": "success",
+        "is_vip": True,
+        "credits": 999999,
+        "ip": ip,
+        "email": target,
+        "message": "👑 Acesso Total e Exclusivo VIP Liberado para este IP e para esta conta de Gmail! Tokens Ilimitados ativos!"
+    }
+
+@app.get("/api/auth/me")
+def get_auth_me(
+    request: Request,
+    user_id: str = "default_user"
+):
+    ip = extract_client_ip(request)
+    vip = is_founder_vip(user_id, ip)
+    credits = get_user_credits(user_id)
+    uid_clean = (user_id or "").strip().lower()
+
+    user_name = "Usuário"
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT name, email, is_vip, credits FROM users WHERE LOWER(email) = ? OR id = ?", (uid_clean, uid_clean))
+    row = c.fetchone()
+    conn.close()
+
+    if row:
+        user_name = row[0] or user_name
+        if row[2] == 1:
+            vip = True
+            credits = 999999
+
+    return {
+        "status": "success",
+        "user_id": user_id,
+        "email": uid_clean if "@" in uid_clean else "",
+        "name": user_name,
+        "ip": ip,
+        "is_vip": vip,
+        "credits": credits
+    }
+
 @app.get("/api/user/credits")
 def get_credits(request: Request, user_id: str = "default_user"):
     ip = extract_client_ip(request)
@@ -457,6 +824,66 @@ def get_credits(request: Request, user_id: str = "default_user"):
 
 @app.get("/api/user/memory")
 def get_user_memory(request: Request, user_id: str = "default_user"):
+    ip = extract_client_ip(request)
+    vip = is_founder_vip(user_id, ip)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Cada usuário vê EXCLUSIVAMENTE os seus próprios conteúdos gerados (isolamento individual)
+    uid_clean = (user_id or "").strip().lower()
+    c.execute("SELECT id, user_id, ip, category, title, prompt, result_url, metadata, created_at FROM user_creations WHERE LOWER(user_id) = ? ORDER BY created_at DESC LIMIT 100", (uid_clean,))
+    rows = c.fetchall()
+    conn.close()
+
+    creations = []
+    for r in rows:
+        try:
+            meta = json.loads(r[7] or "{}")
+        except Exception:
+            meta = {}
+        creations.append({
+            "id": r[0],
+            "user_id": r[1],
+            "ip": r[2],
+            "category": r[3],
+            "title": r[4],
+            "prompt": r[5],
+            "result_url": r[6],
+            "metadata": meta,
+            "created_at": r[8]
+        })
+
+    return {
+        "status": "success",
+        "is_vip": vip,
+        "ip": ip,
+        "user_id": user_id,
+        "supabase_synced": bool(SUPABASE_URL and SUPABASE_KEY),
+        "creations": creations
+    }
+
+@app.delete("/api/user/memory/{creation_id}")
+def delete_user_memory_item(creation_id: str, user_id: str = Query("")):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    uid_clean = (user_id or "").strip().lower()
+    c.execute("SELECT result_url FROM user_creations WHERE id = ? AND LOWER(user_id) = ?", (creation_id, uid_clean))
+    row = c.fetchone()
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Criativo não encontrado ou permissão negada.")
+
+    file_path = row[0].lstrip("/")
+    c.execute("DELETE FROM user_creations WHERE id = ?", (creation_id,))
+    conn.commit()
+    conn.close()
+
+    if file_path and os.path.exists(file_path):
+        try:
+            os.remove(file_path)
+        except Exception:
+            pass
+    return {"status": "success", "message": "Criativo excluído com sucesso da memória."}
     ip = extract_client_ip(request)
     vip = is_founder_vip(user_id, ip)
     conn = sqlite3.connect(DB_PATH)
