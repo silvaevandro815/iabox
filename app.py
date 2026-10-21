@@ -540,7 +540,8 @@ async def generate_canvas_node(
     prompt: str = Form(...),
     model_style: str = Form("NanoBanana Pro"),
     aspect_ratio: str = Form("16:9"),
-    ref_urls: str = Form("[]"),
+    ref_urls: str = Form(""),
+    reference_urls: str = Form(""),
     user_id: str = Form("default_user")
 ):
     if not deduct_credits(user_id, amount=3):
@@ -550,8 +551,9 @@ async def generate_canvas_node(
     out_filename = f"canvas_node_{job_id[:8]}.jpg"
     out_path = os.path.join(OUTPUT_DIR, out_filename)
 
+    raw_refs = reference_urls or ref_urls or "[]"
     try:
-        urls_list = json.loads(ref_urls) if ref_urls else []
+        urls_list = json.loads(raw_refs)
     except Exception:
         urls_list = []
 
@@ -586,8 +588,10 @@ async def generate_canvas_node(
 @app.post("/api/canvas/upscale")
 async def magnific_upscale_node(
     node_url: Optional[str] = Form(None),
+    image_url: Optional[str] = Form(None),
     image_file: Optional[UploadFile] = File(None),
     creativity_level: str = Form("ultra"),
+    creativity_strength: str = Form("ultra"),
     user_id: str = Form("default_user")
 ):
     if not deduct_credits(user_id, amount=4):
@@ -595,12 +599,13 @@ async def magnific_upscale_node(
 
     job_id = str(uuid.uuid4())
     in_path = None
+    target_url = image_url or node_url
     if image_file and image_file.filename:
         in_path = os.path.join(UPLOAD_DIR, f"upscale_in_{job_id[:8]}_{image_file.filename}")
         with open(in_path, "wb") as f:
             shutil.copyfileobj(image_file.file, f)
-    elif node_url:
-        in_path = _resolve_local_media_path(node_url)
+    elif target_url:
+        in_path = _resolve_local_media_path(target_url)
 
     if not in_path or not os.path.exists(in_path):
         raise HTTPException(status_code=400, detail="Imagem de origem não encontrada para o Magnific Upscaler.")
@@ -614,7 +619,7 @@ async def magnific_upscale_node(
         engine.magnific_upscale_enhance(
             image_path=in_path,
             output_path=out_path,
-            creativity_level=creativity_level,
+            creativity_level=creativity_level or creativity_strength,
             scale_target="4k"
         )
         return {
@@ -627,18 +632,22 @@ async def magnific_upscale_node(
 
 @app.post("/api/canvas/render-storyboard")
 async def render_canvas_storyboard(
-    node_urls: str = Form(...),
+    node_urls: str = Form(""),
+    node_urls_json: str = Form(""),
     narration_text: str = Form(""),
+    narration_ptbr: str = Form(""),
     voice_name: str = Form("antonio"),
     aspect_ratio: str = Form("16:9"),
-    sec_per_take: float = Form(4.0),
+    sec_per_take: float = Form(3.5),
+    seconds_per_take: float = Form(3.5),
     user_id: str = Form("default_user")
 ):
     if not deduct_credits(user_id, amount=12):
         raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 12 créditos).")
 
+    raw_nodes = node_urls_json or node_urls or "[]"
     try:
-        urls_list = json.loads(node_urls)
+        urls_list = json.loads(raw_nodes)
     except Exception:
         raise HTTPException(status_code=400, detail="Lista de nós inválida.")
 
@@ -656,6 +665,9 @@ async def render_canvas_storyboard(
     out_path = os.path.join(OUTPUT_DIR, out_filename)
     save_job(job_id, "storyboard", status="processing", progress=20, user_id=user_id)
 
+    final_narration = narration_ptbr or narration_text
+    final_sec = seconds_per_take or sec_per_take
+
     def _task():
         try:
             from scripts.magnific_canvas_engine import MagnificCanvasEngine
@@ -663,10 +675,10 @@ async def render_canvas_storyboard(
             engine.render_storyboard_timeline(
                 image_paths=image_paths,
                 output_path=out_path,
-                narration_text=narration_text,
+                narration_text=final_narration,
                 voice_name=voice_name,
                 aspect_ratio=aspect_ratio,
-                sec_per_take=sec_per_take
+                sec_per_take=final_sec
             )
             save_job(job_id, "storyboard", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
         except Exception as e:
