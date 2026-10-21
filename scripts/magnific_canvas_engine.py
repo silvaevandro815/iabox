@@ -203,14 +203,14 @@ Return ONLY the final English prompt, without quotes or explanations."""
             primary_ref_path if (primary_ref_path and os.path.exists(primary_ref_path)) else None
         )
 
-        # MOTOR 1: Cluster Neural Flux 8K Ultra-Rápido (6 segundos, Ilimitado)
+        # MOTOR 1: Cluster Neural Flux 8K Ultra-Rápido (6 segundos)
         encoded = urllib.parse.quote(compiled_prompt[:650])
         req_headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
         }
-        url_flux = f"https://image.pollinations.ai/prompt/{encoded}?width={w}&height={h}&seed={seed}&nologo=true&model=flux"
+        url_flux = f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&nologo=true&model=flux"
         try:
-            r = requests.get(url_flux, headers=req_headers, timeout=26)
+            r = requests.get(url_flux, headers=req_headers, timeout=22)
             if r.status_code == 200 and len(r.content) > 8000:
                 with open(raw_out_path, "wb") as f:
                     f.write(r.content)
@@ -218,7 +218,23 @@ Return ONLY the final English prompt, without quotes or explanations."""
         except Exception as e:
             print(f"[ESGCore] Info Cluster 1: {e}")
 
-        # MOTOR 2: FLUX.1-Kontext-Dev (Acoplamento Direto de Imagem de Referência + Prompt)
+        # MOTOR 2: GPU Dedicada Ilimitada (Sem Cota ZeroGPU — 8 segundos, Zero Marca D'Água)
+        try:
+            from gradio_client import Client
+            sdxl_client = Client("AP123/SDXL-Lightning")
+            res = sdxl_client.predict(
+                compiled_prompt[:850],
+                "8-Step",
+                api_name="/generate_image"
+            )
+            img_file = res.get("path") if isinstance(res, dict) else (res[0] if isinstance(res, (list, tuple)) else res)
+            if img_file and os.path.exists(str(img_file)):
+                shutil.copy(str(img_file), raw_out_path)
+                return True
+        except Exception as e:
+            print(f"[ESGCore] Info Cluster 2 GPU: {e}")
+
+        # MOTOR 3: FLUX.1-Kontext-Dev (Acoplamento Direto de Imagem de Referência + Prompt)
         if ref_to_use and self.hf_token:
             try:
                 from gradio_client import Client, handle_file
