@@ -203,34 +203,48 @@ Return ONLY the final English prompt, without quotes or explanations."""
             primary_ref_path if (primary_ref_path and os.path.exists(primary_ref_path)) else None
         )
 
-        # MOTOR 1: FLUX.1-Kontext-Dev (Acoplamento Direto de Imagem de Referência + Prompt)
-        if ref_to_use:
-            for tok in [None, self.hf_token]:
-                try:
-                    from gradio_client import Client, handle_file
-                    kontext_client = Client("black-forest-labs/FLUX.1-Kontext-Dev", token=tok)
-                    kontext_prompt = f"Keep the exact same person and facial identity from this reference image. {compiled_prompt}"
-                    res = kontext_client.predict(
-                        input_image=handle_file(ref_to_use),
-                        prompt=kontext_prompt[:850],
-                        seed=seed % 100000,
-                        randomize_seed=False,
-                        guidance_scale=2.5,
-                        steps=20,
-                        api_name="/infer"
-                    )
-                    img_file = res[0].get("path") if isinstance(res[0], dict) else (res[0] if isinstance(res, (list, tuple)) else res)
-                    if img_file and os.path.exists(str(img_file)):
-                        shutil.copy(str(img_file), raw_out_path)
-                        return True
-                except Exception as e:
-                    print(f"[ESGCore] Info Motor Kontext GPU: {e}")
+        # MOTOR 1: Cluster Neural Flux 8K Ultra-Rápido (6 segundos, Ilimitado)
+        encoded = urllib.parse.quote(compiled_prompt[:650])
+        req_headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+        }
+        url_flux = f"https://image.pollinations.ai/prompt/{encoded}?width={w}&height={h}&seed={seed}&nologo=true&model=flux"
+        try:
+            r = requests.get(url_flux, headers=req_headers, timeout=26)
+            if r.status_code == 200 and len(r.content) > 8000:
+                with open(raw_out_path, "wb") as f:
+                    f.write(r.content)
+                return True
+        except Exception as e:
+            print(f"[ESGCore] Info Cluster 1: {e}")
 
-        # MOTOR 2: FLUX.1-schnell GPU (Síntese 8K Ultra-Rápida em 6 segundos)
-        for tok in [None, self.hf_token]:
+        # MOTOR 2: FLUX.1-Kontext-Dev (Acoplamento Direto de Imagem de Referência + Prompt)
+        if ref_to_use and self.hf_token:
+            try:
+                from gradio_client import Client, handle_file
+                kontext_client = Client("black-forest-labs/FLUX.1-Kontext-Dev", token=self.hf_token)
+                kontext_prompt = f"Keep the exact same person and facial identity from this reference image. {compiled_prompt}"
+                res = kontext_client.predict(
+                    input_image=handle_file(ref_to_use),
+                    prompt=kontext_prompt[:850],
+                    seed=seed % 100000,
+                    randomize_seed=False,
+                    guidance_scale=2.5,
+                    steps=20,
+                    api_name="/infer"
+                )
+                img_file = res[0].get("path") if isinstance(res[0], dict) else (res[0] if isinstance(res, (list, tuple)) else res)
+                if img_file and os.path.exists(str(img_file)):
+                    shutil.copy(str(img_file), raw_out_path)
+                    return True
+            except Exception as e:
+                print(f"[ESGCore] Info Motor Kontext GPU: {e}")
+
+        # MOTOR 3: FLUX.1-schnell GPU
+        if self.hf_token:
             try:
                 from gradio_client import Client
-                flux_client = Client("black-forest-labs/FLUX.1-schnell", token=tok)
+                flux_client = Client("black-forest-labs/FLUX.1-schnell", token=self.hf_token)
                 res = flux_client.predict(
                     prompt=compiled_prompt[:900],
                     seed=seed % 100000,
@@ -246,40 +260,6 @@ Return ONLY the final English prompt, without quotes or explanations."""
                     return True
             except Exception as e:
                 print(f"[ESGCore] Info Motor Schnell GPU: {e}")
-
-        # MOTOR 3: FLUX.1-dev GPU
-        try:
-            from gradio_client import Client
-            dev_client = Client("black-forest-labs/FLUX.1-dev", token=self.hf_token or None)
-            res = dev_client.predict(
-                prompt=compiled_prompt[:900],
-                seed=seed % 100000,
-                randomize_seed=False,
-                width=1024,
-                height=1024 if w == h else (576 if w > h else 1024),
-                guidance_scale=3.5,
-                num_inference_steps=20,
-                api_name="/infer"
-            )
-            img_file = res[0].get("path") if isinstance(res[0], dict) else (res[0] if isinstance(res, (list, tuple)) else res)
-            if img_file and os.path.exists(str(img_file)):
-                shutil.copy(str(img_file), raw_out_path)
-                return True
-        except Exception as e:
-            print(f"[ESGCore] Info Motor Dev GPU: {e}")
-
-        # MOTOR 4: Cloud Endpoint Rápido
-        encoded = urllib.parse.quote(compiled_prompt[:600])
-        for pm in ["flux", "turbo"]:
-            url = f"https://image.pollinations.ai/prompt/{encoded}?width={w}&height={h}&seed={seed}&nologo=true&model={pm}"
-            try:
-                r = requests.get(url, timeout=14)
-                if r.status_code == 200 and len(r.content) > 5000:
-                    with open(raw_out_path, "wb") as f:
-                        f.write(r.content)
-                    return True
-            except Exception:
-                pass
 
         return False
 
@@ -342,7 +322,7 @@ Return ONLY the final English prompt, without quotes or explanations."""
 
         # 2. Masterização Óptica 8K (Remoção total de bordas externas + Lanczos + Micro-Contraste de Pele)
         vf = (
-            f"crop=iw:trunc(ih*0.935/2)*2:0:0,"
+            f"crop=iw:ih*0.92:0:0,"
             f"scale={w}:{h}:force_original_aspect_ratio=increase:flags=lanczos,crop={w}:{h},"
             f"unsharp=5:5:0.95:5:5:0.0,eq=contrast=1.05:brightness=0.01:saturation=1.08"
         )
@@ -350,6 +330,7 @@ Return ONLY the final English prompt, without quotes or explanations."""
             "ffmpeg", "-y",
             "-i", raw_tmp,
             "-vf", vf,
+            "-frames:v", "1",
             "-q:v", "1",
             output_path
         ]
