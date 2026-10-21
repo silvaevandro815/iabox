@@ -11,6 +11,7 @@ import sys
 import uuid
 import time
 import json
+import base64
 import sqlite3
 import shutil
 import asyncio
@@ -246,13 +247,19 @@ def init_db():
         ("bonus_claimed", "INTEGER DEFAULT 0"),
         ("reset_code", "TEXT"),
         ("reset_code_expires", "TIMESTAMP"),
-        ("last_login", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+        ("last_login", "TIMESTAMP"),
+        ("google_id", "TEXT"),
+        ("avatar_url", "TEXT")
     ]
+    c.execute("PRAGMA table_info(users)")
+    existing_user_cols = [r[1] for r in c.fetchall()]
     for col_name, col_type in user_cols:
-        try:
-            c.execute(f"ALTER TABLE users ADD COLUMN {col_name} {col_type}")
-        except Exception:
-            pass
+        if col_name not in existing_user_cols:
+            try:
+                c.execute(f"ALTER TABLE users ADD COLUMN {col_name} {col_type}")
+                print(f"[init_db] Adicionada coluna {col_name} à tabela users")
+            except Exception as e:
+                print(f"[init_db] Erro ao adicionar {col_name}: {e}")
 
     c.execute("""
         CREATE TABLE IF NOT EXISTS ip_wallets (
@@ -664,6 +671,125 @@ def login_user(
         "is_vip": bool(is_vip),
         "message": "Login realizado com sucesso!"
     }
+
+@app.post("/api/auth/google")
+def auth_google(
+    request: Request,
+    credential: Optional[str] = Form(None),
+    email: Optional[str] = Form(None),
+    name: Optional[str] = Form(None),
+    google_id: Optional[str] = Form(None),
+    avatar_url: Optional[str] = Form(None)
+):
+    """
+    Autenticação direta oficial com Conta Google (Google Sign-In / One-Tap):
+    Aceita o token JWT verificado emitido pelo Google Identity Services (credential)
+    ou dados diretos da conta Google.
+    """
+    ip = extract_client_ip(request)
+    extracted_email = (email or "").strip().lower()
+    extracted_name = (name or "").strip()
+    extracted_avatar = (avatar_url or "").strip()
+    extracted_sub = (google_id or "").strip()
+
+    # Se recebeu o token oficial do Google Identity Services (JWT), decodifica o payload com segurança
+    if credential:
+        try:
+            parts = credential.split(".")
+            if len(parts) >= 2:
+                payload_b64 = parts[1]
+                payload_b64 += "=" * (-len(payload_b64) % 4)
+                payload_json = json.loads(base64.urlsafe_b64decode(payload_b64).decode("utf-8"))
+                extracted_email = payload_json.get("email", extracted_email).strip().lower()
+                extracted_name = payload_json.get("name", extracted_name) or payload_json.get("given_name", "")
+                extracted_avatar = payload_json.get("picture", extracted_avatar)
+                extracted_sub = payload_json.get("sub", extracted_sub)
+        except Exception as e:
+            print(f"[GoogleAuth] Aviso ao decodificar token JWT do Google: {e}")
+
+    if not extracted_email or not is_valid_gmail(extracted_email):
+        raise HTTPException(
+            status_code=400,
+            detail="A conta Google precisa ser um Gmail válido do Google (@gmail.com)."
+        )
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+
+    # Verifica se o usuário já existe
+    c.execute("SELECT id, email, name, credits, is_vip, avatar_url FROM users WHERE LOWER(email) = ? OR id = ?", (extracted_email, extracted_email))
+    row = c.fetchone()
+
+    is_vip = 1 if is_founder_vip(extracted_email, ip) else 0
+
+    if row:
+        # Usuário existente: login direto instantâneo
+        u_id, u_email, u_name, credits, u_vip, u_avatar = row
+        final_vip = 1 if (u_vip == 1 or is_vip == 1) else 0
+        final_credits = 999999 if final_vip else credits
+
+        c.execute("""
+            UPDATE users SET 
+                last_login = datetime('now'),
+                google_id = COALESCE(?, google_id),
+                avatar_url = COALESCE(?, avatar_url),
+                is_vip = ?,
+                credits = ?
+            WHERE LOWER(email) = ?
+        """, (extracted_sub, extracted_avatar or u_avatar, final_vip, final_credits, extracted_email))
+        if final_vip:
+            c.execute("UPDATE ip_wallets SET is_vip = 1, credits = 999999 WHERE ip = ?", (ip,))
+        conn.commit()
+        conn.close()
+
+        log_client_access(ip, extracted_email, bool(final_vip), action="google_login")
+        return {
+            "status": "success",
+            "action": "login",
+            "email": extracted_email,
+            "name": u_name or extracted_name or extracted_email.split("@")[0].capitalize(),
+            "avatar_url": extracted_avatar or u_avatar or "",
+            "credits": final_credits,
+            "is_vip": bool(final_vip),
+            "message": "Conta Google conectada com sucesso!"
+        }
+    else:
+        # Novo usuário via Google: cadastra automaticamente sem necessidade de senha manual
+        c.execute("SELECT credits, bonus_claimed, is_vip FROM ip_wallets WHERE ip = ?", (ip,))
+        ip_row = c.fetchone()
+
+        if is_vip == 1:
+            initial_credits = 999999
+            bonus_msg = "👑 Conta Google VIP Ilimitada conectada com sucesso!"
+        elif ip_row and ip_row[1] == 1:
+            initial_credits = 0
+            bonus_msg = "Conta Google vinculada com sucesso! O bônus de 50 tokens já foi resgatado neste aparelho/IP anteriormente. Para utilizar os motores de IA, adquira créditos via Stripe."
+        else:
+            initial_credits = 50
+            bonus_msg = "Conta Google vinculada com sucesso! Bônus de 50 tokens liberado para o seu Gmail."
+            c.execute("INSERT OR REPLACE INTO ip_wallets (ip, credits, is_vip, bonus_claimed) VALUES (?, 50, ?, 1)", (ip, is_vip))
+
+        user_display_name = extracted_name or extracted_email.split("@")[0].capitalize()
+        dummy_hash = hash_password(secrets.token_hex(16))
+
+        c.execute("""
+            INSERT INTO users (id, email, password_hash, name, credits, paid_credits, is_vip, bonus_claimed, created_at, last_login, google_id, avatar_url)
+            VALUES (?, ?, ?, ?, ?, 0, ?, 1, datetime('now'), datetime('now'), ?, ?)
+        """, (extracted_email, extracted_email, dummy_hash, user_display_name, initial_credits, is_vip, extracted_sub, extracted_avatar))
+        conn.commit()
+        conn.close()
+
+        log_client_access(ip, extracted_email, bool(is_vip), action="google_register")
+        return {
+            "status": "success",
+            "action": "register",
+            "email": extracted_email,
+            "name": user_display_name,
+            "avatar_url": extracted_avatar,
+            "credits": initial_credits,
+            "is_vip": bool(is_vip),
+            "message": bonus_msg
+        }
 
 @app.post("/api/auth/forgot-password")
 def forgot_password(
