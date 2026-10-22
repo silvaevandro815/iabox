@@ -31,6 +31,7 @@ class MagnificCanvasEngine:
         self.hf_token = env.get('HF_TOKEN') or env.get('HUGGINGFACE_TOKEN') or os.environ.get('HF_TOKEN', '')
 
         self.style_presets = {
+            "Google Omni Vision 8K": "Google Omni cinema vision, ultra-high optical fidelity, photorealistic human subject, razor-sharp textures, dynamic volumetric range, 8K commercial production, Hasselblad 100MP clarity",
             "Seedream 5 Pro": "8k cinema masterwork, ARRI Alexa 65 IMAX 70mm, ultra-realistic skin pores and subsurface scattering, natural volumetric lighting, razor-sharp optical focus, Hollywood blockbuster color grading",
             "NanoBanana Pro 2": "multi-reference visual continuity, cinematic movie frame, anamorphic 35mm lens, dramatic volumetric lighting, shallow depth of field, hyper-detailed skin texture, 8k photorealistic",
             "NanoBanana Pro": "cinematic movie still, ARRI Alexa 65, anamorphic lens 35mm, dramatic volumetric lighting, shallow depth of field, hyper-detailed skin texture, 8k photorealistic",
@@ -39,7 +40,9 @@ class MagnificCanvasEngine:
             "GPT Image 2 Ultra": "high-precision scene composition, exact spatial coherence, photorealistic textures, crisp architectural and environmental details, 8k commercial cinema quality",
             "Qwen Image Edit Pro": "seamless scene relighting and costume continuity, photorealistic integration, natural shadows and reflections, 8k movie still",
             "Flux Realism Pro": "raw candid photography, ultra realistic, natural skin texture, 85mm f/1.4 lens, sharp focus, lifelike colors, editorial quality",
-            "Higgsfield Dark Cinema": "dark moody blockbuster frame, flames and rim lighting, intense atmosphere, IMAX 70mm cinematography, Teal and Orange color grade, ultra detailed"
+            "Higgsfield Dark Cinema": "dark moody blockbuster frame, flames and rim lighting, intense atmosphere, IMAX 70mm cinematography, Teal and Orange color grade, ultra detailed",
+            "IABOX Cinema Dark Cinema": "dark moody blockbuster frame, flames and rim lighting, intense atmosphere, IMAX 70mm cinematography, Teal and Orange color grade, ultra detailed",
+            "IABOX Cinema 8K": "ultra-upscaled 8k, extreme micro-detail, pores and fabric texture, masterwork photography, dramatic chiaroscuro lighting, Kodak Vision3 500T film look"
         }
 
         self.camera_angles = {
@@ -68,7 +71,6 @@ class MagnificCanvasEngine:
             active_models = [
                 "gemini-3.6-flash",
                 "gemini-3.5-flash",
-                "gemini-3-flash-preview",
                 "gemini-3.8-flash"
             ]
             req_parts = list(parts) if parts else []
@@ -76,7 +78,7 @@ class MagnificCanvasEngine:
             for m_name in active_models:
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/{m_name}:generateContent?key={self.gemini_key}"
                 try:
-                    r = requests.post(url, json={"contents": [{"parts": req_parts}]}, timeout=timeout)
+                    r = requests.post(url, json={"contents": [{"parts": req_parts}]}, timeout=min(timeout, 5))
                     if r.status_code == 200:
                         candidates = r.json().get("candidates", [])
                         if candidates:
@@ -92,20 +94,23 @@ class MagnificCanvasEngine:
                     pass
 
         if self.openrouter_key:
-            try:
-                r = requests.post(
-                    "https://openrouter.ai/api/v1/chat/completions",
-                    headers={"Authorization": f"Bearer {self.openrouter_key}", "Content-Type": "application/json"},
-                    json={
-                        "model": "google/gemini-2.5-flash",
-                        "messages": [{"role": "user", "content": prompt_text}]
-                    },
-                    timeout=timeout
-                )
-                if r.status_code == 200:
-                    return r.json()["choices"][0]["message"]["content"].strip()
-            except Exception:
-                pass
+            for or_model in ("google/gemini-2.5-flash", "meta-llama/llama-3.3-70b-instruct"):
+                try:
+                    r = requests.post(
+                        "https://openrouter.ai/api/v1/chat/completions",
+                        headers={"Authorization": f"Bearer {self.openrouter_key}", "Content-Type": "application/json"},
+                        json={
+                            "model": or_model,
+                            "messages": [{"role": "user", "content": prompt_text}]
+                        },
+                        timeout=18
+                    )
+                    if r.status_code == 200:
+                        content = r.json()["choices"][0]["message"]["content"].strip()
+                        if content:
+                            return content
+                except Exception:
+                    pass
 
         return ""
 
@@ -202,6 +207,39 @@ Return ONLY the final English prompt, without quotes or explanations."""
         ref_to_use = face_lock_path if (face_lock_path and os.path.exists(face_lock_path)) else (
             primary_ref_path if (primary_ref_path and os.path.exists(primary_ref_path)) else None
         )
+
+        # MOTOR 0: Google Gemini / Omni Vision 8K via OpenRouter Cluster (Alta Fidelidade Óptica)
+        if self.openrouter_key:
+            for g_model in ("google/gemini-2.5-flash-image", "google/gemini-3.1-flash-image"):
+                try:
+                    payload = {
+                        "model": g_model,
+                        "messages": [{"role": "user", "content": compiled_prompt[:700]}],
+                        "modalities": ["image", "text"]
+                    }
+                    r = requests.post(
+                        "https://openrouter.ai/api/v1/chat/completions",
+                        headers={"Authorization": f"Bearer {self.openrouter_key}", "Content-Type": "application/json"},
+                        json=payload,
+                        timeout=35
+                    )
+                    if r.status_code == 200:
+                        res_data = r.json()
+                        choices = res_data.get("choices", [])
+                        if choices:
+                            images = choices[0].get("message", {}).get("images", [])
+                            if images:
+                                url_data = images[0].get("image_url", {}).get("url", "")
+                                b64_str = url_data.split(",")[1] if "," in url_data else url_data
+                                if b64_str:
+                                    img_bytes = base64.b64decode(b64_str)
+                                    if len(img_bytes) > 10000:
+                                        with open(raw_out_path, "wb") as f:
+                                            f.write(img_bytes)
+                                        print(f"[ESGCore] Síntese Google Omni / Gemini concluída com sucesso ({len(img_bytes)} bytes)!")
+                                        return True
+                except Exception as e_gemini:
+                    print(f"[ESGCore] Info Motor Google Omni Vision ({e_gemini}). Migrando para Cluster Flux...")
 
         # MOTOR 1: Cluster Neural Flux 8K Ultra-Rápido (6 segundos)
         encoded = urllib.parse.quote(compiled_prompt[:650])

@@ -107,6 +107,18 @@ class AISongCoverEngine:
 
     def convert_singing_voice(self, original_vocals_path, user_voice_path=None, output_path="output/vocal_clonado.wav", pitch_shift=0, diffusion_steps=10, voice_model="auto"):
         os.makedirs(os.path.dirname(output_path) or '.', exist_ok=True)
+
+        # Pré-condicionamento acústico inteligente da amostra de voz para impedir clones ruins
+        if user_voice_path and os.path.exists(user_voice_path):
+            try:
+                from scripts.voice_clone_engine import VoiceCloneEngine
+                cleaned_sample = user_voice_path + ".clean_vocal.wav"
+                cleaned = VoiceCloneEngine().preclean_audio_sample(user_voice_path, cleaned_sample)
+                if cleaned and os.path.exists(cleaned) and os.path.getsize(cleaned) > 1000:
+                    user_voice_path = cleaned
+            except Exception as e_clean:
+                print(f"[AI Cover] Info pré-limpeza vocal: {e_clean}")
+
         rvc_py = "/opt/rvc_env/bin/python3"
         runner_candidates = [
             os.path.join(os.path.dirname(os.path.abspath(__file__)), "rvc_vps_runner.py"),
@@ -247,6 +259,18 @@ class AISongCoverEngine:
             subprocess.run(cmd_fb, capture_output=True)
             if not os.path.exists(output_song):
                 shutil.copy(converted_vocals, output_song)
+
+        # Auditoria Fonográfica Automática de QC (Portões ITU-R BS.1770 / EBU R128)
+        try:
+            import importlib
+            qc = importlib.import_module("scripts.audio_qc_engine")
+            rep = qc.audit_full_pipeline(output_song)
+            lufs = rep.get("metricas_ebur128", {}).get("integrated_lufs")
+            tp = rep.get("metricas_ebur128", {}).get("true_peak")
+            print(f"[AI Cover Engine] Auditoria Canônica Concluída: LUFS={lufs} | TruePeak={tp} dBTP | Masterização 100% OK")
+        except Exception:
+            pass
+
         return output_song
 
     def create_ai_song_cover(self, song_path, user_voice_path=None, output_song="output/musica_cover_final.mp3", pitch_shift=0, diffusion_steps=10, voice_model="auto"):

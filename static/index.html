@@ -1012,7 +1012,23 @@
                 <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-300 drop-shadow-[0_0_6px_#00f0ff]"></i> <span>Melhorar com IA</span>
               </button>
             </div>
-            <input type="text" id="suno-theme" placeholder="Ex: Viagem no tempo em um carro clássico na estrada de Brasília" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 transition-colors">
+            <input type="text" id="suno-theme" oninput="checkPromptPoverty('suno-theme', 'suno')" placeholder="Ex: Viagem no tempo em um carro clássico na estrada de Brasília" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 transition-colors">
+            <div id="suno-theme-poverty-alert" class="hidden mt-2 p-2.5 rounded-xl bg-amber-500/10 border border-amber-400/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 transition-all">
+              <div class="flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-amber-400 shrink-0"></i>
+                <span class="text-xs text-amber-200"><strong class="text-amber-300">Poucos detalhes detectados:</strong> O resultado musical pode ficar simples. Deseja que a IA enriqueça os instrumentos e o clima?</span>
+              </div>
+              <button type="button" onclick="enhancePromptWithAI('suno-theme', 'suno')" class="shrink-0 px-3 py-1 rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 text-black font-extrabold text-xs hover:brightness-110 flex items-center gap-1 shadow-sm">
+                <i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Enriquecer com IA
+              </button>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5 mt-2">
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mr-1">Sugestões de Ideias:</span>
+              <button type="button" onclick="applyPromptPreset('suno-theme', 'Sertanejo Universitário animado na estrada, violão de aço e sanfona marcante 130 BPM', 'suno')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-cyan-500/20 text-gray-300 hover:text-cyan-300 border border-white/10 transition-all">+ Sertanejo Estrada</button>
+              <button type="button" onclick="applyPromptPreset('suno-theme', 'Pop Rock acústico anos 80 nostálgico, bateria com reverb e refrão emotivo', 'suno')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-cyan-500/20 text-gray-300 hover:text-cyan-300 border border-white/10 transition-all">+ Pop Rock 80s</button>
+              <button type="button" onclick="applyPromptPreset('suno-theme', 'Trap melódico Brasil com grave 808 pesado e sintetizador futurista', 'suno')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-cyan-500/20 text-gray-300 hover:text-cyan-300 border border-white/10 transition-all">+ Trap Brasil 808</button>
+              <button type="button" onclick="applyPromptPreset('suno-theme', 'Acústico voz e violão intimista, atmosfera calma de luau ao luar', 'suno')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-cyan-500/20 text-gray-300 hover:text-cyan-300 border border-white/10 transition-all">+ Acústico Intimista</button>
+            </div>
           </div>
 
           <div>
@@ -1116,7 +1132,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <input type="text" id="parody-song-name" placeholder="Música original (Ex: Peão Todo Tatuado - Jeninho)" class="bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
           <div class="flex gap-2">
-            <input type="text" id="parody-theme-input" placeholder="Tema da paródia (Ex: O programador que não sai do PC)" class="flex-1 bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
+            <input type="text" id="parody-theme-input" oninput="checkPromptPoverty('parody-theme-input', 'parody')" placeholder="Tema da paródia (Ex: O programador que não sai do PC)" class="flex-1 bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
             <button type="button" id="enhance-btn-parody-theme-input" onclick="enhancePromptWithAI('parody-theme-input', 'parody')" class="inline-flex items-center gap-1 px-2.5 py-2 rounded-xl text-[11px] font-bold bg-purple-500/20 border border-purple-400/40 text-purple-200 hover:brightness-125 transition-all whitespace-nowrap">
               <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-purple-300 drop-shadow-[0_0_6px_#c084fc]"></i> <span>Sugerir Ideias</span>
             </button>
@@ -1125,6 +1141,22 @@
             <i data-lucide="file-text" class="w-3.5 h-3.5 text-purple-400"></i>
             <span>Gerar Letra Ritmada</span>
           </button>
+        </div>
+        <div id="parody-theme-input-poverty-alert" class="hidden mt-2 p-2.5 rounded-xl bg-purple-500/10 border border-purple-400/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 transition-all">
+          <div class="flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4 text-purple-400 shrink-0"></i>
+            <span class="text-xs text-purple-200"><strong class="text-purple-300">Tema curto detectado:</strong> Deseja que a IA sugira rimas, piadas ou conflitos engraçados?</span>
+          </div>
+          <button type="button" onclick="enhancePromptWithAI('parody-theme-input', 'parody')" class="shrink-0 px-3 py-1 rounded-lg bg-gradient-to-r from-purple-400 to-fuchsia-500 text-black font-extrabold text-xs hover:brightness-110 flex items-center gap-1 shadow-sm">
+            <i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Enriquecer com IA
+          </button>
+        </div>
+        <div class="flex flex-wrap items-center gap-1.5 mt-2">
+          <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mr-1">Sugestões de Temas Virais:</span>
+          <button type="button" onclick="applyPromptPreset('parody-theme-input', 'O desenvolvedor de IA que trabalha home office e vive à base de café', 'parody')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-purple-500/20 text-gray-300 hover:text-purple-300 border border-white/10 transition-all">+ Dev & Café</button>
+          <button type="button" onclick="applyPromptPreset('parody-theme-input', 'Tentando fazer dieta e ir na academia na segunda-feira', 'parody')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-purple-500/20 text-gray-300 hover:text-purple-300 border border-white/10 transition-all">+ Academia & Dieta</button>
+          <button type="button" onclick="applyPromptPreset('parody-theme-input', 'A fatura do cartão chegou e os boletos não param de vencer', 'parody')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-purple-500/20 text-gray-300 hover:text-purple-300 border border-white/10 transition-all">+ Boletos & Cartão</button>
+          <button type="button" onclick="applyPromptPreset('parody-theme-input', 'A paixão por carros antigos turbo e a oficina mecânica', 'parody')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-purple-500/20 text-gray-300 hover:text-purple-300 border border-white/10 transition-all">+ Carro Turbo</button>
         </div>
         <div id="parody-lyrics-box" class="hidden bg-dark-900/90 border border-white/10 rounded-xl p-3 text-xs text-gray-200 whitespace-pre-wrap font-mono max-h-40 overflow-y-auto"></div>
       </div>
@@ -1458,7 +1490,22 @@
                 <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-300 drop-shadow-[0_0_6px_#00f0ff]"></i> <span>Melhorar com IA</span>
               </button>
             </div>
-            <input type="text" id="video-creative-prompt" placeholder="Ex: Mudar cenário para estúdio escuro com iluminação volumétrica neon, me substituir pelo avatar da foto e manter minha fala..." class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-xs md:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400">
+            <input type="text" id="video-creative-prompt" oninput="checkPromptPoverty('video-creative-prompt', 'video')" placeholder="Ex: Mudar cenário para estúdio escuro com iluminação volumétrica neon, me substituir pelo avatar da foto e manter minha fala..." class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-xs md:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400">
+            <div id="video-creative-prompt-poverty-alert" class="hidden mt-2 p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-400/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 transition-all">
+              <div class="flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+                <span class="text-xs text-cyan-200"><strong class="text-cyan-300">Poucos detalhes de direção:</strong> Sem movimentos de câmera e iluminação especificados, o corte pode ficar estático.</span>
+              </div>
+              <button type="button" onclick="enhancePromptWithAI('video-creative-prompt', 'video')" class="shrink-0 px-3 py-1 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-extrabold text-xs hover:brightness-110 flex items-center gap-1 shadow-sm">
+                <i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Enriquecer com IA
+              </button>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5 mt-2">
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mr-1">Sugestões de Direção de Cena:</span>
+              <button type="button" onclick="applyPromptPreset('video-creative-prompt', 'Mudar cenário para estúdio escuro com iluminação volumétrica neon cyan/magenta, lente 35mm anamórfica e traveling lento', 'video')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-cyan-500/20 text-gray-300 hover:text-cyan-300 border border-white/10 transition-all">+ Estúdio Neon</button>
+              <button type="button" onclick="applyPromptPreset('video-creative-prompt', 'Substituir fundo por estrada cinematográfica ao pôr do sol, luz dourada suave e flare anamórfico', 'video')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-cyan-500/20 text-gray-300 hover:text-cyan-300 border border-white/10 transition-all">+ Pôr do Sol Dourado</button>
+              <button type="button" onclick="applyPromptPreset('video-creative-prompt', 'Enquadramento dinâmico com punch-in sutil nos momentos de ênfase da fala, luz de recorte e foco cravado', 'video')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-cyan-500/20 text-gray-300 hover:text-cyan-300 border border-white/10 transition-all">+ Punch-In Dinâmico</button>
+            </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1545,7 +1592,22 @@
                 <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-300 drop-shadow-[0_0_6px_#00f0ff]"></i> <span>Melhorar com IA</span>
               </button>
             </div>
-            <textarea id="image-prompt" rows="3" placeholder="Ex: Foto cinematográfica 8K mantendo exatamente a pessoa e o estilo das imagens de referência em um cenário de cinema ao pôr do sol, lente 85mm f/1.2..." class="w-full bg-dark-800 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-pink-400 transition-colors"></textarea>
+            <textarea id="image-prompt" oninput="checkPromptPoverty('image-prompt', 'image')" rows="3" placeholder="Ex: Foto cinematográfica 8K mantendo exatamente a pessoa e o estilo das imagens de referência em um cenário de cinema ao pôr do sol, lente 85mm f/1.2..." class="w-full bg-dark-800 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-pink-400 transition-colors"></textarea>
+            <div id="image-prompt-poverty-alert" class="hidden mt-2 p-2.5 rounded-xl bg-pink-500/10 border border-pink-400/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 transition-all">
+              <div class="flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-pink-400 shrink-0"></i>
+                <span class="text-xs text-pink-200"><strong class="text-pink-300">Prompt básico detectado:</strong> A IA atinge máxima retenção especificando lente (ex: 85mm f/1.2), iluminação e texturas de pele.</span>
+              </div>
+              <button type="button" onclick="enhancePromptWithAI('image-prompt', 'image')" class="shrink-0 px-3 py-1 rounded-lg bg-gradient-to-r from-pink-400 to-rose-500 text-black font-extrabold text-xs hover:brightness-110 flex items-center gap-1 shadow-sm">
+                <i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Enriquecer com IA
+              </button>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5 mt-2">
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mr-1">Sugestões de Estilo & Lente:</span>
+              <button type="button" onclick="applyPromptPreset('image-prompt', 'Retrato editorial cinematográfico 8K, lente prime 85mm f/1.2, microporos realistas de pele, iluminação dourada suave e desfoque cremoso', 'image')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-pink-500/20 text-gray-300 hover:text-pink-300 border border-white/10 transition-all">+ Retrato 85mm</button>
+              <button type="button" onclick="applyPromptPreset('image-prompt', 'Fotografia noturna em metrópole futurista com luz neon azul e magenta, asfalto molhado com reflexos e profundidade de campo rasa', 'image')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-pink-500/20 text-gray-300 hover:text-pink-300 border border-white/10 transition-all">+ Cyberpunk 8K</button>
+              <button type="button" onclick="applyPromptPreset('image-prompt', 'Cena de cinema em película 70mm IMAX, chiaroscuro com sombras marcantes, luz de janela e paleta Hollywood Teal and Orange', 'image')" class="px-2.5 py-0.5 rounded-full text-[11px] bg-dark-800 hover:bg-pink-500/20 text-gray-300 hover:text-pink-300 border border-white/10 transition-all">+ IMAX 70mm</button>
+            </div>
           </div>
 
           
@@ -1563,13 +1625,16 @@
             <div>
               <label class="block text-sm font-semibold text-gray-200 mb-2">3. Motor Óptico 8K & Estilo</label>
               <select id="image-model-style" class="w-full bg-dark-800 border border-white/15 rounded-xl px-3.5 py-3 text-xs md:text-sm text-white focus:outline-none focus:border-pink-400">
+                <option value="Google Omni Vision 8K" selected>Google Omni Vision 8K (Ultra-Fidelidade Óptica e Iluminação HDR)</option>
                 <option value="Seedream 5 Pro">Seedream 5 Pro (8K Cinema & Realismo Extremo)</option>
                 <option value="NanoBanana Pro 2">NanoBanana Pro 2 (Fidelidade Multi-Referência 3 a 5 Fotos)</option>
+                <option value="Flux Realism Pro">Flux Realism Pro (Fotografia Editorial 85mm f/1.2)</option>
+                <option value="Higgsfield Dark Cinema">Higgsfield Dark Cinema (Blockbuster Atmosférico Chiaroscuro)</option>
                 <option value="Flux.1 Kontext Pro">Flux.1 Kontext Pro (100% Fidelização de Rosto / Face Lock)</option>
                 <option value="Magnific Cinema 8K">Magnific Cinema 8K (Micro-Textura de Pele & Poros)</option>
                 <option value="GPT Image 2 Ultra">GPT Image 2 Ultra (Precisão Espacial & Composição)</option>
                 <option value="Qwen Image Edit Pro">Qwen Image Edit Pro (Re-Iluminação & Figurino)</option>
-                <option value="IABOX Cinema™ Dark Cinema">IABOX Cinema™ Dark Cinema (Anamórfico 35mm Hollywood)</option>
+                <option value="IABOX Cinema Dark Cinema">IABOX Cinema Dark Cinema (Anamórfico 35mm Hollywood)</option>
               </select>
             </div>
 
@@ -1893,7 +1958,7 @@
             <button type="button" id="enhance-btn-canvas-prompt-input" onclick="enhancePromptWithAI('canvas-prompt-input', 'canvas')" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-amber-500/20 border border-amber-400/40 text-amber-200 hover:brightness-125 transition-all whitespace-nowrap">
               <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300 drop-shadow-[0_0_6px_#f59e0b]"></i> <span>Melhorar Prompt</span>
             </button>
-            <input type="text" id="canvas-prompt-input" value="Crie um novo take cinematográfico 8K mantendo 100% do rosto fiel de @Image1 e a iluminação dramática de @Image2 em plano aberto 35mm" placeholder="Ex: Crie um novo ângulo câmera baixa de @Image1 mantendo o cenário de @Image2..." class="flex-1 bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
+            <input type="text" id="canvas-prompt-input" oninput="checkPromptPoverty('canvas-prompt-input', 'canvas')" value="Crie um novo take cinematográfico 8K mantendo 100% do rosto fiel de @Image1 e a iluminação dramática de @Image2 em plano aberto 35mm" placeholder="Ex: Crie um novo ângulo câmera baixa de @Image1 mantendo o cenário de @Image2..." class="flex-1 bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
             
             <button onclick="handleCanvasGenerateNode()" id="canvas-gen-btn" class="bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 hover:opacity-95 text-black font-extrabold px-5 py-2.5 rounded-xl text-xs md:text-sm shadow-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap">
               <i data-lucide="wand-2" class="w-4 h-4"></i>
@@ -1906,13 +1971,16 @@
               <div class="flex items-center gap-1.5 bg-dark-800 border border-amber-400/30 rounded-lg px-2.5 py-1 text-gray-200">
                 <span class="w-2 h-2 rounded-full bg-amber-400"></span>
                 <select id="canvas-model-select" class="bg-transparent text-xs font-bold text-amber-300 focus:outline-none cursor-pointer">
+                  <option value="Google Omni Vision 8K" class="bg-dark-900 text-white" selected>Google Omni Vision 8K (Ultra-Fidelidade Óptica)</option>
                   <option value="Seedream 5 Pro" class="bg-dark-900 text-white">Seedream 5 Pro (8K Cinema Master & Micro-Pores)</option>
                   <option value="NanoBanana Pro 2" class="bg-dark-900 text-white">NanoBanana Pro 2 (Multi-Node Vision Consistency)</option>
+                  <option value="Flux Realism Pro" class="bg-dark-900 text-white">Flux Realism Pro (Fotografia Editorial 85mm)</option>
+                  <option value="Higgsfield Dark Cinema" class="bg-dark-900 text-white">Higgsfield Dark Cinema (Chiaroscuro Blockbuster)</option>
                   <option value="Flux.1 Kontext Pro" class="bg-dark-900 text-white">Flux.1 Kontext Pro (100% Face Fidelity Lock)</option>
                   <option value="Magnific Cinema 8K" class="bg-dark-900 text-white">Magnific Cinema 8K (Optical Skin & Detail)</option>
                   <option value="GPT Image 2 Ultra" class="bg-dark-900 text-white">GPT Image 2 Ultra (High-Precision Scene)</option>
                   <option value="Qwen Image Edit Pro" class="bg-dark-900 text-white">Qwen Image Edit Pro (Relighting & Costume)</option>
-                  <option value="IABOX Cinema™ Dark Cinema" class="bg-dark-900 text-white">IABOX Cinema™ Dark Cinema (Anamorphic 35mm)</option>
+                  <option value="IABOX Cinema Dark Cinema" class="bg-dark-900 text-white">IABOX Cinema Dark Cinema (Anamorphic 35mm)</option>
                 </select>
               </div>
 
@@ -5566,7 +5634,45 @@
       }
     }
 
-</script>
+
+    // ========================================================================================
+    // DETECTOR DE POBREZA DE DETALHES & PRESETS INTELIGENTES DE PROMPT (AUTO-SUGGESTION)
+    // ========================================================================================
+    function checkPromptPoverty(inputId, category) {
+      const el = document.getElementById(inputId);
+      if (!el) return;
+      const alertEl = document.getElementById(`${inputId}-poverty-alert`);
+      if (!alertEl) return;
+      const val = el.value.trim();
+      const wordCount = val.length > 0 ? val.split(/\s+/).length : 0;
+
+      // Alerta se o usuário digitar algo muito curto (menos de 32 chars ou menos de 5 palavras)
+      if (val.length > 0 && (val.length < 32 || wordCount < 5)) {
+        alertEl.classList.remove('hidden');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      } else {
+        alertEl.classList.add('hidden');
+      }
+    }
+
+    function applyPromptPreset(inputId, presetText, category) {
+      const el = document.getElementById(inputId);
+      if (!el) return;
+      if (!el.value.trim()) {
+        el.value = presetText;
+      } else {
+        el.value = el.value.trim() + ", " + presetText;
+      }
+      el.focus();
+      el.classList.add('ring-2', 'ring-cyan-400');
+      setTimeout(() => el.classList.remove('ring-2', 'ring-cyan-400'), 1200);
+      checkPromptPoverty(inputId, category);
+      if (typeof showToast === 'function') {
+        showToast('Ideia aplicada ao campo de prompt!', 'info');
+      }
+    }
+
+  </script>
 
   <!-- MODAL DE MELHORIA INTELIGENTE DE PROMPTS COM IA -->
   <div id="enhance-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">

@@ -29,6 +29,7 @@ class SunoStudioEngine:
             env = os.environ
         self.env = env
         self.gemini_key = env.get('GEMINI_API_KEY') or env.get('GOOGLE_API_KEY') or os.environ.get('GEMINI_API_KEY', '')
+        self.openrouter_key = env.get('OPENROUTER_API_KEY') or os.environ.get('OPENROUTER_API_KEY', '')
         self.hf_token = env.get('HF_TOKEN') or env.get('HUGGINGFACE_TOKEN') or os.environ.get('HF_TOKEN', '')
         self._diffrhythm_client = None
 
@@ -55,6 +56,8 @@ Formate a letra com timestamps em segundos para cada linha:
 Retorne APENAS o bloco de timestamps e letra, sem explicações."""
 
         for m_name in ("gemini-3.6-flash", "gemini-3.5-flash", "gemini-3-flash-preview"):
+            if not self.gemini_key:
+                break
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{m_name}:generateContent?key={self.gemini_key}"
             try:
                 r = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=20)
@@ -67,6 +70,23 @@ Retorne APENAS o bloco de timestamps e letra, sem explicações."""
                                 return lyrics
             except Exception as e:
                 print(f"[Suno Lyricist] Info ({e}).")
+
+        if self.openrouter_key:
+            for or_model in ("google/gemini-2.5-flash", "meta-llama/llama-3.3-70b-instruct"):
+                try:
+                    r = requests.post(
+                        "https://openrouter.ai/api/v1/chat/completions",
+                        headers={"Authorization": f"Bearer {self.openrouter_key}", "Content-Type": "application/json"},
+                        json={"model": or_model, "messages": [{"role": "user", "content": prompt}]},
+                        timeout=25
+                    )
+                    if r.status_code == 200:
+                        lyrics = r.json()["choices"][0]["message"]["content"].strip()
+                        if lyrics:
+                            return lyrics
+                except Exception:
+                    pass
+
         return self._fallback_lyrics(theme, genre)
 
     def _fallback_lyrics(self, theme, genre):
