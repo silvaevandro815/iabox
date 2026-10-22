@@ -63,6 +63,22 @@ class AISongCoverEngine:
         vocals_dest = os.path.join(output_dir, f"vocals_{uid}.wav")
         inst_dest = os.path.join(output_dir, f"instrumental_{uid}.wav")
 
+        demucs_bin = "/opt/demucs_env/bin/demucs" if os.path.exists("/opt/demucs_env/bin/demucs") else shutil.which("demucs")
+        if demucs_bin:
+            try:
+                cmd = [demucs_bin, "-d", "cpu", "-j", "4", "--two-stems=vocals", "-o", output_dir, song_path]
+                subprocess.run(cmd, check=True, capture_output=True)
+                track_name = os.path.splitext(os.path.basename(song_path))[0]
+                demucs_out_dir = os.path.join(output_dir, "htdemucs", track_name)
+                d_voc = os.path.join(demucs_out_dir, "vocals.wav")
+                d_inst = os.path.join(demucs_out_dir, "no_vocals.wav")
+                if os.path.exists(d_voc) and os.path.exists(d_inst):
+                    shutil.copy(d_voc, vocals_dest)
+                    shutil.copy(d_inst, inst_dest)
+                    return vocals_dest, inst_dest
+            except Exception as e:
+                print(f"[AI Cover] Demucs local ({e}). Tentando nuvem...")
+
         try:
             client = self.get_demucs_client()
             res = client.predict(audio=handle_file(song_path), api_name="/inference")
@@ -121,21 +137,43 @@ class AISongCoverEngine:
                 shutil.copy(original_vocals_path, output_path)
             return output_path
 
-    def mix_vocals_and_instrumental(self, converted_vocals, instrumental, output_song="output/musica_cover_final.mp3", vocal_vol=1.15, inst_vol=0.95):
+    def mix_vocals_and_instrumental(self, converted_vocals, instrumental, output_song="output/musica_cover_final.mp3", vocal_vol=1.45, inst_vol=0.88):
         os.makedirs(os.path.dirname(output_song) or '.', exist_ok=True)
+        # Masterização com Padrão Broadcast EBU R128 (-14 LUFS), de-mudding 300Hz e brilho vocal 3.8kHz
+        filter_complex = (
+            f"[0:a]highpass=f=100,"
+            f"equalizer=f=300:width_type=o:width=1.2:g=-3.8,"
+            f"equalizer=f=3800:width_type=o:width=1.5:g=4.5,"
+            f"equalizer=f=12000:width_type=o:width=1.0:g=3.5,"
+            f"compand=attacks=0.01:decays=0.1:points=-80/-80|-24/-12|-12/-6|0/-0.5:soft-knee=0.02,"
+            f"aecho=0.8:0.7:28:0.2,volume={vocal_vol}[voc];"
+            f"[1:a]equalizer=f=3500:width_type=o:width=2.0:g=-1.8,volume={inst_vol}[inst];"
+            f"[voc][inst]amix=inputs=2:duration=longest:dropout_transition=2,"
+            f"loudnorm=I=-14:TP=-1.0:LRA=7[out]"
+        )
         cmd = [
             "ffmpeg", "-y",
             "-i", converted_vocals,
             "-i", instrumental,
-            "-filter_complex",
-            f"[0:a]volume={vocal_vol}[v];[1:a]volume={inst_vol}[i];[v][i]amix=inputs=2:duration=longest:dropout_transition=2",
+            "-filter_complex", filter_complex,
+            "-map", "[out]",
             "-c:a", "libmp3lame",
             "-b:a", "320k",
             output_song
         ]
         result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if result.returncode != 0 or not os.path.exists(output_song):
-            shutil.copy(converted_vocals, output_song)
+            cmd_fb = [
+                "ffmpeg", "-y",
+                "-i", converted_vocals,
+                "-i", instrumental,
+                "-filter_complex", f"[0:a]volume={vocal_vol}[v];[1:a]volume={inst_vol}[i];[v][i]amix=inputs=2:duration=longest:dropout_transition=2",
+                "-c:a", "libmp3lame", "-b:a", "320k",
+                output_song
+            ]
+            subprocess.run(cmd_fb, capture_output=True)
+            if not os.path.exists(output_song):
+                shutil.copy(converted_vocals, output_song)
         return output_song
 
     def create_ai_song_cover(self, song_path, user_voice_path, output_song="output/musica_cover_final.mp3", pitch_shift=0, diffusion_steps=10):
