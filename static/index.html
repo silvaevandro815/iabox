@@ -250,8 +250,8 @@
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <h2 class="text-lg md:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-                    <span class="text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]">📺</span> Monitor de Cinema & VFX Multi-Take
+                  <h2 class="text-xl md:text-3xl font-black text-white tracking-tight flex items-center gap-2.5">
+                    <span class="text-cyan-400 drop-shadow-[0_0_10px_rgba(6,182,212,0.8)]">📺</span> Monitor de Vídeo & VFX
                   </h2>
                   <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-gradient-to-r from-amber-400 to-yellow-500 text-black tracking-wider shadow-md">
                     8K Cinema
@@ -273,16 +273,23 @@
 
           <!-- Player de Vídeo em Tamanho Grande Widescreen -->
           <div class="relative rounded-3xl overflow-hidden border-2 border-amber-400/60 shadow-2xl bg-black group max-w-4xl mx-auto ring-4 ring-amber-400/10">
-            <video id="hero-car-video" autoplay loop muted playsinline controls poster="/static/samples/eucarro_poster.jpg" class="w-full aspect-video object-cover rounded-3xl shadow-inner">
-              <source src="/static/samples/eucarro_cinema.mp4" type="video/mp4">
+            <video id="hero-car-video" autoplay loop muted playsinline controls poster="/static/samples/evandro_carro_poster_hd.jpg" class="w-full aspect-video object-cover rounded-3xl shadow-inner">
+              <source src="/static/samples/evandro_carro_cinema_hd.mp4" type="video/mp4">
               Seu navegador não suporta a tag de vídeo.
             </video>
 
             <!-- Overlay de Informações Cinematográficas -->
-            <div class="absolute top-4 left-4 bg-black/80 backdrop-blur-md border border-amber-400/40 px-3.5 py-1.5 rounded-full text-xs font-extrabold text-amber-300 flex items-center gap-2 shadow-lg pointer-events-none">
-              <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+            <div class="absolute top-4 left-4 bg-black/80 backdrop-blur-md border border-cyan-400/40 px-3.5 py-1.5 rounded-full text-xs font-extrabold text-cyan-300 flex items-center gap-2 shadow-lg pointer-events-none">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
               <span>CINEMA MULTI-TAKE EM MOVIMENTO REAL &bull; FÍSICA E LUZ DE ESTRADA</span>
             </div>
+          </div>
+
+          <!-- Legenda oficial idêntica ao print do Diretor -->
+          <div class="text-center py-1">
+            <span class="text-sm md:text-base font-extrabold text-cyan-400 tracking-wide drop-shadow-[0_0_8px_rgba(6,182,212,0.6)]">
+              Demonstração: Cinema Multi-Take em Movimento Real
+            </span>
           </div>
 
           <!-- Rodapé do Monitor com Benefícios em Destaque -->
