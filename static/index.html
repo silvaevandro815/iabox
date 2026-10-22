@@ -203,22 +203,59 @@
 
       
       <nav class="flex flex-wrap items-center justify-center gap-1.5 pt-1.5 border-t border-white/10">
-        <button data-tab="dashboard" onclick="switchTab('dashboard')" class="nav-btn active whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-cyan-400 bg-cyan-500/15 border border-cyan-400/30">🏠 Início</button>
-        <button data-tab="story" onclick="switchTab('story')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all">🎞️ Minha História <span class="ml-1 text-[9px] px-1.5 py-0.5 rounded-full bg-amber-400 text-black font-black">NOVO</span></button>
-        <button data-tab="video" onclick="switchTab('video')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">🎬 Vídeo</button>
-        <button data-tab="image" onclick="switchTab('image')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">📸 Imagem</button>
-        <button data-tab="suno" onclick="switchTab('suno')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">🎵 Música</button>
+        <button data-tab="dashboard" onclick="switchTab('dashboard')" class="nav-btn active whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-cyan-400 bg-cyan-500/15 border border-cyan-400/30 flex items-center gap-1.5">
+          <i data-lucide="home" class="w-3.5 h-3.5 text-cyan-400 drop-shadow-[0_0_6px_#00f0ff]"></i>
+          <span>Início</span>
+        </button>
+        <button data-tab="story" onclick="switchTab('story')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all flex items-center gap-1.5">
+          <i data-lucide="clapperboard" class="w-3.5 h-3.5 text-amber-400 drop-shadow-[0_0_6px_#f59e0b]"></i>
+          <span>Minha História</span>
+          <span class="ml-1 text-[9px] px-1.5 py-0.5 rounded-full bg-amber-400 text-black font-black">NOVO</span>
+        </button>
+        <button data-tab="video" onclick="switchTab('video')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all flex items-center gap-1.5">
+          <i data-lucide="video" class="w-3.5 h-3.5 text-cyan-400 drop-shadow-[0_0_6px_#06b6d4]"></i>
+          <span>Vídeo</span>
+        </button>
+        <button data-tab="image" onclick="switchTab('image')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all flex items-center gap-1.5">
+          <i data-lucide="camera" class="w-3.5 h-3.5 text-pink-400 drop-shadow-[0_0_6px_#ec4899]"></i>
+          <span>Imagem</span>
+        </button>
+        <button data-tab="suno" onclick="switchTab('suno')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all flex items-center gap-1.5">
+          <i data-lucide="music" class="w-3.5 h-3.5 text-purple-400 drop-shadow-[0_0_6px_#a855f7]"></i>
+          <span>Música</span>
+        </button>
         <details class="relative" id="nav-more">
-          <summary class="list-none cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all select-none">➕ Mais ferramentas</summary>
-          <div class="absolute left-0 top-full mt-1.5 z-50 w-56 rounded-2xl glass-panel border border-white/15 p-1.5 shadow-2xl space-y-0.5">
-            <button data-tab="canvas" onclick="switchTab('canvas'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10">⚡ Cinema 8K (cenas e filmes)</button>
-            <button data-tab="voice" onclick="switchTab('voice'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10">🎙️ Narração em português</button>
-            <button data-tab="clone" onclick="switchTab('clone'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10">🧬 Clonar minha voz</button>
-            <button data-tab="parody" onclick="switchTab('parody'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10">💿 Paródias e covers</button>
-            <button data-tab="about" onclick="switchTab('about'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10">👤 Sobre o criador</button>
+          <summary class="list-none cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all select-none flex items-center gap-1.5">
+            <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-blue-400 drop-shadow-[0_0_6px_#3b82f6]"></i>
+            <span>Mais ferramentas</span>
+          </summary>
+          <div class="absolute left-0 top-full mt-1.5 z-50 w-60 rounded-2xl glass-panel border border-white/15 p-1.5 shadow-2xl space-y-0.5">
+            <button data-tab="canvas" onclick="switchTab('canvas'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10 flex items-center gap-2">
+              <i data-lucide="film" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>Cinema 8K (cenas e filmes)</span>
+            </button>
+            <button data-tab="voice" onclick="switchTab('voice'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10 flex items-center gap-2">
+              <i data-lucide="mic" class="w-3.5 h-3.5 text-emerald-400"></i>
+              <span>Narração em português</span>
+            </button>
+            <button data-tab="clone" onclick="switchTab('clone'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10 flex items-center gap-2">
+              <i data-lucide="audio-waveform" class="w-3.5 h-3.5 text-cyan-400"></i>
+              <span>Clonar minha voz</span>
+            </button>
+            <button data-tab="parody" onclick="switchTab('parody'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10 flex items-center gap-2">
+              <i data-lucide="disc" class="w-3.5 h-3.5 text-fuchsia-400"></i>
+              <span>Paródias e covers</span>
+            </button>
+            <button data-tab="about" onclick="switchTab('about'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10 flex items-center gap-2">
+              <i data-lucide="user" class="w-3.5 h-3.5 text-gray-300"></i>
+              <span>Sobre o criador</span>
+            </button>
           </div>
         </details>
-        <button data-tab="memory" onclick="switchTab('memory')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-purple-300 hover:text-white bg-purple-500/15 border border-purple-400/30 transition-all">💾 Meus Criativos</button>
+        <button data-tab="memory" onclick="switchTab('memory')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-purple-300 hover:text-white bg-purple-500/15 border border-purple-400/30 transition-all flex items-center gap-1.5">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-purple-400 drop-shadow-[0_0_6px_#c084fc]"></i>
+          <span>Meus Criativos</span>
+        </button>
       </nav>
 
     </div>
@@ -251,7 +288,7 @@
               <div>
                 <div class="flex items-center gap-2">
                   <h2 class="text-xl md:text-3xl font-black text-white tracking-tight flex items-center gap-2.5">
-                    <span class="text-cyan-400 drop-shadow-[0_0_10px_rgba(6,182,212,0.8)]">📺</span> Monitor de Vídeo & VFX
+                    <span class="w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 drop-shadow-[0_0_10px_#00f0ff] shadow-inner"><i data-lucide="tv" class="w-4 h-4 text-cyan-300"></i></span> <span>Monitor de Vídeo & VFX</span>
                   </h2>
                   <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-gradient-to-r from-amber-400 to-yellow-500 text-black tracking-wider shadow-md">
                     8K Cinema
@@ -263,10 +300,10 @@
 
             <div class="flex items-center gap-2">
               <button type="button" onclick="toggleVideoMute('hero-car-video', this)" class="px-4 py-2 rounded-xl bg-dark-800 hover:bg-dark-700 border border-white/15 text-xs font-bold text-gray-200 flex items-center gap-2 transition-all shadow-sm">
-                <span id="hero-vol-icon">🔊</span> <span id="hero-vol-text">Ativar Som</span>
+                <span id="hero-vol-icon"><i data-lucide="volume-2" class="w-3.5 h-3.5 text-cyan-400 drop-shadow-[0_0_6px_#00f0ff]"></i></span> <span id="hero-vol-text">Ativar Som</span>
               </button>
               <button type="button" onclick="toggleVideoFullscreen('hero-car-video')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-500 hover:brightness-110 text-xs font-black text-black flex items-center gap-1.5 shadow-lg transition-all">
-                <span>⛶</span> Tela Cheia
+                <i data-lucide="maximize" class="w-3.5 h-3.5 text-black"></i> <span>Tela Cheia</span>
               </button>
             </div>
           </div>
@@ -278,11 +315,7 @@
               Seu navegador não suporta a tag de vídeo.
             </video>
 
-            <!-- Overlay de Informações Cinematográficas -->
-            <div class="absolute top-4 left-4 bg-black/80 backdrop-blur-md border border-cyan-400/40 px-3.5 py-1.5 rounded-full text-xs font-extrabold text-cyan-300 flex items-center gap-2 shadow-lg pointer-events-none">
-              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-              <span>CINEMA MULTI-TAKE EM MOVIMENTO REAL &bull; FÍSICA E LUZ DE ESTRADA</span>
-            </div>
+
           </div>
 
           <!-- Legenda oficial idêntica ao print do Diretor -->
@@ -319,7 +352,7 @@
                 <p class="text-[11px] text-gray-300 leading-relaxed">Gere cenas cinematográficas mantendo seus personagens fiéis.</p>
               </div>
               <button type="button" onclick="switchTab('canvas')" class="mt-2.5 w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 hover:opacity-95 text-black font-extrabold text-xs shadow-lg transition-all text-center">
-                🎬 Abrir Estúdio Cinema 8K &rarr;
+                <i data-lucide="film" class="w-3.5 h-3.5 text-black inline"></i> Abrir Estúdio Cinema 8K &rarr;
               </button>
             </div>
           </div>
@@ -482,7 +515,7 @@
           <div class="lg:col-span-7 space-y-4">
             <div id="hero-bonus-badge" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 text-xs font-extrabold tracking-wide uppercase">
               <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-              <span>🎁 Bônus de Teste: 50 Tokens Grátis Liberados no Seu IP</span>
+              <span><i data-lucide="gift" class="w-3.5 h-3.5 text-amber-400 inline drop-shadow-[0_0_6px_#f59e0b]"></i> Bônus de Teste: 50 Tokens Grátis Liberados no Seu IP</span>
             </div>
             <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold font-display leading-tight text-white">
               Estúdio de <span class="cyan-gradient-text">Cinema, Vídeo, Voz e Música</span> com IA
@@ -1037,7 +1070,7 @@
           </div>
           <div>
             <h3 class="text-base font-bold text-white flex items-center gap-2">
-              <span>📖 Tutorial Prático: Como Parodiar "Peão Todo Tatuado" Mantendo as Vozes Originais</span>
+              <span><i data-lucide="book-open" class="w-3.5 h-3.5 text-cyan-400 inline drop-shadow-[0_0_6px_#00f0ff]"></i> Tutorial Prático: Como Parodiar "Peão Todo Tatuado" Mantendo as Vozes Originais</span>
               <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">100% IA</span>
             </h3>
             <p class="text-xs text-gray-300">Siga estes 4 passos simples para trocar a letra da música mantendo a voz de Jeninho & Mariana Fagundes:</p>
@@ -1107,7 +1140,7 @@
               <label onclick="toggleParodyVocalMode('original_singers')" class="parody-vocal-option cursor-pointer p-3 rounded-2xl border-2 border-purple-400 bg-purple-500/15 flex flex-col gap-1 transition-all" id="vocal-opt-original">
                 <div class="flex items-center gap-2">
                   <input type="radio" name="parody_vocal_mode" value="original_singers" checked class="accent-purple-400">
-                  <span class="text-xs font-extrabold text-white">🎤 Cantores da Faixa</span>
+                  <span class="text-xs font-extrabold text-white"><i data-lucide="mic" class="w-3.5 h-3.5 text-purple-300 inline drop-shadow-[0_0_6px_#a855f7]"></i> Cantores da Faixa</span>
                 </div>
                 <p class="text-[10.5px] text-gray-300 leading-tight">Extração neural Demucs v4 e aplicação direta na nova letra.</p>
               </label>
@@ -1115,7 +1148,7 @@
               <label onclick="toggleParodyVocalMode('male_artist')" class="parody-vocal-option cursor-pointer p-3 rounded-2xl border border-white/15 bg-dark-800/80 hover:border-purple-400/60 flex flex-col gap-1 transition-all" id="vocal-opt-male">
                 <div class="flex items-center gap-2">
                   <input type="radio" name="parody_vocal_mode" value="male_artist" class="accent-purple-400">
-                  <span class="text-xs font-extrabold text-white">🤠 Voz Masculina RVC</span>
+                  <span class="text-xs font-extrabold text-white"><i data-lucide="user-check" class="w-3.5 h-3.5 text-purple-300 inline drop-shadow-[0_0_6px_#a855f7]"></i> Voz Masculina RVC</span>
                 </div>
                 <p class="text-[10.5px] text-gray-400 leading-tight">Voz sertaneja/pop encorpada com pitch tracking RMVPE.</p>
               </label>
@@ -1123,7 +1156,7 @@
               <label onclick="toggleParodyVocalMode('female_artist')" class="parody-vocal-option cursor-pointer p-3 rounded-2xl border border-white/15 bg-dark-800/80 hover:border-purple-400/60 flex flex-col gap-1 transition-all" id="vocal-opt-female">
                 <div class="flex items-center gap-2">
                   <input type="radio" name="parody_vocal_mode" value="female_artist" class="accent-purple-400">
-                  <span class="text-xs font-extrabold text-white">👸 Voz Feminina RVC</span>
+                  <span class="text-xs font-extrabold text-white"><i data-lucide="sparkles" class="w-3.5 h-3.5 text-purple-300 inline drop-shadow-[0_0_6px_#a855f7]"></i> Voz Feminina RVC</span>
                 </div>
                 <p class="text-[10.5px] text-gray-400 leading-tight">Voz sertaneja/pop feminina cristalina sem artefatos.</p>
               </label>
@@ -1131,7 +1164,7 @@
               <label onclick="toggleParodyVocalMode('custom_voice')" class="parody-vocal-option cursor-pointer p-3 rounded-2xl border border-white/15 bg-dark-800/80 hover:border-purple-400/60 flex flex-col gap-1 transition-all" id="vocal-opt-custom">
                 <div class="flex items-center gap-2">
                   <input type="radio" name="parody_vocal_mode" value="custom_voice" class="accent-purple-400">
-                  <span class="text-xs font-extrabold text-white">🎙️ Minha Voz Clonada</span>
+                  <span class="text-xs font-extrabold text-white"><i data-lucide="audio-lines" class="w-3.5 h-3.5 text-purple-300 inline drop-shadow-[0_0_6px_#a855f7]"></i> Minha Voz Clonada</span>
                 </div>
                 <p class="text-[10.5px] text-gray-400 leading-tight">Clonagem neural a partir de 1 minuto da sua fala.</p>
               </label>
@@ -1156,7 +1189,7 @@
           <div>
             <label class="block text-xs font-bold text-gray-200 mb-1.5">3. Áudio Guia da Paródia (Gravado Cantando na Batida) <span class="text-cyan-400">(Opcional / Recomendado)</span></label>
             <input type="file" id="parody-guide" accept="audio/*" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/20 file:text-cyan-300">
-            <p class="text-[11px] text-gray-400 mt-1">💡 <strong>Dica de Ouro:</strong> Basta você cantarolar ou falar a letra nova no ritmo da música gravando no celular/WhatsApp. A IA afina e transforma no timbre dos cantores originais. Se não enviar áudio guia, a IA sintetiza o guia neural automaticamente a partir do texto.</p>
+            <p class="text-[11px] text-gray-400 mt-1"><i data-lucide="lightbulb" class="w-3.5 h-3.5 text-amber-400 inline drop-shadow-[0_0_6px_#f59e0b]"></i> <strong>Dica de Ouro:</strong> Basta você cantarolar ou falar a letra nova no ritmo da música gravando no celular/WhatsApp. A IA afina e transforma no timbre dos cantores originais. Se não enviar áudio guia, a IA sintetiza o guia neural automaticamente a partir do texto.</p>
           </div>
 
           <!-- CAMPO CONDICIONAL: SUA VOZ CLONADA (SE MODO CUSTOM) -->
@@ -1186,7 +1219,7 @@
 
           <div class="p-4 rounded-2xl bg-purple-500/10 border border-purple-400/30 text-xs text-gray-300 space-y-1.5">
             <h5 class="text-purple-300 font-bold flex items-center gap-1.5">
-              <span>⚡ Como a IA gera a voz original cantando outra letra:</span>
+              <span><i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400 inline drop-shadow-[0_0_6px_#f59e0b]"></i> Como a IA gera a voz original cantando outra letra:</span>
             </h5>
             <p class="text-[11px] text-gray-400 leading-relaxed">
               O motor separa o vocal oficial em estúdio, calcula a curva de tom (F0 Pitch Contour) e o espectro de formantes da voz de Jeninho & Mariana Fagundes e transfere essa assinatura vocal para cantar as novas estrofes da sua paródia sobre o instrumental limpo.
@@ -1337,7 +1370,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <label onclick="onOmniDurationChanged('preview_10s')" id="omni-dur-opt-10s" class="cursor-pointer p-3 rounded-2xl border border-white/15 bg-dark-800 hover:border-cyan-400/50 flex flex-col justify-between transition-all">
                 <div class="flex items-center justify-between mb-1">
-                  <span class="text-xs font-bold text-white">⚡ Preview Rápido</span>
+                  <span class="text-xs font-bold text-white"><i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400 inline drop-shadow-[0_0_6px_#f59e0b]"></i> Preview Rápido</span>
                   <input type="radio" name="omni_duration" value="preview_10s" class="accent-cyan-400">
                 </div>
                 <div class="text-[11px] text-gray-400">5 a 10 segundos</div>
@@ -1349,7 +1382,7 @@
                   Mais Usado
                 </div>
                 <div class="flex items-center justify-between mb-1">
-                  <span class="text-xs font-extrabold text-white">🎬 Sequência Estendida</span>
+                  <span class="text-xs font-extrabold text-white"><i data-lucide="film" class="w-3.5 h-3.5 text-cyan-400 inline drop-shadow-[0_0_6px_#00f0ff]"></i> Sequência Estendida</span>
                   <input type="radio" name="omni_duration" value="extended_60s" checked class="accent-cyan-400">
                 </div>
                 <div class="text-[11px] text-cyan-200/80">30 a 60 segundos contínuos</div>
@@ -1358,7 +1391,7 @@
 
               <label onclick="onOmniDurationChanged('movie_5m')" id="omni-dur-opt-5m" class="cursor-pointer p-3 rounded-2xl border border-white/15 bg-dark-800 hover:border-purple-400/50 flex flex-col justify-between transition-all">
                 <div class="flex items-center justify-between mb-1">
-                  <span class="text-xs font-bold text-purple-300">🌟 Curta-Metragem</span>
+                  <span class="text-xs font-bold text-purple-300"><i data-lucide="star" class="w-3.5 h-3.5 text-purple-400 inline drop-shadow-[0_0_6px_#c084fc]"></i> Curta-Metragem</span>
                   <input type="radio" name="omni_duration" value="movie_5m" class="accent-purple-400">
                 </div>
                 <div class="text-[11px] text-gray-400">Até 5 minutos (Cena Longa)</div>
@@ -1401,11 +1434,11 @@
             <div>
               <label class="block text-sm font-semibold text-gray-200 mb-1.5">4. Modo de Transformação Omni Cinema Flow™</label>
               <select id="video-vfx-mode" onchange="onOmniModeChanged(this.value)" class="w-full bg-dark-800 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-cyan-400">
-                <option value="scene_swap">🌆 Troca Completa de Cenário & Relighting de Estúdio (Omni Turbo)</option>
-                <option value="character_swap">🎭 Substituir por Avatar / Influenciador (Face Lock Omni Turbo)</option>
-                <option value="multitake_cinema">🎥 Direção Multitakes de Cinema (Planos e Ângulos de Câmera)</option>
-                <option value="full_production" selected>🎬 Produção Comercial Completa (Criativos, HUD & Cortes)</option>
-                <option value="jump_cuts">✂️ Apenas Jump Cuts de Silêncio + Grade de Cor (Modo Padrão)</option>
+                <option value="scene_swap">Troca Completa de Cenário & Relighting de Estúdio (Omni Turbo)</option>
+                <option value="character_swap">Substituir por Avatar / Influenciador (Face Lock Omni Turbo)</option>
+                <option value="multitake_cinema">Direção Multitakes de Cinema (Planos e Ângulos de Câmera)</option>
+                <option value="full_production" selected>Produção Comercial Completa (Criativos, HUD & Cortes)</option>
+                <option value="jump_cuts">Apenas Jump Cuts de Silêncio + Grade de Cor (Modo Padrão)</option>
               </select>
             </div>
 
@@ -1530,13 +1563,13 @@
             <div>
               <label class="block text-sm font-semibold text-gray-200 mb-2">3. Motor Óptico 8K & Estilo</label>
               <select id="image-model-style" class="w-full bg-dark-800 border border-white/15 rounded-xl px-3.5 py-3 text-xs md:text-sm text-white focus:outline-none focus:border-pink-400">
-                <option value="Seedream 5 Pro">🌟 Seedream 5 Pro (8K Cinema & Realismo Extremo)</option>
-                <option value="NanoBanana Pro 2">🍌 NanoBanana Pro 2 (Fidelidade Multi-Referência 3 a 5 Fotos)</option>
-                <option value="Flux.1 Kontext Pro">🔒 Flux.1 Kontext Pro (100% Fidelização de Rosto / Face Lock)</option>
-                <option value="Magnific Cinema 8K">✨ Magnific Cinema 8K (Micro-Textura de Pele & Poros)</option>
-                <option value="GPT Image 2 Ultra">🧠 GPT Image 2 Ultra (Precisão Espacial & Composição)</option>
-                <option value="Qwen Image Edit Pro">🎨 Qwen Image Edit Pro (Re-Iluminação & Figurino)</option>
-                <option value="IABOX Cinema™ Dark Cinema">🎬 IABOX Cinema™ Dark Cinema (Anamórfico 35mm Hollywood)</option>
+                <option value="Seedream 5 Pro">Seedream 5 Pro (8K Cinema & Realismo Extremo)</option>
+                <option value="NanoBanana Pro 2">NanoBanana Pro 2 (Fidelidade Multi-Referência 3 a 5 Fotos)</option>
+                <option value="Flux.1 Kontext Pro">Flux.1 Kontext Pro (100% Fidelização de Rosto / Face Lock)</option>
+                <option value="Magnific Cinema 8K">Magnific Cinema 8K (Micro-Textura de Pele & Poros)</option>
+                <option value="GPT Image 2 Ultra">GPT Image 2 Ultra (Precisão Espacial & Composição)</option>
+                <option value="Qwen Image Edit Pro">Qwen Image Edit Pro (Re-Iluminação & Figurino)</option>
+                <option value="IABOX Cinema™ Dark Cinema">IABOX Cinema™ Dark Cinema (Anamórfico 35mm Hollywood)</option>
               </select>
             </div>
 
@@ -1600,7 +1633,7 @@
         <div class="flex flex-wrap items-center gap-2">
           <button onclick="toggleCanvasExpandMode()" id="btn-canvas-fullscreen" class="bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 hover:opacity-95 text-black font-extrabold px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-neon-cyan">
             <i data-lucide="monitor" class="w-4 h-4 text-black"></i>
-            <span>🖥️ Abrir Estúdio em Tela Inteira Exclusiva (100% Dedicada)</span>
+            <span><i data-lucide="expand" class="w-3.5 h-3.5 text-amber-300 inline"></i> Abrir Estúdio em Tela Inteira Exclusiva (100% Dedicada)</span>
           </button>
 
           <button onclick="downloadDirectToPC(currentGeneratedNodeUrl)" class="bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-200 font-extrabold px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5">
@@ -1649,7 +1682,7 @@
           <div class="flex-1 space-y-1">
             <div class="flex flex-wrap items-center gap-2">
               <span class="px-2.5 py-0.5 rounded-md bg-amber-400 text-black text-[10px] font-black uppercase tracking-wider">Agente Diretor de Filmes IA (ESG Neural Core 8K™)</span>
-              <span class="text-xs text-cyan-300 font-semibold">👑 VIP Evandro: Uso Infinito 8K &bull; Visitantes: Escalonado pelos Tokens</span>
+              <span class="text-xs text-cyan-300 font-semibold"><i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400 inline drop-shadow-[0_0_6px_#f59e0b]"></i> VIP Evandro: Uso Infinito 8K &bull; Visitantes: Escalonado pelos Tokens</span>
             </div>
             <p class="text-xs text-gray-300">Digite <strong>uma única frase</strong> e a IA gera o Roteiro Multi-Capítulos + Nós de <strong>[Personagem Fiel]</strong>, <strong>[Objeto/Veículo]</strong>, <strong>[Cenário]</strong> e <strong>[Cenas Conectadas]</strong> para filmes de até 2 horas:</p>
           </div>
@@ -1658,8 +1691,8 @@
             <input type="text" id="film-agent-idea-input" value="Filme de ação e ficção científica: Evandro pilota um V8 clássico blindado pelas estradas iluminadas rumo a uma metrópole futurista" placeholder="Descreva seu filme em 1 frase..." class="flex-1 bg-dark-900 border border-amber-400/40 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
 
             <select id="film-agent-scale-select" class="bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-amber-300 font-bold focus:outline-none">
-              <option value="feature_2h">🏆 Longa-Metragem (1h a 2 Horas &bull; 5 Atos / 24 Cap.)</option>
-              <option value="medium_30m">🎞️ Série / Média-Metragem (15 a 45 Min &bull; 12 Cap.)</option>
+              <option value="feature_2h">Longa-Metragem (1h a 2 Horas &bull; 5 Atos / 24 Cap.)</option>
+              <option value="medium_30m">Série / Média-Metragem (15 a 45 Min &bull; 12 Cap.)</option>
               <option value="short_3m">🎬 Curta / Trailer IMAX (1 a 5 Min &bull; 6 Cenas)</option>
             </select>
 
@@ -1873,13 +1906,13 @@
               <div class="flex items-center gap-1.5 bg-dark-800 border border-amber-400/30 rounded-lg px-2.5 py-1 text-gray-200">
                 <span class="w-2 h-2 rounded-full bg-amber-400"></span>
                 <select id="canvas-model-select" class="bg-transparent text-xs font-bold text-amber-300 focus:outline-none cursor-pointer">
-                  <option value="Seedream 5 Pro" class="bg-dark-900 text-white">🌟 Seedream 5 Pro (8K Cinema Master & Micro-Pores)</option>
-                  <option value="NanoBanana Pro 2" class="bg-dark-900 text-white">🍌 NanoBanana Pro 2 (Multi-Node Vision Consistency)</option>
-                  <option value="Flux.1 Kontext Pro" class="bg-dark-900 text-white">🔒 Flux.1 Kontext Pro (100% Face Fidelity Lock)</option>
-                  <option value="Magnific Cinema 8K" class="bg-dark-900 text-white">✨ Magnific Cinema 8K (Optical Skin & Detail)</option>
-                  <option value="GPT Image 2 Ultra" class="bg-dark-900 text-white">🧠 GPT Image 2 Ultra (High-Precision Scene)</option>
-                  <option value="Qwen Image Edit Pro" class="bg-dark-900 text-white">🎨 Qwen Image Edit Pro (Relighting & Costume)</option>
-                  <option value="IABOX Cinema™ Dark Cinema" class="bg-dark-900 text-white">🎬 IABOX Cinema™ Dark Cinema (Anamorphic 35mm)</option>
+                  <option value="Seedream 5 Pro" class="bg-dark-900 text-white">Seedream 5 Pro (8K Cinema Master & Micro-Pores)</option>
+                  <option value="NanoBanana Pro 2" class="bg-dark-900 text-white">NanoBanana Pro 2 (Multi-Node Vision Consistency)</option>
+                  <option value="Flux.1 Kontext Pro" class="bg-dark-900 text-white">Flux.1 Kontext Pro (100% Face Fidelity Lock)</option>
+                  <option value="Magnific Cinema 8K" class="bg-dark-900 text-white">Magnific Cinema 8K (Optical Skin & Detail)</option>
+                  <option value="GPT Image 2 Ultra" class="bg-dark-900 text-white">GPT Image 2 Ultra (High-Precision Scene)</option>
+                  <option value="Qwen Image Edit Pro" class="bg-dark-900 text-white">Qwen Image Edit Pro (Relighting & Costume)</option>
+                  <option value="IABOX Cinema™ Dark Cinema" class="bg-dark-900 text-white">IABOX Cinema™ Dark Cinema (Anamorphic 35mm)</option>
                 </select>
               </div>
 
@@ -3910,11 +3943,11 @@
       } else if (dur === 'extended_60s') {
         if (opt60) opt60.className = 'cursor-pointer p-3 rounded-2xl border-2 border-cyan-400 bg-cyan-500/15 flex flex-col justify-between transition-all relative';
         if (btnText) btnText.innerText = 'Renderizar Sequência Estendida (40 Créditos Turbo)';
-        setMascotMessage('🎬 Sequência Estendida (30-60s): Diferente do Google Veo que trava aos 10s, o IABOX roda sua tomada completa sem cortes!');
+        setMascotMessage('<i data-lucide="film" class="w-3.5 h-3.5 text-cyan-400 inline drop-shadow-[0_0_6px_#00f0ff]"></i> Sequência Estendida (30-60s): Diferente do Google Veo que trava aos 10s, o IABOX roda sua tomada completa sem cortes!');
       } else {
         if (opt5m) opt5m.className = 'cursor-pointer p-3 rounded-2xl border-2 border-purple-400 bg-purple-500/15 flex flex-col justify-between transition-all';
         if (btnText) btnText.innerText = 'Renderizar Curta de até 5 Min (Passaporte VIP)';
-        setMascotMessage('🌟 Curta-Metragem de até 5m: Máximo poder em resolução 8K com renderização de cinema!');
+        setMascotMessage('<i data-lucide="star" class="w-3.5 h-3.5 text-purple-400 inline drop-shadow-[0_0_6px_#c084fc]"></i> Curta-Metragem de até 5m: Máximo poder em resolução 8K com renderização de cinema!');
       }
     }
 
@@ -4207,7 +4240,7 @@
           dock.style.width = 'calc(100% - 415px)';
         }
 
-        if (btnTop) btnTop.innerHTML = '<i data-lucide="maximize" class="w-4 h-4"></i><span>🖥️ Abrir Estúdio em Tela Inteira Dedicada (100% Exclusivo)</span>';
+        if (btnTop) btnTop.innerHTML = '<i data-lucide="maximize" class="w-4 h-4"></i><span><i data-lucide="expand" class="w-3.5 h-3.5 text-amber-300 inline"></i> Abrir Estúdio em Tela Inteira Dedicada (100% Exclusivo)</span>';
         if (btnHud) btnHud.innerHTML = '🖥️ Tela Inteira Dedicada';
         if (document.fullscreenElement && document.exitFullscreen) {
           document.exitFullscreen().catch(() => {});
@@ -5508,13 +5541,14 @@
       const icon = document.getElementById('hero-vol-icon');
       const txt = document.getElementById('hero-vol-text');
       if (vid.muted) {
-        if (icon) icon.textContent = '🔇';
+        if (icon) icon.innerHTML = '<i data-lucide="volume-x" class="w-3.5 h-3.5 text-gray-400"></i>';
         if (txt) txt.textContent = 'Ativar Som';
       } else {
-        if (icon) icon.textContent = '🔊';
+        if (icon) icon.innerHTML = '<i data-lucide="volume-2" class="w-3.5 h-3.5 text-cyan-400 drop-shadow-[0_0_6px_#00f0ff]"></i>';
         if (txt) txt.textContent = 'Mutar Som';
         vid.play().catch(() => {});
       }
+      if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     function toggleVideoFullscreen(videoId) {
