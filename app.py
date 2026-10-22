@@ -137,7 +137,7 @@ app.add_middleware(
 
 def sanitize_error_msg(err: Exception) -> str:
     msg = str(err)
-    for secret_term in ("ffmpeg", "gradio", "huggingface", "pollinations", "gemini", "supabase", "sqlite", "edge_tts", "traceback", "hf.space"):
+    for secret_term in ("ffmpeg", "gradio", "huggingface", "pollinations", "gemini", "supabase", "sqlite", "edge_tts", "traceback", "hf.space", "runpod", "nvidia", "antigravity", "bs-roformer", "rvc", "so-vits", "demucs", "whisper", "cuda", "torch"):
         if secret_term in msg.lower():
             return "Motor Neural ESG 8K processando alta demanda. Tente novamente em alguns segundos."
     return msg[:220]
@@ -1006,43 +1006,6 @@ def delete_user_memory_item(creation_id: str, user_id: str = Query("")):
         except Exception:
             pass
     return {"status": "success", "message": "Criativo excluído com sucesso da memória."}
-    ip = extract_client_ip(request)
-    vip = is_founder_vip(user_id, ip)
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    if vip:
-        c.execute("SELECT id, user_id, ip, category, title, prompt, result_url, metadata, created_at FROM user_creations ORDER BY created_at DESC LIMIT 100")
-    else:
-        c.execute("SELECT id, user_id, ip, category, title, prompt, result_url, metadata, created_at FROM user_creations WHERE user_id = ? OR ip = ? ORDER BY created_at DESC LIMIT 60", (user_id, ip))
-    rows = c.fetchall()
-    conn.close()
-
-    creations = []
-    for r in rows:
-        try:
-            meta = json.loads(r[7] or "{}")
-        except Exception:
-            meta = {}
-        creations.append({
-            "id": r[0],
-            "user_id": r[1],
-            "ip": r[2],
-            "category": r[3],
-            "title": r[4],
-            "prompt": r[5],
-            "result_url": r[6],
-            "metadata": meta,
-            "created_at": r[8]
-        })
-
-    return {
-        "status": "success",
-        "is_vip": vip,
-        "ip": ip,
-        "user_id": user_id,
-        "supabase_synced": bool(SUPABASE_URL and SUPABASE_KEY),
-        "creations": creations
-    }
 
 @app.get("/api/admin/access-logs")
 def get_access_logs(request: Request, user_id: str = "default_user"):
@@ -1331,6 +1294,54 @@ async def create_parody(
 
     return {"status": "started", "job_id": job_id, "message": f"Produção de {mode_label} iniciada.", "cost": 20}
 
+@app.post("/api/music/audit-qc")
+async def audit_parody_qc(
+    audio_file: Optional[UploadFile] = File(None),
+    relative_url: Optional[str] = Form(None)
+):
+    """
+    Auditoria Técnica Canônica de Áudio (QC) - Conforme especificação fonográfica de 8 estágios.
+    Mede LUFS (ITU-R BS.1770), True Peak, LRA, Correlação Estéreo L/R e Espectro por bandas.
+    """
+    try:
+        import importlib
+        qc_mod = importlib.import_module("scripts.audio_qc_engine")
+        target_path = None
+        temp_created = False
+
+        if audio_file and audio_file.filename:
+            target_path = os.path.join(UPLOAD_DIR, f"qc_{uuid.uuid4().hex[:8]}_{audio_file.filename}")
+            with open(target_path, "wb") as f:
+                shutil.copyfileobj(audio_file.file, f)
+            temp_created = True
+        elif relative_url:
+            clean_rel = relative_url.strip().lstrip("/")
+            if clean_rel.startswith("output/"):
+                clean_rel = clean_rel.replace("output/", "", 1)
+                target_path = os.path.join(OUTPUT_DIR, clean_rel)
+            elif clean_rel.startswith("static/"):
+                clean_rel = clean_rel.replace("static/", "", 1)
+                target_path = os.path.join("static", clean_rel)
+            else:
+                p1 = os.path.join(OUTPUT_DIR, clean_rel)
+                p2 = os.path.join("static", clean_rel)
+                target_path = p1 if os.path.exists(p1) else p2
+
+        if not target_path or not os.path.exists(target_path):
+            raise HTTPException(status_code=400, detail="Arquivo para auditoria de QC não encontrado.")
+
+        report = qc_mod.audit_full_pipeline(target_path)
+        if temp_created and os.path.exists(target_path):
+            try:
+                os.remove(target_path)
+            except Exception:
+                pass
+
+        return {"status": "success", "report": report}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro na auditoria de QC: {str(e)}")
+
+
 # ----------------------------------------------------------------------------------------
 # 5. GERADOR DE IMAGENS & CRIATIVOS PUBLICITÁRIOS (SUPORTE A 3 A 5 IMAGENS DE REFERÊNCIA)
 # ----------------------------------------------------------------------------------------
@@ -1392,12 +1403,55 @@ async def generate_image(
 # ----------------------------------------------------------------------------------------
 # 6. ESTÚDIO DE VÍDEOS VIRAIS & VFX (ATÉ 5 MINUTOS + 3 A 5 IMAGENS REF + VÍDEOS AUXILIARES)
 # ----------------------------------------------------------------------------------------
+
+@app.post("/api/video/omni-check")
+async def check_omni_requirements(
+    duration_mode: str = Form("extended_60s"),
+    vfx_mode: str = Form("full_production"),
+    user_id: str = Form("default_user")
+):
+    current_credits = get_user_credits(user_id)
+    is_heavy = (duration_mode in ["extended_60s", "movie_5m"]) or (vfx_mode in ["character_swap", "scene_swap", "multitake_cinema"])
+    required_credits = 40 if is_heavy else 10
+
+    if not is_heavy:
+        return {
+            "is_turbo": False,
+            "can_run": current_credits >= required_credits,
+            "required_credits": required_credits,
+            "current_credits": current_credits
+        }
+
+    # Tarefa pesada (Omni Turbo)
+    if current_credits >= required_credits:
+        return {
+            "is_turbo": True,
+            "can_run": True,
+            "required_credits": required_credits,
+            "current_credits": current_credits,
+            "message": "Saldo Turbo suficiente. Produção liberada no IABOX Omni Cinema Flow™."
+        }
+    else:
+        return {
+            "is_turbo": True,
+            "can_run": False,
+            "required_credits": required_credits,
+            "current_credits": current_credits,
+            "title": "Desbloqueie o Poder IABOX Omni Cinema Flow™",
+            "message": "Você configurou uma Sequência Cinematográfica com Avatar/Troca de Cenário. Enquanto o Google Veo trava em 10 segundos, o IABOX renderiza sua sequência contínua de até 5 minutos com nosso Cluster Neural Turbo!",
+            "upgrade_package": "single_gpu",
+            "price_brl": 19.90,
+            "studio_package": "studio_gpu",
+            "studio_price_brl": 79.90
+        }
+
 @app.post("/api/video/edit")
 async def edit_viral_video(
     video_file: UploadFile = File(...),
     ref_images: List[UploadFile] = File(default=[]),
     overlay_video: Optional[UploadFile] = File(None),
     vfx_mode: str = Form("full_production"),
+    duration_mode: str = Form("preview_10s"),
     creative_prompt: str = Form(""),
     aspect_ratio: str = Form("9:16"),
     silence_removal: bool = Form(True),
@@ -1405,8 +1459,12 @@ async def edit_viral_video(
     punch_zoom: bool = Form(True),
     user_id: str = Form("default_user")
 ):
-    if not deduct_credits(user_id, amount=10):
-        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 10 créditos).")
+    is_heavy = (duration_mode in ["extended_60s", "movie_5m"]) or (vfx_mode in ["character_swap", "scene_swap", "multitake_cinema"])
+    required_credits = 40 if is_heavy else 10
+
+    if not deduct_credits(user_id, amount=required_credits):
+        cost_desc = f"{required_credits} créditos (Modo IABOX Omni Turbo)." if is_heavy else "10 créditos."
+        raise HTTPException(status_code=402, detail=f"Saldo insuficiente (necessário {cost_desc})")
 
     req_ip = client_ip_var.get()
     job_id = str(uuid.uuid4())
@@ -2006,7 +2064,9 @@ Conhecimento Técnico Completo do Sistema IABOX que você ensina ao usuário:
 PACKAGES = {
     "starter": {"name": "Pacote Starter (100 Créditos)", "credits": 100, "price_brl": 29.90, "cents": 2990},
     "pro": {"name": "Pacote Pro (250 Créditos)", "credits": 250, "price_brl": 59.90, "cents": 5990},
-    "viral": {"name": "Pacote Viral Agency (700 Créditos)", "credits": 700, "price_brl": 129.90, "cents": 12990}
+    "viral": {"name": "Pacote Viral Agency (700 Créditos)", "credits": 700, "price_brl": 129.90, "cents": 12990},
+    "single_gpu": {"name": "Produção Única IABOX Neural Turbo (Alta Fidelidade)", "credits": 40, "price_brl": 19.90, "cents": 1990},
+    "studio_gpu": {"name": "Passaporte Studio IABOX Neural Turbo (Cinema & Paródia)", "credits": 200, "price_brl": 79.90, "cents": 7990}
 }
 
 @app.post("/api/stripe/create-checkout")
@@ -2096,6 +2156,702 @@ async def stripe_webhook(request: Request):
         return {"status": "success"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+# ----------------------------------------------------------------------------------------
+# 9. RUNPOD GPU ORCHESTRATION & TELEMETRY
+# ----------------------------------------------------------------------------------------
+@app.get("/api/admin/runpod/status")
+async def get_runpod_admin_status():
+    try:
+        from scripts.runpod_gpu_manager import RunPodGPUManager
+        mgr = RunPodGPUManager()
+        st = mgr.get_status()
+        econ_parody = mgr.calculate_job_economics("parody_stem_separation")
+        econ_cinema = mgr.calculate_job_economics("cinematic_video_8k")
+        econ_pack = mgr.calculate_job_economics("studio_pack_5")
+        return {
+            "status": "success",
+            "runpod": st,
+            "economics": {
+                "parody": econ_parody,
+                "cinematic": econ_cinema,
+                "studio_pack": econ_pack
+            }
+        }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@app.post("/api/admin/runpod/test-alert")
+async def trigger_runpod_alert():
+    try:
+        from scripts.runpod_gpu_manager import RunPodGPUManager
+        mgr = RunPodGPUManager()
+        res = mgr.trigger_low_balance_alert()
+        return {"status": "success", "result": res}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+import re
+
+# ----------------------------------------------------------------------------------------
+# 10. IABOX STORY TIMELINE™ — LINHA DO TEMPO DE HISTÓRIA COM CONTINUIDADE DE CENA
+#     (mesmo cenário, personagens e iluminação em ângulos de câmera diferentes)
+# ----------------------------------------------------------------------------------------
+import math as _math
+
+STORY_SHOTS = {
+    "wide":          {"label": "Plano Geral",        "cam": "wide_anamorphic", "desc": "wide establishing shot of the whole environment"},
+    "medium":        {"label": "Plano Médio",        "cam": "default",         "desc": "medium shot framed from the waist up"},
+    "close":         {"label": "Close-up",           "cam": "close_up_85mm",   "desc": "tight close-up on the face and emotion"},
+    "over_shoulder": {"label": "Sobre o Ombro",      "cam": "over_shoulder",   "desc": "over-the-shoulder shot"},
+    "reverse":       {"label": "Contraplano",        "cam": "default",         "desc": "reverse shot from the opposite side of the same room, same window/lamp positions"},
+    "low_angle":     {"label": "Ângulo Baixo (Herói)", "cam": "low_angle_hero", "desc": "low-angle hero shot"},
+    "side":          {"label": "Perfil Lateral",     "cam": "side_profile",    "desc": "side-profile tracking shot"},
+    "insert":        {"label": "Detalhe (Inserto)",  "cam": "default",         "desc": "macro insert shot of a meaningful object already present in the scene"},
+    "aerial":        {"label": "Visão de Drone",     "cam": "drone_aerial",    "desc": "high aerial view of the same location"},
+    "tension":       {"label": "Ângulo Inclinado",   "cam": "dutch_angle",     "desc": "tilted dutch-angle tension shot"},
+}
+STORY_LIGHT_MOODS = {"default", "golden_hour", "cyberpunk_neon", "chiaroscuro_noir", "imax_daylight", "fire_volumetric"}
+STORY_MAX_CLIPS = 40
+
+def init_story_tables():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("""CREATE TABLE IF NOT EXISTS story_projects (
+        id TEXT PRIMARY KEY, user_id TEXT, title TEXT, bible TEXT,
+        aspect_ratio TEXT DEFAULT '16:9', anchor_path TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)""")
+    c.execute("""CREATE TABLE IF NOT EXISTS story_clips (
+        id TEXT PRIMARY KEY, project_id TEXT, user_id TEXT, position INTEGER DEFAULT 0,
+        shot_type TEXT DEFAULT 'medium', prompt TEXT, duration REAL DEFAULT 5,
+        transition TEXT DEFAULT 'cut', source TEXT DEFAULT 'ai',
+        status TEXT DEFAULT 'draft', progress INTEGER DEFAULT 0,
+        result_url TEXT, keyframe_url TEXT, error TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)""")
+    c.execute("CREATE INDEX IF NOT EXISTS idx_story_clips_project ON story_clips(project_id, position)")
+    c.execute("CREATE INDEX IF NOT EXISTS idx_story_projects_user ON story_projects(user_id)")
+    conn.commit()
+    conn.close()
+
+init_story_tables()
+
+def _story_uid(user_id: str) -> str:
+    return (user_id or "default_user").strip().lower()
+
+def _story_local_path(url: str):
+    clean = (url or "").split("?")[0].lstrip("/")
+    if ".." in clean or not (clean.startswith("output/") or clean.startswith("static/samples/")):
+        return None
+    return clean if os.path.exists(clean) else None
+
+def _story_project_row(c, project_id, uid):
+    c.execute("SELECT id, title, bible, aspect_ratio, anchor_path, created_at FROM story_projects WHERE id = ? AND user_id = ?", (project_id, uid))
+    return c.fetchone()
+
+def _story_project_payload(c, row):
+    c.execute("""SELECT id, position, shot_type, prompt, duration, transition, source, status, progress, result_url, keyframe_url, error
+                 FROM story_clips WHERE project_id = ? ORDER BY position ASC, created_at ASC""", (row[0],))
+    clips = [{
+        "id": r[0], "position": r[1], "shot_type": r[2], "shot_label": STORY_SHOTS.get(r[2], {}).get("label", r[2]),
+        "prompt": r[3], "duration": r[4], "transition": r[5], "source": r[6], "status": r[7],
+        "progress": r[8], "result_url": r[9], "keyframe_url": r[10], "error": r[11]
+    } for r in c.fetchall()]
+    try:
+        bible = json.loads(row[2] or "{}")
+    except Exception:
+        bible = {}
+    return {
+        "id": row[0], "title": row[1], "bible": bible, "aspect_ratio": row[3],
+        "has_anchor": bool(row[4]), "created_at": row[5], "clips": clips,
+        "total_duration": round(sum((cl["duration"] or 0) for cl in clips if cl["status"] == "done"), 1)
+    }
+
+def _story_probe_duration(path: str) -> float:
+    try:
+        out = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", path],
+                             capture_output=True, text=True, timeout=30).stdout.strip()
+        return round(float(out), 2)
+    except Exception:
+        return 5.0
+
+def _story_extract_frame(video_path: str, out_jpg: str, at_end: bool = True) -> bool:
+    cmd = ["ffmpeg", "-y"] + (["-sseof", "-0.2"] if at_end else ["-ss", "1"]) + ["-i", video_path, "-frames:v", "1", "-q:v", "2", out_jpg]
+    try:
+        subprocess.run(cmd, capture_output=True, timeout=60)
+        return os.path.exists(out_jpg) and os.path.getsize(out_jpg) > 0
+    except Exception:
+        return False
+
+def _story_compile_prompt(bible: dict, shot_key: str, action: str, prev_action: str = "") -> str:
+    shot = STORY_SHOTS.get(shot_key, STORY_SHOTS["medium"])
+    parts = [
+        "SAME SCENE CONTINUITY — this frame belongs to one continuous film; the location, props, characters, wardrobe and lighting must be IDENTICAL to the reference images.",
+        f"Location: {bible.get('setting', '')}." if bible.get("setting") else "",
+        f"Time of day: {bible.get('time_of_day', '')}." if bible.get("time_of_day") else "",
+        f"Light source (keep direction, color temperature and shadow side identical in every shot): {bible.get('lighting_source', '')}." if bible.get("lighting_source") else "",
+        f"Characters (same faces, same clothes): {bible.get('characters', '')}." if bible.get("characters") else "",
+        f"Visual style: {bible.get('style', 'photorealistic cinematic film')}.",
+        f"Camera: {shot['desc']}.",
+        f"Previous moment of the story: {prev_action}." if prev_action else "",
+        f"Action in this shot: {action}.",
+        "Photorealistic, no text, no watermark, no subtitles."
+    ]
+    return " ".join(p for p in parts if p)
+
+def _story_quote(duration: float, uses_continuity: bool):
+    heavy = duration > 10 or uses_continuity
+    return (25 if heavy else 10), heavy
+
+@app.post("/api/story/project/create")
+def story_create_project(
+    title: str = Form("Minha História"),
+    setting: str = Form(""),
+    time_of_day: str = Form(""),
+    lighting_source: str = Form(""),
+    lighting_mood: str = Form("default"),
+    characters: str = Form(""),
+    style: str = Form("photorealistic cinematic film"),
+    aspect_ratio: str = Form("16:9"),
+    anchor_image: Optional[UploadFile] = File(None),
+    user_id: str = Form("default_user")
+):
+    uid = _story_uid(user_id)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT COUNT(*) FROM story_projects WHERE user_id = ?", (uid,))
+    if c.fetchone()[0] >= 60:
+        conn.close()
+        raise HTTPException(status_code=400, detail="Limite de projetos atingido. Exclua algum projeto antigo.")
+    pid = str(uuid.uuid4())
+    anchor_path = None
+    if anchor_image and anchor_image.filename:
+        ext = os.path.splitext(anchor_image.filename)[1].lower()
+        if ext not in (".jpg", ".jpeg", ".png", ".webp"):
+            conn.close()
+            raise HTTPException(status_code=400, detail="Envie uma imagem JPG, PNG ou WEBP.")
+        anchor_path = os.path.join(UPLOAD_DIR, f"story_anchor_{pid[:8]}{ext}")
+        with open(anchor_path, "wb") as f:
+            shutil.copyfileobj(anchor_image.file, f)
+    bible = {
+        "setting": setting[:500], "time_of_day": time_of_day[:100], "lighting_source": lighting_source[:300],
+        "lighting_mood": lighting_mood if lighting_mood in STORY_LIGHT_MOODS else "default",
+        "characters": characters[:700], "style": style[:200]
+    }
+    c.execute("INSERT INTO story_projects (id, user_id, title, bible, aspect_ratio, anchor_path) VALUES (?, ?, ?, ?, ?, ?)",
+              (pid, uid, title[:120] or "Minha História", json.dumps(bible, ensure_ascii=False),
+               aspect_ratio if aspect_ratio in ("16:9", "9:16", "1:1") else "16:9", anchor_path))
+    conn.commit()
+    conn.close()
+    return {"status": "success", "project_id": pid}
+
+@app.post("/api/story/project/from-creation")
+def story_project_from_creation(
+    result_url: str = Form(...),
+    title: str = Form("Minha História"),
+    aspect_ratio: str = Form("16:9"),
+    user_id: str = Form("default_user")
+):
+    """Transforma um vídeo já criado pelo usuário no Clipe 1 de uma nova história (a IA aprende o cenário dele)."""
+    uid = _story_uid(user_id)
+    vid_path = _story_local_path(result_url)
+    if not vid_path:
+        raise HTTPException(status_code=404, detail="Vídeo não encontrado na sua memória.")
+    pid = str(uuid.uuid4())
+    cid = str(uuid.uuid4())
+    key_name = f"story_kf_{cid[:8]}.jpg"
+    key_path = os.path.join(OUTPUT_DIR, key_name)
+    anchor_path = key_path if _story_extract_frame(vid_path, key_path, at_end=True) else None
+    dur = _story_probe_duration(vid_path)
+
+    original_prompt = ""
+    try:
+        conn0 = sqlite3.connect(DB_PATH)
+        c0 = conn0.cursor()
+        c0.execute("SELECT prompt FROM user_creations WHERE result_url = ? AND LOWER(user_id) = ? ORDER BY created_at DESC LIMIT 1", (result_url.split("?")[0], uid))
+        r0 = c0.fetchone()
+        conn0.close()
+        original_prompt = (r0[0] if r0 else "") or ""
+    except Exception:
+        pass
+
+    bible = {"setting": original_prompt[:300], "time_of_day": "", "lighting_source": "", "lighting_mood": "default",
+             "characters": "", "style": "photorealistic cinematic film"}
+    try:
+        from scripts.magnific_canvas_engine import MagnificCanvasEngine
+        eng = MagnificCanvasEngine()
+        parts = []
+        if anchor_path:
+            with open(anchor_path, "rb") as fh:
+                parts.append({"inline_data": {"mime_type": "image/jpeg", "data": base64.b64encode(fh.read()).decode()}})
+        txt = eng._call_llm_text(
+            "Analise este quadro final de um vídeo (e o prompt original: '" + original_prompt[:300] + "'). "
+            "Responda SOMENTE um JSON com as chaves: setting (cenário detalhado em inglês), time_of_day, "
+            "lighting_source (de onde vem a luz: janela à esquerda, lâmpada no teto, sol baixo etc., em inglês), "
+            "characters (aparência física e roupa de cada personagem em inglês), style.",
+            parts=parts, timeout=20)
+        m = re.search(r"\{.*\}", txt or "", re.S)
+        if m:
+            data = json.loads(m.group(0))
+            for k in ("setting", "time_of_day", "lighting_source", "characters", "style"):
+                if isinstance(data.get(k), str) and data[k].strip():
+                    bible[k] = data[k].strip()[:600]
+    except Exception:
+        pass
+
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("INSERT INTO story_projects (id, user_id, title, bible, aspect_ratio, anchor_path) VALUES (?, ?, ?, ?, ?, ?)",
+              (pid, uid, title[:120] or "Minha História", json.dumps(bible, ensure_ascii=False),
+               aspect_ratio if aspect_ratio in ("16:9", "9:16", "1:1") else "16:9", anchor_path))
+    c.execute("""INSERT INTO story_clips (id, project_id, user_id, position, shot_type, prompt, duration, source, status, progress, result_url, keyframe_url)
+                 VALUES (?, ?, ?, 0, 'wide', ?, ?, 'imported', 'done', 100, ?, ?)""",
+              (cid, pid, uid, original_prompt[:500] or "Cena inicial", dur, result_url.split("?")[0],
+               f"/output/{key_name}" if anchor_path else None))
+    conn.commit()
+    conn.close()
+    return {"status": "success", "project_id": pid, "bible": bible}
+
+@app.get("/api/story/projects")
+def story_list_projects(user_id: str = Query("default_user")):
+    uid = _story_uid(user_id)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("""SELECT p.id, p.title, p.aspect_ratio, p.created_at,
+                        (SELECT COUNT(*) FROM story_clips WHERE project_id = p.id) AS n,
+                        (SELECT keyframe_url FROM story_clips WHERE project_id = p.id AND keyframe_url IS NOT NULL ORDER BY position ASC LIMIT 1) AS thumb
+                 FROM story_projects p WHERE p.user_id = ? ORDER BY p.updated_at DESC""", (uid,))
+    rows = [{"id": r[0], "title": r[1], "aspect_ratio": r[2], "created_at": r[3], "clips": r[4], "thumb": r[5]} for r in c.fetchall()]
+    conn.close()
+    return {"projects": rows}
+
+@app.get("/api/story/project/{project_id}")
+def story_get_project(project_id: str, user_id: str = Query("default_user")):
+    uid = _story_uid(user_id)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    row = _story_project_row(c, project_id, uid)
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Projeto não encontrado.")
+    payload = _story_project_payload(c, row)
+    conn.close()
+    return payload
+
+@app.post("/api/story/project/update")
+def story_update_project(
+    project_id: str = Form(...),
+    title: str = Form(""),
+    setting: str = Form(""),
+    time_of_day: str = Form(""),
+    lighting_source: str = Form(""),
+    lighting_mood: str = Form("default"),
+    characters: str = Form(""),
+    style: str = Form(""),
+    user_id: str = Form("default_user")
+):
+    uid = _story_uid(user_id)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    row = _story_project_row(c, project_id, uid)
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Projeto não encontrado.")
+    bible = json.loads(row[2] or "{}")
+    for k, v, mx in (("setting", setting, 500), ("time_of_day", time_of_day, 100), ("lighting_source", lighting_source, 300),
+                     ("characters", characters, 700), ("style", style, 200)):
+        if v.strip():
+            bible[k] = v.strip()[:mx]
+    if lighting_mood in STORY_LIGHT_MOODS:
+        bible["lighting_mood"] = lighting_mood
+    c.execute("UPDATE story_projects SET bible = ?, title = COALESCE(NULLIF(?, ''), title), updated_at = CURRENT_TIMESTAMP WHERE id = ? AND user_id = ?",
+              (json.dumps(bible, ensure_ascii=False), title[:120], project_id, uid))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
+@app.post("/api/story/project/delete")
+def story_delete_project(project_id: str = Form(...), user_id: str = Form("default_user")):
+    uid = _story_uid(user_id)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("DELETE FROM story_clips WHERE project_id = ? AND user_id = ?", (project_id, uid))
+    c.execute("DELETE FROM story_projects WHERE id = ? AND user_id = ?", (project_id, uid))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
+@app.post("/api/story/quote")
+def story_quote(duration: float = Form(5), user_id: str = Form("default_user")):
+    """Mesmo contrato do omni-check: informa custo e, se faltar saldo, devolve a oferta de recarga."""
+    cost, heavy = _story_quote(max(1.0, min(duration, 30.0)), True)
+    cur = get_user_credits(user_id)
+    if cur >= cost:
+        return {"can_run": True, "is_turbo": heavy, "required_credits": cost, "current_credits": cur}
+    return {
+        "can_run": False, "is_turbo": heavy, "required_credits": cost, "current_credits": cur,
+        "title": "Continue sua história com a mesma cena",
+        "message": "Para manter o mesmo cenário, personagens e iluminação em novos ângulos, o IABOX ativa o Cluster de Continuidade Turbo. Recarregue para seguir filmando a próxima cena.",
+        "upgrade_package": "single_gpu", "price_brl": 19.90, "studio_package": "studio_gpu", "studio_price_brl": 79.90
+    }
+
+def _story_run_clip(clip_id: str, project_id: str, uid: str, user_id: str, req_ip: str):
+    def _set(**kw):
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        sets = ", ".join(f"{k} = ?" for k in kw)
+        c.execute(f"UPDATE story_clips SET {sets} WHERE id = ?", (*kw.values(), clip_id))
+        conn.commit()
+        conn.close()
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        prow = _story_project_row(c, project_id, uid)
+        c.execute("SELECT position, shot_type, prompt, duration FROM story_clips WHERE id = ?", (clip_id,))
+        crow = c.fetchone()
+        c.execute("SELECT prompt, keyframe_url FROM story_clips WHERE project_id = ? AND position < ? AND status = 'done' ORDER BY position DESC LIMIT 1",
+                  (project_id, crow[0]))
+        prev = c.fetchone()
+        conn.close()
+        bible = json.loads(prow[2] or "{}")
+        ar = prow[3]
+        anchor = prow[4] if prow[4] and os.path.exists(prow[4]) else None
+        shot_key, action, duration = crow[1], crow[2], float(crow[3] or 5)
+        shot = STORY_SHOTS.get(shot_key, STORY_SHOTS["medium"])
+        prev_prompt = prev[0] if prev else ""
+        prev_kf = _story_local_path(prev[1]) if prev and prev[1] else None
+
+        from scripts.magnific_canvas_engine import MagnificCanvasEngine
+        engine = MagnificCanvasEngine()
+        n_key = min(3, max(1, _math.ceil(duration / 5.0)))
+        compiled = _story_compile_prompt(bible, shot_key, action, prev_prompt)
+        keyframes = []
+        for k in range(n_key):
+            refs = [p for p in (prev_kf, anchor) if p]
+            if keyframes:
+                refs = [keyframes[-1]] + refs
+            kf_path = os.path.join(OUTPUT_DIR, f"story_kf_{clip_id[:8]}_{k}.jpg")
+            engine.generate_connected_node(
+                prompt=compiled + (f" This is moment {k + 1} of {n_key} of the same shot." if n_key > 1 else ""),
+                reference_images=refs[:4], model_style="Seedream 5 Pro", aspect_ratio=ar,
+                camera_angle=shot["cam"], lighting_mood=bible.get("lighting_mood", "default"),
+                face_lock_path=anchor, face_strength=100, output_path=kf_path)
+            keyframes.append(kf_path)
+            _set(progress=15 + int(45 * (k + 1) / n_key))
+
+        out_name = f"story_clip_{clip_id[:8]}.mp4"
+        out_path = os.path.join(OUTPUT_DIR, out_name)
+        engine.render_storyboard_timeline(
+            image_paths=keyframes, output_path=out_path, scene_prompt=compiled,
+            aspect_ratio=ar, sec_per_take=max(1.5, duration / n_key))
+        _set(status="done", progress=100, result_url=f"/output/{out_name}", keyframe_url=f"/output/{os.path.basename(keyframes[-1])}", error=None)
+    except Exception as e:
+        _set(status="failed", error=sanitize_error_msg(e)[:200])
+        try:
+            add_credits(user_id, amount=int(_story_quote(duration if 'duration' in locals() else 5, True)[0]))  # estorno automático
+        except Exception:
+            pass
+
+@app.post("/api/story/clip/add")
+def story_add_clip(
+    project_id: str = Form(...),
+    shot_type: str = Form("medium"),
+    prompt: str = Form(...),
+    duration: float = Form(5),
+    transition: str = Form("cut"),
+    user_id: str = Form("default_user")
+):
+    uid = _story_uid(user_id)
+    duration = max(2.0, min(float(duration), 30.0))
+    if shot_type not in STORY_SHOTS:
+        shot_type = "medium"
+    if not prompt.strip():
+        raise HTTPException(status_code=400, detail="Descreva o que acontece neste plano.")
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    row = _story_project_row(c, project_id, uid)
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Projeto não encontrado.")
+    c.execute("SELECT COUNT(*), COALESCE(MAX(position), -1) FROM story_clips WHERE project_id = ?", (project_id,))
+    n, maxpos = c.fetchone()
+    if n >= STORY_MAX_CLIPS:
+        conn.close()
+        raise HTTPException(status_code=400, detail="Limite de planos por história atingido.")
+    conn.close()
+
+    cost, heavy = _story_quote(duration, True)
+    if not deduct_credits(user_id, amount=cost):
+        raise HTTPException(status_code=402, detail=f"Saldo insuficiente (necessário {cost} créditos para filmar este plano com continuidade).")
+
+    cid = str(uuid.uuid4())
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("""INSERT INTO story_clips (id, project_id, user_id, position, shot_type, prompt, duration, transition, source, status, progress)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'ai', 'processing', 5)""",
+              (cid, project_id, uid, maxpos + 1, shot_type, prompt.strip()[:600], duration, "fade" if transition == "fade" else "cut"))
+    c.execute("UPDATE story_projects SET updated_at = CURRENT_TIMESTAMP WHERE id = ?", (project_id,))
+    conn.commit()
+    conn.close()
+    threading.Thread(target=_story_run_clip, args=(cid, project_id, uid, user_id, client_ip_var.get()), daemon=True).start()
+    return {"status": "started", "clip_id": cid, "cost": cost, "remaining_credits": get_user_credits(user_id)}
+
+@app.post("/api/story/clip/regenerate")
+def story_regenerate_clip(clip_id: str = Form(...), user_id: str = Form("default_user")):
+    uid = _story_uid(user_id)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT project_id, duration, source, status FROM story_clips WHERE id = ? AND user_id = ?", (clip_id, uid))
+    r = c.fetchone()
+    conn.close()
+    if not r or r[2] != "ai":
+        raise HTTPException(status_code=404, detail="Plano não encontrado ou não regenerável.")
+    if r[3] == "processing":
+        raise HTTPException(status_code=409, detail="Este plano já está sendo gerado.")
+    cost, _ = _story_quote(float(r[1] or 5), True)
+    if not deduct_credits(user_id, amount=cost):
+        raise HTTPException(status_code=402, detail=f"Saldo insuficiente (necessário {cost} créditos).")
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("UPDATE story_clips SET status = 'processing', progress = 5, error = NULL WHERE id = ?", (clip_id,))
+    conn.commit()
+    conn.close()
+    threading.Thread(target=_story_run_clip, args=(clip_id, r[0], uid, user_id, client_ip_var.get()), daemon=True).start()
+    return {"status": "started", "cost": cost, "remaining_credits": get_user_credits(user_id)}
+
+@app.post("/api/story/clip/upload")
+def story_upload_clip(
+    project_id: str = Form(...),
+    video_file: UploadFile = File(...),
+    user_id: str = Form("default_user")
+):
+    """Permite colocar na linha do tempo um vídeo próprio (gratuito)."""
+    uid = _story_uid(user_id)
+    ext = os.path.splitext(video_file.filename or "")[1].lower()
+    if ext not in (".mp4", ".mov", ".webm", ".mkv"):
+        raise HTTPException(status_code=400, detail="Envie um vídeo MP4, MOV, WEBM ou MKV.")
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    row = _story_project_row(c, project_id, uid)
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Projeto não encontrado.")
+    c.execute("SELECT COALESCE(MAX(position), -1) FROM story_clips WHERE project_id = ?", (project_id,))
+    maxpos = c.fetchone()[0]
+    conn.close()
+    cid = str(uuid.uuid4())
+    out_name = f"story_up_{cid[:8]}{ext}"
+    out_path = os.path.join(OUTPUT_DIR, out_name)
+    with open(out_path, "wb") as f:
+        shutil.copyfileobj(video_file.file, f)
+    dur = _story_probe_duration(out_path)
+    kf_name = f"story_kf_{cid[:8]}.jpg"
+    kf_ok = _story_extract_frame(out_path, os.path.join(OUTPUT_DIR, kf_name), at_end=True)
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("""INSERT INTO story_clips (id, project_id, user_id, position, shot_type, prompt, duration, source, status, progress, result_url, keyframe_url)
+                    VALUES (?, ?, ?, ?, 'medium', ?, ?, 'upload', 'done', 100, ?, ?)""",
+                 (cid, project_id, uid, maxpos + 1, (video_file.filename or "Vídeo enviado")[:80], dur, f"/output/{out_name}",
+                  f"/output/{kf_name}" if kf_ok else None))
+    conn.commit()
+    conn.close()
+    return {"status": "success", "clip_id": cid}
+
+@app.post("/api/story/clip/update")
+def story_update_clip(
+    clip_id: str = Form(...),
+    prompt: str = Form(""),
+    shot_type: str = Form(""),
+    duration: float = Form(0),
+    transition: str = Form(""),
+    user_id: str = Form("default_user")
+):
+    uid = _story_uid(user_id)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT source, status FROM story_clips WHERE id = ? AND user_id = ?", (clip_id, uid))
+    r = c.fetchone()
+    if not r:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Plano não encontrado.")
+    if prompt.strip():
+        c.execute("UPDATE story_clips SET prompt = ? WHERE id = ?", (prompt.strip()[:600], clip_id))
+    if shot_type in STORY_SHOTS:
+        c.execute("UPDATE story_clips SET shot_type = ? WHERE id = ?", (shot_type, clip_id))
+    if duration and r[0] == "ai":
+        c.execute("UPDATE story_clips SET duration = ? WHERE id = ?", (max(2.0, min(float(duration), 30.0)), clip_id))
+    if transition in ("cut", "fade"):
+        c.execute("UPDATE story_clips SET transition = ? WHERE id = ?", (transition, clip_id))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
+@app.post("/api/story/clip/delete")
+def story_delete_clip(clip_id: str = Form(...), user_id: str = Form("default_user")):
+    uid = _story_uid(user_id)
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("DELETE FROM story_clips WHERE id = ? AND user_id = ?", (clip_id, uid))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
+@app.post("/api/story/clip/reorder")
+def story_reorder_clips(project_id: str = Form(...), order_json: str = Form(...), user_id: str = Form("default_user")):
+    uid = _story_uid(user_id)
+    try:
+        ids = [str(x) for x in json.loads(order_json)]
+    except Exception:
+        raise HTTPException(status_code=400, detail="Ordem inválida.")
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    if not _story_project_row(c, project_id, uid):
+        conn.close()
+        raise HTTPException(status_code=404, detail="Projeto não encontrado.")
+    for pos, cid in enumerate(ids):
+        c.execute("UPDATE story_clips SET position = ? WHERE id = ? AND project_id = ? AND user_id = ?", (pos, cid, project_id, uid))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
+@app.post("/api/story/suggest")
+def story_suggest_next(project_id: str = Form(...), user_id: str = Form("default_user")):
+    """Diretor IA: sugere os próximos 3 planos mantendo a mesma cena e a mesma fonte de luz."""
+    uid = _story_uid(user_id)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    row = _story_project_row(c, project_id, uid)
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Projeto não encontrado.")
+    c.execute("SELECT shot_type, prompt FROM story_clips WHERE project_id = ? ORDER BY position ASC", (project_id,))
+    history = c.fetchall()
+    conn.close()
+    used = [h[0] for h in history]
+    fallback_order = [k for k in ("close", "reverse", "over_shoulder", "insert", "low_angle", "side", "aerial") if k not in used] or ["close", "reverse", "insert"]
+    suggestions = [{"shot_type": k, "label": STORY_SHOTS[k]["label"], "prompt": ""} for k in fallback_order[:3]]
+    try:
+        from scripts.magnific_canvas_engine import MagnificCanvasEngine
+        eng = MagnificCanvasEngine()
+        story_so_far = " | ".join(f"[{STORY_SHOTS.get(h[0], {}).get('label', h[0])}] {h[1]}" for h in history[-6:])
+        txt = eng._call_llm_text(
+            "Você é um diretor de cinema. Cenário fixo: " + (json.loads(row[2] or '{}').get('setting', '')) +
+            ". História até agora: " + story_so_far + ". Sugira os próximos 3 planos CURTOS na MESMA cena, em ângulos de câmera diferentes, "
+            "avançando a história em português do Brasil. Responda SOMENTE um JSON array com 3 objetos "
+            "{\"shot_type\": uma de " + ", ".join(STORY_SHOTS.keys()) + ", \"prompt\": \"ação em 1 frase\"}.",
+            timeout=20)
+        m = re.search(r"\[.*\]", txt or "", re.S)
+        if m:
+            arr = json.loads(m.group(0))
+            out = []
+            for it in arr[:3]:
+                k = it.get("shot_type")
+                if k in STORY_SHOTS and isinstance(it.get("prompt"), str):
+                    out.append({"shot_type": k, "label": STORY_SHOTS[k]["label"], "prompt": it["prompt"][:300]})
+            if out:
+                suggestions = out
+    except Exception:
+        pass
+    return {"suggestions": suggestions}
+
+@app.post("/api/story/export")
+def story_export(project_id: str = Form(...), user_id: str = Form("default_user")):
+    uid = _story_uid(user_id)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    row = _story_project_row(c, project_id, uid)
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Projeto não encontrado.")
+    c.execute("SELECT result_url, transition FROM story_clips WHERE project_id = ? AND status = 'done' AND result_url IS NOT NULL ORDER BY position ASC", (project_id,))
+    items = c.fetchall()
+    conn.close()
+    paths = [(_story_local_path(u), t) for u, t in items]
+    paths = [(p, t) for p, t in paths if p]
+    if len(paths) < 1:
+        raise HTTPException(status_code=400, detail="Nenhum plano pronto para exportar ainda.")
+    title, ar = row[1], row[3]
+    w, h = {"9:16": (1080, 1920), "1:1": (1080, 1080)}.get(ar, (1280, 720))
+    job_id = str(uuid.uuid4())
+    out_name = f"story_film_{job_id[:8]}.mp4"
+    out_path = os.path.join(OUTPUT_DIR, out_name)
+    save_job(job_id, "story_export", status="processing", progress=10, user_id=user_id)
+    req_ip = client_ip_var.get()
+
+    def _task():
+        work = os.path.join(OUTPUT_DIR, f"story_export_{job_id[:8]}")
+        os.makedirs(work, exist_ok=True)
+        try:
+            norm = []
+            for i, (p, trans) in enumerate(paths):
+                dur = _story_probe_duration(p)
+                has_audio = bool(subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries", "stream=index", "-of", "csv=p=0", p],
+                                                capture_output=True, text=True).stdout.strip())
+                n_path = os.path.join(work, f"n_{i:02d}.mp4")
+                vf = f"scale={w}:{h}:force_original_aspect_ratio=decrease,pad={w}:{h}:(ow-iw)/2:(oh-ih)/2,fps=30,format=yuv420p,setsar=1"
+                af = "aresample=44100,aformat=channel_layouts=stereo"
+                if trans == "fade" and dur > 1.2:
+                    vf += f",fade=t=in:st=0:d=0.4,fade=t=out:st={max(0, dur - 0.4):.2f}:d=0.4"
+                    af += f",afade=t=in:st=0:d=0.4,afade=t=out:st={max(0, dur - 0.4):.2f}:d=0.4"
+                cmd = ["ffmpeg", "-y", "-i", p]
+                if not has_audio:
+                    cmd += ["-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo"]
+                cmd += ["-vf", vf, "-af", af] if has_audio else ["-vf", vf, "-map", "0:v:0", "-map", "1:a:0", "-shortest"]
+                cmd += ["-c:v", "libx264", "-preset", "veryfast", "-crf", "18", "-c:a", "aac", "-b:a", "192k", n_path]
+                subprocess.run(cmd, capture_output=True, timeout=600, check=True)
+                norm.append(n_path)
+                save_job(job_id, "story_export", status="processing", progress=10 + int(70 * (i + 1) / len(paths)), user_id=user_id)
+            list_file = os.path.join(work, "list.txt")
+            with open(list_file, "w", encoding="utf-8") as lf:
+                for n_path in norm:
+                    lf.write("file '" + os.path.abspath(n_path).replace("\\", "/") + "'\n")
+            subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", list_file, "-c", "copy", "-movflags", "+faststart", out_path],
+                           capture_output=True, timeout=600, check=True)
+            save_job(job_id, "story_export", status="completed", progress=100, result_url=f"/output/{out_name}", user_id=user_id)
+            save_user_creation(user_id, "video", f"História: {title[:60]}", f"Filme com {len(paths)} planos (Story Timeline)",
+                               f"/output/{out_name}", {"story_project": project_id, "clips": len(paths)}, ip_override=req_ip)
+        except Exception as e:
+            save_job(job_id, "story_export", status="failed", error=sanitize_error_msg(e), user_id=user_id)
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
+
+    threading.Thread(target=_task, daemon=True).start()
+    return {"status": "started", "job_id": job_id}
+
+# ----------------------------------------------------------------------------------------
+# 11. GUIA INTELIGENTE — "O QUE VOCÊ QUER CRIAR?" (roteador de intenção para simplificar o site)
+# ----------------------------------------------------------------------------------------
+GUIDE_INTENTS = [
+    ("story",   ["continua", "continuação", "continuacao", "história", "historia", "mesma cena", "mesmo cenário", "mesmo cenario", "próxima cena", "proxima cena", "sequência", "sequencia", "timeline", "linha do tempo", "episódio", "episodio", "curta"],
+     "🎞️ Linha do Tempo de História", "Continue seu vídeo mantendo cenário, personagens e luz em novos ângulos."),
+    ("parody",  ["paródia", "parodia", "jingle", "cover", "jingle de campanha", "música do", "musica do", "letra"],
+     "💿 Paródia / Cover", "Crie uma música sobre a base que você escolher."),
+    ("suno",    ["música", "musica", "canção", "cancao", "beat", "sertanejo", "funk", "trap", "trilha"],
+     "🎵 Criar Música", "Gere uma música completa a partir de uma ideia."),
+    ("clone",   ["clonar", "minha voz", "clone de voz", "voz clonada"],
+     "🧬 Clonar Minha Voz", "Use sua própria voz em qualquer narração."),
+    ("voice",   ["narração", "narracao", "locução", "locucao", "falar", "áudio", "audio", "voz"],
+     "🎙️ Narração em Português", "Transforme texto em voz natural brasileira."),
+    ("video",   ["vídeo", "video", "reels", "shorts", "tiktok", "legenda", "cortes", "avatar", "trocar cenário", "trocar cenario", "meu vídeo", "meu video"],
+     "🎬 Editar / Criar Vídeo", "Edite seu vídeo ou troque personagem e cenário."),
+    ("image",   ["foto", "imagem", "retrato", "logo", "banner", "arte", "ilustração", "ilustracao", "capa", "post"],
+     "📸 Criar Imagem", "Gere imagens a partir de uma descrição ou fotos de referência."),
+    ("canvas",  ["8k", "cinematográfic", "cinematografic", "storyboard", "filme", "roteiro", "cena épica", "cena epica"],
+     "⚡ Estúdio Cinema 8K", "Monte cenas e filmes com qualidade de cinema."),
+]
+
+@app.post("/api/guide/route")
+def guide_route(text: str = Form("")):
+    t = (text or "").lower()
+    scored = []
+    for key, kws, label, hint in GUIDE_INTENTS:
+        s = sum(1 for k in kws if k in t)
+        if s:
+            scored.append((s, key, label, hint))
+    scored.sort(key=lambda x: -x[0])
+    if not scored:
+        return {"matched": False, "suggestions": [{"tab": "image", "label": "📸 Criar Imagem", "hint": "O jeito mais rápido de começar."},
+                                                  {"tab": "video", "label": "🎬 Editar / Criar Vídeo", "hint": "Cortes, legendas e efeitos."},
+                                                  {"tab": "suno", "label": "🎵 Criar Música", "hint": "Música completa a partir de uma ideia."}]}
+    return {"matched": True, "suggestions": [{"tab": k, "label": l, "hint": h} for _, k, l, h in scored[:3]]}
+
 
 if __name__ == "__main__":
     import uvicorn

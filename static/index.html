@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>IABOX — O Estúdio de Inteligência Artificial Mais Completo do Brasil</title>
-  <meta name="description" content="Crie vídeos virais, locuções neurais 100% brasileiras, clonagem vocal, músicas completas estilo Suno e paródias musicais com inteligência artificial.">
+  <meta name="description" content="Crie vídeos virais, locuções neurais 100% brasileiras, clonagem vocal, músicas inéditas com IA e paródias musicais com inteligência artificial.">
   <link rel="icon" href="/static/assets/logo_esg.jpg">
   
   
@@ -203,16 +203,22 @@
 
       
       <nav class="flex flex-wrap items-center justify-center gap-1.5 pt-1.5 border-t border-white/10">
-        <button data-tab="dashboard" onclick="switchTab('dashboard')" class="nav-btn active whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold transition-all text-cyan-400 bg-cyan-500/15 border border-cyan-400/30">🏠 Início</button>
-        <button data-tab="canvas" onclick="switchTab('canvas')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all">⚡ Magnific Canvas</button>
-        <button data-tab="image" onclick="switchTab('image')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">📸 Imagens (3-5 Refs)</button>
-        <button data-tab="video" onclick="switchTab('video')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">🎬 Vídeos (Até 5m + VFX)</button>
-        <button data-tab="voice" onclick="switchTab('voice')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">🎙️ Vozes Brasil</button>
-        <button data-tab="clone" onclick="switchTab('clone')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">🧬 Clonar Voz</button>
-        <button data-tab="suno" onclick="switchTab('suno')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">🎵 Suno Studio</button>
-        <button data-tab="parody" onclick="switchTab('parody')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">💿 Paródias IA</button>
-        <button data-tab="memory" onclick="switchTab('memory')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-purple-300 hover:text-white bg-purple-500/15 border border-purple-400/30 transition-all">💾 Memória & Acessos</button>
-        <button data-tab="about" onclick="switchTab('about')" class="nav-btn whitespace-nowrap px-2.5 py-1 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">👤 O Criador</button>
+        <button data-tab="dashboard" onclick="switchTab('dashboard')" class="nav-btn active whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-cyan-400 bg-cyan-500/15 border border-cyan-400/30">🏠 Início</button>
+        <button data-tab="story" onclick="switchTab('story')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all">🎞️ Minha História <span class="ml-1 text-[9px] px-1.5 py-0.5 rounded-full bg-amber-400 text-black font-black">NOVO</span></button>
+        <button data-tab="video" onclick="switchTab('video')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">🎬 Vídeo</button>
+        <button data-tab="image" onclick="switchTab('image')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">📸 Imagem</button>
+        <button data-tab="suno" onclick="switchTab('suno')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all">🎵 Música</button>
+        <details class="relative" id="nav-more">
+          <summary class="list-none cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all select-none">➕ Mais ferramentas</summary>
+          <div class="absolute left-0 top-full mt-1.5 z-50 w-56 rounded-2xl glass-panel border border-white/15 p-1.5 shadow-2xl space-y-0.5">
+            <button data-tab="canvas" onclick="switchTab('canvas'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10">⚡ Cinema 8K (cenas e filmes)</button>
+            <button data-tab="voice" onclick="switchTab('voice'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10">🎙️ Narração em português</button>
+            <button data-tab="clone" onclick="switchTab('clone'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10">🧬 Clonar minha voz</button>
+            <button data-tab="parody" onclick="switchTab('parody'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10">💿 Paródias e covers</button>
+            <button data-tab="about" onclick="switchTab('about'); document.getElementById('nav-more').removeAttribute('open')" class="nav-btn w-full text-left px-3 py-2 rounded-xl text-xs text-gray-200 hover:bg-white/10">👤 Sobre o criador</button>
+          </div>
+        </details>
+        <button data-tab="memory" onclick="switchTab('memory')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-purple-300 hover:text-white bg-purple-500/15 border border-purple-400/30 transition-all">💾 Meus Criativos</button>
       </nav>
 
     </div>
@@ -227,6 +233,44 @@
     
     
     <section id="tab-dashboard" class="tab-content block space-y-10">
+
+      <div id="start-here" class="glass-panel rounded-3xl p-6 md:p-10 border border-cyan-400/40 shadow-card-glow space-y-6">
+        <div class="text-center space-y-2">
+          <h1 class="text-2xl md:text-4xl font-extrabold text-white">O que você quer criar hoje?</h1>
+          <p class="text-sm text-gray-400">Escreva em uma frase ou toque em uma opção. Eu levo você ao lugar certo — sem complicação.</p>
+        </div>
+        <form onsubmit="return guideSubmit(event)" class="flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto">
+          <input id="guide-input" type="text" autocomplete="off" maxlength="200" placeholder="Ex.: quero continuar meu vídeo em outro ângulo" class="flex-1 bg-dark-900 border border-white/15 focus:border-cyan-400 rounded-xl px-4 py-3 text-sm text-white outline-none">
+          <button type="submit" class="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-sm transition-all">Começar</button>
+        </form>
+        <div id="guide-results" class="flex flex-wrap justify-center gap-2 min-h-[8px]"></div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+          <button onclick="switchTab('story')" class="glass-card rounded-2xl p-4 text-left border border-amber-400/40 hover:border-amber-300 transition-all">
+            <div class="text-2xl mb-1">🎞️</div><div class="text-sm font-extrabold text-white">Continuar minha história</div><div class="text-[11px] text-gray-400 mt-0.5">Mesmo cenário e personagens, novos ângulos.</div>
+          </button>
+          <button onclick="switchTab('video')" class="glass-card rounded-2xl p-4 text-left hover:border-cyan-300 transition-all">
+            <div class="text-2xl mb-1">🎬</div><div class="text-sm font-extrabold text-white">Editar meu vídeo</div><div class="text-[11px] text-gray-400 mt-0.5">Cortes, legendas e efeitos automáticos.</div>
+          </button>
+          <button onclick="switchTab('image')" class="glass-card rounded-2xl p-4 text-left hover:border-cyan-300 transition-all">
+            <div class="text-2xl mb-1">📸</div><div class="text-sm font-extrabold text-white">Criar uma imagem</div><div class="text-[11px] text-gray-400 mt-0.5">Descreva ou envie fotos de referência.</div>
+          </button>
+          <button onclick="switchTab('suno')" class="glass-card rounded-2xl p-4 text-left hover:border-cyan-300 transition-all">
+            <div class="text-2xl mb-1">🎵</div><div class="text-sm font-extrabold text-white">Criar uma música</div><div class="text-[11px] text-gray-400 mt-0.5">Conte a ideia e receba a música pronta.</div>
+          </button>
+          <button onclick="switchTab('voice')" class="glass-card rounded-2xl p-4 text-left hover:border-cyan-300 transition-all">
+            <div class="text-2xl mb-1">🎙️</div><div class="text-sm font-extrabold text-white">Narrar um texto</div><div class="text-[11px] text-gray-400 mt-0.5">Voz natural em português do Brasil.</div>
+          </button>
+          <button onclick="switchTab('parody')" class="glass-card rounded-2xl p-4 text-left hover:border-cyan-300 transition-all">
+            <div class="text-2xl mb-1">💿</div><div class="text-sm font-extrabold text-white">Fazer uma paródia</div><div class="text-[11px] text-gray-400 mt-0.5">Sua letra em cima de uma base.</div>
+          </button>
+        </div>
+        <p class="text-center text-[11px] text-gray-500">Você sempre vê o custo antes de gerar. Seus criativos ficam salvos em <button class="underline text-purple-300" onclick="switchTab('memory')">Meus Criativos</button>.</p>
+      </div>
+
+      <details class="group">
+        <summary class="cursor-pointer list-none text-center text-xs font-bold text-gray-300 hover:text-white py-3 select-none">▾ Ver vitrine e todos os recursos do IABOX</summary>
+        <div class="space-y-10 pt-4">
+
       
       
       <div class="relative overflow-hidden rounded-3xl glass-panel p-6 md:p-10 border border-cyan-500/30 shadow-card-glow">
@@ -243,7 +287,7 @@
               Estúdio de <span class="cyan-gradient-text">Cinema, Vídeo, Voz e Música</span> com IA
             </h1>
             <p class="text-gray-300 text-sm md:text-base leading-relaxed">
-              Escolha abaixo o que deseja criar em poucos cliques: <strong>Storyboard de Cinema (Magnific & Kling Style)</strong>, <strong>Fotos Ultra-Realistas 8K</strong>, <strong>Músicas Inéditas (Suno)</strong>, <strong>Covers/Paródias com Sua Voz</strong> e <strong>Locuções 100% Brasileiras</strong>.
+              Escolha abaixo o que deseja criar em poucos cliques: <strong>Storyboard de Cinema (Magnific & Kling Style)</strong>, <strong>Fotos Ultra-Realistas 8K</strong>, <strong>Músicas Inéditas com IA</strong>, <strong>Covers/Paródias com Sua Voz</strong> e <strong>Locuções 100% Brasileiras</strong>.
             </p>
             <div class="flex flex-wrap gap-3 pt-2">
               <button onclick="switchTab('canvas')" class="bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 text-black font-extrabold px-5 py-3 rounded-xl shadow-lg transition-all hover:scale-105 flex items-center gap-2 text-sm">
@@ -329,7 +373,7 @@
               <path d="M2 10h2M20 7h2" stroke-linecap="round"/>
             </svg>
           </div>
-          <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-cyan-300 transition-colors">Suno Studio (Músicas do Zero)</h3>
+          <h3 class="text-xl font-bold font-display text-white mb-2 group-hover:text-cyan-300 transition-colors">IA Music Studio (Músicas do Zero)</h3>
           <p class="text-sm text-gray-400 leading-relaxed mb-4">Gere músicas completas (vocais + instrumentos) a partir de um prompt em qualquer ritmo com a sua voz cantando.</p>
           <div class="flex items-center justify-between text-xs font-semibold text-cyan-400 pt-3 border-t border-white/5">
             <span>Custo: 15 créditos</span>
@@ -709,6 +753,8 @@
         </div>
       </div>
 
+            </div>
+      </details>
     </section>
 
     
@@ -718,7 +764,7 @@
       <div class="border-b border-white/10 pb-4">
         <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
           <i data-lucide="music-4" class="w-8 h-8 text-cyan-400"></i>
-          Suno Studio — Criação de Músicas Inéditas
+          IA Music Studio — Criação de Músicas Inéditas
         </h2>
         <p class="text-gray-400 text-sm mt-1">Crie canções profissionais completas em qualquer estilo musical com letra, instrumentos e voz cantada.</p>
       </div>
@@ -759,7 +805,7 @@
             </div>
           </div>
           <div class="p-4 rounded-xl bg-cyan-500/5 border border-cyan-400/20 mt-4 text-xs text-gray-300 leading-relaxed">
-            <span class="font-bold text-cyan-400 block mb-1">Como o Suno Studio opera:</span>
+            <span class="font-bold text-cyan-400 block mb-1">Como o IA Music Studio opera:</span>
             A IA gera a letra com metatags (Versos e Refrão), compõe o arranjo instrumental via rede neural e masteriza em 320kbps MP3.
           </div>
         </div>
@@ -1042,60 +1088,104 @@
     
     <section id="tab-video" class="tab-content hidden space-y-6">
       <div class="border-b border-white/10 pb-4">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 border border-blue-400/40 text-blue-300 text-xs font-extrabold uppercase tracking-wider mb-2">
-          <i data-lucide="film" class="w-3.5 h-3.5 text-blue-400"></i>
-          Suporte até 5 Minutos &bull; 3 a 5 Imagens de Referência &bull; Troca de Personagem & Motion Graphics
+        <div class="inline-flex flex-wrap items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-extrabold uppercase tracking-wider mb-2 shadow-sm">
+          <i data-lucide="film" class="w-3.5 h-3.5 text-cyan-400"></i>
+          Supera o Limite de 10s &bull; Até 5 Minutos Contínuos &bull; Avatar Swap &bull; Troca de Cenário 8K
         </div>
         <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
-          <i data-lucide="video" class="w-8 h-8 text-blue-400"></i>
-          Estúdio de Vídeos IA, VFX, Criativos & Troca de Personagem
+          <i data-lucide="clapperboard" class="w-8 h-8 text-cyan-400"></i>
+          IABOX Omni Cinema Flow™ — Estúdio de Cinema & Transformação de Vídeo
         </h2>
-        <p class="text-gray-400 text-sm mt-1">Envie vídeos de <strong>até 5 minutos</strong>, adicione de <strong>3 a 5 imagens de referência</strong> e/ou vídeos auxiliares para inserir criativos, design, objetos, trocar personagens e aplicar Motion Graphics.</p>
+        <p class="text-gray-400 text-sm mt-1">
+          Inspirado na direção cinematográfica do Google Omni, mas <strong>sem a barreira dos 10 segundos</strong>: envie seu vídeo original, adicione fotos de referência e transforme cenários, te substitua por um avatar com Face Lock e encadeie tomadas de cinema em até <strong>5 minutos contínuos</strong>.
+        </p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         <div class="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-5">
           
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-semibold text-gray-200 mb-1.5">1. Vídeo Principal (Até 5 Minutos) <span class="text-blue-400">*Obrigatório</span></label>
-              <input type="file" id="video-file" accept="video/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-500/20 file:text-blue-300">
-              <p class="text-[11px] text-gray-400 mt-1">Aceita vídeos de até <strong>5 minutos (300s)</strong> em MP4, MOV ou WebM.</p>
-            </div>
+          <!-- SELETOR DE DURAÇÃO & POTÊNCIA (AUTO-POLICIAMENTO ATIVO) -->
+          <div>
+            <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">Duração da Sequência Cinematográfica:</label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <label onclick="onOmniDurationChanged('preview_10s')" id="omni-dur-opt-10s" class="cursor-pointer p-3 rounded-2xl border border-white/15 bg-dark-800 hover:border-cyan-400/50 flex flex-col justify-between transition-all">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-bold text-white">⚡ Preview Rápido</span>
+                  <input type="radio" name="omni_duration" value="preview_10s" class="accent-cyan-400">
+                </div>
+                <div class="text-[11px] text-gray-400">5 a 10 segundos</div>
+                <span class="text-[10px] font-semibold text-cyan-300 mt-2 block">10 Créditos Padrão</span>
+              </label>
 
-            <div>
-              <label class="block text-sm font-semibold text-gray-200 mb-1.5">2. Vídeo Auxiliar / B-Roll / Criativo <span class="text-cyan-400">(Opcional)</span></label>
-              <input type="file" id="video-overlay-file" accept="video/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/20 file:text-cyan-300">
-              <p class="text-[11px] text-gray-400 mt-1">Vídeo secundário para inserir criativos em Picture-in-Picture ou Motion Design.</p>
+              <label onclick="onOmniDurationChanged('extended_60s')" id="omni-dur-opt-60s" class="cursor-pointer p-3 rounded-2xl border-2 border-cyan-400 bg-cyan-500/15 flex flex-col justify-between transition-all relative">
+                <div class="absolute -top-2.5 right-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-black text-[9px] font-black uppercase px-2 py-0.5 rounded-full">
+                  Mais Usado
+                </div>
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-extrabold text-white">🎬 Sequência Estendida</span>
+                  <input type="radio" name="omni_duration" value="extended_60s" checked class="accent-cyan-400">
+                </div>
+                <div class="text-[11px] text-cyan-200/80">30 a 60 segundos contínuos</div>
+                <span class="text-[10px] font-bold text-amber-300 mt-2 block">40 Créditos Omni Turbo</span>
+              </label>
+
+              <label onclick="onOmniDurationChanged('movie_5m')" id="omni-dur-opt-5m" class="cursor-pointer p-3 rounded-2xl border border-white/15 bg-dark-800 hover:border-purple-400/50 flex flex-col justify-between transition-all">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-bold text-purple-300">🌟 Curta-Metragem</span>
+                  <input type="radio" name="omni_duration" value="movie_5m" class="accent-purple-400">
+                </div>
+                <div class="text-[11px] text-gray-400">Até 5 minutos (Cena Longa)</div>
+                <span class="text-[10px] font-bold text-purple-300 mt-2 block">Passaporte Studio VIP</span>
+              </label>
             </div>
           </div>
 
-          <div class="p-4 rounded-2xl bg-dark-800/90 border border-blue-400/30 space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <label class="block text-sm font-bold text-blue-300">3. Imagens de Referência (Selecione de 3 a 5 Imagens para Criativos, Objetos ou Personagem)</label>
-              <span id="video-ref-count-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">0 / 5 selecionadas</span>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-200 mb-1.5">1. Seu Vídeo Condutor (Até 5 Minutos) <span class="text-cyan-400">*Obrigatório</span></label>
+              <input type="file" id="video-file" accept="video/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/20 file:text-cyan-300">
+              <p class="text-[11px] text-gray-400 mt-1">Sua gravação de celular, orador, fala ou cena que guiará os movimentos.</p>
             </div>
-            <input type="file" id="video-ref-images" accept="image/*" multiple onchange="handleRefFilesAdded('video', this)" class="w-full bg-dark-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500/20 file:text-amber-300">
-            <p class="text-[11px] text-gray-400">Envie de <strong>3 a 5 fotos</strong> (produtos, logos, objetos de design ou ângulos do rosto do personagem para substituição e inserção automática no vídeo).</p>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-200 mb-1.5">2. Vídeo Auxiliar / B-Roll <span class="text-gray-400">(Opcional)</span></label>
+              <input type="file" id="video-overlay-file" accept="video/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500/20 file:text-purple-300">
+              <p class="text-[11px] text-gray-400 mt-1">Segundo take para corte picture-in-picture ou transição.</p>
+            </div>
+          </div>
+
+          <!-- FOTOS DE REFERÊNCIA (AVATAR, CENÁRIO, ESTILO) -->
+          <div class="p-4 rounded-2xl bg-dark-800/90 border border-cyan-400/30 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="block text-sm font-bold text-cyan-300 flex items-center gap-1.5">
+                <i data-lucide="image" class="w-4 h-4 text-cyan-400"></i>
+                <span>3. Fotos de Referência (Rosto do Avatar, Foto do Novo Cenário ou Produtos)</span>
+              </label>
+              <span id="video-ref-count-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">0 / 5 selecionadas</span>
+            </div>
+            <input type="file" id="video-ref-images" accept="image/*" multiple onchange="handleRefFilesAdded('video', this)" class="w-full bg-dark-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/20 file:text-cyan-300">
+            <p class="text-[11px] text-gray-400">
+              💡 <strong>Como usar como no Google Omni:</strong> Envie a foto de quem vai te substituir no vídeo (avatar/influenciador) ou a foto do novo cenário (praia, estúdio, cidade à noite). O motor fará o Face Lock e a rotoscopia de iluminação.
+            </p>
             <div id="video-ref-preview" class="flex flex-wrap gap-2 pt-1"></div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-200 mb-1.5">4. Operação de IA & VFX no Vídeo</label>
-              <select id="video-vfx-mode" class="w-full bg-dark-800 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-blue-400">
-                <option value="full_production">🎬 Produção Completa (Inserir Criativos + Motion Graphics + Cortes)</option>
-                <option value="insert_creatives">🖼️ Inserir Criativos, Design & Objetos (3 a 5 Imagens + Vídeo)</option>
-                <option value="character_swap">🎭 Trocar Personagem / Influencer Motion Swap (Guiado pelas Fotos)</option>
-                <option value="motion_graphics">✨ Inserir Motion Graphics Neon, HUD & Rotoscopia 3D</option>
-                <option value="jump_cuts">✂️ Apenas Jump Cuts de Silêncio + Color Grade</option>
+              <label class="block text-sm font-semibold text-gray-200 mb-1.5">4. Modo de Transformação Omni Cinema Flow™</label>
+              <select id="video-vfx-mode" onchange="onOmniModeChanged(this.value)" class="w-full bg-dark-800 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-cyan-400">
+                <option value="scene_swap">🌆 Troca Completa de Cenário & Relighting de Estúdio (Omni Turbo)</option>
+                <option value="character_swap">🎭 Substituir por Avatar / Influenciador (Face Lock Omni Turbo)</option>
+                <option value="multitake_cinema">🎥 Direção Multitakes de Cinema (Planos e Ângulos de Câmera)</option>
+                <option value="full_production" selected>🎬 Produção Comercial Completa (Criativos, HUD & Cortes)</option>
+                <option value="jump_cuts">✂️ Apenas Jump Cuts de Silêncio + Grade de Cor (Modo Padrão)</option>
               </select>
             </div>
 
             <div>
-              <label class="block text-sm font-semibold text-gray-200 mb-1.5">5. Formato Final de Renderização</label>
-              <select id="video-aspect-ratio" class="w-full bg-dark-800 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-blue-400">
+              <label class="block text-sm font-semibold text-gray-200 mb-1.5">5. Formato de Renderização</label>
+              <select id="video-aspect-ratio" class="w-full bg-dark-800 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-cyan-400">
                 <option value="9:16">▯ 9:16 Vertical (Reels, TikTok, Shorts)</option>
                 <option value="16:9">▭ 16:9 Horizontal Cinema (YouTube, VSL, TV)</option>
               </select>
@@ -1103,8 +1193,8 @@
           </div>
 
           <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-1.5">6. Instruções de Criativos, Design, Objetos ou Personagem (Opcional)</label>
-            <input type="text" id="video-creative-prompt" placeholder="Ex: Inserir os produtos das imagens de referência nos momentos de destaque com HUD neon e trocar personagem..." class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-blue-400">
+            <label class="block text-sm font-semibold text-gray-200 mb-1.5">6. Instruções de Direção da Cena / Prompt Omni (O que deve acontecer?)</label>
+            <input type="text" id="video-creative-prompt" placeholder="Ex: Mudar cenário para estúdio escuro com iluminação volumétrica neon, me substituir pelo avatar da foto e manter minha fala..." class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-xs md:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400">
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1112,49 +1202,64 @@
               <input type="checkbox" id="video-jumpcuts" checked class="rounded text-cyan-400">
               <div>
                 <span class="text-xs font-bold text-white block">Jump Cuts Automáticos (Corte de Silêncio)</span>
-                <span class="text-[11px] text-gray-400">Remove pausas longas via ESG Cinema Render™ (até 5 min).</span>
+                <span class="text-[11px] text-gray-400">Remove hesitações preservando o ritmo cinemático.</span>
               </div>
             </label>
             <label class="flex items-center gap-3 p-3 rounded-xl bg-dark-800/80 border border-white/5 cursor-pointer">
               <input type="checkbox" id="video-subtitles" checked class="rounded text-cyan-400">
               <div>
                 <span class="text-xs font-bold text-white block">Motion Graphics HUD & Color Grade</span>
-                <span class="text-[11px] text-gray-400">Insere barra gráfica neon e contraste de cinema.</span>
+                <span class="text-[11px] text-gray-400">Insere elementos visuais neon e contraste de cinema.</span>
               </div>
             </label>
           </div>
 
-          <button onclick="handleGenerateVideo()" class="w-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 hover:opacity-95 text-black font-extrabold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
-            <i data-lucide="wand-2" class="w-5 h-5"></i>
-            <span>Renderizar Vídeo Completo com Criativos & VFX (10 Créditos)</span>
+          <button type="button" id="omni-render-btn" onclick="handleGenerateVideo()" class="w-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 hover:from-cyan-300 hover:to-purple-500 text-black font-extrabold py-3.5 rounded-2xl shadow-neon-cyan transition-all transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 uppercase tracking-wider text-xs">
+            <i data-lucide="clapperboard" class="w-4 h-4"></i>
+            <span id="omni-btn-text">Renderizar no IABOX Omni Cinema Flow™ (40 Créditos)</span>
           </button>
         </div>
 
-        
-        <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
+        <!-- PAINEL LATERAL: MONITOR & VANTAGENS DO OMNI FLOW -->
+        <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between space-y-4">
           <div>
-            <h3 class="text-lg font-bold text-white mb-3">Monitor de Vídeo & VFX</h3>
-            <div id="video-player-box" class="bg-dark-800/80 rounded-xl p-4 border border-white/5 text-center text-gray-400 text-sm">
-              <video controls playsinline class="w-full rounded-lg mb-3" poster="/static/samples/canvas_take1.jpg?v=real2026">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i data-lucide="monitor-play" class="w-4 h-4 text-cyan-400"></i>
+                <span>Monitor de Vídeo & VFX</span>
+              </h3>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-mono font-bold">8K Cinema</span>
+            </div>
+            
+            <div id="video-player-box" class="bg-dark-800/80 rounded-2xl p-4 border border-white/5 text-center text-gray-400 text-sm space-y-2">
+              <video controls playsinline class="w-full rounded-xl mb-2" poster="/static/samples/canvas_take1.jpg?v=real2026">
                 <source src="/static/samples/demo_video_viral.mp4?v=real2026" type="video/mp4">
               </video>
-              <span class="text-xs text-cyan-300 font-semibold block">Filme Demonstrativo em Movimento Real (Zero Slide)</span>
+              <span class="text-xs text-cyan-300 font-semibold block">Demonstração: Cinema Multi-Take em Movimento Real</span>
             </div>
           </div>
-          <div class="p-4 rounded-xl bg-blue-500/5 border border-blue-400/20 mt-4 text-xs text-gray-300 space-y-1">
-            <strong class="text-blue-300 block">Capacidades do Motor de Vídeo:</strong>
-            <p>&bull; Recebe vídeos longos de <strong>até 5 minutos</strong>.</p>
-            <p>&bull; Recebe de <strong>3 a 5 imagens</strong> e vídeos auxiliares para inserir design, objetos, motion graphics e troca de personagem.</p>
-            <p>&bull; Salva automaticamente na sua <strong>Memória Cloud (ESG Quantum Cloud™)</strong>.</p>
+
+          <div class="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 text-xs text-gray-300 space-y-2">
+            <div class="flex items-center gap-1.5 text-cyan-300 font-bold text-[11px]">
+              <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>Por que o IABOX Omni supera o Google Veo:</span>
+            </div>
+            <p class="text-[11px] text-gray-400 leading-relaxed">
+              &bull; <strong>Sem o limite de 10s:</strong> O Google Veo corta vídeos aos 10 segundos. O IABOX encadeia tomadas contínuas de <strong>até 5 minutos</strong>.
+            </p>
+            <p class="text-[11px] text-gray-400 leading-relaxed">
+              &bull; <strong>Avatar & Cenário Fiel:</strong> Mapeamento 3D facial e relighting que preserva sua fala no novo cenário.
+            </p>
+            <p class="text-[11px] text-gray-400 leading-relaxed">
+              &bull; <strong>Garantia de Entrega:</strong> Renderizações gravadas na sua Memória Privada e prontas para download permanente.
+            </p>
           </div>
         </div>
       </div>
     </section>
 
-    
-    
-    
-    <section id="tab-image" class="tab-content hidden space-y-6">
+
+  <section id="tab-image" class="tab-content hidden space-y-6">
       <div class="border-b border-white/10 pb-4">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/15 border border-pink-400/40 text-pink-300 text-xs font-extrabold uppercase tracking-wider mb-2">
           <i data-lucide="layers" class="w-3.5 h-3.5 text-pink-400"></i>
@@ -1827,6 +1932,119 @@
       </div>
     </section>
 
+  
+    <section id="tab-story" class="tab-content hidden space-y-5">
+      <div class="border-b border-white/10 pb-4 flex flex-col md:flex-row md:items-end justify-between gap-3">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 text-[10px] font-extrabold uppercase tracking-wider mb-2">🎞️ Linha do Tempo de História</div>
+          <h2 class="text-xl md:text-2xl font-extrabold text-white">Monte seu filme plano a plano</h2>
+          <p class="text-xs text-gray-400 mt-1 max-w-2xl">A IA memoriza o cenário, os personagens e de onde vem a luz. Cada novo plano é filmado em outro ângulo, na mesma cena — e você organiza tudo como numa linha do tempo de edição.</p>
+        </div>
+        <button id="story-back-btn" onclick="storyShowHome()" class="hidden px-4 py-2 rounded-xl bg-dark-800 border border-white/15 text-xs font-bold text-gray-200 hover:text-white">← Minhas histórias</button>
+      </div>
+
+      <!-- TELA INICIAL: escolher ou começar -->
+      <div id="story-home" class="space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div class="glass-panel rounded-2xl p-5 border border-amber-400/30 space-y-3">
+            <h3 class="text-sm font-extrabold text-amber-300">① Continuar um vídeo que eu já criei</h3>
+            <p class="text-[11px] text-gray-400">Escolha um vídeo da sua memória. A IA olha a cena e anota sozinha o cenário, os personagens e a luz.</p>
+            <select id="story-import-select" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white"><option value="">Carregando seus vídeos...</option></select>
+            <button onclick="storyImportSelected()" class="w-full py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-200 text-xs font-extrabold">🎞️ Continuar este vídeo</button>
+          </div>
+          <div class="glass-panel rounded-2xl p-5 border border-cyan-400/30 space-y-3">
+            <h3 class="text-sm font-extrabold text-cyan-300">② Começar uma história do zero</h3>
+            <input id="sn-title" maxlength="120" placeholder="Nome da história" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white">
+            <textarea id="sn-setting" rows="2" maxlength="500" placeholder="Onde acontece? Ex.: cozinha pequena de apartamento, azulejo branco, janela grande à esquerda" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white"></textarea>
+            <textarea id="sn-chars" rows="2" maxlength="700" placeholder="Quem aparece? Ex.: mulher de 30 anos, cabelo cacheado, avental vermelho" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white"></textarea>
+            <div class="grid grid-cols-2 gap-2">
+              <select id="sn-light" class="bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white">
+                <option value="imax_daylight">☀️ Luz natural do dia</option>
+                <option value="golden_hour">🌇 Pôr do sol</option>
+                <option value="default">💡 Luz artificial interna</option>
+                <option value="cyberpunk_neon">🌃 Noite com neon</option>
+                <option value="fire_volumetric">🔥 Luz de fogo</option>
+                <option value="chiaroscuro_noir">🎭 Sombras dramáticas</option>
+              </select>
+              <select id="sn-ar" class="bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white">
+                <option value="16:9">📺 Horizontal 16:9</option>
+                <option value="9:16">📱 Vertical 9:16</option>
+                <option value="1:1">⬛ Quadrado 1:1</option>
+              </select>
+            </div>
+            <input id="sn-lightsrc" maxlength="300" placeholder="De onde vem a luz? Ex.: janela à esquerda, lâmpada amarela no teto" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white">
+            <label class="block text-[11px] text-gray-400">Foto de referência do personagem (opcional): <input id="sn-anchor" type="file" accept="image/*" class="block mt-1 text-[11px] text-gray-300"></label>
+            <button onclick="storyCreateNew()" class="w-full py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/50 text-cyan-200 text-xs font-extrabold">✨ Criar minha história</button>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-xs font-extrabold text-gray-300 uppercase tracking-wider mb-3">Minhas histórias</h3>
+          <div id="story-projects-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4"><div class="col-span-full text-xs text-gray-500">Carregando...</div></div>
+        </div>
+      </div>
+
+      <!-- EDITOR (estilo linha do tempo) -->
+      <div id="story-editor" class="hidden space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="min-w-0"><h3 id="story-title" class="text-lg font-extrabold text-white truncate"></h3><span id="story-total" class="text-[11px] text-gray-400"></span></div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="storyPlayAllClips()" class="px-4 py-2 rounded-xl bg-dark-800 border border-white/15 text-xs font-bold text-gray-100 hover:text-white">▶ Assistir tudo</button>
+            <button id="story-export-btn" onclick="storyExport()" class="px-4 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/50 text-xs font-extrabold text-emerald-200">⬇️ Juntar e exportar filme</button>
+          </div>
+        </div>
+        <div id="story-export-result" class="hidden"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-8 space-y-3">
+            <div class="rounded-2xl bg-black border border-white/10 overflow-hidden aspect-video flex items-center justify-center">
+              <video id="story-monitor" controls playsinline class="w-full h-full object-contain"></video>
+            </div>
+            <div class="glass-panel rounded-2xl p-3 border border-white/10">
+              <div class="flex items-center justify-between mb-2"><span class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Linha do tempo — arraste os planos para mudar a ordem</span></div>
+              <div id="story-track" class="flex gap-2 overflow-x-auto pb-2 min-h-[110px]"></div>
+            </div>
+            <div id="story-inspector" class="hidden glass-panel rounded-2xl p-4 border border-cyan-400/30 space-y-2"></div>
+          </div>
+
+          <div class="lg:col-span-4 space-y-4">
+            <div class="glass-panel rounded-2xl p-4 border border-emerald-400/30 space-y-2">
+              <h4 class="text-xs font-extrabold text-emerald-300">🔒 Cena fixa — a IA lembra disto em todos os planos</h4>
+              <textarea id="sb-setting" rows="2" placeholder="Cenário" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2 text-[11px] text-white"></textarea>
+              <textarea id="sb-chars" rows="2" placeholder="Personagens" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2 text-[11px] text-white"></textarea>
+              <input id="sb-lightsrc" placeholder="De onde vem a luz" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2 text-[11px] text-white">
+              <select id="sb-light" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2 text-[11px] text-white">
+                <option value="imax_daylight">☀️ Luz natural do dia</option><option value="golden_hour">🌇 Pôr do sol</option><option value="default">💡 Luz artificial interna</option>
+                <option value="cyberpunk_neon">🌃 Noite com neon</option><option value="fire_volumetric">🔥 Luz de fogo</option><option value="chiaroscuro_noir">🎭 Sombras dramáticas</option>
+              </select>
+              <button onclick="storySaveBible()" class="w-full py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-200 text-[11px] font-extrabold">Salvar cena fixa</button>
+            </div>
+
+            <div class="glass-panel rounded-2xl p-4 border border-amber-400/40 space-y-3">
+              <h4 class="text-xs font-extrabold text-amber-300">🎬 Próximo plano</h4>
+              <div>
+                <span class="text-[10px] text-gray-400 uppercase font-bold">1. Onde fica a câmera?</span>
+                <div id="story-shot-chips" class="flex flex-wrap gap-1.5 mt-1.5"></div>
+              </div>
+              <div>
+                <span class="text-[10px] text-gray-400 uppercase font-bold">2. O que acontece?</span>
+                <textarea id="sa-prompt" rows="2" maxlength="600" placeholder="Ex.: ela olha para a porta e sorri" class="w-full mt-1.5 bg-dark-900 border border-white/15 rounded-xl px-3 py-2 text-[11px] text-white"></textarea>
+                <button onclick="storySuggest()" class="mt-1.5 text-[11px] font-bold text-cyan-300 hover:text-cyan-200">💡 Me sugira os próximos planos</button>
+                <div id="story-suggestions" class="mt-1.5 space-y-1.5"></div>
+              </div>
+              <div class="grid grid-cols-2 gap-2 items-end">
+                <label class="text-[10px] text-gray-400 uppercase font-bold">Duração: <span id="sa-dur-label" class="text-white">5s</span>
+                  <input id="sa-dur" type="range" min="3" max="30" value="5" oninput="document.getElementById('sa-dur-label').innerText=this.value+'s'" class="w-full mt-1"></label>
+                <label class="text-[10px] text-gray-400 uppercase font-bold">Transição
+                  <select id="sa-trans" class="w-full mt-1 bg-dark-900 border border-white/15 rounded-xl px-2 py-1.5 text-[11px] text-white"><option value="cut">Corte seco</option><option value="fade">Suave (fade)</option></select></label>
+              </div>
+              <button id="sa-btn" onclick="storyAddClip()" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-extrabold">🎬 Filmar este plano — <span id="sa-cost">25</span> créditos</button>
+              <label class="block text-[11px] text-gray-400">ou coloque um vídeo seu na linha do tempo (grátis): <input id="sa-upload" type="file" accept="video/*" onchange="storyUploadClip(this)" class="block mt-1 text-[11px] text-gray-300"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   
@@ -1970,7 +2188,7 @@
             <ul class="text-xs text-gray-300 space-y-2 text-left mb-6">
               <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 100 locuções PT-BR</li>
               <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 20 clonagens de voz</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 6 músicas Suno</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 6 músicas originais com IA</li>
             </ul>
           </div>
           <button onclick="handleStripeCheckout('starter')" class="w-full bg-dark-700 hover:bg-dark-600 border border-white/20 text-white font-bold py-2.5 rounded-xl text-sm transition-all">
@@ -1990,7 +2208,7 @@
             <ul class="text-xs text-gray-300 space-y-2 text-left mb-6">
               <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 250 locuções PT-BR</li>
               <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 50 clonagens de voz</li>
-              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 16 músicas Suno / Paródias</li>
+              <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 16 músicas originais com IA / Paródias</li>
               <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-cyan-400"></i> 25 vídeos virais editados</li>
             </ul>
           </div>
@@ -2189,6 +2407,138 @@
   
   
   
+    <!-- MODAL DE TERMOS DE USO, LGPD E BLINDAGEM JURÍDICA IABOX -->
+  <div id="legal-terms-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-3xl w-full p-6 md:p-8 rounded-3xl border border-cyan-500/40 shadow-2xl relative space-y-4 max-h-[90vh] overflow-y-auto">
+      <button onclick="closeModal('legal-terms-modal')" class="absolute top-5 right-5 text-gray-400 hover:text-white">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+
+      <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+        <div class="w-10 h-10 rounded-2xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shrink-0">
+          <i data-lucide="shield-check" class="w-5 h-5 text-cyan-400"></i>
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-white">Termos de Uso, Privacidade (LGPD) & Segurança Jurídica</h3>
+          <p class="text-xs text-gray-400">Plataforma IABOX — Diretor Geral & Titular de Propriedade Intelectual: Evandro da Silva Gallina</p>
+        </div>
+      </div>
+
+      <div class="text-xs text-gray-300 space-y-3.5 leading-relaxed text-justify">
+        <div class="p-3.5 rounded-2xl bg-dark-900 border border-white/10 space-y-1">
+          <h4 class="font-bold text-cyan-400 uppercase text-[11px]">1. Natureza do Serviço e Isenção de Responsabilidade</h4>
+          <p class="text-gray-400">
+            A plataforma <strong>IABOX</strong> é um ambiente tecnológico avançado de assistência criativa e computação neural. A IABOX, seu diretor Evandro da Silva Gallina e seus prepostos atuam estritamente como provedores de infraestrutura e processamento algorítmico, não exercendo controle prévio, editorial ou de mérito sobre os arquivos, roteiros, letras, imagens e áudios submetidos pelos usuários.
+          </p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-dark-900 border border-white/10 space-y-1">
+          <h4 class="font-bold text-amber-400 uppercase text-[11px]">2. Declaração de Titularidade e Direitos Autorais do Usuário</h4>
+          <p class="text-gray-400">
+            Ao fazer upload de qualquer material (fotografias, áudios de voz, músicas originais, marcas e logotipos), o usuário <strong>declara sob as penas da lei (Lei nº 9.610/1998)</strong> ser o legítimo detentor dos direitos autorais ou possuir autorização expressa para o processamento. O usuário assume integral e exclusiva responsabilidade por quaisquer litígios civis, criminais ou indenizatórios, mantendo a IABOX indene de qualquer cobrança.
+          </p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-dark-900 border border-white/10 space-y-1">
+          <h4 class="font-bold text-red-400 uppercase text-[11px]">3. Conformidade Eleitoral Obrigatória (Resolução TSE nº 23.610/2019)</h4>
+          <p class="text-gray-400">
+            É terminantemente proibido utilizar o motor IABOX para geração de propaganda eleitoral ilícita, difamação ou deepfakes desautorizados de candidatos e figuras públicas (Art. 9º-C, § 1º). Toda produção destinada a campanhas autorizadas deve conter a autodeclaração do candidato titular ou expressa rotulagem auditiva nos termos do Art. 9º-B da Resolução TSE nº 23.610/2019.
+          </p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-dark-900 border border-white/10 space-y-1">
+          <h4 class="font-bold text-emerald-400 uppercase text-[11px]">4. Privacidade e Sigilo Biométrico (LGPD - Lei nº 13.709/2018)</h4>
+          <p class="text-gray-400">
+            O IABOX respeita rigorosamente a privacidade dos seus usuários. As amostras de voz e fotografias pessoais utilizadas para clonagem e processamento neural são armazenadas em banco de dados isolado por ID de usuário com criptografia de ponta a ponta. A IABOX <strong>não comercializa, não cede e não transfere dados biométricos a terceiros</strong>, sendo utilizados unicamente para gerar os criativos solicitados pelo próprio titular.
+          </p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-dark-900 border border-white/10 space-y-1">
+          <h4 class="font-bold text-purple-400 uppercase text-[11px]">5. Propriedade Intelectual e Proteção Algorítmica</h4>
+          <p class="text-gray-400">
+            A marca IABOX, a interface, os códigos-fonte, os pipelines neurais e toda a tecnologia associada são propriedade intelectual privada e exclusiva de <strong>Evandro da Silva Gallina</strong>. É estritamente proibida qualquer tentativa de engenharia reversa, descompilação, scraping ou extração não autorizada sob as penas da Lei nº 9.279/1996 e Lei nº 9.609/1998.
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-white/10 flex justify-end">
+        <button onclick="closeModal('legal-terms-modal')" class="bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-200 font-bold px-5 py-2 rounded-xl text-xs transition-all">
+          Li e Concordo com os Termos
+        </button>
+      </div>
+    </div>
+  </div>
+
+    <!-- MODAL PERSUASIVO DE UPGRADE IABOX OMNI TURBO -->
+  <div id="omni-upsell-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="glass-panel max-w-2xl w-full p-6 md:p-7 rounded-3xl border-2 border-cyan-400/50 shadow-neon-cyan relative space-y-5">
+      <button onclick="closeModal('omni-upsell-modal')" class="absolute top-5 right-5 text-gray-400 hover:text-white">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+
+      <div class="flex items-start gap-3.5 border-b border-white/10 pb-4">
+        <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shrink-0">
+          <i data-lucide="clapperboard" class="w-6 h-6 text-cyan-400"></i>
+        </div>
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-[10px] font-extrabold uppercase mb-1">
+            ⚡ Potência Cinematográfica Detectada
+          </div>
+          <h3 class="text-lg md:text-xl font-extrabold text-white">Desbloqueie o Poder IABOX Omni Cinema Flow™</h3>
+          <p class="text-xs text-gray-300 mt-0.5">Sua sequência com Avatar / Troca de Cenário exige nossos servidores neurais dedicados.</p>
+        </div>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-dark-900/90 border border-white/10 text-xs text-gray-300 space-y-2">
+        <div class="flex items-center gap-2 text-cyan-300 font-bold">
+          <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400"></i>
+          <span>O Google Veo trava aos 10 segundos. O IABOX vai além:</span>
+        </div>
+        <p class="text-[11px] text-gray-400 leading-relaxed">
+          Para criar vídeos contínuos de <strong>30s, 60s ou até 5 minutos</strong> com Face Lock estável, iluminação de cinema e múltiplos takes encadeados, o sistema aciona os Servidores Neurais Turbo.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+        <!-- OFERTA 1: AVULSO R$ 19,90 -->
+        <div class="glass-card rounded-2xl p-4 border border-cyan-400/40 bg-gradient-to-br from-cyan-950/40 to-dark-900 flex flex-col justify-between">
+          <div>
+            <span class="text-[10px] font-bold text-cyan-300 uppercase tracking-wider block">Produção Única Omni</span>
+            <div class="text-2xl font-extrabold text-white my-1.5">R$ 19,90</div>
+            <p class="text-[11px] text-gray-300 mb-3">Libera 40 Créditos Turbo para renderizar sua sequência completa sem filas.</p>
+          </div>
+          <button onclick="handleStripeCheckout('single_gpu')" class="w-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-200 font-bold py-2 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5">
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-cyan-400"></i> Contratar 1 Produção (R$ 19,90)
+          </button>
+        </div>
+
+        <!-- OFERTA 2: PASSAPORTE STUDIO R$ 79,90 -->
+        <div class="glass-card rounded-2xl p-4 border-2 border-amber-400 bg-gradient-to-br from-amber-950/40 to-dark-900 flex flex-col justify-between relative shadow-neon-amber-sm">
+          <div class="absolute -top-2.5 right-3 bg-amber-400 text-black text-[9px] font-black uppercase px-2 py-0.5 rounded-full">
+            Mais Econômico
+          </div>
+          <div>
+            <span class="text-[10px] font-bold text-amber-300 uppercase tracking-wider block">Passaporte Studio VIP</span>
+            <div class="text-2xl font-extrabold text-white my-1.5">R$ 79,90</div>
+            <p class="text-[11px] text-gray-300 mb-3">200 Créditos Turbo para 5 a 10 produções cinematográficas em resolução 8K.</p>
+          </div>
+          <button onclick="handleStripeCheckout('studio_gpu')" class="w-full bg-gradient-to-r from-amber-400 to-yellow-400 text-black font-extrabold py-2 rounded-xl text-xs shadow-md transition-all hover:scale-105 flex items-center justify-center gap-1.5">
+            <i data-lucide="crown" class="w-3.5 h-3.5 text-black"></i> Ativar Passaporte Studio (R$ 79,90)
+          </button>
+        </div>
+      </div>
+
+      <div class="pt-2 flex items-center justify-between border-t border-white/10 text-xs">
+        <button onclick="downgradeToOmniPreview()" class="text-gray-400 hover:text-white underline text-[11px] transition-colors">
+          Ou gerar prévia rápida de 10s com meus créditos padrão &rarr;
+        </button>
+        <button onclick="closeModal('omni-upsell-modal')" class="text-gray-400 hover:text-white text-[11px]">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="draggable-mascot" class="flex flex-col items-center">
     
     
@@ -2310,6 +2660,16 @@
     }
 
     function switchTab(tabId) {
+      if (tabId === 'video') {
+        setMascotMessage('🎬 IABOX Omni Cinema Flow™ Ativo: Diferente do Google Veo que trava em 10s, aqui você cria até 5 minutos contínuos!');
+      } else if (tabId === 'parody') {
+        setMascotMessage('⚡ Fábrica de Paródias: Este criativo de Alta Fidelidade ativa o motor IABOX Neural Turbo™ com isolamento acústico perfeito!');
+      } else if (tabId === 'canvas') {
+        setMascotMessage('🎨 Magnific Canvas: Crie cenas cinematográficas em até 8K com reconstrução de microtextura exclusiva IABOX!');
+      } else if (tabId === 'voice' || tabId === 'image') {
+        setMascotMessage('✨ Modo Padrão Ativo: Criação rápida e econômica para posts e locuções do dia a dia.');
+      }
+
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       const activeTab = document.getElementById(`tab-${tabId}`);
       if (activeTab) activeTab.classList.remove('hidden');
@@ -2326,19 +2686,21 @@
       const tips = {
         'canvas': 'Use o Estúdio em Tela Inteira Dedicada para criar cenas 8K ultra-realistas e baixar direto no PC!',
         'image': 'Anexe de 3 a 5 fotos de referência para o motor manter 100% da fidelidade visual!',
-        'suno': 'No Suno Studio, você pode criar desde modão sertanejo até trap e funk e baixar em MP3!',
+        'suno': 'No IA Music Studio, você pode criar desde modão sertanejo até trap e funk e baixar em MP3!',
         'parody': 'Crie um AI Cover na música do seu cantor favorito ou gere uma paródia completa!',
         'voice': 'Nossas vozes neurais brasileiras não têm nenhum sotaque estrangeiro!',
         'clone': 'Com apenas 1 minuto de áudio você já tem seu clone vocal perfeito!',
         'video': 'Envie vídeos de até 5 min + 3 a 5 imagens para inserir criativos, objetos e trocar personagem!',
         'memory': 'Aqui ficam salvos todos os seus criativos para baixar direto no seu computador quando quiser!',
         'about': 'Conheça o Evandro, o especialista que desenvolveu toda essa tecnologia!',
+        'story': 'Aqui você continua sua história: eu memorizo cenário, personagens e luz e filmo cada plano em um ângulo novo!',
         'dashboard': 'Clique no robô ou arraste-o pela tela para onde quiser!'
       };
       if (tips[tabId]) setMascotMessage(tips[tabId]);
       if (tabId === 'canvas') {
         setTimeout(() => { renderCanvasNodes(); drawCanvasCables(); }, 60);
       }
+      if (tabId === 'story') { storyInit(); }
       if (tabId === 'memory') {
         loadMemoryAndAccessLogs();
       }
@@ -2887,6 +3249,7 @@
                     <span class="text-[10px] text-gray-500 font-mono">IP: ${c.ip || '-'}</span>
                     <div class="flex items-center gap-1.5">
                       <button type="button" onclick="deleteMemoryItem('${c.id}')" title="Excluir este criativo da memória" class="px-2 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/35 border border-red-500/40 text-red-300 font-bold flex items-center gap-1 transition-all">🗑️</button>
+                      ${(url.endsWith('.mp4') || c.category === 'video') ? `<button type="button" onclick="storyFromCreation('${url}', '${(c.title || '').replace(/'/g, '')}')" class="px-2 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/40 text-amber-200 font-bold">🎞️ Continuar história</button>` : ''}
                       <a href="${dlUrl}" download class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 font-bold flex items-center gap-1">⬇️ Baixar no PC</a>
                     </div>
                   </div>
@@ -2945,7 +3308,7 @@
       "Arraste-me para onde quiser na tela pelo mouse ou toque!",
       "Sabia que você pode colocar sua voz na música de qualquer cantor famoso?",
       "Nossas vozes masculinas e femininas são 100% brasileiras!",
-      "Experimente criar uma música sertaneja ou trap no Suno Studio!",
+      "Experimente criar uma música sertaneja ou trap no IA Music Studio!",
       "Acesse a aba 'O Criador' para ver o currículo do Evandro Gallina!",
       "Você pode ouvir e testar todas as amostras gratuitamente na vitrine!"
     ];
@@ -3273,20 +3636,88 @@
       } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro de conexão: ${e.message}</span>`; }
     }
 
+    
+    let selectedOmniDuration = 'extended_60s';
+
+    function onOmniDurationChanged(dur) {
+      selectedOmniDuration = dur;
+      const opt10 = document.getElementById('omni-dur-opt-10s');
+      const opt60 = document.getElementById('omni-dur-opt-60s');
+      const opt5m = document.getElementById('omni-dur-opt-5m');
+      const btnText = document.getElementById('omni-btn-text');
+
+      [opt10, opt60, opt5m].forEach(el => {
+        if (el) el.className = 'cursor-pointer p-3 rounded-2xl border border-white/15 bg-dark-800 hover:border-cyan-400/50 flex flex-col justify-between transition-all';
+      });
+
+      if (dur === 'preview_10s') {
+        if (opt10) opt10.className = 'cursor-pointer p-3 rounded-2xl border-2 border-cyan-400 bg-cyan-500/15 flex flex-col justify-between transition-all';
+        if (btnText) btnText.innerText = 'Renderizar Prévia Rápida (10 Créditos)';
+        setMascotMessage('⚡ Modo Prévia (10s): Criação rápida de baixo consumo com seus créditos padrão!');
+      } else if (dur === 'extended_60s') {
+        if (opt60) opt60.className = 'cursor-pointer p-3 rounded-2xl border-2 border-cyan-400 bg-cyan-500/15 flex flex-col justify-between transition-all relative';
+        if (btnText) btnText.innerText = 'Renderizar Sequência Estendida (40 Créditos Turbo)';
+        setMascotMessage('🎬 Sequência Estendida (30-60s): Diferente do Google Veo que trava aos 10s, o IABOX roda sua tomada completa sem cortes!');
+      } else {
+        if (opt5m) opt5m.className = 'cursor-pointer p-3 rounded-2xl border-2 border-purple-400 bg-purple-500/15 flex flex-col justify-between transition-all';
+        if (btnText) btnText.innerText = 'Renderizar Curta de até 5 Min (Passaporte VIP)';
+        setMascotMessage('🌟 Curta-Metragem de até 5m: Máximo poder em resolução 8K com renderização de cinema!');
+      }
+    }
+
+    function onOmniModeChanged(val) {
+      if (val === 'character_swap') {
+        setMascotMessage('🎭 Avatar Swap: Sua pose e fala serão mantidas enquanto o rosto é substituído pelo influenciador com Face Lock!');
+      } else if (val === 'scene_swap') {
+        setMascotMessage('🌆 Troca de Cenário: Seu ambiente será transportado com iluminação de estúdio volumétrica!');
+      } else if (val === 'multitake_cinema') {
+        setMascotMessage('🎥 Multitakes de Cinema: Encadeia planos gerais, médios e closes cinematográficos!');
+      }
+    }
+
+    function downgradeToOmniPreview() {
+      closeModal('omni-upsell-modal');
+      onOmniDurationChanged('preview_10s');
+      const radio = document.querySelector('input[name="omni_duration"][value="preview_10s"]');
+      if (radio) radio.checked = true;
+      setMascotMessage('⚡ Pronto! Duração ajustada para Prévia de 10s. Agora você pode renderizar com seus créditos regulares!');
+    }
+
     async function handleGenerateVideo() {
-      if (!requireCredits(10)) return;
       const fileInput = document.getElementById('video-file');
-      if (!fileInput.files || !fileInput.files[0]) return alert('Por favor, selecione o vídeo principal (até 5 minutos).');
+      if (!fileInput.files || !fileInput.files[0]) return alert('Por favor, selecione o vídeo condutor principal (até 5 minutos).');
+
+      const vfxMode = document.getElementById('video-vfx-mode').value;
+      const durationMode = selectedOmniDuration || 'extended_60s';
+
+      // 1. AUTO-POLICIAMENTO INTELIGENTE: Verifica requisitos e créditos antes
+      const checkFd = new FormData();
+      checkFd.append('duration_mode', durationMode);
+      checkFd.append('vfx_mode', vfxMode);
+      checkFd.append('user_id', currentUserId);
+
+      try {
+        const checkRes = await fetch('/api/video/omni-check', { method: 'POST', body: checkFd });
+        const checkData = await checkRes.json();
+
+        if (checkData.can_run === false) {
+          // Abre modal persuasivo orientando a recarga ou permitindo preview grátis
+          setMascotMessage('⚡ Produção de alta fidelidade detectada! Desbloqueie o poder Omni Turbo sem filas.');
+          openModal('omni-upsell-modal');
+          return;
+        }
+      } catch (err) {
+        console.warn('Omni check fallback:', err);
+      }
 
       const refInput = document.getElementById('video-ref-images');
       const overlayInput = document.getElementById('video-overlay-file');
-      const vfxMode = document.getElementById('video-vfx-mode').value;
       const aspectRatio = document.getElementById('video-aspect-ratio').value;
       const creativePrompt = document.getElementById('video-creative-prompt').value.trim();
 
       const refFiles = videoRefFilesList.length > 0 ? videoRefFilesList : Array.from((refInput && refInput.files) || []).slice(0, 5);
       const box = document.getElementById('video-player-box');
-      box.innerHTML = `<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-cyan-400 animate-spin mb-2"></i> Renderizando vídeo (${vfxMode}) com ${refFiles.length} imagem(ns) de referência (suporte até 5 min)...</div>`;
+      box.innerHTML = `<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-cyan-400 animate-spin mb-2"></i> Renderizando no IABOX Omni Cinema Flow™ (${vfxMode}, ${durationMode}) com ${refFiles.length} foto(s) de referência...</div>`;
       lucide.createIcons();
 
       const formData = new FormData();
@@ -3296,6 +3727,7 @@
         formData.append('overlay_video', overlayInput.files[0]);
       }
       formData.append('vfx_mode', vfxMode);
+      formData.append('duration_mode', durationMode);
       formData.append('aspect_ratio', aspectRatio);
       formData.append('creative_prompt', creativePrompt);
       formData.append('silence_removal', document.getElementById('video-jumpcuts').checked);
@@ -3308,11 +3740,15 @@
         if (data.job_id) {
           pollJob(data.job_id, box, 'video');
           updateCredits();
+          setMascotMessage('🚀 Sequência enviada com sucesso para renderização cinemática!');
         } else {
-          box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${data.detail || 'Falha ao iniciar processamento de vídeo'}</span>`;
+          box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${data.detail || 'Falha ao iniciar produção'}</span>`;
         }
-      } catch (e) { box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${e.message}</span>`; }
+      } catch (e) {
+        box.innerHTML = `<span class="text-red-400 text-xs">Erro de conexão: ${e.message}</span>`;
+      }
     }
+
 
     async function handleGenerateImage() {
       if (!requireCredits(2)) return;
@@ -3453,7 +3889,7 @@
       const board = document.getElementById('magnific-canvas-board');
       const placeholder = document.getElementById('canvas-board-placeholder');
       const btnTop = document.getElementById('btn-canvas-fullscreen');
-      const btnHud = document.getElementById('hud-fullscreen-btn');
+      const btnHud = document.getElementById('hud-fullscreen-btn') || document.createElement('div');
       const inspector = document.getElementById('canvas-director-inspector');
       const dock = document.getElementById('canvas-bottom-dock');
       if (!board) return;
@@ -4359,6 +4795,309 @@
       renderRefPreviews('image');
       renderRefPreviews('video');
     }, 200);
+  
+    // ========================================================================
+    // GUIA INTELIGENTE (home simples) + LINHA DO TEMPO DE HISTÓRIA
+    // ========================================================================
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+    async function guideSubmit(ev) {
+      ev.preventDefault();
+      const txt = document.getElementById('guide-input').value.trim();
+      const box = document.getElementById('guide-results');
+      if (!txt) { box.innerHTML = ''; return false; }
+      try {
+        const fd = new FormData(); fd.append('text', txt);
+        const r = await (await fetch('/api/guide/route', { method: 'POST', body: fd })).json();
+        box.innerHTML = r.suggestions.map(s => `<button onclick="switchTab('${s.tab}')" class="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/35 border border-cyan-400/50 text-xs font-bold text-cyan-100" title="${esc(s.hint)}">${esc(s.label)}</button>`).join('');
+        setMascotMessage(r.matched ? 'Entendi! Toque numa opção abaixo e eu te levo até lá. 😊' : 'Não tenho certeza do que você quer — estas são as opções mais populares!');
+      } catch (e) { box.innerHTML = ''; }
+      return false;
+    }
+
+    let storyProject = null, storySelected = null, storyPollTimer = null, storyShot = 'medium', storyPlayIdx = -1, storyDragId = null;
+    const STORY_SHOTS_UI = [['wide','🏞️ Geral'],['medium','🧍 Médio'],['close','🔍 Close'],['over_shoulder','👥 Sobre o ombro'],['reverse','🔄 Contraplano'],['low_angle','🦸 Baixo'],['side','👤 Perfil'],['insert','🔎 Detalhe'],['aerial','🚁 Drone'],['tension','🎭 Inclinado']];
+
+    async function storyPost(path, fd) {
+      fd = fd || new FormData();
+      fd.append('user_id', currentUserId || '');
+      const res = await fetch(path, { method: 'POST', body: fd });
+      let data = {}; try { data = await res.json(); } catch (e) {}
+      if (res.status === 402) {
+        setMascotMessage('⚡ Para continuar a história com a mesma cena, você precisa de mais créditos. É rapidinho recarregar!');
+        openModal('omni-upsell-modal');
+        throw new Error('__credits__');
+      }
+      if (!res.ok) throw new Error(typeof data.detail === 'string' ? data.detail : 'Algo deu errado. Tente de novo.');
+      return data;
+    }
+    async function storyGet(path) {
+      const res = await fetch(path + (path.includes('?') ? '&' : '?') + 'user_id=' + encodeURIComponent(currentUserId || ''));
+      if (!res.ok) throw new Error('Não foi possível carregar.');
+      return res.json();
+    }
+    function storyErr(e) { if (e && e.message !== '__credits__') alert(e.message || 'Erro inesperado.'); }
+
+    function storyShowHome() {
+      storyProject = null; storySelected = null; clearInterval(storyPollTimer);
+      document.getElementById('story-editor').classList.add('hidden');
+      document.getElementById('story-home').classList.remove('hidden');
+      document.getElementById('story-back-btn').classList.add('hidden');
+      storyLoadHome();
+    }
+
+    async function storyInit() {
+      if (storyProject) return;
+      storyShowHome();
+    }
+
+    async function storyLoadHome() {
+      try {
+        const [pr, mem] = await Promise.all([storyGet('/api/story/projects'), storyGet('/api/user/memory')]);
+        const grid = document.getElementById('story-projects-grid');
+        grid.innerHTML = pr.projects.length ? pr.projects.map(p => `
+          <div class="glass-card rounded-2xl overflow-hidden border border-white/10 flex flex-col">
+            <div class="aspect-video bg-black cursor-pointer" onclick="storyOpen('${p.id}')">${p.thumb ? `<img src="${esc(p.thumb)}" class="w-full h-full object-cover">` : '<div class="w-full h-full flex items-center justify-center text-2xl">🎞️</div>'}</div>
+            <div class="p-3 space-y-1"><div class="text-xs font-bold text-white truncate">${esc(p.title)}</div><div class="text-[10px] text-gray-400">${p.clips} plano(s)</div>
+              <div class="flex gap-1.5 pt-1"><button onclick="storyOpen('${p.id}')" class="flex-1 py-1 rounded-lg bg-cyan-500/20 border border-cyan-400/40 text-[11px] text-cyan-200 font-bold">Abrir</button>
+              <button onclick="storyDeleteProject('${p.id}')" class="px-2 py-1 rounded-lg bg-red-500/20 border border-red-500/40 text-[11px] text-red-300">🗑️</button></div></div>
+          </div>`).join('') : '<div class="col-span-full text-xs text-gray-500">Você ainda não tem histórias. Comece por uma das opções acima.</div>';
+        const vids = (mem.creations || []).filter(c => (c.result_url || '').endsWith('.mp4') || c.category === 'video');
+        const sel = document.getElementById('story-import-select');
+        sel.innerHTML = vids.length ? vids.map(v => `<option value="${esc(v.result_url)}" data-title="${esc(v.title || 'Minha História')}">${esc(v.title || 'Vídeo')} — ${esc((v.created_at || '').slice(0, 16))}</option>`).join('') : '<option value="">Você ainda não tem vídeos criados</option>';
+      } catch (e) { /* silencioso */ }
+    }
+
+    async function storyDeleteProject(id) {
+      if (!confirm('Excluir esta história e todos os planos dela?')) return;
+      const fd = new FormData(); fd.append('project_id', id);
+      try { await storyPost('/api/story/project/delete', fd); storyLoadHome(); } catch (e) { storyErr(e); }
+    }
+
+    async function storyCreateNew() {
+      const fd = new FormData();
+      fd.append('title', document.getElementById('sn-title').value || 'Minha História');
+      fd.append('setting', document.getElementById('sn-setting').value);
+      fd.append('characters', document.getElementById('sn-chars').value);
+      fd.append('lighting_mood', document.getElementById('sn-light').value);
+      fd.append('lighting_source', document.getElementById('sn-lightsrc').value);
+      fd.append('aspect_ratio', document.getElementById('sn-ar').value);
+      const f = document.getElementById('sn-anchor').files[0]; if (f) fd.append('anchor_image', f);
+      if (!document.getElementById('sn-setting').value.trim()) return alert('Conte onde a história acontece — é o que mantém o cenário igual em todos os planos.');
+      try { const r = await storyPost('/api/story/project/create', fd); setMascotMessage('História criada! Agora escolha o ângulo e o que acontece no primeiro plano. 🎬'); storyOpen(r.project_id); } catch (e) { storyErr(e); }
+    }
+
+    async function storyImportSelected() {
+      const sel = document.getElementById('story-import-select');
+      if (!sel.value) return alert('Escolha um vídeo da lista.');
+      storyFromCreation(sel.value, sel.options[sel.selectedIndex].getAttribute('data-title'));
+    }
+
+    async function storyFromCreation(url, title) {
+      const fd = new FormData(); fd.append('result_url', url); fd.append('title', title || 'Minha História');
+      setMascotMessage('🔎 Analisando seu vídeo para memorizar cenário, personagens e luz...');
+      switchTab('story');
+      try { const r = await storyPost('/api/story/project/from-creation', fd); setMascotMessage('Pronto! Anotei a cena do seu vídeo. Veja em “Cena fixa” e adicione o próximo plano. 🎞️'); storyOpen(r.project_id); } catch (e) { storyErr(e); }
+    }
+
+    async function storyOpen(id) {
+      try {
+        storyProject = await storyGet('/api/story/project/' + id);
+        storySelected = null; storyPlayIdx = -1;
+        document.getElementById('story-home').classList.add('hidden');
+        document.getElementById('story-editor').classList.remove('hidden');
+        document.getElementById('story-back-btn').classList.remove('hidden');
+        document.getElementById('story-export-result').classList.add('hidden');
+        const b = storyProject.bible || {};
+        document.getElementById('sb-setting').value = b.setting || '';
+        document.getElementById('sb-chars').value = b.characters || '';
+        document.getElementById('sb-lightsrc').value = b.lighting_source || '';
+        document.getElementById('sb-light').value = b.lighting_mood || 'default';
+        storyRenderChips(); storyRender(); storyStartPoll();
+        const done = storyProject.clips.filter(c => c.status === 'done');
+        if (done.length) storySelect(done[done.length - 1].id);
+      } catch (e) { storyErr(e); }
+    }
+
+    function storyRenderChips() {
+      document.getElementById('story-shot-chips').innerHTML = STORY_SHOTS_UI.map(([k, l]) =>
+        `<button type="button" onclick="storyShot='${k}'; storyRenderChips();" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border ${storyShot === k ? 'bg-amber-400 text-black border-amber-300' : 'bg-dark-900 text-gray-300 border-white/15 hover:text-white'}">${l}</button>`).join('');
+    }
+
+    function storyRender() {
+      const p = storyProject; if (!p) return;
+      document.getElementById('story-title').innerText = p.title;
+      document.getElementById('story-total').innerText = `${p.clips.length} plano(s) • ${p.total_duration}s prontos`;
+      const track = document.getElementById('story-track');
+      if (!p.clips.length) { track.innerHTML = '<div class="text-xs text-gray-500 p-4">Sua linha do tempo está vazia. Filme o primeiro plano no painel ao lado →</div>'; return; }
+      track.innerHTML = p.clips.map((c, i) => {
+        const w = Math.max(120, Math.min(300, Math.round((c.duration || 5) * 16)));
+        const sel = storySelected === c.id ? 'border-cyan-300 ring-2 ring-cyan-400/60' : 'border-white/15';
+        let thumb;
+        if (c.status === 'processing') thumb = `<div class="w-full h-full flex flex-col items-center justify-center text-[10px] text-amber-300"><div class="animate-pulse text-lg">🎬</div>Filmando ${c.progress || 0}%</div>`;
+        else if (c.status === 'failed') thumb = `<div class="w-full h-full flex flex-col items-center justify-center text-[10px] text-red-300 p-1 text-center">⚠️ Falhou<br>créditos devolvidos</div>`;
+        else thumb = c.keyframe_url ? `<img src="${esc(c.keyframe_url)}" class="w-full h-full object-cover pointer-events-none">` : '<div class="w-full h-full flex items-center justify-center text-xl">🎞️</div>';
+        return `<div draggable="true" ondragstart="storyDragId='${c.id}'" ondragover="event.preventDefault()" ondrop="storyDrop('${c.id}')" onclick="storySelect('${c.id}')" style="width:${w}px" class="shrink-0 rounded-xl border ${sel} bg-dark-900 cursor-grab overflow-hidden">
+          <div class="h-16 bg-black">${thumb}</div>
+          <div class="px-2 py-1"><div class="text-[10px] font-bold text-white truncate">${i + 1}. ${esc(c.shot_label)}</div><div class="text-[9px] text-gray-400">${c.duration}s${c.source !== 'ai' ? ' • ' + (c.source === 'upload' ? 'seu vídeo' : 'original') : ''}</div></div></div>`;
+      }).join('');
+    }
+
+    function storySelect(id) {
+      storySelected = id;
+      const c = storyProject.clips.find(x => x.id === id); if (!c) return;
+      const mon = document.getElementById('story-monitor');
+      if (c.status === 'done' && c.result_url) { mon.src = c.result_url; mon.load(); }
+      storyRender();
+      const ins = document.getElementById('story-inspector');
+      ins.classList.remove('hidden');
+      const isAi = c.source === 'ai';
+      ins.innerHTML = `
+        <div class="flex items-center justify-between"><h4 class="text-xs font-extrabold text-cyan-300">Plano selecionado</h4>${c.error ? `<span class="text-[10px] text-red-300">${esc(c.error)}</span>` : ''}</div>
+        <textarea id="si-prompt" rows="2" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2 text-[11px] text-white">${esc(c.prompt)}</textarea>
+        <div class="grid grid-cols-3 gap-2">
+          <select id="si-shot" class="bg-dark-900 border border-white/15 rounded-xl px-2 py-1.5 text-[11px] text-white" ${isAi ? '' : 'disabled'}>${STORY_SHOTS_UI.map(([k, l]) => `<option value="${k}" ${c.shot_type === k ? 'selected' : ''}>${l}</option>`).join('')}</select>
+          <input id="si-dur" type="number" min="2" max="30" value="${c.duration}" ${isAi ? '' : 'disabled'} class="bg-dark-900 border border-white/15 rounded-xl px-2 py-1.5 text-[11px] text-white">
+          <select id="si-trans" class="bg-dark-900 border border-white/15 rounded-xl px-2 py-1.5 text-[11px] text-white"><option value="cut" ${c.transition === 'cut' ? 'selected' : ''}>Corte seco</option><option value="fade" ${c.transition === 'fade' ? 'selected' : ''}>Suave (fade)</option></select>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="storySaveClip('${c.id}')" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-400/40 text-[11px] font-bold text-cyan-200">💾 Salvar alterações</button>
+          ${isAi ? `<button onclick="storyRegen('${c.id}')" class="px-3 py-1.5 rounded-lg bg-amber-500/20 border border-amber-400/40 text-[11px] font-bold text-amber-200">🔁 Filmar de novo (25 créditos)</button>` : ''}
+          <button onclick="storyDeleteClip('${c.id}')" class="px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500/40 text-[11px] font-bold text-red-300">🗑️ Remover</button>
+        </div>`;
+    }
+
+    async function storySaveClip(id) {
+      const fd = new FormData(); fd.append('clip_id', id);
+      fd.append('prompt', document.getElementById('si-prompt').value);
+      fd.append('shot_type', document.getElementById('si-shot').value);
+      fd.append('duration', document.getElementById('si-dur').value);
+      fd.append('transition', document.getElementById('si-trans').value);
+      try { await storyPost('/api/story/clip/update', fd); await storyReload(); setMascotMessage('Alterações salvas! Para refilmar com o novo texto, use “Filmar de novo”.'); } catch (e) { storyErr(e); }
+    }
+    async function storyRegen(id) {
+      const fd = new FormData(); fd.append('clip_id', id);
+      try { await storyPost('/api/story/clip/regenerate', fd); await storyReload(); storyStartPoll(); updateCredits(); } catch (e) { storyErr(e); }
+    }
+    async function storyDeleteClip(id) {
+      if (!confirm('Remover este plano da linha do tempo?')) return;
+      const fd = new FormData(); fd.append('clip_id', id);
+      try { await storyPost('/api/story/clip/delete', fd); storySelected = null; document.getElementById('story-inspector').classList.add('hidden'); await storyReload(); } catch (e) { storyErr(e); }
+    }
+    async function storyDrop(targetId) {
+      if (!storyDragId || storyDragId === targetId) return;
+      const ids = storyProject.clips.map(c => c.id);
+      ids.splice(ids.indexOf(storyDragId), 1);
+      ids.splice(ids.indexOf(targetId), 0, storyDragId);
+      storyDragId = null;
+      const fd = new FormData(); fd.append('project_id', storyProject.id); fd.append('order_json', JSON.stringify(ids));
+      try { await storyPost('/api/story/clip/reorder', fd); await storyReload(); } catch (e) { storyErr(e); }
+    }
+
+    async function storyReload() {
+      if (!storyProject) return;
+      storyProject = await storyGet('/api/story/project/' + storyProject.id);
+      storyRender();
+    }
+
+    function storyStartPoll() {
+      clearInterval(storyPollTimer);
+      storyPollTimer = setInterval(async () => {
+        if (!storyProject || !storyProject.clips.some(c => c.status === 'processing')) { clearInterval(storyPollTimer); return; }
+        try {
+          const before = storyProject.clips.filter(c => c.status === 'processing').map(c => c.id);
+          await storyReload();
+          const finished = before.filter(id => { const c = storyProject.clips.find(x => x.id === id); return c && c.status !== 'processing'; });
+          if (finished.length) {
+            const c = storyProject.clips.find(x => x.id === finished[0]);
+            setMascotMessage(c.status === 'done' ? '✅ Plano pronto! Dê play e, se gostar, peça o próximo ângulo.' : '⚠️ Esse plano não saiu bem. Devolvi seus créditos — tente descrever de outro jeito.');
+            storySelect(c.id); updateCredits();
+          }
+        } catch (e) {}
+      }, 4000);
+    }
+
+    async function storyAddClip() {
+      const prompt = document.getElementById('sa-prompt').value.trim();
+      if (!prompt) return alert('Descreva em uma frase o que acontece neste plano.');
+      const fd = new FormData();
+      fd.append('project_id', storyProject.id); fd.append('shot_type', storyShot); fd.append('prompt', prompt);
+      fd.append('duration', document.getElementById('sa-dur').value); fd.append('transition', document.getElementById('sa-trans').value);
+      const btn = document.getElementById('sa-btn'); btn.disabled = true;
+      try {
+        await storyPost('/api/story/clip/add', fd);
+        document.getElementById('sa-prompt').value = '';
+        document.getElementById('story-suggestions').innerHTML = '';
+        setMascotMessage('🎬 Filmando na mesma cena, com a mesma luz. Pode acompanhar na linha do tempo!');
+        await storyReload(); storyStartPoll(); updateCredits();
+      } catch (e) { storyErr(e); } finally { btn.disabled = false; }
+    }
+
+    async function storyUploadClip(input) {
+      if (!input.files[0]) return;
+      const fd = new FormData(); fd.append('project_id', storyProject.id); fd.append('video_file', input.files[0]);
+      try { await storyPost('/api/story/clip/upload', fd); input.value = ''; await storyReload(); } catch (e) { storyErr(e); }
+    }
+
+    async function storySuggest() {
+      const box = document.getElementById('story-suggestions');
+      box.innerHTML = '<div class="text-[11px] text-gray-400">Pensando nos próximos planos...</div>';
+      const fd = new FormData(); fd.append('project_id', storyProject.id);
+      try {
+        const r = await storyPost('/api/story/suggest', fd);
+        box.innerHTML = r.suggestions.map((s, i) => `<button onclick="storyApplySuggestion(${i})" class="w-full text-left px-3 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-400/30 text-[11px] text-cyan-100"><strong>${esc(s.label)}</strong>${s.prompt ? ' — ' + esc(s.prompt) : ''}</button>`).join('');
+        window._storySugg = r.suggestions;
+      } catch (e) { box.innerHTML = ''; storyErr(e); }
+    }
+    function storyApplySuggestion(i) {
+      const s = (window._storySugg || [])[i]; if (!s) return;
+      storyShot = s.shot_type; storyRenderChips();
+      if (s.prompt) document.getElementById('sa-prompt').value = s.prompt;
+    }
+
+    async function storySaveBible() {
+      const fd = new FormData(); fd.append('project_id', storyProject.id);
+      fd.append('setting', document.getElementById('sb-setting').value); fd.append('characters', document.getElementById('sb-chars').value);
+      fd.append('lighting_source', document.getElementById('sb-lightsrc').value); fd.append('lighting_mood', document.getElementById('sb-light').value);
+      try { await storyPost('/api/story/project/update', fd); setMascotMessage('Cena fixa salva! Os próximos planos vão seguir exatamente isso. 🔒'); } catch (e) { storyErr(e); }
+    }
+
+    function storyPlayAllClips() {
+      const done = storyProject.clips.filter(c => c.status === 'done' && c.result_url);
+      if (!done.length) return alert('Ainda não há planos prontos para assistir.');
+      const mon = document.getElementById('story-monitor');
+      storyPlayIdx = 0;
+      const playNext = () => {
+        if (storyPlayIdx < 0 || storyPlayIdx >= done.length) { mon.onended = null; storyPlayIdx = -1; return; }
+        mon.src = done[storyPlayIdx].result_url; mon.play().catch(() => {});
+        storyPlayIdx++;
+      };
+      mon.onended = playNext; playNext();
+    }
+
+    async function storyExport() {
+      const out = document.getElementById('story-export-result'); const btn = document.getElementById('story-export-btn');
+      out.classList.remove('hidden'); out.innerHTML = '<div class="p-3 rounded-xl bg-dark-800 border border-white/10 text-xs text-gray-300">🎞️ Juntando seus planos em um único filme...</div>';
+      btn.disabled = true;
+      try {
+        const fd = new FormData(); fd.append('project_id', storyProject.id);
+        const r = await storyPost('/api/story/export', fd);
+        const iv = setInterval(async () => {
+          const j = await (await fetch('/api/jobs/' + r.job_id)).json();
+          if (j.status === 'completed') {
+            clearInterval(iv); btn.disabled = false;
+            out.innerHTML = `<div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-400/40 space-y-2"><span class="text-xs font-bold text-emerald-300">✅ Seu filme está pronto!</span><video controls playsinline class="w-full rounded-xl"><source src="${j.result_url}" type="video/mp4"></video><a href="${getDownloadUrl(j.result_url)}" download class="inline-block px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-400/50 text-xs font-extrabold text-emerald-200">⬇️ Baixar no PC (MP4)</a></div>`;
+            setMascotMessage('🎉 Filme exportado e salvo em Meus Criativos!');
+          } else if (j.status === 'failed') { clearInterval(iv); btn.disabled = false; out.innerHTML = '<div class="p-3 rounded-xl bg-red-500/10 border border-red-500/40 text-xs text-red-300">Não consegui juntar o filme agora. Tente novamente em instantes.</div>'; }
+        }, 3000);
+      } catch (e) { btn.disabled = false; out.classList.add('hidden'); storyErr(e); }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!localStorage.getItem('iabox_onboarded')) {
+        setTimeout(() => { try { setMascotMessage('👋 Oi! Escreva na caixa o que você quer criar e eu levo você ao lugar certo.'); } catch (e) {} localStorage.setItem('iabox_onboarded', '1'); }, 1800);
+      }
+    });
   </script>
 </body>
 </html>
