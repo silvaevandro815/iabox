@@ -773,7 +773,12 @@
         
         <div class="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-5">
           <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">Tema ou História da Canção</label>
+            <div class="flex items-center justify-between mb-2">
+              <label class="block text-sm font-semibold text-gray-200">Tema ou História da Canção</label>
+              <button type="button" id="enhance-btn-suno-theme" onclick="enhancePromptWithAI('suno-theme', 'suno')" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-400/40 text-cyan-200 hover:brightness-125 transition-all shadow-sm">
+                <span>✨</span> Melhorar com IA
+              </button>
+            </div>
             <input type="text" id="suno-theme" placeholder="Ex: Viagem no tempo em um carro clássico na estrada de Brasília" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 transition-colors">
           </div>
 
@@ -877,7 +882,12 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <input type="text" id="parody-song-name" placeholder="Música original (Ex: Peão Todo Tatuado - Jeninho)" class="bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
-          <input type="text" id="parody-theme-input" placeholder="Tema da paródia (Ex: O programador que não sai do PC)" class="bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
+          <div class="flex gap-2">
+            <input type="text" id="parody-theme-input" placeholder="Tema da paródia (Ex: O programador que não sai do PC)" class="flex-1 bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
+            <button type="button" id="enhance-btn-parody-theme-input" onclick="enhancePromptWithAI('parody-theme-input', 'parody')" class="inline-flex items-center gap-1 px-2.5 py-2 rounded-xl text-[11px] font-bold bg-purple-500/20 border border-purple-400/40 text-purple-200 hover:brightness-125 transition-all whitespace-nowrap">
+              <span>✨</span> Sugerir Ideias
+            </button>
+          </div>
           <button type="button" onclick="handleGenerateParodyLyrics()" class="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/40 text-purple-200 font-bold py-2 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
             <i data-lucide="file-text" class="w-3.5 h-3.5 text-purple-400"></i>
             <span>Gerar Letra Ritmada</span>
@@ -893,21 +903,37 @@
           <!-- SELETOR DE MODO VOCAL -->
           <div>
             <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">Quem deve cantar a nova letra?</label>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <label onclick="toggleParodyVocalMode('original_singers')" class="parody-vocal-option cursor-pointer p-3.5 rounded-2xl border-2 border-purple-400 bg-purple-500/15 flex items-start gap-3 transition-all" id="vocal-opt-original">
-                <input type="radio" name="parody_vocal_mode" value="original_singers" checked class="mt-1 accent-purple-400">
-                <div>
-                  <span class="text-xs font-extrabold text-white block">🎤 Manter Cantores Originais</span>
-                  <p class="text-[11px] text-gray-300">A IA extrai a voz de Jeninho & Mariana Fagundes da própria música e aplica na sua nova letra.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+              <label onclick="toggleParodyVocalMode('original_singers')" class="parody-vocal-option cursor-pointer p-3 rounded-2xl border-2 border-purple-400 bg-purple-500/15 flex flex-col gap-1 transition-all" id="vocal-opt-original">
+                <div class="flex items-center gap-2">
+                  <input type="radio" name="parody_vocal_mode" value="original_singers" checked class="accent-purple-400">
+                  <span class="text-xs font-extrabold text-white">🎤 Cantores da Faixa</span>
                 </div>
+                <p class="text-[10.5px] text-gray-300 leading-tight">Extração neural Demucs v4 e aplicação direta na nova letra.</p>
               </label>
 
-              <label onclick="toggleParodyVocalMode('custom_voice')" class="parody-vocal-option cursor-pointer p-3.5 rounded-2xl border border-white/15 bg-dark-800/80 hover:border-purple-400/60 flex items-start gap-3 transition-all" id="vocal-opt-custom">
-                <input type="radio" name="parody_vocal_mode" value="custom_voice" class="mt-1 accent-purple-400">
-                <div>
-                  <span class="text-xs font-extrabold text-white block">🧬 Usar Minha Voz Clonada</span>
-                  <p class="text-[11px] text-gray-400">Substitui os cantores por uma amostra de 1 minuto da sua própria voz.</p>
+              <label onclick="toggleParodyVocalMode('male_artist')" class="parody-vocal-option cursor-pointer p-3 rounded-2xl border border-white/15 bg-dark-800/80 hover:border-purple-400/60 flex flex-col gap-1 transition-all" id="vocal-opt-male">
+                <div class="flex items-center gap-2">
+                  <input type="radio" name="parody_vocal_mode" value="male_artist" class="accent-purple-400">
+                  <span class="text-xs font-extrabold text-white">🤠 Voz Masculina RVC</span>
                 </div>
+                <p class="text-[10.5px] text-gray-400 leading-tight">Voz sertaneja/pop encorpada com pitch tracking RMVPE.</p>
+              </label>
+
+              <label onclick="toggleParodyVocalMode('female_artist')" class="parody-vocal-option cursor-pointer p-3 rounded-2xl border border-white/15 bg-dark-800/80 hover:border-purple-400/60 flex flex-col gap-1 transition-all" id="vocal-opt-female">
+                <div class="flex items-center gap-2">
+                  <input type="radio" name="parody_vocal_mode" value="female_artist" class="accent-purple-400">
+                  <span class="text-xs font-extrabold text-white">👸 Voz Feminina RVC</span>
+                </div>
+                <p class="text-[10.5px] text-gray-400 leading-tight">Voz sertaneja/pop feminina cristalina sem artefatos.</p>
+              </label>
+
+              <label onclick="toggleParodyVocalMode('custom_voice')" class="parody-vocal-option cursor-pointer p-3 rounded-2xl border border-white/15 bg-dark-800/80 hover:border-purple-400/60 flex flex-col gap-1 transition-all" id="vocal-opt-custom">
+                <div class="flex items-center gap-2">
+                  <input type="radio" name="parody_vocal_mode" value="custom_voice" class="accent-purple-400">
+                  <span class="text-xs font-extrabold text-white">🎙️ Minha Voz Clonada</span>
+                </div>
+                <p class="text-[10.5px] text-gray-400 leading-tight">Clonagem neural a partir de 1 minuto da sua fala.</p>
               </label>
             </div>
           </div>
@@ -1193,7 +1219,12 @@
           </div>
 
           <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-1.5">6. Instruções de Direção da Cena / Prompt Omni (O que deve acontecer?)</label>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-sm font-semibold text-gray-200">6. Instruções de Direção da Cena / Prompt Omni (O que deve acontecer?)</label>
+              <button type="button" id="enhance-btn-video-creative-prompt" onclick="enhancePromptWithAI('video-creative-prompt', 'video')" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-400/40 text-cyan-200 hover:brightness-125 transition-all shadow-sm">
+                <span>✨</span> Melhorar com IA
+              </button>
+            </div>
             <input type="text" id="video-creative-prompt" placeholder="Ex: Mudar cenário para estúdio escuro com iluminação volumétrica neon, me substituir pelo avatar da foto e manter minha fala..." class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-xs md:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400">
           </div>
 
@@ -1275,7 +1306,12 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-5">
           <div>
-            <label class="block text-sm font-semibold text-gray-200 mb-2">1. Descrição / Prompt da Imagem</label>
+            <div class="flex items-center justify-between mb-2">
+              <label class="block text-sm font-semibold text-gray-200">1. Descrição / Prompt da Imagem</label>
+              <button type="button" id="enhance-btn-image-prompt" onclick="enhancePromptWithAI('image-prompt', 'image')" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-gradient-to-r from-amber-500/20 to-pink-500/20 border border-amber-400/40 text-amber-200 hover:brightness-125 transition-all shadow-sm">
+                <span>✨</span> Melhorar com IA
+              </button>
+            </div>
             <textarea id="image-prompt" rows="3" placeholder="Ex: Foto cinematográfica 8K mantendo exatamente a pessoa e o estilo das imagens de referência em um cenário de cinema ao pôr do sol, lente 85mm f/1.2..." class="w-full bg-dark-800 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-pink-400 transition-colors"></textarea>
           </div>
 
@@ -1621,6 +1657,9 @@
           </div>
 
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <button type="button" id="enhance-btn-canvas-prompt-input" onclick="enhancePromptWithAI('canvas-prompt-input', 'canvas')" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-amber-500/20 border border-amber-400/40 text-amber-200 hover:brightness-125 transition-all whitespace-nowrap">
+              <span>✨</span> Melhorar Prompt
+            </button>
             <input type="text" id="canvas-prompt-input" value="Crie um novo take cinematográfico 8K mantendo 100% do rosto fiel de @Image1 e a iluminação dramática de @Image2 em plano aberto 35mm" placeholder="Ex: Crie um novo ângulo câmera baixa de @Image1 mantendo o cenário de @Image2..." class="flex-1 bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
             
             <button onclick="handleCanvasGenerateNode()" id="canvas-gen-btn" class="bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 hover:opacity-95 text-black font-extrabold px-5 py-2.5 rounded-xl text-xs md:text-sm shadow-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap">
@@ -3571,18 +3610,32 @@
     }
 
     function toggleParodyVocalMode(mode) {
-      const optOriginal = document.getElementById('vocal-opt-original');
-      const optCustom = document.getElementById('vocal-opt-custom');
-      const customVoiceBox = document.getElementById('parody-custom-voice-container');
+      const ids = ['vocal-opt-original', 'vocal-opt-male', 'vocal-opt-female', 'vocal-opt-custom'];
+      const activeClass = 'parody-vocal-option cursor-pointer p-3 rounded-2xl border-2 border-purple-400 bg-purple-500/15 flex flex-col gap-1 transition-all';
+      const inactiveClass = 'parody-vocal-option cursor-pointer p-3 rounded-2xl border border-white/15 bg-dark-800/80 hover:border-purple-400/60 flex flex-col gap-1 transition-all';
+      
+      const mapMode = {
+        'original_singers': 'vocal-opt-original',
+        'male_artist': 'vocal-opt-male',
+        'female_artist': 'vocal-opt-female',
+        'custom_voice': 'vocal-opt-custom'
+      };
 
-      if (mode === 'original_singers') {
-        if (optOriginal) { optOriginal.className = 'parody-vocal-option cursor-pointer p-3.5 rounded-2xl border-2 border-purple-400 bg-purple-500/15 flex items-start gap-3 transition-all'; }
-        if (optCustom) { optCustom.className = 'parody-vocal-option cursor-pointer p-3.5 rounded-2xl border border-white/15 bg-dark-800/80 hover:border-purple-400/60 flex items-start gap-3 transition-all'; }
-        if (customVoiceBox) customVoiceBox.classList.add('hidden');
-      } else {
-        if (optOriginal) { optOriginal.className = 'parody-vocal-option cursor-pointer p-3.5 rounded-2xl border border-white/15 bg-dark-800/80 hover:border-purple-400/60 flex items-start gap-3 transition-all'; }
-        if (optCustom) { optCustom.className = 'parody-vocal-option cursor-pointer p-3.5 rounded-2xl border-2 border-purple-400 bg-purple-500/15 flex items-start gap-3 transition-all'; }
-        if (customVoiceBox) customVoiceBox.classList.remove('hidden');
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.className = (id === mapMode[mode]) ? activeClass : inactiveClass;
+      });
+
+      const radio = document.querySelector(`input[name="parody_vocal_mode"][value="${mode}"]`);
+      if (radio) radio.checked = true;
+
+      const customVoiceBox = document.getElementById('parody-custom-voice-container');
+      if (customVoiceBox) {
+        if (mode === 'custom_voice') {
+          customVoiceBox.classList.remove('hidden');
+        } else {
+          customVoiceBox.classList.add('hidden');
+        }
       }
     }
 
@@ -5098,6 +5151,220 @@
         setTimeout(() => { try { setMascotMessage('👋 Oi! Escreva na caixa o que você quer criar e eu levo você ao lugar certo.'); } catch (e) {} localStorage.setItem('iabox_onboarded', '1'); }, 1800);
       }
     });
-  </script>
+  
+    /* ----------------------------------------------------------------------------------------
+       SISTEMA DE MELHORIA INTELIGENTE DE PROMPTS COM IA (PROMPT ENHANCER)
+       ---------------------------------------------------------------------------------------- */
+    let currentEnhanceTargetId = null;
+    let currentEnhanceData = null;
+
+    async function enhancePromptWithAI(inputId, category) {
+      const inputEl = document.getElementById(inputId);
+      if (!inputEl) return;
+      const currentVal = inputEl.value.trim();
+      if (!currentVal) {
+        if (typeof showToast === 'function') {
+          showToast('Digite uma ideia inicial ou palavra-chave para a IA enriquecer!', 'warning');
+        } else {
+          alert('Digite uma ideia inicial ou palavra-chave no campo para a IA enriquecer!');
+        }
+        inputEl.focus();
+        return;
+      }
+
+      currentEnhanceTargetId = inputId;
+      const btn = document.getElementById(`enhance-btn-${inputId}`);
+      const origBtnHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="inline-block animate-spin mr-1">⏳</span> IA Analisando...';
+      }
+
+      try {
+        const fd = new FormData();
+        fd.append('prompt', currentVal);
+        fd.append('category', category);
+        fd.append('user_id', typeof currentUserId !== 'undefined' ? currentUserId : 'default_user');
+
+        const res = await fetch('/api/prompt/enhance', { method: 'POST', body: fd });
+        const data = await res.json();
+
+        if (data.status === 'success') {
+          currentEnhanceData = data;
+          openEnhanceModal(data, inputId);
+        } else {
+          alert(data.detail || 'Não foi possível enriquecer o prompt no momento.');
+        }
+      } catch (err) {
+        console.error('Enhance error:', err);
+        alert('Erro ao conectar com o serviço de melhoria de prompt.');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = origBtnHtml;
+        }
+      }
+    }
+
+    function openEnhanceModal(data, targetInputId) {
+      const modal = document.getElementById('enhance-modal');
+      if (!modal) return;
+
+      const resBox = document.getElementById('enhance-modal-result');
+      if (resBox) resBox.textContent = data.enhanced_prompt;
+
+      const impList = document.getElementById('enhance-modal-improvements');
+      if (impList) {
+        impList.innerHTML = (data.improvements || []).map(imp => `
+          <li class="flex items-center gap-2">
+            <span class="text-amber-400 font-bold">✓</span>
+            <span>${imp}</span>
+          </li>
+        `).join('') || '<li class="text-gray-500">Otimização completa aplicada.</li>';
+      }
+
+      const chipsBox = document.getElementById('enhance-modal-chips');
+      if (chipsBox) {
+        chipsBox.innerHTML = (data.preset_chips || []).map(chip => `
+          <button type="button" onclick="appendChipToEnhancedPrompt('${chip.replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-dark-700 hover:bg-amber-400 hover:text-black border border-white/10 text-gray-200 transition-all flex items-center gap-1">
+            <span>+</span> ${chip}
+          </button>
+        `).join('');
+      }
+
+      const altBox = document.getElementById('enhance-modal-alternatives');
+      if (altBox) {
+        altBox.innerHTML = (data.alternatives || []).map((alt, idx) => `
+          <div onclick="useAlternativePrompt(${idx})" class="cursor-pointer p-3 rounded-xl bg-dark-800/80 hover:bg-dark-700/80 border border-white/10 hover:border-amber-400/50 transition-all space-y-1">
+            <span class="text-xs font-bold text-white block">${alt.title || 'Variação ' + (idx + 1)}</span>
+            <p class="text-[11px] text-gray-300 font-mono line-clamp-2">${alt.prompt}</p>
+          </div>
+        `).join('');
+      }
+
+      modal.classList.remove('hidden');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function closeEnhanceModal() {
+      const modal = document.getElementById('enhance-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function applyEnhancedPromptToTarget() {
+      if (!currentEnhanceTargetId || !currentEnhanceData) return;
+      const targetEl = document.getElementById(currentEnhanceTargetId);
+      const resBox = document.getElementById('enhance-modal-result');
+      const finalPrompt = resBox ? resBox.textContent.trim() : currentEnhanceData.enhanced_prompt;
+
+      if (targetEl) {
+        targetEl.value = finalPrompt;
+        targetEl.focus();
+        targetEl.classList.add('ring-2', 'ring-amber-400');
+        setTimeout(() => targetEl.classList.remove('ring-2', 'ring-amber-400'), 1500);
+      }
+      closeEnhanceModal();
+      if (typeof showToast === 'function') {
+        showToast('✨ Prompt profissional aplicado com sucesso!', 'success');
+      }
+    }
+
+    function appendChipToEnhancedPrompt(chipText) {
+      const resBox = document.getElementById('enhance-modal-result');
+      if (resBox) {
+        resBox.textContent = `${resBox.textContent.trim()}, ${chipText}`;
+      }
+    }
+
+    function useAlternativePrompt(index) {
+      if (!currentEnhanceData || !currentEnhanceData.alternatives || !currentEnhanceData.alternatives[index]) return;
+      const alt = currentEnhanceData.alternatives[index];
+      const resBox = document.getElementById('enhance-modal-result');
+      if (resBox) {
+        resBox.textContent = alt.prompt;
+      }
+    }
+
+    function copyEnhancedPrompt() {
+      const resBox = document.getElementById('enhance-modal-result');
+      if (!resBox) return;
+      navigator.clipboard.writeText(resBox.textContent.trim()).then(() => {
+        if (typeof showToast === 'function') {
+          showToast('Prompt copiado para a área de transferência!', 'success');
+        } else {
+          alert('Prompt copiado!');
+        }
+      });
+    }
+
+</script>
+
+  <!-- MODAL DE MELHORIA INTELIGENTE DE PROMPTS COM IA -->
+  <div id="enhance-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-dark-900/95 border border-amber-400/30 rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      
+      <!-- Topo do Modal -->
+      <div class="flex items-start justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-pink-500 flex items-center justify-center text-black font-extrabold text-lg shadow-lg">
+            ✨
+          </div>
+          <div>
+            <h3 class="text-base font-extrabold text-white">Assistente de Direção de Prompts</h3>
+            <p class="text-[11px] text-gray-400">Enriquecimento profissional com especificações cinematográficas e técnicas</p>
+          </div>
+        </div>
+        <button onclick="closeEnhanceModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Prompt Melhorado Principal -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1">
+            <span>⭐</span> Versão Enriquecida (Recomendada)
+          </span>
+          <button onclick="copyEnhancedPrompt()" class="text-[11px] text-gray-400 hover:text-white flex items-center gap-1 transition-colors">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
+          </button>
+        </div>
+        <div id="enhance-modal-result" class="bg-dark-800/90 border border-amber-400/30 rounded-2xl p-4 text-xs md:text-sm text-gray-100 font-mono leading-relaxed select-all">
+          Carregando...
+        </div>
+        <div class="flex gap-2">
+          <button onclick="applyEnhancedPromptToTarget()" class="flex-1 bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 hover:opacity-95 text-black font-extrabold py-2.5 px-4 rounded-xl text-xs md:text-sm shadow-lg transition-all flex items-center justify-center gap-2">
+            <span>✨</span> Usar Este Prompt Agora
+          </button>
+        </div>
+      </div>
+
+      <!-- Melhorias Aplicadas -->
+      <div class="space-y-1.5 bg-dark-800/50 p-3.5 rounded-2xl border border-white/5">
+        <span class="text-[11px] font-bold text-gray-300 uppercase tracking-wider block">O que a IA aprimorou:</span>
+        <ul id="enhance-modal-improvements" class="space-y-1 text-xs text-gray-300">
+          <!-- Injetado dinamicamente -->
+        </ul>
+      </div>
+
+      <!-- Preset Chips Rápidos -->
+      <div class="space-y-1.5">
+        <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Tags de Estúdio (Clique para adicionar ao prompt):</span>
+        <div id="enhance-modal-chips" class="flex flex-wrap gap-1.5">
+          <!-- Injetado dinamicamente -->
+        </div>
+      </div>
+
+      <!-- Alternativas Sugeridas -->
+      <div class="space-y-2 border-t border-white/10 pt-3">
+        <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Outras Variações de Estilo:</span>
+        <div id="enhance-modal-alternatives" class="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <!-- Injetado dinamicamente -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </body>
 </html>

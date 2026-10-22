@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     && rm -rf /var/lib/apt/lists/*
 
+# Garante compatibilidade com virtualenvs montados do host (/usr/bin/python3)
+RUN ln -sf /usr/local/bin/python3 /usr/bin/python3
+
 WORKDIR /app
 
 # Instala pacotes Python

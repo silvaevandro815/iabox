@@ -1,4 +1,4 @@
-﻿version: '3.8'
+version: '3.8'
 
 services:
   iabox-app:
@@ -15,6 +15,10 @@ services:
       - iabox_uploads:/app/uploads
       - iabox_output:/app/output
       - iabox_data:/app/data
+      # Motores de IA de alta fidelidade do host (Demucs + RVC + Modelos)
+      - /opt/demucs_env:/opt/demucs_env:ro
+      - /opt/rvc_env:/opt/rvc_env:ro
+      - /opt/rvc_models:/opt/rvc_models:ro
     networks:
       - coolify
     labels:

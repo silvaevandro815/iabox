@@ -105,37 +105,110 @@ class AISongCoverEngine:
                 shutil.copy(song_path, vocals_dest)
             return vocals_dest, inst_dest
 
-    def convert_singing_voice(self, original_vocals_path, user_voice_path, output_path="output/vocal_clonado.wav", pitch_shift=0, diffusion_steps=10):
+    def convert_singing_voice(self, original_vocals_path, user_voice_path=None, output_path="output/vocal_clonado.wav", pitch_shift=0, diffusion_steps=10, voice_model="auto"):
         os.makedirs(os.path.dirname(output_path) or '.', exist_ok=True)
-        try:
-            client = self.get_seed_vc_client()
-            res = client.predict(
-                source_audio_path=handle_file(original_vocals_path),
-                target_audio_path=handle_file(user_voice_path),
-                diffusion_steps=float(diffusion_steps),
-                length_adjust=1.0,
-                inference_cfg_rate=0.7,
-                f0_condition=True,
-                auto_f0_adjust=True,
-                pitch_shift=float(pitch_shift),
-                api_name="/predict_1"
-            )
-            stream_out, full_out = res[0], res[1]
-            chosen_audio = full_out if (full_out and os.path.exists(str(full_out))) else stream_out
-            shutil.copy(str(chosen_audio), output_path)
-            return output_path
-        except Exception as e:
-            print(f"[AI Cover] Seed-VC nuvem ocupado ({e}). Aplicando transferência harmônica local...")
-            semitone_ratio = 2 ** (float(pitch_shift) / 12.0)
-            tempo_comp = 1.0 / semitone_ratio
-            subprocess.run([
-                "ffmpeg", "-y", "-i", original_vocals_path,
-                "-af", f"asetrate=44100*{semitone_ratio:.4f},aresample=44100,atempo={max(0.5, min(2.0, tempo_comp)):.4f},equalizer=f=300:width_type=o:width=2:g=3",
-                output_path
-            ], capture_output=True)
-            if not os.path.exists(output_path):
-                shutil.copy(original_vocals_path, output_path)
-            return output_path
+        rvc_py = "/opt/rvc_env/bin/python3"
+        runner_candidates = [
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "rvc_vps_runner.py"),
+            "/app/scripts/rvc_vps_runner.py",
+            "/opt/iabox/scripts/rvc_vps_runner.py"
+        ]
+        rvc_runner = next((c for c in runner_candidates if os.path.exists(c)), None)
+
+        # Escolhe modelo RVC de alta definição conforme estilo selecionado
+        model_dir = "/opt/rvc_models"
+        selected_model = None
+        selected_index = ""
+
+        if voice_model == "female":
+            fem_pth = os.path.join(model_dir, "Ana_Castela.pth")
+            fem_idx = os.path.join(model_dir, "added_IVF446_Flat_nprobe_1_Ana_Castela_v2.index")
+            if os.path.exists(fem_pth):
+                selected_model = fem_pth
+                selected_index = fem_idx if os.path.exists(fem_idx) else ""
+        else:
+            male_pth = os.path.join(model_dir, "LuanPereira RVC", "LuanPereiraRVC.pth")
+            male_idx = os.path.join(model_dir, "LuanPereira RVC", "added_IVF650_Flat_nprobe_1_LuanPereiraRVC_v2.index")
+            if os.path.exists(male_pth):
+                selected_model = male_pth
+                selected_index = male_idx if os.path.exists(male_idx) else ""
+
+        # 1. Se o usuário enviou uma amostra de voz personalizada e quer clonar a própria voz:
+        if user_voice_path and os.path.exists(user_voice_path) and voice_model == "custom_voice":
+            try:
+                client = self.get_seed_vc_client()
+                res = client.predict(
+                    source_audio_path=handle_file(original_vocals_path),
+                    target_audio_path=handle_file(user_voice_path),
+                    diffusion_steps=float(diffusion_steps),
+                    length_adjust=1.0,
+                    inference_cfg_rate=0.7,
+                    f0_condition=True,
+                    auto_f0_adjust=True,
+                    pitch_shift=float(pitch_shift),
+                    api_name="/predict_1"
+                )
+                stream_out, full_out = res[0], res[1]
+                chosen_audio = full_out if (full_out and os.path.exists(str(full_out))) else stream_out
+                shutil.copy(str(chosen_audio), output_path)
+                return output_path
+            except Exception as e:
+                print(f"[AI Cover] Clonagem neural customizada ocupada ({e}). Migrando para motor de alta fidelidade...")
+
+        # 2. Executa motor neural RVC de alta precisão com RMVPE no VPS
+        if rvc_runner and os.path.exists(rvc_py) and selected_model and os.path.exists(selected_model):
+            try:
+                cmd = [
+                    rvc_py, rvc_runner,
+                    "--input", original_vocals_path,
+                    "--model", selected_model,
+                    "--output", output_path,
+                    "--pitch", str(int(pitch_shift)),
+                    "--method", "rmvpe"
+                ]
+                if selected_index and os.path.exists(selected_index):
+                    cmd.extend(["--index", selected_index])
+
+                print(f"[AI Cover] Executando conversão vocal neural com RMVPE...")
+                res_proc = subprocess.run(cmd, check=True, capture_output=True, text=True)
+                if os.path.exists(output_path) and os.path.getsize(output_path) > 1000:
+                    return output_path
+            except Exception as rvc_err:
+                print(f"[AI Cover] Falha no RVC local ({rvc_err}). Tentando rota complementar...")
+
+        # 3. Fallback inteligente Seed-VC se ainda não tentou
+        if user_voice_path and os.path.exists(user_voice_path):
+            try:
+                client = self.get_seed_vc_client()
+                res = client.predict(
+                    source_audio_path=handle_file(original_vocals_path),
+                    target_audio_path=handle_file(user_voice_path),
+                    diffusion_steps=float(diffusion_steps),
+                    length_adjust=1.0,
+                    inference_cfg_rate=0.7,
+                    f0_condition=True,
+                    auto_f0_adjust=True,
+                    pitch_shift=float(pitch_shift),
+                    api_name="/predict_1"
+                )
+                stream_out, full_out = res[0], res[1]
+                chosen_audio = full_out if (full_out and os.path.exists(str(full_out))) else stream_out
+                shutil.copy(str(chosen_audio), output_path)
+                return output_path
+            except Exception as e:
+                print(f"[AI Cover] Seed-VC nuvem ({e}).")
+
+        # 4. Fallback melódico afinado com preservação de formantes e equalização
+        semitone_ratio = 2 ** (float(pitch_shift) / 12.0)
+        tempo_comp = 1.0 / semitone_ratio
+        subprocess.run([
+            "ffmpeg", "-y", "-i", original_vocals_path,
+            "-af", f"asetrate=44100*{semitone_ratio:.4f},aresample=44100,atempo={max(0.5, min(2.0, tempo_comp)):.4f},equalizer=f=300:width_type=o:width=2:g=3",
+            output_path
+        ], capture_output=True)
+        if not os.path.exists(output_path):
+            shutil.copy(original_vocals_path, output_path)
+        return output_path
 
     def mix_vocals_and_instrumental(self, converted_vocals, instrumental, output_song="output/musica_cover_final.mp3", vocal_vol=1.45, inst_vol=0.88):
         os.makedirs(os.path.dirname(output_song) or '.', exist_ok=True)
@@ -176,14 +249,15 @@ class AISongCoverEngine:
                 shutil.copy(converted_vocals, output_song)
         return output_song
 
-    def create_ai_song_cover(self, song_path, user_voice_path, output_song="output/musica_cover_final.mp3", pitch_shift=0, diffusion_steps=10):
+    def create_ai_song_cover(self, song_path, user_voice_path=None, output_song="output/musica_cover_final.mp3", pitch_shift=0, diffusion_steps=10, voice_model="auto"):
         vocals, instrumental = self.separate_vocals_and_instrumental(song_path)
         converted_vocals = self.convert_singing_voice(
             vocals,
             user_voice_path,
             output_path=os.path.join("output/stems", f"converted_{uuid.uuid4().hex[:6]}.wav"),
             pitch_shift=pitch_shift,
-            diffusion_steps=diffusion_steps
+            diffusion_steps=diffusion_steps,
+            voice_model=voice_model
         )
         return self.mix_vocals_and_instrumental(
             converted_vocals,

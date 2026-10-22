@@ -1259,8 +1259,16 @@ async def create_parody(
 
     out_filename = f"parodia_{job_id[:8]}.mp3"
     out_path = os.path.join(OUTPUT_DIR, out_filename)
-    use_orig = (vocal_mode == "original_singers" or not voice_path)
-    mode_label = "Paródia com Voz dos Cantores Originais" if use_orig else "Paródia com Voz Clonada"
+    mode_map = {
+        "female_artist": "Paródia com Voz Feminina (Ultra-HD)",
+        "female": "Paródia com Voz Feminina (Ultra-HD)",
+        "male_artist": "Paródia com Voz Masculina (Ultra-HD)",
+        "male": "Paródia com Voz Masculina (Ultra-HD)",
+        "custom_voice": "Paródia com Voz Clonada do Usuário",
+        "original_singers": "Paródia com Voz dos Cantores da Faixa"
+    }
+    mode_label = mode_map.get(vocal_mode, "Paródia Musical Inteligente")
+    use_orig = (vocal_mode == "original_singers")
 
     def _task():
         try:
@@ -1274,7 +1282,8 @@ async def create_parody(
                 output_path=out_path,
                 pitch_shift=pitch_shift,
                 use_original_singer=use_orig,
-                lyrics=parody_lyrics
+                lyrics=parody_lyrics,
+                vocal_mode=vocal_mode
             )
             save_job(job_id, "parody", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
             save_user_creation(
@@ -2851,6 +2860,132 @@ def guide_route(text: str = Form("")):
                                                   {"tab": "video", "label": "🎬 Editar / Criar Vídeo", "hint": "Cortes, legendas e efeitos."},
                                                   {"tab": "suno", "label": "🎵 Criar Música", "hint": "Música completa a partir de uma ideia."}]}
     return {"matched": True, "suggestions": [{"tab": k, "label": l, "hint": h} for _, k, l, h in scored[:3]]}
+
+
+
+# ----------------------------------------------------------------------------------------
+# MOTOR DE SUGESTÃO E MELHORIA INTELIGENTE DE PROMPTS COM IA (PROMPT ENHANCER)
+# ----------------------------------------------------------------------------------------
+@app.post("/api/prompt/enhance")
+async def enhance_user_prompt(
+    prompt: str = Form(...),
+    category: str = Form("image"),
+    user_id: str = Form("default_user")
+):
+    """
+    Analisa o pedido do usuário e enriquece prompts simples com especificações de alto nível:
+    lente, iluminação cinematográfica, composição, estilo, timbres ou ritmo. Gratuito para o usuário.
+    """
+    clean_p = (prompt or "").strip()
+    if not clean_p:
+        raise HTTPException(status_code=400, detail="Por favor, digite um prompt para ser melhorado.")
+
+    cat = (category or "image").lower()
+    system_instructions = f"""Você é um especialista internacional e diretor de arte em engenharia de prompts para IA generativa.
+O usuário escreveu o seguinte rascunho de prompt para a categoria "{cat}":
+"{clean_p}"
+
+Sua missão é transformar esse pedido em um prompt mestre profissional, rico em detalhes visuais/musicais, eliminando qualquer pobreza de detalhes.
+
+REGRAS POR CATEGORIA:
+- Se 'image' ou 'canvas':
+  * Gere o enhanced_prompt em INGLÊS técnico cinematográfico (8K, especificando lente como 85mm f/1.2 ou 35mm anamorphic, iluminação volumétrica/rim light, texturas hiper-realistas, composição).
+  * Melhore detalhes de pele, profundidade de campo rasa e atmosfera.
+- Se 'video':
+  * Gere o enhanced_prompt em INGLÊS descrevendo movimentos de câmera cinematográficos (slow pan, dolly-in, orbit shot), iluminação dramática, atmosfera e ação vívida em 60fps.
+- Se 'suno' ou 'parody':
+  * Gere o enhanced_prompt em PORTUGUÊS DO BRASIL especificando o gênero exato, instrumentos principais (violão de aço, sanfona, bateria 808, sintetizador), BPM, clima emocional e tema poético.
+
+Retorne ESTRITAMENTE um objeto JSON válido (sem markdown ao redor, apenas o JSON bruto) com esta estrutura exata:
+{{
+  "enhanced_prompt": "Prompt completo e expandido com máxima riqueza de detalhes",
+  "improvements": [
+    "Primeira melhoria aplicada (em português)",
+    "Segunda melhoria aplicada (em português)",
+    "Terceira melhoria aplicada (em português)"
+  ],
+  "preset_chips": ["Tag Curta 1", "Tag Curta 2", "Tag Curta 3", "Tag Curta 4"],
+  "alternatives": [
+    {{"title": "Versão Cinematográfica", "prompt": "Prompt alternativo 1"}},
+    {{"title": "Versão Estilizada", "prompt": "Prompt alternativo 2"}}
+  ]
+}}"""
+
+    res_json = None
+    try:
+        from scripts.magnific_canvas_engine import MagnificCanvasEngine
+        raw_res = MagnificCanvasEngine()._call_llm_text(system_instructions, timeout=20)
+        if raw_res:
+            clean_raw = raw_res.strip()
+            if clean_raw.startswith("```json"):
+                clean_raw = clean_raw[7:]
+            if clean_raw.startswith("```"):
+                clean_raw = clean_raw[3:]
+            if clean_raw.endswith("```"):
+                clean_raw = clean_raw[:-3]
+            clean_raw = clean_raw.strip()
+            import json
+            res_json = json.loads(clean_raw)
+    except Exception as e:
+        print(f"[PromptEnhancer] LLM Exception: {e}")
+
+    # Fallback inteligente se o LLM falhar ou der timeout
+    if not res_json or not isinstance(res_json, dict) or "enhanced_prompt" not in res_json:
+        if cat in ("image", "canvas"):
+            res_json = {
+                "enhanced_prompt": f"Ultra-realistic 8K photograph of {clean_p}, shot on 85mm f/1.2 lens, cinematic golden hour lighting, sharp focus, volumetric dust, detailed textures, photorealistic masterpiece, shallow depth of field, 16:9 widescreen",
+                "improvements": [
+                    "Lente 85mm f/1.2 com desfoque de fundo cinematográfico",
+                    "Iluminação volumétrica dourada (golden hour)",
+                    "Texturas e microporos em altísseima resolução 8K",
+                    "Ajuste de enquadramento com proporção widescreen"
+                ],
+                "preset_chips": ["Luz Dourada", "85mm f/1.2", "Ultra 8K", "Cinema 16:9"],
+                "alternatives": [
+                    {"title": "Modo Cinema Escuro", "prompt": f"Dramatic cinematic scene of {clean_p}, moody shadows, Blade Runner style neon rim light, 35mm anamorphic lens, haze"},
+                    {"title": "Estilo Comercial Clean", "prompt": f"High-end commercial studio portrait of {clean_p}, clean softbox lighting, ultra-sharp detail, pristine white studio setup"}
+                ]
+            }
+        elif cat == "video":
+            res_json = {
+                "enhanced_prompt": f"Cinematic film shot of {clean_p}, smooth camera dolly in, dramatic studio rim lighting, 4K 60fps high motion fidelity, professional color grading, film grain",
+                "improvements": [
+                    "Movimento de câmera suave (dolly in / traveling)",
+                    "Iluminação dramática com luz de recorte (rim light)",
+                    "Taxa de quadros fluida a 60fps",
+                    "Correção de cor com graduação de cinema"
+                ],
+                "preset_chips": ["Dolly In", "60 FPS Fluido", "Luz de Recorte", "Grading Cinema"],
+                "alternatives": [
+                    {"title": "Câmera Lenta Épica", "prompt": f"Slow-motion cinematic close-up of {clean_p}, 120fps, floating particles, dramatic backlight"},
+                    {"title": "Câmera Dinâmica em Ação", "prompt": f"Fast-paced handheld tracking shot following {clean_p}, dynamic camera shake, action-packed framing"}
+                ]
+            }
+        else:
+            res_json = {
+                "enhanced_prompt": f"{clean_p}, arranjo profissional com violão de aço, sanfona marcante, bateria moderna, 128 BPM, mixagem comercial de estúdio, voz encorpada e refrão chiclete envolvente",
+                "improvements": [
+                    "Definição de instrumentação rítmica de estúdio",
+                    "Andamento travado em 128 BPM para retenção",
+                    "Estrutura com refrão chiclete de alto engajamento",
+                    "Masterização comercial em alta fidelidade"
+                ],
+                "preset_chips": ["128 BPM", "Violão de Aço", "Refrão Chiclete", "Master HD"],
+                "alternatives": [
+                    {"title": "Versão Sertanejo Universitário", "prompt": f"{clean_p}, sertanejo pop moderno, batida animada para festa, sanfona e violão"},
+                    {"title": "Versão Acústico Intimista", "prompt": f"{clean_p}, versão acústico voz e violão solo, clima intimista e emotivo"}
+                ]
+            }
+
+    return {
+        "status": "success",
+        "category": cat,
+        "original_prompt": clean_p,
+        "enhanced_prompt": res_json.get("enhanced_prompt", clean_p),
+        "improvements": res_json.get("improvements", []),
+        "preset_chips": res_json.get("preset_chips", []),
+        "alternatives": res_json.get("alternatives", [])
+    }
 
 
 if __name__ == "__main__":
