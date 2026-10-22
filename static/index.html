@@ -180,7 +180,7 @@
           <div id="user-session-pill" onclick="openAuthModal()" class="flex items-center gap-1.5 bg-dark-800/90 hover:bg-dark-700 border border-white/15 px-2.5 py-1.5 rounded-xl text-xs whitespace-nowrap shrink-0 cursor-pointer transition-all" title="Sua Conta do Google Gmail">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
             <span id="user-session-email" class="text-gray-300 font-semibold max-w-[130px] md:max-w-[170px] truncate">Entrar com Gmail</span>
-            <button id="user-logout-btn" type="button" onclick="event.stopPropagation(); handleLogout();" title="Desconectar da conta" class="text-red-400 hover:text-red-300 font-bold ml-1 hidden">✕</button>
+            <button id="user-logout-btn" type="button" onclick="event.stopPropagation(); handleLogout();" title="Desconectar da conta" class="text-red-400 hover:text-red-300 font-bold ml-1 hidden flex items-center"><i data-lucide="log-out" class="w-3.5 h-3.5"></i></button>
           </div>
 
           <div id="wallet-badge-pill" class="bg-cyan-500/10 border border-cyan-400/40 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 cursor-pointer hover:border-cyan-400 transition-colors whitespace-nowrap shrink-0" onclick="openModal('recharge-modal')">
@@ -1009,7 +1009,7 @@
             <div class="flex items-center justify-between mb-2">
               <label class="block text-sm font-semibold text-gray-200">Tema ou História da Canção</label>
               <button type="button" id="enhance-btn-suno-theme" onclick="enhancePromptWithAI('suno-theme', 'suno')" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-400/40 text-cyan-200 hover:brightness-125 transition-all shadow-sm">
-                <span>✨</span> Melhorar com IA
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-300 drop-shadow-[0_0_6px_#00f0ff]"></i> <span>Melhorar com IA</span>
               </button>
             </div>
             <input type="text" id="suno-theme" placeholder="Ex: Viagem no tempo em um carro clássico na estrada de Brasília" class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-400 transition-colors">
@@ -1118,7 +1118,7 @@
           <div class="flex gap-2">
             <input type="text" id="parody-theme-input" placeholder="Tema da paródia (Ex: O programador que não sai do PC)" class="flex-1 bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
             <button type="button" id="enhance-btn-parody-theme-input" onclick="enhancePromptWithAI('parody-theme-input', 'parody')" class="inline-flex items-center gap-1 px-2.5 py-2 rounded-xl text-[11px] font-bold bg-purple-500/20 border border-purple-400/40 text-purple-200 hover:brightness-125 transition-all whitespace-nowrap">
-              <span>✨</span> Sugerir Ideias
+              <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-purple-300 drop-shadow-[0_0_6px_#c084fc]"></i> <span>Sugerir Ideias</span>
             </button>
           </div>
           <button type="button" onclick="handleGenerateParodyLyrics()" class="bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/40 text-purple-200 font-bold py-2 px-3 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
@@ -1425,7 +1425,7 @@
             </div>
             <input type="file" id="video-ref-images" accept="image/*" multiple onchange="handleRefFilesAdded('video', this)" class="w-full bg-dark-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/20 file:text-cyan-300">
             <p class="text-[11px] text-gray-400">
-              💡 <strong>Como usar como no Google Omni:</strong> Envie a foto de quem vai te substituir no vídeo (avatar/influenciador) ou a foto do novo cenário (praia, estúdio, cidade à noite). O motor fará o Face Lock e a rotoscopia de iluminação.
+              <i data-lucide="info" class="w-3.5 h-3.5 inline text-cyan-400 mr-1"></i><strong>Instruções Omni Flow:</strong> Envie a foto de quem vai te substituir no vídeo (avatar/influenciador) ou a foto do novo cenário (praia, estúdio, cidade à noite). O motor fará o Face Lock e a rotoscopia de iluminação.
             </p>
             <div id="video-ref-preview" class="flex flex-wrap gap-2 pt-1"></div>
           </div>
@@ -1445,8 +1445,8 @@
             <div>
               <label class="block text-sm font-semibold text-gray-200 mb-1.5">5. Formato de Renderização</label>
               <select id="video-aspect-ratio" class="w-full bg-dark-800 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-cyan-400">
-                <option value="9:16">▯ 9:16 Vertical (Reels, TikTok, Shorts)</option>
-                <option value="16:9">▭ 16:9 Horizontal Cinema (YouTube, VSL, TV)</option>
+                <option value="9:16">9:16 Vertical (Reels, TikTok, Shorts)</option>
+                <option value="16:9">16:9 Horizontal Cinema (YouTube, VSL, TV)</option>
               </select>
             </div>
           </div>
@@ -1455,7 +1455,7 @@
             <div class="flex items-center justify-between mb-1.5">
               <label class="block text-sm font-semibold text-gray-200">6. Instruções de Direção da Cena / Prompt Omni (O que deve acontecer?)</label>
               <button type="button" id="enhance-btn-video-creative-prompt" onclick="enhancePromptWithAI('video-creative-prompt', 'video')" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-400/40 text-cyan-200 hover:brightness-125 transition-all shadow-sm">
-                <span>✨</span> Melhorar com IA
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-300 drop-shadow-[0_0_6px_#00f0ff]"></i> <span>Melhorar com IA</span>
               </button>
             </div>
             <input type="text" id="video-creative-prompt" placeholder="Ex: Mudar cenário para estúdio escuro com iluminação volumétrica neon, me substituir pelo avatar da foto e manter minha fala..." class="w-full bg-dark-800 border border-white/10 rounded-xl px-4 py-2.5 text-xs md:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400">
@@ -1542,7 +1542,7 @@
             <div class="flex items-center justify-between mb-2">
               <label class="block text-sm font-semibold text-gray-200">1. Descrição / Prompt da Imagem</label>
               <button type="button" id="enhance-btn-image-prompt" onclick="enhancePromptWithAI('image-prompt', 'image')" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-gradient-to-r from-amber-500/20 to-pink-500/20 border border-amber-400/40 text-amber-200 hover:brightness-125 transition-all shadow-sm">
-                <span>✨</span> Melhorar com IA
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-300 drop-shadow-[0_0_6px_#00f0ff]"></i> <span>Melhorar com IA</span>
               </button>
             </div>
             <textarea id="image-prompt" rows="3" placeholder="Ex: Foto cinematográfica 8K mantendo exatamente a pessoa e o estilo das imagens de referência em um cenário de cinema ao pôr do sol, lente 85mm f/1.2..." class="w-full bg-dark-800 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-pink-400 transition-colors"></textarea>
@@ -1625,7 +1625,7 @@
           </div>
           <h2 class="text-2xl md:text-3xl font-bold font-display text-white">Magnific Canvas Expansivo & Estúdio de Filmes Longos (Até 2 Horas)</h2>
           <p class="text-gray-400 text-xs md:text-sm mt-1">
-            Tela expansiva com <strong>controle total</strong>: mova qualquer card, painel ou barra livremente, <strong>delete imagens</strong> (<code class="text-red-400">🗑️</code>), trave <strong>100% da Fidelidade de Rosto</strong>, escolha <strong>Vozes + Efeitos Sonoros Reais (SFX)</strong> e crie filmes de até <strong>1 a 2 horas</strong>!
+            Tela expansiva com <strong>controle total</strong>: mova qualquer card, painel ou barra livremente, <strong>delete imagens</strong> (<code class="text-red-400">Excluir</code>), trave <strong>100% da Fidelidade de Rosto</strong>, escolha <strong>Vozes + Efeitos Sonoros Reais (SFX)</strong> e crie filmes de até <strong>1 a 2 horas</strong>!
           </p>
         </div>
 
@@ -1693,7 +1693,7 @@
             <select id="film-agent-scale-select" class="bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-amber-300 font-bold focus:outline-none">
               <option value="feature_2h">Longa-Metragem (1h a 2 Horas &bull; 5 Atos / 24 Cap.)</option>
               <option value="medium_30m">Série / Média-Metragem (15 a 45 Min &bull; 12 Cap.)</option>
-              <option value="short_3m">🎬 Curta / Trailer IMAX (1 a 5 Min &bull; 6 Cenas)</option>
+              <option value="short_3m">Curta / Trailer IMAX (1 a 5 Min &bull; 6 Cenas)</option>
             </select>
 
             <button onclick="handleRunFilmDirectorAgent()" id="film-agent-btn" class="bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 hover:opacity-95 text-black font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-1.5 whitespace-nowrap">
@@ -1718,8 +1718,8 @@
           <button onclick="resetCanvasViewportZoom()" class="px-2 py-0.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-[10px] text-amber-300 font-semibold">Centralizar</button>
           <div class="h-3 w-[1px] bg-white/15"></div>
           <span id="canvas-connected-count" class="text-[11px] text-emerald-300 font-bold">3 Nós Conectados</span>
-          <button onclick="downloadDirectToPC(currentGeneratedNodeUrl)" class="px-2.5 py-0.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/50 text-[10px] text-amber-300 font-extrabold">⬇️ Baixar Criativo no PC</button>
-          <button onclick="toggleCanvasExpandMode()" id="hud-expand-btn" class="px-3 py-1 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 text-[10px] text-black font-black shadow">🖥️ Tela Inteira Dedicada (100%)</button>
+          <button onclick="downloadDirectToPC(currentGeneratedNodeUrl)" class="px-2.5 py-0.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/50 text-[10px] text-amber-300 font-extrabold flex items-center gap-1"><i data-lucide="download" class="w-3 h-3"></i> Baixar Criativo no PC</button>
+          <button onclick="toggleCanvasExpandMode()" id="hud-expand-btn" class="px-3 py-1 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 text-[10px] text-black font-black shadow flex items-center gap-1"><i data-lucide="maximize" class="w-3 h-3 text-black"></i> Tela Inteira Dedicada (100%)</button>
         </div>
 
         <div id="canvas-viewport-stage" class="absolute inset-0 w-full h-full origin-top-left transition-transform duration-75">
@@ -1804,7 +1804,7 @@
             <div class="flex items-center justify-between">
               <label class="font-bold text-cyan-300 flex items-center gap-1.5 cursor-pointer">
                 <input type="checkbox" id="canvas-facelock-toggle" checked class="rounded text-cyan-400">
-                <span>🔒 Fidelização de Rosto (Face Lock)</span>
+                <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i> Fidelização de Rosto (Face Lock)</span>
               </label>
               <span id="canvas-facelock-pct" class="text-[10px] font-mono text-emerald-400 font-bold">100% Fiel</span>
             </div>
@@ -1813,9 +1813,9 @@
               <img id="canvas-facelock-thumb" src="/static/samples/canvas_take1.jpg?v=real2026" class="w-10 h-10 rounded-lg object-cover border border-cyan-400/50 shrink-0">
               <div class="flex-1 space-y-1">
                 <select id="canvas-facelock-preset" onchange="handleFaceLockPresetChange()" class="w-full bg-dark-900 border border-white/15 rounded-lg px-2 py-1 text-[11px] text-white focus:outline-none">
-                  <option value="/static/samples/canvas_take1.jpg?v=real2026">👑 Rosto Oficial Evandro (Fiel)</option>
-                  <option value="/static/samples/canvas_take2.jpg?v=real2026">👑 Evandro Perfil 3/4 (Real)</option>
-                  <option value="custom">📸 Subir Outro Rosto para Travar...</option>
+                  <option value="/static/samples/canvas_take1.jpg?v=real2026">Rosto Oficial Evandro (Fiel)</option>
+                  <option value="/static/samples/canvas_take2.jpg?v=real2026">Evandro Perfil 3/4 (Real)</option>
+                  <option value="custom">Subir Outro Rosto para Travar...</option>
                 </select>
                 <input type="file" id="canvas-facelock-file" accept="image/*" onchange="handleCustomFaceLockUpload(event)" class="hidden">
                 <input type="range" id="canvas-facelock-slider" min="80" max="100" value="100" oninput="document.getElementById('canvas-facelock-pct').innerText = this.value + '% Fiel'" class="w-full accent-cyan-400 h-1.5 bg-dark-700 rounded-lg cursor-pointer">
@@ -1824,25 +1824,25 @@
           </div>
 
           <div class="p-2.5 rounded-xl bg-dark-800/90 border border-white/10 space-y-2">
-            <span class="font-bold text-gray-200 block text-[11px]">🎥 Ângulo & Luz da Cena (Sem Refazer o Filme):</span>
+            <span class="font-bold text-gray-200 flex items-center gap-1.5 text-[11px]"><i data-lucide="camera" class="w-3.5 h-3.5 text-cyan-400"></i> Ângulo & Luz da Cena:</span>
             <select id="canvas-camera-select" class="w-full bg-dark-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-[11px] text-white focus:outline-none">
-              <option value="default">🎥 Ângulo Padrão do Prompt</option>
-              <option value="close_up_85mm">🔍 Close-Up Retrato 85mm f/1.2 (Rosto)</option>
-              <option value="low_angle_hero">⚡ Contra-Plongée Heroico 24mm (Câmera Baixa)</option>
-              <option value="wide_anamorphic">🌄 Plano Aberto Anamórfico 35mm IMAX</option>
-              <option value="side_profile">🏎️ Perfil Cinematográfico Tracking</option>
-              <option value="over_shoulder">👥 Over-the-Shoulder (Sobre o Ombro)</option>
-              <option value="drone_aerial">🚁 Drone Aéreo Panorâmico</option>
-              <option value="dutch_angle">🔥 Dutch Angle (Ação & Tensão)</option>
+              <option value="default">Ângulo Padrão do Prompt</option>
+              <option value="close_up_85mm">Close-Up Retrato 85mm f/1.2 (Rosto)</option>
+              <option value="low_angle_hero">Contra-Plongée Heroico 24mm (Câmera Baixa)</option>
+              <option value="wide_anamorphic">Plano Aberto Anamórfico 35mm IMAX</option>
+              <option value="side_profile">Perfil Cinematográfico Tracking</option>
+              <option value="over_shoulder">Over-the-Shoulder (Sobre o Ombro)</option>
+              <option value="drone_aerial">Drone Aéreo Panorâmico</option>
+              <option value="dutch_angle">Dutch Angle (Ação & Tensão)</option>
             </select>
 
             <select id="canvas-lighting-select" class="w-full bg-dark-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-[11px] text-white focus:outline-none">
-              <option value="default">💡 Iluminação Padrão da Cena</option>
-              <option value="golden_hour">🌅 Golden Hour (Pôr do Sol Dourado)</option>
-              <option value="cyberpunk_neon">🌆 Cyberpunk Neon & Reflexo Noturno</option>
-              <option value="chiaroscuro_noir">🌑 Chiaroscuro Dark Cinema (Noir)</option>
-              <option value="imax_daylight">☀️ Luz do Dia Cristalina IMAX 70mm</option>
-              <option value="fire_volumetric">🔥 Fogo & Fumaça Volumétrica</option>
+              <option value="default">Iluminação Padrão da Cena</option>
+              <option value="golden_hour">Golden Hour (Pôr do Sol Dourado)</option>
+              <option value="cyberpunk_neon">Cyberpunk Neon & Reflexo Noturno</option>
+              <option value="chiaroscuro_noir">Chiaroscuro Dark Cinema (Noir)</option>
+              <option value="imax_daylight">Luz do Dia Cristalina IMAX 70mm</option>
+              <option value="fire_volumetric">Fogo & Fumaça Volumétrica</option>
             </select>
 
             <div class="grid grid-cols-2 gap-1.5 pt-1">
@@ -1858,23 +1858,23 @@
           </div>
 
           <div class="p-2.5 rounded-xl bg-dark-800/90 border border-emerald-400/30 space-y-2">
-            <span class="font-bold text-emerald-300 block text-[11px]">🔊 Voz da Cena & Efeitos Sonoros Reais (SFX):</span>
+            <span class="font-bold text-emerald-300 flex items-center gap-1.5 text-[11px]"><i data-lucide="volume-2" class="w-3.5 h-3.5 text-emerald-400"></i> Voz da Cena & Efeitos Sonoros (SFX):</span>
             <select id="canvas-voice-select" onchange="syncCanvasVoiceAndSfxToTimeline()" class="w-full bg-dark-900 border border-white/15 rounded-lg px-2.5 py-1.5 text-[11px] text-white focus:outline-none">
-              <option value="antonio">🎙️ Voz: Antonio (Masculina Cinema PT-BR)</option>
-              <option value="francisca">🎙️ Voz: Francisca (Feminina Narrativa PT-BR)</option>
-              <option value="thalita">🎙️ Voz: Thalita (Feminina Jovem/Dinâmica PT-BR)</option>
-              <option value="cloned">🧬 Usar Minha Voz Clonada (.MP3/.WAV)</option>
-              <option value="none">🔇 Sem Locução (Apenas Efeitos Sonoros Reais)</option>
+              <option value="antonio">Voz: Antonio (Masculina Cinema PT-BR)</option>
+              <option value="francisca">Voz: Francisca (Feminina Narrativa PT-BR)</option>
+              <option value="thalita">Voz: Thalita (Feminina Jovem/Dinâmica PT-BR)</option>
+              <option value="cloned">Usar Minha Voz Clonada (.MP3/.WAV)</option>
+              <option value="none">Sem Locução (Apenas Efeitos Sonoros Reais)</option>
             </select>
 
             <select id="canvas-sfx-select" onchange="syncCanvasVoiceAndSfxToTimeline()" class="w-full bg-dark-900 border border-emerald-400/30 rounded-lg px-2.5 py-1.5 text-[11px] text-emerald-200 font-semibold focus:outline-none">
-              <option value="auto_contextual">🔊 SFX Real: IA Detecta Automaticamente da Cena</option>
-              <option value="v8_engine_road">🏎️ SFX Real: Ronco Motor V8 + Pneus + Estrada</option>
-              <option value="rain_thunder_noir">🌧️ SFX Real: Chuva Forte + Trovoada Cinematográfica</option>
-              <option value="epic_cinema_impact">💥 SFX Real: Sub-Bass IMAX Braaam + Whoosh</option>
-              <option value="wind_desert_nature">🌬️ SFX Real: Vento em Cânion & Natureza Aberta</option>
-              <option value="scifi_cyberpunk">🛸 SFX Real: Propulsor Espacial & Pulso Cyberpunk</option>
-              <option value="footsteps_action">👣 SFX Real: Passos de Perseguição & Tensão</option>
+              <option value="auto_contextual">SFX Real: IA Detecta Automaticamente da Cena</option>
+              <option value="v8_engine_road">SFX Real: Ronco Motor V8 + Pneus + Estrada</option>
+              <option value="rain_thunder_noir">SFX Real: Chuva Forte + Trovoada Cinematográfica</option>
+              <option value="epic_cinema_impact">SFX Real: Sub-Bass IMAX Braaam + Whoosh</option>
+              <option value="wind_desert_nature">SFX Real: Vento em Cânion & Natureza Aberta</option>
+              <option value="scifi_cyberpunk">SFX Real: Propulsor Espacial & Pulso Cyberpunk</option>
+              <option value="footsteps_action">SFX Real: Passos de Perseguição & Tensão</option>
             </select>
           </div>
         </div>
@@ -1886,12 +1886,12 @@
               <span class="text-[10px] font-mono text-gray-400 bg-white/5 px-2 py-0.5 rounded">⠿ Mover Dock</span>
               <div id="canvas-prompt-tags" class="flex flex-wrap items-center gap-1.5"></div>
             </div>
-            <span class="text-[11px] text-gray-400">Clique em <code class="text-amber-300">@Image</code> para citar &bull; <code class="text-red-400">🗑️</code> para deletar</span>
+            <span class="text-[11px] text-gray-400">Clique em <code class="text-amber-300">@Image</code> para citar &bull; <code class="text-red-400">Excluir</code> para deletar</span>
           </div>
 
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <button type="button" id="enhance-btn-canvas-prompt-input" onclick="enhancePromptWithAI('canvas-prompt-input', 'canvas')" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-amber-500/20 border border-amber-400/40 text-amber-200 hover:brightness-125 transition-all whitespace-nowrap">
-              <span>✨</span> Melhorar Prompt
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300 drop-shadow-[0_0_6px_#f59e0b]"></i> <span>Melhorar Prompt</span>
             </button>
             <input type="text" id="canvas-prompt-input" value="Crie um novo take cinematográfico 8K mantendo 100% do rosto fiel de @Image1 e a iluminação dramática de @Image2 em plano aberto 35mm" placeholder="Ex: Crie um novo ângulo câmera baixa de @Image1 mantendo o cenário de @Image2..." class="flex-1 bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
             
@@ -1917,10 +1917,10 @@
               </div>
 
               <select id="canvas-aspect-select" class="bg-dark-800 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-gray-300 focus:outline-none cursor-pointer">
-                <option value="16:9">▭ 16:9 Cinema Horizontal</option>
-                <option value="9:16">▯ 9:16 Reels / Shorts Vertical</option>
-                <option value="21:9">▬ 21:9 Anamórfico Ultra-Wide</option>
-                <option value="1:1">□ 1:1 Quadrado</option>
+                <option value="16:9">16:9 Cinema Horizontal</option>
+                <option value="9:16">9:16 Reels / Shorts Vertical</option>
+                <option value="21:9">21:9 Anamórfico Ultra-Wide</option>
+                <option value="1:1">1:1 Quadrado</option>
               </select>
 
               <span class="px-2 py-1 rounded-lg bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold">8K + Face Lock + SFX Ready</span>
@@ -1945,7 +1945,7 @@
             <p id="film-project-logline" class="text-xs text-gray-300"></p>
           </div>
           <div class="text-xs text-right text-cyan-300 font-semibold">
-            <div>👑 Criador Evandro: <strong>Tokens Infinitos para Renderizar Todos os Atos</strong></div>
+            <div class="flex items-center gap-1.5"><i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400"></i> Criador Evandro: <strong>Tokens Infinitos para Renderizar Todos os Atos</strong></div>
             <div class="text-gray-400 text-[11px]">Clientes: Renderização por capítulo/ato conforme saldo de tokens</div>
           </div>
         </div>
@@ -1964,11 +1964,11 @@
           </div>
           <div class="flex flex-wrap items-center gap-2.5">
             <select id="timeline-video-model-select" class="bg-dark-800 border border-amber-400/40 rounded-xl px-3 py-2 text-xs text-amber-300 font-bold focus:outline-none">
-              <option value="Seedance 2.5 4K">🎥 Motor Vídeo: Seedance 2.5 4K (Real Motion + SFX)</option>
-              <option value="LTX-Video Distilled">⚡ Motor Vídeo: LTX-Video Distilled (Movimento Real)</option>
-              <option value="Wan 2.1 Cinema">🎬 Motor Vídeo: Wan 2.1 Cinema Pro (Física Realista)</option>
-              <option value="Kling 2.0 Master">🔥 Motor Vídeo: Kling 2.0 Master (Ação Hollywood)</option>
-              <option value="Veo 3 Cinema">🌟 Motor Vídeo: Veo 3 Cinema 8K</option>
+              <option value="Seedance 2.5 4K">Motor Vídeo: Seedance 2.5 4K (Real Motion + SFX)</option>
+              <option value="LTX-Video Distilled">Motor Vídeo: LTX-Video Distilled (Movimento Real)</option>
+              <option value="Wan 2.1 Cinema">Motor Vídeo: Wan 2.1 Cinema Pro (Física Realista)</option>
+              <option value="Kling 2.0 Master">Motor Vídeo: Kling 2.0 Master (Ação Hollywood)</option>
+              <option value="Veo 3 Cinema">Motor Vídeo: Veo 3 Cinema 8K</option>
             </select>
 
             <select id="timeline-duration-scale-select" class="bg-dark-800 border border-cyan-400/30 rounded-xl px-3 py-2 text-xs text-cyan-300 font-bold focus:outline-none">
@@ -1995,7 +1995,7 @@
           
           <div class="lg:col-span-7 space-y-4">
             <div class="flex items-center justify-between text-xs text-gray-300">
-              <span class="font-bold uppercase tracking-wider text-amber-300">Sequência de Takes Conectados na Timeline (Clique em 🗑️ para remover qualquer take):</span>
+              <span class="font-bold uppercase tracking-wider text-amber-300">Sequência de Takes Conectados na Timeline (Clique no ícone de lixeira para remover qualquer take):</span>
               <span class="text-emerald-400 font-semibold">Movimento Real + SFX Estéreo</span>
             </div>
 
@@ -2009,11 +2009,11 @@
               <div class="p-3 rounded-xl bg-dark-800/90 border border-white/10 space-y-1.5">
                 <label class="block text-[11px] font-bold text-cyan-300 uppercase">1. Escolha da Voz do Filme:</label>
                 <select id="timeline-voice-select" class="w-full bg-dark-900 border border-white/15 rounded-lg px-3 py-2 text-xs text-white focus:outline-none">
-                  <option value="antonio">🎙️ Antonio — Masculina Cinema / Trailer PT-BR</option>
-                  <option value="francisca">🎙️ Francisca — Feminina Narrativa / Doce PT-BR</option>
-                  <option value="thalita">🎙️ Thalita — Feminina Jovem / Dinâmica PT-BR</option>
-                  <option value="cloned">🧬 Minha Voz Clonada (Subir Áudio Abaixo)</option>
-                  <option value="none">🔇 Sem Locução (Apenas Efeitos Sonoros Reais SFX)</option>
+                  <option value="antonio">Antonio — Masculina Cinema / Trailer PT-BR</option>
+                  <option value="francisca">Francisca — Feminina Narrativa / Doce PT-BR</option>
+                  <option value="thalita">Thalita — Feminina Jovem / Dinâmica PT-BR</option>
+                  <option value="cloned">Minha Voz Clonada (Subir Áudio Abaixo)</option>
+                  <option value="none">Sem Locução (Apenas Efeitos Sonoros Reais SFX)</option>
                 </select>
                 <input type="file" id="timeline-cloned-voice-file" accept="audio/*" class="w-full text-[10px] text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-cyan-500/20 file:text-cyan-300">
               </div>
@@ -2021,13 +2021,13 @@
               <div class="p-3 rounded-xl bg-dark-800/90 border border-emerald-400/30 space-y-1.5">
                 <label class="block text-[11px] font-bold text-emerald-300 uppercase">2. Efeitos Sonoros Reais (SFX Cinema):</label>
                 <select id="timeline-sfx-select" class="w-full bg-dark-900 border border-emerald-400/30 rounded-lg px-3 py-2 text-xs text-emerald-200 font-semibold focus:outline-none">
-                  <option value="auto_contextual">🔊 Auto IA Contextual (Detecta Som da Cena)</option>
-                  <option value="v8_engine_road">🏎️ Ronco Real Motor V8 + Estrada + Vento</option>
-                  <option value="rain_thunder_noir">🌧️ Chuva Forte Realista + Trovão Noir</option>
-                  <option value="epic_cinema_impact">💥 Impactos IMAX (Sub-Bass Braaam + Whoosh)</option>
-                  <option value="wind_desert_nature">🌬️ Vento Cânion Realista & Natureza</option>
-                  <option value="scifi_cyberpunk">🛸 Propulsão Espacial & Pulso Cyberpunk</option>
-                  <option value="footsteps_action">👣 Passos de Perseguição & Ação</option>
+                  <option value="auto_contextual">Auto IA Contextual (Detecta Som da Cena)</option>
+                  <option value="v8_engine_road">Ronco Real Motor V8 + Estrada + Vento</option>
+                  <option value="rain_thunder_noir">Chuva Forte Realista + Trovão Noir</option>
+                  <option value="epic_cinema_impact">Impactos IMAX (Sub-Bass Braaam + Whoosh)</option>
+                  <option value="wind_desert_nature">Vento Cânion Realista & Natureza</option>
+                  <option value="scifi_cyberpunk">Propulsão Espacial & Pulso Cyberpunk</option>
+                  <option value="footsteps_action">Passos de Perseguição & Ação</option>
                 </select>
                 <span class="block text-[10px] text-gray-400">Os vídeos saem masterizados com SFX acústicos reais em estéreo + voz.</span>
               </div>
@@ -2208,7 +2208,7 @@
     <section id="tab-story" class="tab-content hidden space-y-5">
       <div class="border-b border-white/10 pb-4 flex flex-col md:flex-row md:items-end justify-between gap-3">
         <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 text-[10px] font-extrabold uppercase tracking-wider mb-2">🎞️ Linha do Tempo de História</div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 text-[10px] font-extrabold uppercase tracking-wider mb-2"><i data-lucide="clapperboard" class="w-3.5 h-3.5 text-amber-400"></i> Linha do Tempo de História</div>
           <h2 class="text-xl md:text-2xl font-extrabold text-white">Monte seu filme plano a plano</h2>
           <p class="text-xs text-gray-400 mt-1 max-w-2xl">A IA memoriza o cenário, os personagens e de onde vem a luz. Cada novo plano é filmado em outro ângulo, na mesma cena — e você organiza tudo como numa linha do tempo de edição.</p>
         </div>
@@ -2222,7 +2222,7 @@
             <h3 class="text-sm font-extrabold text-amber-300">① Continuar um vídeo que eu já criei</h3>
             <p class="text-[11px] text-gray-400">Escolha um vídeo da sua memória. A IA olha a cena e anota sozinha o cenário, os personagens e a luz.</p>
             <select id="story-import-select" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white"><option value="">Carregando seus vídeos...</option></select>
-            <button onclick="storyImportSelected()" class="w-full py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-200 text-xs font-extrabold">🎞️ Continuar este vídeo</button>
+            <button onclick="storyImportSelected()" class="w-full py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-amber-200 text-xs font-extrabold flex items-center justify-center gap-2"><i data-lucide="play-circle" class="w-4 h-4 text-amber-300"></i> Continuar este vídeo</button>
           </div>
           <div class="glass-panel rounded-2xl p-5 border border-cyan-400/30 space-y-3">
             <h3 class="text-sm font-extrabold text-cyan-300">② Começar uma história do zero</h3>
@@ -2231,22 +2231,22 @@
             <textarea id="sn-chars" rows="2" maxlength="700" placeholder="Quem aparece? Ex.: mulher de 30 anos, cabelo cacheado, avental vermelho" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white"></textarea>
             <div class="grid grid-cols-2 gap-2">
               <select id="sn-light" class="bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white">
-                <option value="imax_daylight">☀️ Luz natural do dia</option>
-                <option value="golden_hour">🌇 Pôr do sol</option>
-                <option value="default">💡 Luz artificial interna</option>
-                <option value="cyberpunk_neon">🌃 Noite com neon</option>
-                <option value="fire_volumetric">🔥 Luz de fogo</option>
-                <option value="chiaroscuro_noir">🎭 Sombras dramáticas</option>
+                <option value="imax_daylight">Luz natural do dia</option>
+                <option value="golden_hour">Pôr do sol</option>
+                <option value="default">Luz artificial interna</option>
+                <option value="cyberpunk_neon">Noite com neon</option>
+                <option value="fire_volumetric">Luz de fogo</option>
+                <option value="chiaroscuro_noir">Sombras dramáticas</option>
               </select>
               <select id="sn-ar" class="bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white">
-                <option value="16:9">📺 Horizontal 16:9</option>
-                <option value="9:16">📱 Vertical 9:16</option>
-                <option value="1:1">⬛ Quadrado 1:1</option>
+                <option value="16:9">Horizontal 16:9</option>
+                <option value="9:16">Vertical 9:16</option>
+                <option value="1:1">Quadrado 1:1</option>
               </select>
             </div>
             <input id="sn-lightsrc" maxlength="300" placeholder="De onde vem a luz? Ex.: janela à esquerda, lâmpada amarela no teto" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white">
             <label class="block text-[11px] text-gray-400">Foto de referência do personagem (opcional): <input id="sn-anchor" type="file" accept="image/*" class="block mt-1 text-[11px] text-gray-300"></label>
-            <button onclick="storyCreateNew()" class="w-full py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/50 text-cyan-200 text-xs font-extrabold">✨ Criar minha história</button>
+            <button onclick="storyCreateNew()" class="w-full py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/50 text-cyan-200 text-xs font-extrabold flex items-center justify-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-cyan-300"></i> Criar minha história</button>
           </div>
         </div>
         <div>
@@ -2280,19 +2280,19 @@
 
           <div class="lg:col-span-4 space-y-4">
             <div class="glass-panel rounded-2xl p-4 border border-emerald-400/30 space-y-2">
-              <h4 class="text-xs font-extrabold text-emerald-300">🔒 Cena fixa — a IA lembra disto em todos os planos</h4>
+              <h4 class="text-xs font-extrabold text-emerald-300 flex items-center gap-1.5"><i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-400"></i> Cena fixa — a IA lembra disto em todos os planos</h4>
               <textarea id="sb-setting" rows="2" placeholder="Cenário" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2 text-[11px] text-white"></textarea>
               <textarea id="sb-chars" rows="2" placeholder="Personagens" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2 text-[11px] text-white"></textarea>
               <input id="sb-lightsrc" placeholder="De onde vem a luz" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2 text-[11px] text-white">
               <select id="sb-light" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2 text-[11px] text-white">
-                <option value="imax_daylight">☀️ Luz natural do dia</option><option value="golden_hour">🌇 Pôr do sol</option><option value="default">💡 Luz artificial interna</option>
-                <option value="cyberpunk_neon">🌃 Noite com neon</option><option value="fire_volumetric">🔥 Luz de fogo</option><option value="chiaroscuro_noir">🎭 Sombras dramáticas</option>
+                <option value="imax_daylight">Luz natural do dia</option><option value="golden_hour">Pôr do sol</option><option value="default">Luz artificial interna</option>
+                <option value="cyberpunk_neon">Noite com neon</option><option value="fire_volumetric">Luz de fogo</option><option value="chiaroscuro_noir">Sombras dramáticas</option>
               </select>
               <button onclick="storySaveBible()" class="w-full py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-200 text-[11px] font-extrabold">Salvar cena fixa</button>
             </div>
 
             <div class="glass-panel rounded-2xl p-4 border border-amber-400/40 space-y-3">
-              <h4 class="text-xs font-extrabold text-amber-300">🎬 Próximo plano</h4>
+              <h4 class="text-xs font-extrabold text-amber-300 flex items-center gap-1.5"><i data-lucide="clapperboard" class="w-3.5 h-3.5 text-amber-400"></i> Próximo plano</h4>
               <div>
                 <span class="text-[10px] text-gray-400 uppercase font-bold">1. Onde fica a câmera?</span>
                 <div id="story-shot-chips" class="flex flex-wrap gap-1.5 mt-1.5"></div>
@@ -2300,7 +2300,7 @@
               <div>
                 <span class="text-[10px] text-gray-400 uppercase font-bold">2. O que acontece?</span>
                 <textarea id="sa-prompt" rows="2" maxlength="600" placeholder="Ex.: ela olha para a porta e sorri" class="w-full mt-1.5 bg-dark-900 border border-white/15 rounded-xl px-3 py-2 text-[11px] text-white"></textarea>
-                <button onclick="storySuggest()" class="mt-1.5 text-[11px] font-bold text-cyan-300 hover:text-cyan-200">💡 Me sugira os próximos planos</button>
+                <button onclick="storySuggest()" class="mt-1.5 text-[11px] font-bold text-cyan-300 hover:text-cyan-200 flex items-center gap-1.5"><i data-lucide="lightbulb" class="w-3.5 h-3.5 text-cyan-400"></i> Me sugira os próximos planos</button>
                 <div id="story-suggestions" class="mt-1.5 space-y-1.5"></div>
               </div>
               <div class="grid grid-cols-2 gap-2 items-end">
@@ -2309,7 +2309,7 @@
                 <label class="text-[10px] text-gray-400 uppercase font-bold">Transição
                   <select id="sa-trans" class="w-full mt-1 bg-dark-900 border border-white/15 rounded-xl px-2 py-1.5 text-[11px] text-white"><option value="cut">Corte seco</option><option value="fade">Suave (fade)</option></select></label>
               </div>
-              <button id="sa-btn" onclick="storyAddClip()" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-extrabold">🎬 Filmar este plano — <span id="sa-cost">25</span> créditos</button>
+              <button id="sa-btn" onclick="storyAddClip()" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-extrabold flex items-center justify-center gap-2"><i data-lucide="video" class="w-4 h-4 text-black"></i> Filmar este plano — <span id="sa-cost">25</span> créditos</button>
               <label class="block text-[11px] text-gray-400">ou coloque um vídeo seu na linha do tempo (grátis): <input id="sa-upload" type="file" accept="video/*" onchange="storyUploadClip(this)" class="block mt-1 text-[11px] text-gray-300"></label>
             </div>
           </div>
@@ -2385,7 +2385,7 @@
           <input type="password" id="login-password" required placeholder="Digite sua senha" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400">
         </div>
         <button type="submit" id="login-submit-btn" class="w-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 text-black font-extrabold py-3 rounded-xl text-xs tracking-wider uppercase shadow-neon-cyan hover:opacity-95 transition-all">
-          🚀 Entrar no IABOX Studio
+          <i data-lucide="log-in" class="w-4 h-4 inline mr-1 text-black"></i> Entrar no IABOX Studio
         </button>
       </form>
 
@@ -2398,18 +2398,18 @@
         <div>
           <label class="block text-xs font-bold text-gray-300 mb-1">Seu Gmail do Google (Obrigatório):</label>
           <input type="email" id="register-email" required placeholder="seuemail@gmail.com" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400">
-          <p class="text-[10px] text-amber-300 mt-1">⚠️ Apenas contas <strong>@gmail.com</strong> são aceitas pelo sistema.</p>
+          <p class="text-[10px] text-amber-300 mt-1"><i data-lucide="alert-triangle" class="w-3.5 h-3.5 inline mr-1 text-amber-400"></i> Apenas contas <strong>@gmail.com</strong> são aceitas pelo sistema.</p>
         </div>
         <div>
           <label class="block text-xs font-bold text-gray-300 mb-1">Crie sua Senha (Mínimo 6 dígitos):</label>
           <input type="password" id="register-password" required minlength="6" placeholder="Mínimo 6 caracteres" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400">
         </div>
         <div class="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-400/30 text-[11px] text-gray-300 space-y-1">
-          <p class="text-cyan-300 font-bold">🎁 Bônus de 50 Tokens Grátis:</p>
+          <p class="text-cyan-300 font-bold"><i data-lucide="sparkles" class="w-3.5 h-3.5 inline mr-1 text-cyan-300"></i> Bônus de 50 Tokens Grátis:</p>
           <p class="text-[10px] text-gray-400 leading-tight">Concedido apenas para novas contas de Gmail em aparelhos/IPs que nunca tenham utilizado o bônus antes.</p>
         </div>
         <button type="submit" id="register-submit-btn" class="w-full bg-gradient-to-r from-emerald-400 to-cyan-500 text-black font-extrabold py-3 rounded-xl text-xs tracking-wider uppercase shadow-lg hover:opacity-95 transition-all">
-          ✨ Criar Minha Conta & Começar
+          <i data-lucide="zap" class="w-4 h-4 inline mr-1 text-black"></i> Criar Minha Conta & Começar
         </button>
       </form>
 
@@ -2617,7 +2617,7 @@
           <span class="font-bold text-emerald-300 block">4. Prompt Mestre 8K Extraído (Pronto para o Canvas):</span>
           <textarea id="rea-layer-4" rows="2" class="w-full bg-dark-800 border border-white/10 rounded-lg p-2 text-[11px] text-white font-mono"></textarea>
           <button onclick="applyReaPromptToCanvas()" class="w-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-300 font-bold py-2 rounded-lg text-xs">
-            ✨ Enviar Prompt + Configuração Óptica Direto para o Magnific Canvas
+            <i data-lucide="send" class="w-3.5 h-3.5 inline mr-1 text-emerald-300"></i> Enviar Prompt + Configuração Óptica Direto para o Magnific Canvas
           </button>
         </div>
       </div>
@@ -2647,23 +2647,23 @@
     
     <div class="flex flex-wrap gap-1.5">
       <button onclick="askIABotQuestion('Como funciona o Magnific Canvas Expansivo e como mover ou deletar imagens?')" class="px-2.5 py-1 rounded-lg bg-dark-800 hover:bg-cyan-500/20 border border-cyan-400/30 text-[10px] text-cyan-300 font-semibold transition-all">
-        📐 Como usar o Canvas & Deletar?
+        <i data-lucide="help-circle" class="w-3 h-3 inline mr-1 text-cyan-400"></i> Como usar o Canvas & Deletar?
       </button>
       <button onclick="askIABotQuestion('Como travar 100% da Fidelização de Rosto (Face Lock) nos meus vídeos e fotos?')" class="px-2.5 py-1 rounded-lg bg-dark-800 hover:bg-amber-500/20 border border-amber-400/30 text-[10px] text-amber-300 font-semibold transition-all">
-        🔒 Fidelização de Rosto 100%
+        <i data-lucide="shield-check" class="w-3 h-3 inline mr-1 text-amber-400"></i> Fidelização de Rosto 100%
       </button>
       <button onclick="askIABotQuestion('Como criar um filme de até 1 ou 2 horas com vozes e efeitos sonoros reais (SFX)?')" class="px-2.5 py-1 rounded-lg bg-dark-800 hover:bg-emerald-500/20 border border-emerald-400/30 text-[10px] text-emerald-300 font-semibold transition-all">
-        🎬 Filmes de 2h + Vozes & SFX
+        <i data-lucide="film" class="w-3 h-3 inline mr-1 text-emerald-400"></i> Filmes de 2h + Vozes & SFX
       </button>
       <button onclick="askIABotQuestion('Como trocar o ângulo de câmera ou iluminação de uma única cena sem refazer o filme todo?')" class="px-2.5 py-1 rounded-lg bg-dark-800 hover:bg-purple-500/20 border border-purple-400/30 text-[10px] text-purple-300 font-semibold transition-all">
-        🎥 Trocar Ângulo sem Refazer
+        <i data-lucide="camera" class="w-3 h-3 inline mr-1 text-purple-400"></i> Trocar Ângulo sem Refazer
       </button>
     </div>
 
     
     <div id="iabot-chat-messages" class="flex-1 overflow-y-auto space-y-2.5 p-2 rounded-2xl bg-dark-900/90 border border-white/10 text-xs max-h-64">
       <div class="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 text-gray-200 leading-relaxed">
-        🤖 <strong>Olá! Eu sou o IABot!</strong> Com a nova atualização do <strong>Magnific 2.0 & Cinema Studio</strong>, você tem controle total. Clique em uma pergunta acima ou digite sua dúvida abaixo que eu te explico passo a passo!
+        <span class="inline-flex items-center gap-1.5 font-bold text-cyan-300"><i data-lucide="bot" class="w-4 h-4 text-cyan-400"></i> IABot Copilot:</span> Com a nova atualização do <strong>Magnific 2.0 & Cinema Studio</strong>, você tem controle total. Clique em uma pergunta acima ou digite sua dúvida abaixo que eu te explico passo a passo!
       </div>
     </div>
 
@@ -2754,7 +2754,7 @@
         </div>
         <div>
           <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30 text-[10px] font-extrabold uppercase mb-1">
-            ⚡ Potência Cinematográfica Detectada
+            <i data-lucide="zap" class="w-3.5 h-3.5 inline mr-1 text-amber-400"></i> Potência Cinematográfica Detectada
           </div>
           <h3 class="text-lg md:text-xl font-extrabold text-white">Desbloqueie o Poder IABOX Omni Cinema Flow™</h3>
           <p class="text-xs text-gray-300 mt-0.5">Sua sequência com Avatar / Troca de Cenário exige nossos servidores neurais dedicados.</p>
@@ -2815,7 +2815,7 @@
     
     
     <div id="mascot-bubble" onclick="openIABotAssistant()" class="bg-dark-800/95 text-white text-xs px-3.5 py-2 rounded-2xl border border-cyan-400/50 shadow-neon-cyan-sm mb-2 max-w-[220px] text-center transform scale-95 transition-all cursor-pointer hover:border-amber-400">
-      <span id="mascot-msg">Dúvidas no Magnific? Clique em mim e pergunte! 🤖💬</span>
+      <span id="mascot-msg" class="flex items-center justify-center gap-1.5"><i data-lucide="message-square" class="w-3.5 h-3.5 text-cyan-300"></i> Dúvidas no Estúdio? Clique e pergunte!</span>
     </div>
 
     
@@ -2888,15 +2888,15 @@
             const disp = document.getElementById('credit-display');
             const lbl = document.getElementById('credit-label-text');
             const pill = document.getElementById('wallet-badge-pill');
-            if (disp) disp.innerText = '👑 VIP';
+            if (disp) disp.innerHTML = '<span class="flex items-center gap-1"><i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400"></i> VIP</span>';
             if (lbl) lbl.innerText = 'Ilimitado';
             if (pill) {
               pill.classList.remove('bg-cyan-500/10', 'border-cyan-400/40');
               pill.classList.add('bg-amber-500/20', 'border-amber-400');
             }
             triggerRobotBlink();
-            setMascotMessage('👑 Acesso VIP Ilimitado Permanente ativado para este aparelho e para o Gmail vinculado!');
-            alert('👑 VIP ILIMITADO ATIVADO!\n\nEste aparelho e a sua conta Google Gmail vinculada (' + (currentUserId || 'seu acesso') + ') agora têm Acesso Ilimitado Permanente!');
+            setMascotMessage(' Acesso VIP Ilimitado Permanente ativado para este aparelho e para o Gmail vinculado!');
+            alert('VIP ILIMITADO ATIVADO!\n\nEste aparelho e a sua conta Google Gmail vinculada (' + (currentUserId || 'seu acesso') + ') agora têm Acesso Ilimitado Permanente!');
             updateCredits();
           })
           .catch(err => {
@@ -2918,7 +2918,7 @@
           const inp = document.getElementById('image-prompt');
           if (inp) { inp.value = promptText; inp.focus(); }
         }
-        setMascotMessage('Estilo carregado! Clique no botão Gerar para criar o seu! 🎬');
+        setMascotMessage('Estilo carregado! Clique no botão Gerar para criar o seu! ');
       }, 100);
     }
 
@@ -2928,18 +2928,18 @@
       currentUserId = val;
       localStorage.setItem('iabox_user_id', currentUserId);
       updateCredits();
-      setMascotMessage('Carteira sincronizada com sucesso! ⚡');
+      setMascotMessage('Carteira sincronizada com sucesso! ');
     }
 
     function switchTab(tabId) {
       if (tabId === 'video') {
-        setMascotMessage('🎬 IABOX Omni Cinema Flow™ Ativo: Diferente do Google Veo que trava em 10s, aqui você cria até 5 minutos contínuos!');
+        setMascotMessage(' IABOX Omni Cinema Flow™ Ativo: Diferente do Google Veo que trava em 10s, aqui você cria até 5 minutos contínuos!');
       } else if (tabId === 'parody') {
-        setMascotMessage('⚡ Fábrica de Paródias: Este criativo de Alta Fidelidade ativa o motor IABOX Neural Turbo™ com isolamento acústico perfeito!');
+        setMascotMessage(' Fábrica de Paródias: Este criativo de Alta Fidelidade ativa o motor IABOX Neural Turbo™ com isolamento acústico perfeito!');
       } else if (tabId === 'canvas') {
-        setMascotMessage('🎨 Magnific Canvas: Crie cenas cinematográficas em até 8K com reconstrução de microtextura exclusiva IABOX!');
+        setMascotMessage(' Magnific Canvas: Crie cenas cinematográficas em até 8K com reconstrução de microtextura exclusiva IABOX!');
       } else if (tabId === 'voice' || tabId === 'image') {
-        setMascotMessage('✨ Modo Padrão Ativo: Criação rápida e econômica para posts e locuções do dia a dia.');
+        setMascotMessage(' Modo Padrão Ativo: Criação rápida e econômica para posts e locuções do dia a dia.');
       }
 
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -2998,7 +2998,7 @@
     }
 
     // ------------------------------------------------------------------------
-    // GERENCIAMENTO AVANÇADO DE FOTOS DE REFERÊNCIA COM BOTÃO '✕' DE EXCLUSÃO
+    // GERENCIAMENTO AVANÇADO DE FOTOS DE REFERÊNCIA COM BOTÃO DE EXCLUSÃO
     // ------------------------------------------------------------------------
     let imageRefFilesList = [];
     let videoRefFilesList = [];
@@ -3054,7 +3054,7 @@
 
       previewEl.innerHTML = '';
       if (targetList.length === 0) {
-        previewEl.innerHTML = `<span class="text-xs text-gray-500 flex items-center gap-1.5 py-2 px-1">📷 Nenhuma foto selecionada. Adicione até 5 fotos para a IA extrair contexto e fidelidade.</span>`;
+        previewEl.innerHTML = `<span class="text-xs text-gray-500 flex items-center gap-1.5 py-2 px-1">Nenhuma foto selecionada. Adicione até 5 fotos para a IA extrair contexto e fidelidade.</span>`;
         return;
       }
 
@@ -3066,8 +3066,8 @@
           <div class="w-full h-full flex items-center justify-center bg-black/60">
             <span class="text-[9px] text-gray-400">Carregando...</span>
           </div>
-          <button type="button" onclick="removeRefPhoto('${type}', ${idx})" title="Remover esta foto de referência (✕)" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center text-xs font-black shadow-lg border border-white/50 cursor-pointer z-20 transition-transform active:scale-90">
-            ✕
+          <button type="button" onclick="removeRefPhoto('${type}', ${idx})" title="Remover esta foto de referência" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center text-xs font-black shadow-lg border border-white/50 cursor-pointer z-20 transition-transform active:scale-90">
+            <i data-lucide="x" class="w-3 h-3"></i>
           </button>
           <span class="absolute bottom-0 inset-x-0 bg-black/85 text-[10px] font-bold text-center text-amber-300 py-0.5 font-mono">
             @Ref ${idx + 1}
@@ -3217,7 +3217,7 @@
             updateUserAccountBadge();
             updateCredits();
             loadMemoryAndAccessLogs();
-            setMascotMessage(`Bem-vindo de volta, ${data.user.name || email.split('@')[0]}! 🎬`);
+            setMascotMessage(`Bem-vindo de volta, ${data.user.name || email.split('@')[0]}!`);
           }, 700);
         } else {
           showAuthMsg(data.detail || 'Email ou senha incorretos.');
@@ -3246,7 +3246,7 @@
         candidateName = candidateEmail.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
       }
 
-      showAuthMsg('⚡ Conectando diretamente à conta Google...', true);
+      showAuthMsg(' Conectando diretamente à conta Google...', true);
 
       const fd = new FormData();
       fd.append('email', candidateEmail);
@@ -3272,7 +3272,7 @@
             updateUserAccountBadge();
             updateCredits();
             loadMemoryAndAccessLogs();
-            setMascotMessage(`Bem-vindo, ${data.name || candidateName}! 🎬 Estúdio 8K liberado!`);
+            setMascotMessage(`Bem-vindo, ${data.name || candidateName}! Estúdio 8K liberado!`);
           }, 600);
         } else {
           showAuthMsg(data.detail || 'Não foi possível conectar com esta conta Google.');
@@ -3284,7 +3284,7 @@
 
     async function handleGoogleCredentialResponse(response) {
       if (!response || !response.credential) return;
-      showAuthMsg('⚡ Verificando credencial oficial do Google...', true);
+      showAuthMsg(' Verificando credencial oficial do Google...', true);
       const fd = new FormData();
       fd.append('credential', response.credential);
       try {
@@ -3306,7 +3306,7 @@
             updateUserAccountBadge();
             updateCredits();
             loadMemoryAndAccessLogs();
-            setMascotMessage(`Conta Google conectada! Bem-vindo, ${data.name}! 🚀`);
+            setMascotMessage(`Conta Google conectada! Bem-vindo, ${data.name}! `);
           }, 600);
         } else {
           showAuthMsg(data.detail || 'Falha ao autenticar com o Google.');
@@ -3353,7 +3353,7 @@
             updateUserAccountBadge();
             updateCredits();
             loadMemoryAndAccessLogs();
-            setMascotMessage(`Conta criada com sucesso! Aproveite o IABOX Studio 8K! 🚀`);
+            setMascotMessage(`Conta criada com sucesso! Aproveite o IABOX Studio 8K! `);
           }, 900);
         } else {
           showAuthMsg(data.detail || 'Erro ao criar conta.');
@@ -3460,7 +3460,7 @@
         const res = await fetch(`/api/user/memory/${id}?user_id=${encodeURIComponent(currentUserId)}`, { method: 'DELETE' });
         const data = await res.json();
         if (res.ok) {
-          setMascotMessage('🗑️ Arquivo excluído com sucesso da sua memória!');
+          setMascotMessage('️ Arquivo excluído com sucesso da sua memória!');
           loadMemoryAndAccessLogs();
         } else {
           alert(data.detail || 'Erro ao excluir da memória.');
@@ -3488,7 +3488,7 @@
         const creations = memData.creations || [];
         if (countBadge) countBadge.innerText = `${creations.length} arquivo(s) na memória`;
         if (supaBadge) {
-          supaBadge.innerText = memData.supabase_synced ? '☁️ ESG Quantum Cloud Sincronizada' : '💾 Cofre Neural Ativo';
+          supaBadge.innerText = memData.supabase_synced ? 'ESG Quantum Cloud Sincronizada' : 'Cofre Neural Ativo';
         }
 
         if (grid) {
@@ -3520,9 +3520,9 @@
                   <div class="flex items-center justify-between pt-2 border-t border-white/5 text-xs">
                     <span class="text-[10px] text-gray-500 font-mono">IP: ${c.ip || '-'}</span>
                     <div class="flex items-center gap-1.5">
-                      <button type="button" onclick="deleteMemoryItem('${c.id}')" title="Excluir este criativo da memória" class="px-2 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/35 border border-red-500/40 text-red-300 font-bold flex items-center gap-1 transition-all">🗑️</button>
-                      ${(url.endsWith('.mp4') || c.category === 'video') ? `<button type="button" onclick="storyFromCreation('${url}', '${(c.title || '').replace(/'/g, '')}')" class="px-2 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/40 text-amber-200 font-bold">🎞️ Continuar história</button>` : ''}
-                      <a href="${dlUrl}" download class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 font-bold flex items-center gap-1">⬇️ Baixar no PC</a>
+                      <button type="button" onclick="deleteMemoryItem('${c.id}')" title="Excluir este criativo da memória" class="px-2 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/35 border border-red-500/40 text-red-300 font-bold flex items-center gap-1 transition-all"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                      ${(url.endsWith('.mp4') || c.category === 'video') ? `<button type="button" onclick="storyFromCreation('${url}', '${(c.title || '').replace(/'/g, '')}')" class="px-2 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 border border-amber-400/40 text-amber-200 font-bold"><i data-lucide="clapperboard" class="w-3 h-3 text-amber-300"></i><span>Continuar história</span></button>` : ''}
+                      <a href="${dlUrl}" download class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 font-bold flex items-center gap-1"><i data-lucide="download" class="w-3 h-3 text-cyan-300"></i><span>Baixar no PC</span></a>
                     </div>
                   </div>
                 </div>
@@ -3570,7 +3570,10 @@
     let startX, startY, initialX, initialY;
 
     function setMascotMessage(msg) {
-      msgEl.innerText = msg;
+      if (!msgEl) return;
+      const cleanMsg = (msg || '').replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2B50}-\u{2B55}]/gu, '').trim();
+      msgEl.innerHTML = `<span class="inline-flex items-center gap-1.5"><i data-lucide="bot" class="w-3.5 h-3.5 text-cyan-400 drop-shadow-[0_0_6px_#00f0ff] shrink-0"></i><span>${cleanMsg}</span></span>`;
+      if (typeof lucide !== 'undefined') lucide.createIcons();
       bubble.classList.remove('scale-95');
       bubble.classList.add('scale-105');
       setTimeout(() => bubble.classList.remove('scale-105'), 300);
@@ -3651,20 +3654,20 @@
         const heroBadge = document.getElementById('hero-bonus-badge');
 
         if (isVipFounder) {
-          disp.innerText = '👑 VIP';
+          disp.innerHTML = '<span class="flex items-center gap-1"><i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400"></i> VIP</span>';
           if (lbl) lbl.innerText = 'Ilimitado';
           if (pill) {
             pill.classList.remove('bg-cyan-500/10', 'border-cyan-400/40');
             pill.classList.add('bg-amber-500/20', 'border-amber-400');
           }
           if (heroBadge) {
-            heroBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span><span>👑 Acesso Total e Exclusivo Liberado Neste Aparelho &bull; Tokens Ilimitados</span>';
+            heroBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span><span class="flex items-center gap-1.5"><i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400"></i> Acesso Total e Exclusivo Liberado Neste Aparelho &bull; Tokens Ilimitados</span>';
           }
         } else {
           disp.innerText = userCredits;
           if (lbl) lbl.innerText = 'tokens';
           if (heroBadge) {
-            heroBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span><span>🎁 Bônus de Teste Ativo no Seu IP (${data.ip || 'PC/Mobile'}): ${userCredits} Tokens Restantes</span>`;
+            heroBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span><span class="flex items-center gap-1.5"><i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-300"></i> Bônus de Teste Ativo no Seu IP (${data.ip || 'PC/Mobile'}): ${userCredits} Tokens Restantes</span>`;
           }
         }
       } catch (err) { console.log('Erro ao ler créditos:', err); }
@@ -3674,7 +3677,7 @@
     function requireCredits(cost) {
       if (isVipFounder) return true;
       if (userCredits < cost) {
-        setMascotMessage(`Seus 50 tokens gratuitos de teste por IP acabaram! Escolha seu pacote pré-pago via Stripe para continuar criando. 💳`);
+        setMascotMessage(`Seus 50 tokens gratuitos de teste por IP acabaram! Escolha seu pacote pré-pago via Stripe para continuar criando. `);
         openModal('recharge-modal');
         return false;
       }
@@ -3694,8 +3697,8 @@
               currentUserId = data.user_id;
               localStorage.setItem('iabox_user_id', currentUserId);
             }
-            setMascotMessage(`🎉 Pagamento confirmado! Créditos adicionados ao seu saldo.`);
-            alert(`🎉 Pagamento confirmado com sucesso via Stripe!\nSaldo atualizado: ${data.new_balance} créditos.\nAproveite todos os motores de IA do IABOX!`);
+            setMascotMessage(` Pagamento confirmado! Créditos adicionados ao seu saldo.`);
+            alert(`Pagamento confirmado com sucesso via Stripe!\nSaldo atualizado: ${data.new_balance} créditos.\nAproveite todos os motores de IA do IABOX!`);
             window.history.replaceState({}, document.title, window.location.pathname);
             updateCredits();
           }
@@ -3939,7 +3942,7 @@
       if (dur === 'preview_10s') {
         if (opt10) opt10.className = 'cursor-pointer p-3 rounded-2xl border-2 border-cyan-400 bg-cyan-500/15 flex flex-col justify-between transition-all';
         if (btnText) btnText.innerText = 'Renderizar Prévia Rápida (10 Créditos)';
-        setMascotMessage('⚡ Modo Prévia (10s): Criação rápida de baixo consumo com seus créditos padrão!');
+        setMascotMessage(' Modo Prévia (10s): Criação rápida de baixo consumo com seus créditos padrão!');
       } else if (dur === 'extended_60s') {
         if (opt60) opt60.className = 'cursor-pointer p-3 rounded-2xl border-2 border-cyan-400 bg-cyan-500/15 flex flex-col justify-between transition-all relative';
         if (btnText) btnText.innerText = 'Renderizar Sequência Estendida (40 Créditos Turbo)';
@@ -3953,11 +3956,11 @@
 
     function onOmniModeChanged(val) {
       if (val === 'character_swap') {
-        setMascotMessage('🎭 Avatar Swap: Sua pose e fala serão mantidas enquanto o rosto é substituído pelo influenciador com Face Lock!');
+        setMascotMessage(' Avatar Swap: Sua pose e fala serão mantidas enquanto o rosto é substituído pelo influenciador com Face Lock!');
       } else if (val === 'scene_swap') {
-        setMascotMessage('🌆 Troca de Cenário: Seu ambiente será transportado com iluminação de estúdio volumétrica!');
+        setMascotMessage(' Troca de Cenário: Seu ambiente será transportado com iluminação de estúdio volumétrica!');
       } else if (val === 'multitake_cinema') {
-        setMascotMessage('🎥 Multitakes de Cinema: Encadeia planos gerais, médios e closes cinematográficos!');
+        setMascotMessage(' Multitakes de Cinema: Encadeia planos gerais, médios e closes cinematográficos!');
       }
     }
 
@@ -3966,7 +3969,7 @@
       onOmniDurationChanged('preview_10s');
       const radio = document.querySelector('input[name="omni_duration"][value="preview_10s"]');
       if (radio) radio.checked = true;
-      setMascotMessage('⚡ Pronto! Duração ajustada para Prévia de 10s. Agora você pode renderizar com seus créditos regulares!');
+      setMascotMessage(' Pronto! Duração ajustada para Prévia de 10s. Agora você pode renderizar com seus créditos regulares!');
     }
 
     async function handleGenerateVideo() {
@@ -3988,7 +3991,7 @@
 
         if (checkData.can_run === false) {
           // Abre modal persuasivo orientando a recarga ou permitindo preview grátis
-          setMascotMessage('⚡ Produção de alta fidelidade detectada! Desbloqueie o poder Omni Turbo sem filas.');
+          setMascotMessage(' Produção de alta fidelidade detectada! Desbloqueie o poder Omni Turbo sem filas.');
           openModal('omni-upsell-modal');
           return;
         }
@@ -4026,7 +4029,7 @@
         if (data.job_id) {
           pollJob(data.job_id, box, 'video');
           updateCredits();
-          setMascotMessage('🚀 Sequência enviada com sucesso para renderização cinemática!');
+          setMascotMessage(' Sequência enviada com sucesso para renderização cinemática!');
         } else {
           box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${data.detail || 'Falha ao iniciar produção'}</span>`;
         }
@@ -4090,7 +4093,7 @@
             if (mediaType === 'video') {
               element.innerHTML = `
                 <div class="space-y-3">
-                  <span class="text-xs font-bold text-cyan-400 block">🎬 Vídeo Masterizado com Movimento Real & SFX Concluído!</span>
+                  <span class="text-xs font-bold text-cyan-400 flex items-center gap-1.5"><i data-lucide="video" class="w-4 h-4 text-cyan-400"></i><span>Vídeo Masterizado com Movimento Real & SFX Concluído!</span></span>
                   <video controls playsinline autoplay class="w-full rounded-xl"><source src="${job.result_url}" type="video/mp4"></video>
                   <a href="${dlUrl}" download class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500/20 border border-cyan-400/50 text-xs font-extrabold text-cyan-300 hover:bg-cyan-500/30 shadow">
                     <i data-lucide="download" class="w-4 h-4"></i> ⬇️ Baixar Vídeo Master no PC (MP4)
@@ -4099,7 +4102,7 @@
             } else {
               element.innerHTML = `
                 <div class="space-y-3">
-                  <span class="text-xs font-bold text-cyan-400 block">🎵 Produção de Áudio Masterizada Concluída!</span>
+                  <span class="text-xs font-bold text-cyan-400 flex items-center gap-1.5"><i data-lucide="music" class="w-4 h-4 text-cyan-400"></i><span>Produção de Áudio Masterizada Concluída!</span></span>
                   <audio controls autoplay class="w-full"><source src="${job.result_url}" type="audio/mpeg"></audio>
                   <a href="${dlUrl}" download class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500/20 border border-cyan-400/50 text-xs font-extrabold text-cyan-300 hover:bg-cyan-500/30 shadow">
                     <i data-lucide="download" class="w-4 h-4"></i> ⬇️ Baixar Áudio Master no PC (MP3)
@@ -4168,7 +4171,7 @@
       resetCanvasViewportZoom();
       renderCanvasNodes();
       drawCanvasCables();
-      setMascotMessage('Layout original do Magnific Canvas restaurado! 🎬');
+      setMascotMessage('Layout original do Magnific Canvas restaurado! ');
     }
 
     function toggleCanvasExpandMode(forceState = null) {
@@ -4211,11 +4214,11 @@
         }
 
         if (btnTop) btnTop.innerHTML = '<i data-lucide="minimize" class="w-4 h-4"></i><span>Sair do Estúdio em Tela Inteira (ESC)</span>';
-        if (btnHud) btnHud.innerHTML = '🗗 Sair da Tela Inteira (ESC)';
+        if (btnHud) btnHud.innerHTML = '<i data-lucide="minimize" class="w-3 h-3 inline mr-1"></i> Sair da Tela Inteira (ESC)';
         if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
           document.documentElement.requestFullscreen().catch(() => {});
         }
-        setMascotMessage('🖥️ Estúdio em Tela Inteira Dedicada e Exclusiva Ativo! Crie em 8K e baixe direto no PC!');
+        setMascotMessage('️ Estúdio em Tela Inteira Dedicada e Exclusiva Ativo! Crie em 8K e baixe direto no PC!');
       } else {
         if (placeholder && placeholder.parentNode) {
           placeholder.parentNode.insertBefore(board, placeholder.nextSibling);
@@ -4241,7 +4244,7 @@
         }
 
         if (btnTop) btnTop.innerHTML = '<i data-lucide="maximize" class="w-4 h-4"></i><span><i data-lucide="expand" class="w-3.5 h-3.5 text-amber-300 inline"></i> Abrir Estúdio em Tela Inteira Dedicada (100% Exclusivo)</span>';
-        if (btnHud) btnHud.innerHTML = '🖥️ Tela Inteira Dedicada';
+        if (btnHud) btnHud.innerHTML = '<i data-lucide="maximize" class="w-3 h-3 inline mr-1"></i> Tela Inteira Dedicada';
         if (document.fullscreenElement && document.exitFullscreen) {
           document.exitFullscreen().catch(() => {});
         }
@@ -4318,7 +4321,7 @@
       }
       renderCanvasNodes();
       const statusEl = document.getElementById('canvas-status-msg');
-      if (statusEl) statusEl.innerText = `🗑️ Nó ${target ? target.tag : ''} deletado do Canvas com sucesso.`;
+      if (statusEl) statusEl.innerText = `Nó ${target ? target.tag : ''} deletado do Canvas com sucesso.`;
     }
 
     function deleteSelectedCanvasNode() {
@@ -4334,7 +4337,7 @@
       selectedCanvasNodeId = null;
       renderCanvasNodes();
       const statusEl = document.getElementById('canvas-status-msg');
-      if (statusEl) statusEl.innerText = '🧹 Todos os nós foram limpos. Suba novas fotos ou use o Agente Diretor de Filmes!';
+      if (statusEl) statusEl.innerText = 'Todos os nós foram limpos. Suba novas fotos ou use o Agente Diretor de Filmes!';
     }
 
     function duplicateSelectedCanvasNode() {
@@ -4359,7 +4362,7 @@
       selectedCanvasNodeId = newId;
       selectedCanvasNodeUrl = src.url;
       renderCanvasNodes();
-      setMascotMessage(`Nó duplicado como @Image${nextIdx}! 📋`);
+      setMascotMessage(`Nó duplicado como @Image${nextIdx}! `);
     }
 
     function selectCanvasNode(nodeId) {
@@ -4412,9 +4415,9 @@
               <span class="px-1.5 py-0.2 rounded border text-[9px] font-bold ${roleBadgeClass}">${node.role || 'Cena'}</span>
             </div>
             <div class="flex items-center gap-1">
-              <button onclick="downloadDirectToPC('${node.url}'); event.stopPropagation();" title="Baixar esta Imagem 8K Direto no PC" class="w-5 h-5 rounded bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 flex items-center justify-center text-[10px]">⬇️</button>
-              <button onclick="handleGenerateSingleNodeVideo('${node.url}', '${node.tag}', event)" title="Gerar Vídeo Real + Efeitos Sonoros deste Nó" class="w-5 h-5 rounded bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 flex items-center justify-center text-[10px]">🎬</button>
-              <button onclick="deleteCanvasNode('${node.id}', event)" title="Deletar esta imagem/nó do Canvas" class="w-5 h-5 rounded bg-red-500/20 hover:bg-red-500/40 text-red-300 flex items-center justify-center text-[10px]">🗑️</button>
+              <button onclick="downloadDirectToPC('${node.url}'); event.stopPropagation();" title="Baixar esta Imagem 8K Direto no PC" class="w-5 h-5 rounded bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 flex items-center justify-center text-[10px]"><i data-lucide="download" class="w-3 h-3 text-cyan-300"></i></button>
+              <button onclick="handleGenerateSingleNodeVideo('${node.url}', '${node.tag}', event)" title="Gerar Vídeo Real + Efeitos Sonoros deste Nó" class="w-5 h-5 rounded bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-300 flex items-center justify-center text-[10px]"><i data-lucide="video" class="w-3 h-3 text-emerald-300"></i></button>
+              <button onclick="deleteCanvasNode('${node.id}', event)" title="Deletar esta imagem/nó do Canvas" class="w-5 h-5 rounded bg-red-500/20 hover:bg-red-500/40 text-red-300 flex items-center justify-center text-[10px]"><i data-lucide="trash-2" class="w-3 h-3 text-red-300"></i></button>
             </div>
           </div>
           <div class="relative w-full h-24 rounded-xl overflow-hidden bg-black border border-white/10 group">
@@ -4460,14 +4463,14 @@
             <div class="flex items-center justify-between text-[10px] font-bold text-amber-300 mb-1">
               <span>TAKE 0${idx + 1} (${node.tag})</span>
               <div class="flex items-center gap-1.5">
-                <button onclick="downloadDirectToPC('${node.url}')" title="Baixar Take no PC" class="text-cyan-400 hover:text-cyan-300">⬇️</button>
-                <button onclick="deleteCanvasNode('${node.id}', event)" title="Deletar Take" class="text-red-400 hover:text-red-300">🗑️</button>
+                <button onclick="downloadDirectToPC('${node.url}')" title="Baixar Take no PC" class="text-cyan-400 hover:text-cyan-300 flex items-center"><i data-lucide="download" class="w-3 h-3"></i></button>
+                <button onclick="deleteCanvasNode('${node.id}', event)" title="Deletar Take" class="text-red-400 hover:text-red-300 flex items-center"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
               </div>
             </div>
             <img src="${node.url}" class="w-full h-20 object-cover rounded-lg border border-white/5 mb-1.5 cursor-pointer" onclick="openCanvasLightbox('${node.url}', 'Take 0${idx+1}')">
             <div class="text-[10px] text-gray-400 flex items-center justify-between">
-              <span>🎥 ${camMove}</span>
-              <span class="text-emerald-400">🔊 SFX</span>
+              <span class="flex items-center gap-1"><i data-lucide="video" class="w-2.5 h-2.5 text-amber-400"></i> ${camMove}</span>
+              <span class="text-emerald-400 flex items-center gap-1"><i data-lucide="volume-2" class="w-2.5 h-2.5 text-emerald-400"></i> SFX</span>
             </div>
           `;
           timelineStrip.appendChild(takeCard);
@@ -4629,7 +4632,7 @@
         if (thumb) thumb.src = ev.target.result;
       };
       reader.readAsDataURL(f);
-      setMascotMessage('Rosto personalizado carregado no Face Lock 100%! 🔒✨');
+      setMascotMessage('Rosto personalizado carregado no Face Lock 100%! ');
     }
 
     function syncCanvasVoiceAndSfxToTimeline() {
@@ -4728,8 +4731,8 @@
               renderCanvasNodes();
             }
           }
-          statusEl.innerText = `✅ Cena 8K Ultra-Realista gerada! Clique em "⬇️ Baixar Criativo no PC" ou transforme em Nó!`;
-          setMascotMessage('Cena 8K Ultra-Realista pronta! Clique em ⬇️ Baixar Criativo no PC para salvar! 🏆');
+          statusEl.innerText = `Cena 8K Ultra-Realista gerada! Clique em Baixar Criativo no PC ou transforme em Nó!`;
+          setMascotMessage('Cena 8K Ultra-Realista pronta! Clique em ⬇️ Baixar Criativo no PC para salvar! ');
           updateCredits();
         } else {
           statusEl.innerText = `Erro: ${data.detail || 'Falha ao gerar cena conectada'}`;
@@ -4771,13 +4774,13 @@
       selectedCanvasNodeId = newId;
       selectedCanvasNodeUrl = currentGeneratedNodeUrl;
       renderCanvasNodes();
-      setMascotMessage(`Cena transformada em @Image${nextIdx} e adicionada à Timeline! 🎬`);
+      setMascotMessage(`Cena transformada em @Image${nextIdx} e adicionada à Timeline! `);
     }
 
     async function handleMagnificUpscale(imageUrl, insideModal = false) {
       if (!requireCredits(4)) return;
       const statusEl = insideModal ? document.getElementById('lightbox-status') : document.getElementById('canvas-status-msg');
-      statusEl.innerText = '✨ Aplicando Super-Resolução Magnific 8K Lanczos + Micro-Poros...';
+      statusEl.innerText = 'Aplicando Super-Resolução Magnific 8K Lanczos + Micro-Poros...';
 
       const formData = new FormData();
       formData.append('image_url', imageUrl);
@@ -4796,7 +4799,7 @@
             document.getElementById('lightbox-node-img').src = data.result_url;
             document.getElementById('lightbox-download-btn').href = getDownloadUrl(data.result_url);
           }
-          statusEl.innerText = '✅ Upscale Magnific 8K Ultra-HD concluído com sucesso!';
+          statusEl.innerText = 'Upscale Magnific 8K Ultra-HD concluído com sucesso!';
           updateCredits();
         } else {
           statusEl.innerText = 'Erro no Upscale: ' + (data.detail || 'Falha no processamento');
@@ -4856,7 +4859,7 @@
       const btn = document.getElementById('film-agent-btn');
       const statusEl = document.getElementById('canvas-status-msg');
       btn.disabled = true;
-      statusEl.innerText = '🎬 Agente Diretor IA criando Roteiro Multi-Capítulos, Fichas de Personagem, Objetos e Cenas no Canvas...';
+      statusEl.innerText = 'Agente Diretor IA criando Roteiro Multi-Capítulos, Fichas de Personagem, Objetos e Cenas no Canvas...';
 
       const formData = new FormData();
       formData.append('movie_idea', idea);
@@ -4904,8 +4907,8 @@
           }
           if (chapPanel) chapPanel.classList.remove('hidden');
 
-          statusEl.innerText = `✅ Projeto "${p.movie_title}" (${p.total_planned_chapters || 24} capítulos) montado no Canvas!`;
-          setMascotMessage(`Agente Diretor criou ${canvasNodes.length} nós conectados e roteiro para ${p.estimated_runtime_min || 110} min! 🎬🏆`);
+          statusEl.innerText = `Projeto "${p.movie_title}" (${p.total_planned_chapters || 24} capítulos) montado no Canvas!`;
+          setMascotMessage(`Agente Diretor criou ${canvasNodes.length} nós conectados e roteiro para ${p.estimated_runtime_min || 110} min! `);
           updateCredits();
         }
       } catch (e) {
@@ -4921,7 +4924,7 @@
       const fileInp = document.getElementById('rea-image-file');
       const btn = document.getElementById('rea-run-btn');
       btn.disabled = true;
-      btn.innerText = '🔍 Analisando as 4 Camadas Ópticas e de Iluminação...';
+      btn.innerText = 'Analisando as 4 Camadas Ópticas e de Iluminação...';
 
       const formData = new FormData();
       formData.append('reference_description', desc);
@@ -4969,7 +4972,7 @@
         }
       }
       closeModal('rea-reverse-modal');
-      setMascotMessage('4 Camadas REA aplicadas no Canvas! Clique em Gerar Nó 8K! 🔍✨');
+      setMascotMessage('4 Camadas REA aplicadas no Canvas! Clique em Gerar Nó 8K! ');
     }
 
     async function handleRenderStoryboardMovie() {
@@ -5049,12 +5052,12 @@
 
       const userDiv = document.createElement('div');
       userDiv.className = 'p-2.5 rounded-2xl bg-amber-500/15 border border-amber-400/30 text-amber-200 text-right ml-8';
-      userDiv.innerText = `🧑 Você: ${questionText}`;
+      userDiv.innerHTML = `<span class="font-bold text-cyan-300">Você:</span> ${questionText}`;
       msgBox.appendChild(userDiv);
 
       const botDiv = document.createElement('div');
       botDiv.className = 'p-3 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 text-gray-200 mr-4 leading-relaxed whitespace-pre-line';
-      botDiv.innerText = '🤖 IABot está analisando sua dúvida...';
+      botDiv.innerHTML = `<span class="flex items-center gap-1.5 font-bold text-cyan-300"><i data-lucide="bot" class="w-3.5 h-3.5 text-cyan-400"></i> IABot:</span> Analisando sua dúvida...`;
       msgBox.appendChild(botDiv);
       msgBox.scrollTop = msgBox.scrollHeight;
       triggerRobotBlink();
@@ -5067,9 +5070,9 @@
       try {
         const res = await fetch('/api/assistant/chat', { method: 'POST', body: formData });
         const data = await res.json();
-        botDiv.innerText = data.answer || '🤖 Estou pronto para ajudar!';
+        botDiv.innerHTML = `<span class="flex items-center gap-1.5 font-bold text-cyan-300"><i data-lucide="bot" class="w-3.5 h-3.5 text-cyan-400"></i> IABot:</span> ` + (data.answer || 'Estou pronto para ajudar!');
       } catch (e) {
-        botDiv.innerText = '🤖 Erro ao conectar ao servidor: ' + e.message;
+        botDiv.innerHTML = `<span class="flex items-center gap-1.5 font-bold text-red-400"><i data-lucide="alert-circle" class="w-3.5 h-3.5 text-red-400"></i> Erro:</span> ` + e.message;
       }
       msgBox.scrollTop = msgBox.scrollHeight;
     }
@@ -5096,13 +5099,13 @@
         const fd = new FormData(); fd.append('text', txt);
         const r = await (await fetch('/api/guide/route', { method: 'POST', body: fd })).json();
         box.innerHTML = r.suggestions.map(s => `<button onclick="switchTab('${s.tab}')" class="px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/35 border border-cyan-400/50 text-xs font-bold text-cyan-100" title="${esc(s.hint)}">${esc(s.label)}</button>`).join('');
-        setMascotMessage(r.matched ? 'Entendi! Toque numa opção abaixo e eu te levo até lá. 😊' : 'Não tenho certeza do que você quer — estas são as opções mais populares!');
+        setMascotMessage(r.matched ? 'Entendi! Toque numa opção abaixo e eu te levo até lá. ' : 'Não tenho certeza do que você quer — estas são as opções mais populares!');
       } catch (e) { box.innerHTML = ''; }
       return false;
     }
 
     let storyProject = null, storySelected = null, storyPollTimer = null, storyShot = 'medium', storyPlayIdx = -1, storyDragId = null;
-    const STORY_SHOTS_UI = [['wide','🏞️ Geral'],['medium','🧍 Médio'],['close','🔍 Close'],['over_shoulder','👥 Sobre o ombro'],['reverse','🔄 Contraplano'],['low_angle','🦸 Baixo'],['side','👤 Perfil'],['insert','🔎 Detalhe'],['aerial','🚁 Drone'],['tension','🎭 Inclinado']];
+    const STORY_SHOTS_UI = [['wide','Plano Geral'],['medium','Plano Médio'],['close','Close-Up'],['over_shoulder','Sobre o Ombro'],['reverse','Contraplano'],['low_angle','Câmera Baixa'],['side','Perfil'],['insert','Detalhe'],['aerial','Drone Panorâmico'],['tension','Inclinado (Ação)']];
 
     async function storyPost(path, fd) {
       fd = fd || new FormData();
@@ -5110,7 +5113,7 @@
       const res = await fetch(path, { method: 'POST', body: fd });
       let data = {}; try { data = await res.json(); } catch (e) {}
       if (res.status === 402) {
-        setMascotMessage('⚡ Para continuar a história com a mesma cena, você precisa de mais créditos. É rapidinho recarregar!');
+        setMascotMessage(' Para continuar a história com a mesma cena, você precisa de mais créditos. É rapidinho recarregar!');
         openModal('omni-upsell-modal');
         throw new Error('__credits__');
       }
@@ -5143,10 +5146,10 @@
         const grid = document.getElementById('story-projects-grid');
         grid.innerHTML = pr.projects.length ? pr.projects.map(p => `
           <div class="glass-card rounded-2xl overflow-hidden border border-white/10 flex flex-col">
-            <div class="aspect-video bg-black cursor-pointer" onclick="storyOpen('${p.id}')">${p.thumb ? `<img src="${esc(p.thumb)}" class="w-full h-full object-cover">` : '<div class="w-full h-full flex items-center justify-center text-2xl">🎞️</div>'}</div>
+            <div class="aspect-video bg-black cursor-pointer" onclick="storyOpen('${p.id}')">${p.thumb ? `<img src="${esc(p.thumb)}" class="w-full h-full object-cover">` : '<div class="w-full h-full flex items-center justify-center text-cyan-400"><i data-lucide="clapperboard" class="w-8 h-8 opacity-40"></i></div>'}</div>
             <div class="p-3 space-y-1"><div class="text-xs font-bold text-white truncate">${esc(p.title)}</div><div class="text-[10px] text-gray-400">${p.clips} plano(s)</div>
               <div class="flex gap-1.5 pt-1"><button onclick="storyOpen('${p.id}')" class="flex-1 py-1 rounded-lg bg-cyan-500/20 border border-cyan-400/40 text-[11px] text-cyan-200 font-bold">Abrir</button>
-              <button onclick="storyDeleteProject('${p.id}')" class="px-2 py-1 rounded-lg bg-red-500/20 border border-red-500/40 text-[11px] text-red-300">🗑️</button></div></div>
+              <button onclick="storyDeleteProject('${p.id}')" class="px-2 py-1 rounded-lg bg-red-500/20 border border-red-500/40 text-[11px] text-red-300 flex items-center"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div></div>
           </div>`).join('') : '<div class="col-span-full text-xs text-gray-500">Você ainda não tem histórias. Comece por uma das opções acima.</div>';
         const vids = (mem.creations || []).filter(c => (c.result_url || '').endsWith('.mp4') || c.category === 'video');
         const sel = document.getElementById('story-import-select');
@@ -5170,7 +5173,7 @@
       fd.append('aspect_ratio', document.getElementById('sn-ar').value);
       const f = document.getElementById('sn-anchor').files[0]; if (f) fd.append('anchor_image', f);
       if (!document.getElementById('sn-setting').value.trim()) return alert('Conte onde a história acontece — é o que mantém o cenário igual em todos os planos.');
-      try { const r = await storyPost('/api/story/project/create', fd); setMascotMessage('História criada! Agora escolha o ângulo e o que acontece no primeiro plano. 🎬'); storyOpen(r.project_id); } catch (e) { storyErr(e); }
+      try { const r = await storyPost('/api/story/project/create', fd); setMascotMessage('História criada! Agora escolha o ângulo e o que acontece no primeiro plano. '); storyOpen(r.project_id); } catch (e) { storyErr(e); }
     }
 
     async function storyImportSelected() {
@@ -5181,9 +5184,9 @@
 
     async function storyFromCreation(url, title) {
       const fd = new FormData(); fd.append('result_url', url); fd.append('title', title || 'Minha História');
-      setMascotMessage('🔎 Analisando seu vídeo para memorizar cenário, personagens e luz...');
+      setMascotMessage(' Analisando seu vídeo para memorizar cenário, personagens e luz...');
       switchTab('story');
-      try { const r = await storyPost('/api/story/project/from-creation', fd); setMascotMessage('Pronto! Anotei a cena do seu vídeo. Veja em “Cena fixa” e adicione o próximo plano. 🎞️'); storyOpen(r.project_id); } catch (e) { storyErr(e); }
+      try { const r = await storyPost('/api/story/project/from-creation', fd); setMascotMessage('Pronto! Anotei a cena do seu vídeo. Veja em “Cena fixa” e adicione o próximo plano. ️'); storyOpen(r.project_id); } catch (e) { storyErr(e); }
     }
 
     async function storyOpen(id) {
@@ -5220,9 +5223,9 @@
         const w = Math.max(120, Math.min(300, Math.round((c.duration || 5) * 16)));
         const sel = storySelected === c.id ? 'border-cyan-300 ring-2 ring-cyan-400/60' : 'border-white/15';
         let thumb;
-        if (c.status === 'processing') thumb = `<div class="w-full h-full flex flex-col items-center justify-center text-[10px] text-amber-300"><div class="animate-pulse text-lg">🎬</div>Filmando ${c.progress || 0}%</div>`;
-        else if (c.status === 'failed') thumb = `<div class="w-full h-full flex flex-col items-center justify-center text-[10px] text-red-300 p-1 text-center">⚠️ Falhou<br>créditos devolvidos</div>`;
-        else thumb = c.keyframe_url ? `<img src="${esc(c.keyframe_url)}" class="w-full h-full object-cover pointer-events-none">` : '<div class="w-full h-full flex items-center justify-center text-xl">🎞️</div>';
+        if (c.status === 'processing') thumb = `<div class="w-full h-full flex flex-col items-center justify-center text-[10px] text-amber-300 gap-1"><i data-lucide="loader-2" class="w-4 h-4 animate-spin text-amber-400"></i><span>Filmando ${c.progress || 0}%</span></div>`;
+        else if (c.status === 'failed') thumb = `<div class="w-full h-full flex flex-col items-center justify-center text-[10px] text-red-300 p-1 text-center flex flex-col items-center gap-1"><i data-lucide="alert-triangle" class="w-4 h-4 text-red-400"></i><span>Falhou<br>créditos devolvidos</span></div>`;
+        else thumb = c.keyframe_url ? `<img src="${esc(c.keyframe_url)}" class="w-full h-full object-cover pointer-events-none">` : '<div class="w-full h-full flex items-center justify-center text-cyan-400"><i data-lucide="film" class="w-6 h-6 opacity-40"></i></div>';
         return `<div draggable="true" ondragstart="storyDragId='${c.id}'" ondragover="event.preventDefault()" ondrop="storyDrop('${c.id}')" onclick="storySelect('${c.id}')" style="width:${w}px" class="shrink-0 rounded-xl border ${sel} bg-dark-900 cursor-grab overflow-hidden">
           <div class="h-16 bg-black">${thumb}</div>
           <div class="px-2 py-1"><div class="text-[10px] font-bold text-white truncate">${i + 1}. ${esc(c.shot_label)}</div><div class="text-[9px] text-gray-400">${c.duration}s${c.source !== 'ai' ? ' • ' + (c.source === 'upload' ? 'seu vídeo' : 'original') : ''}</div></div></div>`;
@@ -5247,9 +5250,9 @@
           <select id="si-trans" class="bg-dark-900 border border-white/15 rounded-xl px-2 py-1.5 text-[11px] text-white"><option value="cut" ${c.transition === 'cut' ? 'selected' : ''}>Corte seco</option><option value="fade" ${c.transition === 'fade' ? 'selected' : ''}>Suave (fade)</option></select>
         </div>
         <div class="flex flex-wrap gap-2">
-          <button onclick="storySaveClip('${c.id}')" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-400/40 text-[11px] font-bold text-cyan-200">💾 Salvar alterações</button>
-          ${isAi ? `<button onclick="storyRegen('${c.id}')" class="px-3 py-1.5 rounded-lg bg-amber-500/20 border border-amber-400/40 text-[11px] font-bold text-amber-200">🔁 Filmar de novo (25 créditos)</button>` : ''}
-          <button onclick="storyDeleteClip('${c.id}')" class="px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500/40 text-[11px] font-bold text-red-300">🗑️ Remover</button>
+          <button onclick="storySaveClip('${c.id}')" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-400/40 text-[11px] font-bold text-cyan-200 flex items-center gap-1.5"><i data-lucide="save" class="w-3.5 h-3.5"></i> Salvar alterações</button>
+          ${isAi ? `<button onclick="storyRegen('${c.id}')" class="px-3 py-1.5 rounded-lg bg-amber-500/20 border border-amber-400/40 text-[11px] font-bold text-amber-200 flex items-center gap-1.5"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Filmar de novo (25 créditos)</button>` : ''}
+          <button onclick="storyDeleteClip('${c.id}')" class="px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500/40 text-[11px] font-bold text-red-300 flex items-center gap-1.5"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Remover</button>
         </div>`;
     }
 
@@ -5296,7 +5299,7 @@
           const finished = before.filter(id => { const c = storyProject.clips.find(x => x.id === id); return c && c.status !== 'processing'; });
           if (finished.length) {
             const c = storyProject.clips.find(x => x.id === finished[0]);
-            setMascotMessage(c.status === 'done' ? '✅ Plano pronto! Dê play e, se gostar, peça o próximo ângulo.' : '⚠️ Esse plano não saiu bem. Devolvi seus créditos — tente descrever de outro jeito.');
+            setMascotMessage(c.status === 'done' ? ' Plano pronto! Dê play e, se gostar, peça o próximo ângulo.' : '️ Esse plano não saiu bem. Devolvi seus créditos — tente descrever de outro jeito.');
             storySelect(c.id); updateCredits();
           }
         } catch (e) {}
@@ -5314,7 +5317,7 @@
         await storyPost('/api/story/clip/add', fd);
         document.getElementById('sa-prompt').value = '';
         document.getElementById('story-suggestions').innerHTML = '';
-        setMascotMessage('🎬 Filmando na mesma cena, com a mesma luz. Pode acompanhar na linha do tempo!');
+        setMascotMessage(' Filmando na mesma cena, com a mesma luz. Pode acompanhar na linha do tempo!');
         await storyReload(); storyStartPoll(); updateCredits();
       } catch (e) { storyErr(e); } finally { btn.disabled = false; }
     }
@@ -5345,7 +5348,7 @@
       const fd = new FormData(); fd.append('project_id', storyProject.id);
       fd.append('setting', document.getElementById('sb-setting').value); fd.append('characters', document.getElementById('sb-chars').value);
       fd.append('lighting_source', document.getElementById('sb-lightsrc').value); fd.append('lighting_mood', document.getElementById('sb-light').value);
-      try { await storyPost('/api/story/project/update', fd); setMascotMessage('Cena fixa salva! Os próximos planos vão seguir exatamente isso. 🔒'); } catch (e) { storyErr(e); }
+      try { await storyPost('/api/story/project/update', fd); setMascotMessage('Cena fixa salva! Os próximos planos vão seguir exatamente isso. '); } catch (e) { storyErr(e); }
     }
 
     function storyPlayAllClips() {
@@ -5363,7 +5366,7 @@
 
     async function storyExport() {
       const out = document.getElementById('story-export-result'); const btn = document.getElementById('story-export-btn');
-      out.classList.remove('hidden'); out.innerHTML = '<div class="p-3 rounded-xl bg-dark-800 border border-white/10 text-xs text-gray-300">🎞️ Juntando seus planos em um único filme...</div>';
+      out.classList.remove('hidden'); out.innerHTML = '<div class="p-3 rounded-xl bg-dark-800 border border-white/10 text-xs text-gray-300 flex items-center gap-2"><i data-lucide="loader-2" class="w-4 h-4 animate-spin text-amber-400"></i><span>Juntando seus planos em um único filme...</span></div>'; if (typeof lucide !== 'undefined') lucide.createIcons();
       btn.disabled = true;
       try {
         const fd = new FormData(); fd.append('project_id', storyProject.id);
@@ -5372,8 +5375,8 @@
           const j = await (await fetch('/api/jobs/' + r.job_id)).json();
           if (j.status === 'completed') {
             clearInterval(iv); btn.disabled = false;
-            out.innerHTML = `<div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-400/40 space-y-2"><span class="text-xs font-bold text-emerald-300">✅ Seu filme está pronto!</span><video controls playsinline class="w-full rounded-xl"><source src="${j.result_url}" type="video/mp4"></video><a href="${getDownloadUrl(j.result_url)}" download class="inline-block px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-400/50 text-xs font-extrabold text-emerald-200">⬇️ Baixar no PC (MP4)</a></div>`;
-            setMascotMessage('🎉 Filme exportado e salvo em Meus Criativos!');
+            out.innerHTML = `<div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-400/40 space-y-2"><span class="text-xs font-bold text-emerald-300 flex items-center gap-1.5"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i><span>Seu filme está pronto!</span></span><video controls playsinline class="w-full rounded-xl"><source src="${j.result_url}" type="video/mp4"></video><a href="${getDownloadUrl(j.result_url)}" download class="inline-block px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-400/50 text-xs font-extrabold text-emerald-200"><i data-lucide="download" class="w-3 h-3 text-cyan-300"></i><span>Baixar no PC</span> (MP4)</a></div>`;
+            setMascotMessage(' Filme exportado e salvo em Meus Criativos!');
           } else if (j.status === 'failed') { clearInterval(iv); btn.disabled = false; out.innerHTML = '<div class="p-3 rounded-xl bg-red-500/10 border border-red-500/40 text-xs text-red-300">Não consegui juntar o filme agora. Tente novamente em instantes.</div>'; }
         }, 3000);
       } catch (e) { btn.disabled = false; out.classList.add('hidden'); storyErr(e); }
@@ -5381,7 +5384,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       if (!localStorage.getItem('iabox_onboarded')) {
-        setTimeout(() => { try { setMascotMessage('👋 Oi! Escreva na caixa o que você quer criar e eu levo você ao lugar certo.'); } catch (e) {} localStorage.setItem('iabox_onboarded', '1'); }, 1800);
+        setTimeout(() => { try { setMascotMessage(' Oi! Escreva na caixa o que você quer criar e eu levo você ao lugar certo.'); } catch (e) {} localStorage.setItem('iabox_onboarded', '1'); }, 1800);
       }
     });
   
@@ -5410,7 +5413,7 @@
       const origBtnHtml = btn ? btn.innerHTML : '';
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<span class="inline-block animate-spin mr-1">⏳</span> IA Analisando...';
+        btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 inline animate-spin mr-1 text-cyan-300"></i> IA Analisando...'; if (typeof lucide !== 'undefined') lucide.createIcons();
       }
 
       try {
@@ -5450,7 +5453,7 @@
       if (impList) {
         impList.innerHTML = (data.improvements || []).map(imp => `
           <li class="flex items-center gap-2">
-            <span class="text-amber-400 font-bold">✓</span>
+            <i data-lucide="check" class="w-3.5 h-3.5 text-amber-400 inline"></i>
             <span>${imp}</span>
           </li>
         `).join('') || '<li class="text-gray-500">Otimização completa aplicada.</li>';
@@ -5460,7 +5463,7 @@
       if (chipsBox) {
         chipsBox.innerHTML = (data.preset_chips || []).map(chip => `
           <button type="button" onclick="appendChipToEnhancedPrompt('${chip.replace(/'/g, "\\'")}')" class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-dark-700 hover:bg-amber-400 hover:text-black border border-white/10 text-gray-200 transition-all flex items-center gap-1">
-            <span>+</span> ${chip}
+            <i data-lucide="plus" class="w-3 h-3 inline"></i> ${chip}
           </button>
         `).join('');
       }
@@ -5498,7 +5501,7 @@
       }
       closeEnhanceModal();
       if (typeof showToast === 'function') {
-        showToast('✨ Prompt profissional aplicado com sucesso!', 'success');
+        showToast('Prompt profissional aplicado com sucesso!', 'success');
       }
     }
 
@@ -5572,8 +5575,8 @@
       <!-- Topo do Modal -->
       <div class="flex items-start justify-between border-b border-white/10 pb-3">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-pink-500 flex items-center justify-center text-black font-extrabold text-lg shadow-lg">
-            ✨
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-pink-500 flex items-center justify-center text-black font-extrabold shadow-lg">
+            <i data-lucide="sparkles" class="w-5 h-5 text-black"></i>
           </div>
           <div>
             <h3 class="text-base font-extrabold text-white">Assistente de Direção de Prompts</h3>
@@ -5588,8 +5591,9 @@
       <!-- Prompt Melhorado Principal -->
       <div class="space-y-2">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1">
-            <span>⭐</span> Versão Enriquecida (Recomendada)
+          <span class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 drop-shadow-[0_0_6px_#f59e0b]"></i>
+            <span>Versão Enriquecida (Recomendada)</span>
           </span>
           <button onclick="copyEnhancedPrompt()" class="text-[11px] text-gray-400 hover:text-white flex items-center gap-1 transition-colors">
             <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
@@ -5600,7 +5604,8 @@
         </div>
         <div class="flex gap-2">
           <button onclick="applyEnhancedPromptToTarget()" class="flex-1 bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 hover:opacity-95 text-black font-extrabold py-2.5 px-4 rounded-xl text-xs md:text-sm shadow-lg transition-all flex items-center justify-center gap-2">
-            <span>✨</span> Usar Este Prompt Agora
+            <i data-lucide="sparkles" class="w-4 h-4 text-black"></i>
+            <span>Usar Este Prompt Agora</span>
           </button>
         </div>
       </div>
