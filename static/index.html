@@ -1469,9 +1469,9 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-200 mb-1.5">1. Seu Vídeo Condutor (Até 5 Minutos) <span class="text-cyan-400">*Obrigatório</span></label>
+              <label class="block text-sm font-semibold text-gray-200 mb-1.5">1. Seu Vídeo Condutor / Guia <span class="text-cyan-300 font-normal">(Opcional &bull; Deixe vazio para gerar 100% pelo Prompt)</span></label>
               <input type="file" id="video-file" accept="video/*" class="w-full bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/20 file:text-cyan-300">
-              <p class="text-[11px] text-gray-400 mt-1">Sua gravação de celular, orador, fala ou cena que guiará os movimentos.</p>
+              <p class="text-[11px] text-gray-400 mt-1">Opcional: envie uma gravação para guiar os movimentos ou deixe em branco para a IA criar o vídeo do zero pelo seu prompt.</p>
             </div>
 
             <div>
@@ -4815,7 +4815,12 @@ setInterval(triggerRobotBlink, 3800);
 
     async function handleGenerateVideo() {
       const fileInput = document.getElementById('video-file');
-      if (!fileInput.files || !fileInput.files[0]) return alert('Por favor, selecione o vídeo condutor principal (até 5 minutos).');
+      const creativePrompt = document.getElementById('video-creative-prompt').value.trim();
+      const hasVideo = fileInput.files && fileInput.files[0];
+
+      if (!hasVideo && !creativePrompt) {
+        return alert('Por favor, digite as instruções do que deve acontecer no vídeo (prompt) ou selecione um vídeo condutor.');
+      }
 
       const vfxMode = document.getElementById('video-vfx-mode').value;
       const durationMode = selectedOmniDuration || 'extended_60s';
@@ -4843,15 +4848,19 @@ setInterval(triggerRobotBlink, 3800);
       const refInput = document.getElementById('video-ref-images');
       const overlayInput = document.getElementById('video-overlay-file');
       const aspectRatio = document.getElementById('video-aspect-ratio').value;
-      const creativePrompt = document.getElementById('video-creative-prompt').value.trim();
 
-      const refFiles = videoRefFilesList.length > 0 ? videoRefFilesList : Array.from((refInput && refInput.files) || []).slice(0, 5);
+      const refFiles = videoRefFilesList.length > 0 ? videoRefFilesList : Array.from((refInput && refInput.files) || []).slice(0, 3);
       const box = document.getElementById('video-player-box');
-      box.innerHTML = `<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-cyan-400 animate-spin mb-2"></i> Renderizando no IABOX Omni Cinema Flow™ (${vfxMode}, ${durationMode}) com ${refFiles.length} foto(s) de referência...</div>`;
-      lucide.createIcons();
+      const actionDesc = hasVideo
+        ? `Processando vídeo condutor e renderizando no IABOX Omni Cinema Flow™ (${vfxMode}, ${durationMode})`
+        : `Sintetizando vídeo 8K direto pelo seu prompt no IABOX Omni Cinema Flow™ (${vfxMode}, ${durationMode})`;
+      box.innerHTML = `<div class="py-8"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-cyan-400 animate-spin mb-2"></i> ${actionDesc} com ${refFiles.length} foto(s) de referência...</div>`;
+      if (typeof lucide !== 'undefined') lucide.createIcons();
 
       const formData = new FormData();
-      formData.append('video_file', fileInput.files[0]);
+      if (hasVideo) {
+        formData.append('video_file', fileInput.files[0]);
+      }
       refFiles.forEach(rf => formData.append('ref_images', rf));
       if (overlayInput && overlayInput.files && overlayInput.files[0]) {
         formData.append('overlay_video', overlayInput.files[0]);

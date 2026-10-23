@@ -1456,7 +1456,7 @@ async def check_omni_requirements(
 
 @app.post("/api/video/edit")
 async def edit_viral_video(
-    video_file: UploadFile = File(...),
+    video_file: Optional[UploadFile] = File(None),
     ref_images: List[UploadFile] = File(default=[]),
     overlay_video: Optional[UploadFile] = File(None),
     vfx_mode: str = Form("full_production"),
@@ -1468,6 +1468,15 @@ async def edit_viral_video(
     punch_zoom: bool = Form(True),
     user_id: str = Form("default_user")
 ):
+    clean_prompt = (creative_prompt or "").strip()
+    has_conductor_video = bool(video_file and video_file.filename)
+
+    if not has_conductor_video and not clean_prompt:
+        raise HTTPException(
+            status_code=400,
+            detail="Por favor, digite as instruções do que deve acontecer no vídeo (prompt) ou envie um vídeo condutor."
+        )
+
     is_heavy = (duration_mode in ["extended_60s", "movie_5m"]) or (vfx_mode in ["character_swap", "scene_swap", "multitake_cinema"])
     required_credits = 40 if is_heavy else 10
 
@@ -1477,11 +1486,13 @@ async def edit_viral_video(
 
     req_ip = client_ip_var.get()
     job_id = str(uuid.uuid4())
-    in_filename = f"raw_video_{job_id[:8]}_{video_file.filename}"
-    in_path = os.path.join(UPLOAD_DIR, in_filename)
 
-    with open(in_path, "wb") as f:
-        shutil.copyfileobj(video_file.file, f)
+    in_path = None
+    if has_conductor_video:
+        in_filename = f"raw_video_{job_id[:8]}_{video_file.filename}"
+        in_path = os.path.join(UPLOAD_DIR, in_filename)
+        with open(in_path, "wb") as f:
+            shutil.copyfileobj(video_file.file, f)
 
     saved_ref_imgs = []
     for idx, rf in enumerate((ref_images or [])[:5]):
@@ -1506,9 +1517,149 @@ async def edit_viral_video(
 
     def _task():
         try:
-            save_job(job_id, "video", status="processing", progress=35, user_id=user_id)
+            save_job(job_id, "video", status="processing", progress=30, user_id=user_id)
+            target_w, target_h = (1080, 1920) if aspect_ratio == "9:16" else ((1080, 1080) if aspect_ratio == "1:1" else (1280, 720))
 
-            # Aciona os motores modulares de VFX / Troca de Personagem / Rotoscopia se selecionados
+            # =========================================================================
+            # MODO A: GERAÇÃO DIRETA TEXT-TO-VIDEO 8K (QUANDO NÃO HÁ VÍDEO CONDUTOR)
+            # A IA gera o vídeo do zero, obedecendo fielmente ao prompt e às fotos de ref!
+            # =========================================================================
+            if not in_path:
+                from scripts.magnific_canvas_engine import MagnificCanvasEngine
+                engine = MagnificCanvasEngine()
+
+                if duration_mode == "preview_10s":
+                    total_dur = 10.0
+                    num_takes = 2
+                elif duration_mode == "movie_5m":
+                    total_dur = 24.0
+                    num_takes = 4
+                else:  # extended_60s
+                    total_dur = 16.0
+                    num_takes = 3
+
+                sec_per_take = total_dur / num_takes
+                work_dir = os.path.join(UPLOAD_DIR, f"omnigen_{job_id[:8]}")
+                os.makedirs(work_dir, exist_ok=True)
+
+                camera_angles_seq = ["wide_anamorphic", "close_up_85mm", "low_angle_hero", "dutch_angle"]
+                lighting_seq = ["imax_daylight", "golden_hour", "cyberpunk_neon", "chiaroscuro_noir"]
+
+                keyframes = []
+                for take_i in range(num_takes):
+                    progress_pct = 30 + int(45 * (take_i + 1) / num_takes)
+                    save_job(job_id, "video", status="processing", progress=progress_pct, user_id=user_id)
+                    take_kf_path = os.path.join(work_dir, f"kf_{take_i}.jpg")
+                    cam = camera_angles_seq[take_i % len(camera_angles_seq)]
+                    light = lighting_seq[take_i % len(lighting_seq)]
+
+                    take_prompt = f"{clean_prompt}, cinematic take {take_i + 1}, ultra-detailed 8k masterpiece, photorealistic cinema lighting"
+
+                    try:
+                        engine.generate_connected_node(
+                            prompt=take_prompt,
+                            reference_images=saved_ref_imgs,
+                            model_style="Seedream 5 Pro",
+                            aspect_ratio=aspect_ratio,
+                            camera_angle=cam,
+                            lighting_mood=light,
+                            output_path=take_kf_path
+                        )
+                    except Exception as e_kf:
+                        print(f"[OmniVideoGen] Erro take {take_i}: {e_kf}")
+                        if saved_ref_imgs and os.path.exists(saved_ref_imgs[0]):
+                            shutil.copy(saved_ref_imgs[0], take_kf_path)
+                        elif os.path.exists("static/samples/canvas_take1.jpg"):
+                            shutil.copy("static/samples/canvas_take1.jpg", take_kf_path)
+
+                    if os.path.exists(take_kf_path):
+                        keyframes.append(take_kf_path)
+
+                if not keyframes:
+                    raise RuntimeError("Não foi possível gerar os quadros do vídeo pelo prompt. Tente novamente.")
+
+                # Converte cada quadro gerado em um take com movimento de câmera dinâmico
+                take_videos = []
+                for idx, kf in enumerate(keyframes):
+                    tk_video = os.path.join(work_dir, f"take_vid_{idx}.mp4")
+                    pan_dir = 1 if idx % 2 == 0 else -1
+                    vf_motion = (
+                        f"scale={target_w*2}:-1,"
+                        f"zoompan=z='min(zoom+0.0014,1.22)':x='iw/2-(iw/zoom/2)+({pan_dir})*sin(on/22)*18':y='ih/2-(ih/zoom/2)+cos(on/24)*18':d={int(sec_per_take*30)}:s={target_w}x{target_h}:fps=30,"
+                        f"eq=contrast=1.06:brightness=0.01:saturation=1.08,format=yuv420p"
+                    )
+                    if subtitles_karaoke or vfx_mode == "full_production":
+                        hud_y = int(target_h * 0.84)
+                        vf_motion += f",drawbox=x=40:y={hud_y}:w={target_w-80}:h=90:color=black@0.65:t=fill"
+                        vf_motion += f",drawbox=x=40:y={hud_y}:w=6:h=90:color=0x00F0FF@0.9:t=fill"
+
+                    cmd_take = [
+                        "ffmpeg", "-y",
+                        "-loop", "1",
+                        "-i", kf,
+                        "-vf", vf_motion,
+                        "-t", str(sec_per_take),
+                        "-c:v", "libx264",
+                        "-preset", "fast",
+                        "-crf", "20",
+                        tk_video
+                    ]
+                    subprocess.run(cmd_take, capture_output=True)
+                    if os.path.exists(tk_video):
+                        take_videos.append(tk_video)
+
+                if not take_videos:
+                    raise RuntimeError("Falha ao animar os takes do vídeo pelo prompt.")
+
+                # Concatena os takes gerados
+                concat_txt = os.path.join(work_dir, "concat.txt")
+                with open(concat_txt, "w", encoding="utf-8") as f_c:
+                    for tv in take_videos:
+                        f_c.write(f"file '{os.path.abspath(tv).replace(chr(92), '/')}'\n")
+
+                temp_concat_video = os.path.join(work_dir, "merged_video.mp4")
+                subprocess.run([
+                    "ffmpeg", "-y",
+                    "-f", "concat", "-safe", "0",
+                    "-i", concat_txt,
+                    "-c", "copy",
+                    temp_concat_video
+                ], capture_output=True)
+
+                final_src = temp_concat_video if os.path.exists(temp_concat_video) else take_videos[0]
+
+                # Adiciona áudio estéreo ambiente lavfi
+                subprocess.run([
+                    "ffmpeg", "-y",
+                    "-i", final_src,
+                    "-f", "lavfi", "-i", f"anoisesrc=d={total_dur}:c=pink:r=44100:a=0.012",
+                    "-c:v", "copy",
+                    "-c:a", "aac",
+                    "-b:a", "192k",
+                    "-shortest",
+                    out_path
+                ], capture_output=True)
+
+                if not os.path.exists(out_path):
+                    shutil.copy(final_src, out_path)
+
+                shutil.rmtree(work_dir, ignore_errors=True)
+
+                save_job(job_id, "video", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
+                save_user_creation(
+                    user_id,
+                    "video",
+                    f"Vídeo 8K ({duration_mode})",
+                    clean_prompt,
+                    f"/output/{out_filename}",
+                    {"vfx_mode": vfx_mode, "aspect_ratio": aspect_ratio, "ref_images_count": len(saved_ref_imgs)},
+                    ip_override=req_ip
+                )
+                return
+
+            # =========================================================================
+            # MODO B: PROCESSAMENTO DE VÍDEO CONDUTOR (QUANDO HÁ VÍDEO CONDUTOR)
+            # =========================================================================
             if vfx_mode == "character_swap" and saved_ref_imgs:
                 try:
                     import importlib
@@ -1517,8 +1668,6 @@ async def edit_viral_video(
                     swap_engine.process_portrait_swap(saved_ref_imgs[0], in_path, out_path)
                 except Exception as e:
                     print(f"[VideoStudio] Info Character Swap: {e}")
-
-            target_w, target_h = (1080, 1920) if aspect_ratio == "9:16" else (1280, 720)
 
             # Monta pipeline FFmpeg suportando até 5 minutos (300 segundos) + Inserção de Criativos/Design/Motion Graphics
             cmd = ["ffmpeg", "-y", "-i", in_path]
@@ -1533,7 +1682,6 @@ async def edit_viral_video(
                 f"eq=contrast=1.07:brightness=0.02:saturation=1.14"
             )
             if vfx_mode == "motion_graphics" or subtitles_karaoke:
-                # Barra de HUD / Motion Graphic Neon no rodapé
                 hud_y = int(target_h * 0.82)
                 base_chain += f",drawbox=x=40:y={hud_y}:w={target_w-80}:h=110:color=black@0.68:t=fill"
                 base_chain += f",drawbox=x=40:y={hud_y}:w=8:h=110:color=0x00F0FF@0.95:t=fill"
@@ -1542,7 +1690,7 @@ async def edit_viral_video(
             last_label = "[base0]"
             input_idx = 1
 
-            # Insere as 3 a 5 imagens de referência como Cards Criativos / Objetos flutuantes sincronizados ao longo do vídeo
+            # Insere as imagens de referência como Cards Criativos / Objetos flutuantes
             card_w = int(target_w * 0.28)
             for idx, _ in enumerate(saved_ref_imgs):
                 t_start = 1.0 + idx * 5.0
@@ -1613,7 +1761,7 @@ async def edit_viral_video(
                 user_id,
                 "video",
                 f"Vídeo Studio ({vfx_mode})",
-                creative_prompt or f"Edição {aspect_ratio} ({len(saved_ref_imgs)} imagens ref)",
+                clean_prompt or f"Edição {aspect_ratio} ({len(saved_ref_imgs)} imagens ref)",
                 f"/output/{out_filename}",
                 {"vfx_mode": vfx_mode, "ref_images_count": len(saved_ref_imgs), "has_overlay_video": bool(overlay_vid_path), "max_duration": "5min"},
                 ip_override=req_ip
@@ -1627,8 +1775,8 @@ async def edit_viral_video(
     return {
         "status": "started",
         "job_id": job_id,
-        "message": f"Produção de Vídeo ({vfx_mode}) com {len(saved_ref_imgs)} referência(s) iniciada (suporte até 5 min).",
-        "cost": 10
+        "message": f"Produção de Vídeo ({'Prompt Direto' if not has_conductor_video else vfx_mode}) com {len(saved_ref_imgs)} referência(s) iniciada.",
+        "cost": required_credits
     }
 
 # ----------------------------------------------------------------------------------------

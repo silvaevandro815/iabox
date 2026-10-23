@@ -166,18 +166,28 @@ class MagnificCanvasEngine:
                 f"from the first reference image (exact facial bone structure, eyes, nose, hairline, skin tone, age, and expression)."
             )
 
-        system_instruction = f"""You are the visual continuity and biometric identity engine of ESG Neural Core 8K.
+        if valid_refs > 0:
+            rules_instruction = f"""MANDATORY RULES:
+1. Carefully observe the {valid_refs} reference image(s) provided. If a person, product, character, or specific object is in the reference images, preserve their exact appearance, identity, textures, and details.
+2. If a person is present, preserve their exact ethnicity, facial features, hair, and build. NEVER change their ethnicity or facial structure.
+3. Obey the user prompt faithfully: "{clean_prompt}".
+4. Write a single, cohesive, ultra-detailed photorealistic English prompt (max 90 words) that fuses the reference visual features with the action/scene requested.
+5. Include these optical specifications: {extra_specs}."""
+        else:
+            rules_instruction = f"""MANDATORY RULES:
+1. Obey the user prompt faithfully: "{clean_prompt}". If the prompt specifies an object, character, animal, scenery, vehicle, machine, or action, focus 100% on what was requested by the user.
+2. Expand the scene into a single, cohesive, ultra-detailed photorealistic English prompt (max 90 words) with rich textures, realistic depth, cinematic lighting, and sharp focus.
+3. Do NOT invent unrelated people or elements not requested in the prompt.
+4. Include these optical specifications: {extra_specs}."""
+
+        system_instruction = f"""You are the visual continuity and prompt synthesis engine of ESG Neural Core 8K.
 The user provided {valid_refs} reference image(s) and requested this scene:
 "{clean_prompt}"
 {face_instruction}
 Camera Angle Override: {cam_spec or 'Follow user prompt'}
 Lighting Mood Override: {light_spec or 'Follow user prompt'}
 
-MANDATORY RULES:
-1. Start the very first sentence with the exact biometric and physical description of the person from the reference image (exact ethnicity, e.g. Caucasian Brazilian man, age ~35, short dark combed hair, light facial stubble, masculine jawline, olive-fair skin tone, exact clothing/objects seen in reference).
-2. NEVER change the person's ethnicity or facial features to match a foreign city or setting mentioned in the prompt.
-3. Write a single, cohesive, ultra-detailed photorealistic English prompt (max 90 words) that is 100% faithful to the user's request and reference image(s).
-4. Include these optical specifications: {extra_specs}.
+{rules_instruction}
 Return ONLY the final English prompt, without quotes or explanations."""
 
         enhanced = self._call_llm_text(system_instruction, parts=parts if valid_refs > 0 else None, timeout=22)
@@ -219,13 +229,20 @@ Return ONLY the final English prompt, without quotes or explanations."""
 
         # MOTOR 0: Google Gemini / Omni Vision 8K via OpenRouter Cluster (Alta Fidelidade Óptica Condicionada às Referências)
         if self.openrouter_key:
+            if all_valid_refs:
+                prompt_text = (
+                    f"Generate an ultra-photorealistic 8K cinematic image faithful to the person, subjects, and lighting of the reference image(s). "
+                    f"Scene description: {compiled_prompt[:1000]}"
+                )
+            else:
+                prompt_text = (
+                    f"Generate an ultra-photorealistic 8K cinematic image faithful to the scene description: "
+                    f"{compiled_prompt[:1000]}"
+                )
             msg_content = [
                 {
                     "type": "text",
-                    "text": (
-                        f"Generate an ultra-photorealistic 8K cinematic image faithful to the person, subjects, and lighting of the reference image(s). "
-                        f"Scene description: {compiled_prompt[:1000]}"
-                    )
+                    "text": prompt_text
                 }
             ]
             for r_p in all_valid_refs[:3]:
@@ -276,7 +293,7 @@ Return ONLY the final English prompt, without quotes or explanations."""
         req_headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
         }
-        url_flux = f"https://image.pollinations.ai/prompt/{encoded}?width=1280&height=720&seed={seed}&nologo=true&model=flux"
+        url_flux = f"https://image.pollinations.ai/prompt/{encoded}?width={w}&height={h}&seed={seed}&nologo=true&model=flux"
         try:
             r = requests.get(url_flux, headers=req_headers, timeout=22)
             if r.status_code == 200 and len(r.content) > 8000:
@@ -399,11 +416,23 @@ Return ONLY the final English prompt, without quotes or explanations."""
         )
 
         if not synthesized or not os.path.exists(raw_tmp):
-            fallback_src = face_lock_path or primary_ref or "static/samples/canvas_take1.jpg"
-            if os.path.exists(fallback_src):
+            try:
+                enc_simple = urllib.parse.quote(prompt[:250])
+                u_fallback = f"https://image.pollinations.ai/prompt/{enc_simple}?width={w}&height={h}&seed={int(uuid.uuid4().int % 999999)}&nologo=true"
+                rfb = requests.get(u_fallback, headers={"User-Agent": "Mozilla/5.0"}, timeout=18)
+                if rfb.status_code == 200 and len(rfb.content) > 5000:
+                    with open(raw_tmp, "wb") as f:
+                        f.write(rfb.content)
+                    synthesized = True
+            except Exception:
+                pass
+
+        if not synthesized or not os.path.exists(raw_tmp):
+            fallback_src = face_lock_path or primary_ref
+            if fallback_src and os.path.exists(fallback_src):
                 shutil.copy(fallback_src, raw_tmp)
             else:
-                raise RuntimeError("Motor óptico ocupado. Tente novamente em instantes.")
+                raise RuntimeError("Motor óptico ocupado no momento. Por favor tente novamente.")
 
         # 2. Masterização Óptica 8K (Remoção total de bordas externas + Lanczos + Micro-Contraste de Pele)
         vf = (
