@@ -202,6 +202,11 @@
           <i data-lucide="home" class="w-3.5 h-3.5 text-cyan-400 drop-shadow-[0_0_6px_#00f0ff]"></i>
           <span>Início</span>
         </button>
+                <button data-tab="vox" onclick="switchTab('vox')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all flex items-center gap-1.5">
+          <i data-lucide="scissors" class="w-3.5 h-3.5 text-amber-400 drop-shadow-[0_0_6px_#f59e0b]"></i>
+          <span>Estilo Vox</span>
+          <span class="text-[8.5px] font-black uppercase px-1.5 py-0.2 rounded-md bg-amber-400 text-black">NOVO</span>
+        </button>
         <button data-tab="story" onclick="switchTab('story')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all flex items-center gap-1.5">
           <i data-lucide="clapperboard" class="w-3.5 h-3.5 text-amber-400 drop-shadow-[0_0_6px_#f59e0b]"></i>
           <span>Minha História</span>
@@ -473,6 +478,23 @@
           </button>
 
           <!-- 6. Fazer uma paródia -->
+          <!-- 7. Estilo Vox: Vídeo Multi-Cena de 1 Minuto -->
+          <button onclick="switchTab('vox')" class="group p-5 rounded-2xl bg-gradient-to-b from-dark-800/90 to-dark-900/90 border border-amber-400/30 hover:border-amber-400 hover:shadow-[0_0_25px_rgba(245,158,11,0.25)] hover:-translate-y-1 transition-all duration-300 text-left flex items-start gap-4">
+            <div class="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-700 p-[1.5px] shadow-lg shadow-amber-500/30 flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+              <div class="w-full h-full rounded-2xl bg-dark-900/95 flex items-center justify-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/20 to-transparent"></div>
+                <i data-lucide="scissors" class="w-6 h-6 text-amber-300 drop-shadow-[0_0_8px_rgba(245,158,11,0.85)]"></i>
+              </div>
+            </div>
+            <div class="space-y-1 flex-1">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-extrabold text-white group-hover:text-amber-300 transition-colors">Vídeo Multi-Cena Vox</span>
+                <span class="text-[9.5px] font-black uppercase px-2.5 py-0.5 rounded-md bg-amber-400/20 text-amber-300 border border-amber-400/40">1 Minuto 2.5D</span>
+              </div>
+              <p class="text-[11.5px] text-gray-300 leading-relaxed">Cenas de 5 a 10s no Estilo Vox com recorte de jornal, papel rasgado, moedas e motion.</p>
+            </div>
+          </button>
+
           <button onclick="switchTab('parody')" class="group p-5 rounded-2xl bg-gradient-to-b from-dark-800/90 to-dark-900/90 border border-cyan-400/30 hover:border-cyan-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.25)] hover:-translate-y-1 transition-all duration-300 text-left flex items-start gap-4">
             <div class="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 via-blue-500 to-slate-700 p-[1.5px] shadow-lg shadow-cyan-500/30 flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
               <div class="w-full h-full rounded-2xl bg-dark-900/95 flex items-center justify-center relative overflow-hidden">
@@ -2892,6 +2914,235 @@
   
   
   
+  <!-- ============================================================================ -->
+<!-- ABA: ESTÚDIO MULTI-CENA & ESTILO VOX (EDITORIAL 2.5D)                         -->
+<!-- ============================================================================ -->
+<section id="tab-vox" class="tab-content hidden space-y-8">
+
+  <!-- Cabeçalho do Módulo -->
+  <div class="border-b border-white/10 pb-5 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div>
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-amber-500/15 border border-amber-400/40 text-amber-300 text-[10px] font-extrabold uppercase tracking-wider mb-2">
+        <i data-lucide="scissors" class="w-3.5 h-3.5 text-amber-400"></i>
+        <span>Estilo Vox &bull; Colagem Editorial 2.5D &bull; Vídeo Multi-Cena</span>
+      </div>
+      <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight">
+        Estúdio Multi-Cena <span class="text-amber-400">Estilo Vox</span>
+      </h2>
+      <p class="text-xs md:text-sm text-gray-400 mt-1 max-w-3xl leading-relaxed">
+        Crie vídeos virais de 1 minuto compostos por tomadas dinâmicas de 5 a 10 segundos. O sistema preserva a consistência visual em todas as cenas com recortes de papel rasgado, texturas de jornal antigo, moedas caindo e animação 2.5D com IA.
+      </p>
+    </div>
+    <div class="flex items-center gap-3">
+      <div id="vox-runpod-indicator" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-dark-800/80 border border-white/10 text-xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span class="text-gray-300 font-medium">Cluster GPU:</span>
+        <span class="text-emerald-300 font-bold">Ativo &bull; RunPod</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELETOR DE ESTILO VISUAL -->
+  <div class="space-y-3">
+    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-2">
+      <i data-lucide="palette" class="w-4 h-4 text-amber-400"></i>
+      1. Selecione o Estilo Visual do Vídeo (Consistência em todas as Cenas)
+    </label>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3" id="vox-style-selector">
+      
+      <!-- 1. Estilo Vox (Padrão) -->
+      <button type="button" onclick="selectVoxStyle('vox')" id="style-card-vox" class="vox-style-card active p-3 rounded-xl border border-amber-400 bg-amber-500/15 text-left transition-all hover:scale-[1.02]">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-extrabold text-amber-300">Estilo Vox</span>
+          <span class="text-[9px] px-1.5 py-0.2 rounded bg-amber-400 text-black font-black">POPULAR</span>
+        </div>
+        <p class="text-[10px] text-gray-300 line-clamp-2">Colagem editorial, papel rasgado, halftone e moedas.</p>
+      </button>
+
+      <!-- 2. Motion Graphics 2D -->
+      <button type="button" onclick="selectVoxStyle('motion_graphics')" id="style-card-motion_graphics" class="vox-style-card p-3 rounded-xl border border-white/10 bg-dark-800/60 text-left transition-all hover:border-cyan-400 hover:scale-[1.02]">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-extrabold text-white">Motion 2D</span>
+        </div>
+        <p class="text-[10px] text-gray-400 line-clamp-2">Explainer minimalista corporativo e infográficos.</p>
+      </button>
+
+      <!-- 3. 3D Cinematográfico -->
+      <button type="button" onclick="selectVoxStyle('cinema_3d')" id="style-card-cinema_3d" class="vox-style-card p-3 rounded-xl border border-white/10 bg-dark-800/60 text-left transition-all hover:border-amber-400 hover:scale-[1.02]">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-extrabold text-white">Cinema 3D</span>
+        </div>
+        <p class="text-[10px] text-gray-400 line-clamp-2">Render Octane/Unreal com luz volumétrica.</p>
+      </button>
+
+      <!-- 4. Cyberpunk Neon -->
+      <button type="button" onclick="selectVoxStyle('cyberpunk')" id="style-card-cyberpunk" class="vox-style-card p-3 rounded-xl border border-white/10 bg-dark-800/60 text-left transition-all hover:border-cyan-400 hover:scale-[1.02]">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-extrabold text-white">Cyberpunk</span>
+        </div>
+        <p class="text-[10px] text-gray-400 line-clamp-2">Neon laser ciano/magenta e interface HUD.</p>
+      </button>
+
+      <!-- 5. Comic Pop Art -->
+      <button type="button" onclick="selectVoxStyle('comic_pop')" id="style-card-comic_pop" class="vox-style-card p-3 rounded-xl border border-white/10 bg-dark-800/60 text-left transition-all hover:border-red-400 hover:scale-[1.02]">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-extrabold text-white">HQ Pop Art</span>
+        </div>
+        <p class="text-[10px] text-gray-400 line-clamp-2">Graphic novel, pontos Ben-Day e onomatopeias.</p>
+      </button>
+
+      <!-- 6. Anime / Ghibli -->
+      <button type="button" onclick="selectVoxStyle('anime')" id="style-card-anime" class="vox-style-card p-3 rounded-xl border border-white/10 bg-dark-800/60 text-left transition-all hover:border-sky-400 hover:scale-[1.02]">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-extrabold text-white">Anime Suave</span>
+        </div>
+        <p class="text-[10px] text-gray-400 line-clamp-2">Aquarela suave, luz natural e nuvens Ghibli.</p>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- PAINEL DE ROTEIRO & DESMEMBRAMENTO POR IA -->
+  <div class="glass-panel rounded-2xl p-5 md:p-6 border border-white/10 space-y-4">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-2">
+        <i data-lucide="file-text" class="w-4 h-4 text-amber-400"></i>
+        2. Roteiro ou Tema do Vídeo de 1 Minuto
+      </label>
+      <div class="flex flex-wrap items-center gap-3 text-xs">
+        <div class="flex items-center gap-2">
+          <span class="text-gray-400">Total de Cenas:</span>
+          <select id="vox-num-scenes" class="bg-dark-900 border border-white/20 rounded-lg px-2.5 py-1 text-white font-bold outline-none focus:border-amber-400">
+            <option value="6" selected>6 Cenas (1 Minuto @ 10s)</option>
+            <option value="8">8 Cenas (1 Minuto @ 7.5s)</option>
+            <option value="10">10 Cenas (1 Minuto @ 6s)</option>
+            <option value="12">12 Cenas (1 Minuto @ 5s)</option>
+            <option value="4">4 Cenas Curtas (Vídeo 30s)</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-gray-400">Duração/Cena:</span>
+          <select id="vox-default-duration" class="bg-dark-900 border border-white/20 rounded-lg px-2.5 py-1 text-white font-bold outline-none focus:border-amber-400">
+            <option value="10" selected>10 segundos</option>
+            <option value="8">8 segundos</option>
+            <option value="7">7 segundos</option>
+            <option value="5">5 segundos</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <textarea id="vox-script-input" rows="4" placeholder="Cole aqui seu roteiro ou tema. Ex.: Como a inteligência artificial está transformando a criação de conteúdo em 2026. A automação agora permite produzir criativos virais em segundos sem equipe técnica. Quem dominar essa ferramenta vai liderar o mercado..." class="w-full bg-dark-900 border border-white/15 focus:border-amber-400 rounded-xl p-4 text-sm text-white placeholder-gray-500 outline-none leading-relaxed transition-all"></textarea>
+
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
+      <div class="flex items-center gap-2 text-xs text-gray-400">
+        <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+        <span>A IA vai desmembrar em cenas sequenciais com prompts visuais, animações e narração.</span>
+      </div>
+      <button type="button" onclick="handleVoxSplitScript()" id="btn-vox-split" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-black font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20">
+        <i data-lucide="cpu" class="w-4 h-4 text-black"></i>
+        <span>Desmembrar Roteiro com IA</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- GERENCIADOR DE CENAS DINÂMICAS -->
+  <div class="space-y-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i data-lucide="film" class="w-5 h-5 text-amber-400"></i>
+          <span>3. Cenas do Vídeo (<span id="vox-scenes-count">0</span> Cenas)</span>
+        </h3>
+        <span class="text-xs text-gray-400">&bull; Até 3 imagens de referência com recorte estilizado por cena</span>
+      </div>
+      <button type="button" onclick="addVoxManualScene()" class="px-3.5 py-1.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-xs font-bold text-amber-300 border border-amber-400/40 transition-all flex items-center gap-1.5">
+        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+        <span>+ Adicionar Cena</span>
+      </button>
+    </div>
+
+    <!-- Container dos Cards de Cena -->
+    <div id="vox-scenes-container" class="space-y-4">
+      <!-- Inserido dinamicamente via JS -->
+      <div id="vox-empty-state" class="text-center py-12 border border-dashed border-white/15 rounded-2xl p-6 bg-dark-900/40">
+        <i data-lucide="clapperboard" class="w-10 h-10 text-gray-500 mx-auto mb-3"></i>
+        <p class="text-sm font-semibold text-gray-300">Nenhuma cena gerada ainda</p>
+        <p class="text-xs text-gray-500 mt-1">Cole seu roteiro acima e clique em "Desmembrar Roteiro com IA" ou adicione cenas manualmente.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIGURAÇÃO DE RENDERIZAÇÃO & RUNPOD -->
+  <div class="glass-panel rounded-2xl p-5 border border-white/10 space-y-4">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h4 class="text-sm font-bold text-white flex items-center gap-2">
+          <i data-lucide="server" class="w-4 h-4 text-cyan-400"></i>
+          Motor de Renderização & Infraestrutura
+        </h4>
+        <p class="text-xs text-gray-400 mt-0.5">Selecione entre render rápido no servidor IABOX ou aceleração ultra no cluster RunPod.io.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <label class="flex items-center gap-2 cursor-pointer p-2.5 rounded-xl border border-cyan-400/30 bg-dark-800/80 hover:border-cyan-400 transition-all">
+          <input type="radio" name="vox_render_mode" value="turbo" checked class="text-cyan-400 focus:ring-0">
+          <div class="text-left">
+            <span class="text-xs font-bold text-white block">Motor IABOX Turbo</span>
+            <span class="text-[10px] text-gray-400 block">Render rápido 2.5D (5 créditos/cena)</span>
+          </div>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer p-2.5 rounded-xl border border-amber-400/30 bg-dark-800/80 hover:border-amber-400 transition-all">
+          <input type="radio" name="vox_render_mode" value="runpod" class="text-amber-400 focus:ring-0">
+          <div class="text-left">
+            <span class="text-xs font-bold text-amber-300 block">Cluster RunPod GPU</span>
+            <span class="text-[10px] text-gray-400 block">Ultra GPU A100 (10 créditos/cena)</span>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Master Render CTA -->
+    <div class="border-t border-white/10 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="text-xs text-gray-400 flex items-center gap-2">
+        <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+        <span>Vídeo final exportado em Full HD 9:16 vertical (1080x1920) pronto para TikTok, Reels e Shorts.</span>
+      </div>
+      <button type="button" onclick="handleVoxRenderFull()" id="btn-vox-master-render" class="w-full sm:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-black text-sm tracking-wide transition-all shadow-xl shadow-cyan-500/25 flex items-center justify-center gap-2">
+        <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+        <span>Renderizar Vídeo Master Completo (1 Minuto)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- PLAYER MASTER DE VÍDEO FINAL -->
+  <div id="vox-master-result-box" class="hidden glass-panel rounded-2xl p-6 border border-amber-400/40 shadow-2xl space-y-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+        <h4 class="text-base font-extrabold text-white" id="vox-result-title">Vídeo Master Pronto</h4>
+      </div>
+      <span class="text-xs font-bold text-amber-400 uppercase tracking-wider" id="vox-result-style-badge">Estilo Vox</span>
+    </div>
+
+    <div class="max-w-md mx-auto rounded-xl overflow-hidden bg-black border border-white/10 shadow-2xl aspect-[9/16] relative flex items-center justify-center">
+      <video id="vox-master-video" controls playsinline class="w-full h-full object-contain"></video>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+      <a id="vox-download-btn" href="#" download="iabox_vox_master.mp4" class="px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-sm transition-all flex items-center gap-2 shadow-lg shadow-amber-400/20">
+        <i data-lucide="download" class="w-4 h-4"></i>
+        <span>Baixar Vídeo Full HD (MP4)</span>
+      </a>
+      <button type="button" onclick="switchTab('memory')" class="px-5 py-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 text-white font-bold text-sm border border-white/10 transition-all flex items-center gap-2">
+        <i data-lucide="archive" class="w-4 h-4 text-cyan-400"></i>
+        <span>Ver em Meus Criativos</span>
+      </button>
+    </div>
+  </div>
+
+</section>
+
+
   <!-- MODAL DE POLÍTICA DE PRIVACIDADE (REGRA 15) -->
   <div id="privacy-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-panel max-w-2xl w-full p-6 md:p-8 rounded-2xl border border-white/15 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-left">
@@ -3051,7 +3302,9 @@
     }
 
     function switchTab(tabId) {
-      if (tabId === 'video') {
+      if (tabId === 'vox') {
+        setMascotMessage(' Estilo Vox Ativo: Crie vídeos de 1 minuto com colagem editorial vintage, recorte de papel rasgado e motion graphics!');
+      } else if (tabId === 'video') {
         setMascotMessage(' IABOX Omni Cinema Flow™ Ativo: Diferente do Google Veo que trava em 10s, aqui você cria até 5 minutos contínuos!');
       } else if (tabId === 'parody') {
         setMascotMessage(' Fábrica de Paródias: Este criativo de Alta Fidelidade ativa o motor IABOX Neural Turbo™ com isolamento acústico perfeito!');
@@ -3673,6 +3926,331 @@
       }
       lucide.createIcons();
     }
+
+    let currentVoxStyle = 'vox';
+let voxScenes = [];
+
+function selectVoxStyle(styleId) {
+  currentVoxStyle = styleId;
+  document.querySelectorAll('.vox-style-card').forEach(btn => {
+    btn.classList.remove('active', 'border-amber-400', 'bg-amber-500/15');
+    btn.classList.add('border-white/10', 'bg-dark-800/60');
+  });
+  const el = document.getElementById(`style-card-${styleId}`);
+  if (el) {
+    el.classList.add('active', 'border-amber-400', 'bg-amber-500/15');
+    el.classList.remove('border-white/10', 'bg-dark-800/60');
+  }
+}
+
+async function handleVoxSplitScript() {
+  const scriptText = document.getElementById('vox-script-input').value.trim();
+  if (!scriptText) {
+    alert('Por favor, cole o roteiro ou tema do seu vídeo.');
+    return;
+  }
+  const numScenes = document.getElementById('vox-num-scenes').value;
+  const defDuration = document.getElementById('vox-default-duration').value;
+  const btn = document.getElementById('btn-vox-split');
+  const oldText = btn.innerHTML;
+  btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Desmembrando Cenas...';
+  btn.disabled = true;
+
+  try {
+    const fd = new FormData();
+    fd.append('script_text', scriptText);
+    fd.append('num_scenes', numScenes);
+    fd.append('style', currentVoxStyle);
+    fd.append('duration_per_scene', defDuration);
+    fd.append('user_id', currentUserId || 'default_user');
+
+    const res = await fetch('/api/vox/split-script', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.status === 'success' && data.scenes) {
+      voxScenes = data.scenes;
+      renderVoxScenesUI();
+    } else {
+      alert(data.detail || data.message || 'Falha ao desmembrar roteiro.');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Erro de conexão ao processar roteiro com IA.');
+  } finally {
+    btn.innerHTML = oldText;
+    btn.disabled = false;
+    if (window.lucide) lucide.createIcons();
+  }
+}
+
+function renderVoxScenesUI() {
+  const container = document.getElementById('vox-scenes-container');
+  const countEl = document.getElementById('vox-scenes-count');
+  if (!container) return;
+
+  if (countEl) countEl.innerText = voxScenes.length;
+
+  if (voxScenes.length === 0) {
+    container.innerHTML = `
+      <div id="vox-empty-state" class="text-center py-12 border border-dashed border-white/15 rounded-2xl p-6 bg-dark-900/40">
+        <i data-lucide="clapperboard" class="w-10 h-10 text-gray-500 mx-auto mb-3"></i>
+        <p class="text-sm font-semibold text-gray-300">Nenhuma cena gerada ainda</p>
+        <p class="text-xs text-gray-500 mt-1">Cole seu roteiro acima e clique em "Desmembrar Roteiro com IA" ou adicione cenas manualmente.</p>
+      </div>`;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+
+  let html = '';
+  voxScenes.forEach((s, idx) => {
+    const refs = s.reference_images || [];
+    let refsHtml = '';
+    refs.forEach((r, rIdx) => {
+      refsHtml += `
+        <div class="relative w-16 h-16 rounded-lg overflow-hidden border border-amber-400/50 bg-black group">
+          <img src="${r}" class="w-full h-full object-cover">
+          <button type="button" onclick="deleteVoxRef(${idx}, ${rIdx})" title="Remover imagem" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 hover:bg-red-400 text-white rounded-md flex items-center justify-center text-xs font-bold shadow-md cursor-pointer">&times;</button>
+        </div>`;
+    });
+
+    const uploadBtnHtml = refs.length < 3 ? `
+      <label class="w-16 h-16 rounded-lg border border-dashed border-white/20 hover:border-amber-400 bg-dark-900/60 hover:bg-dark-800 flex flex-col items-center justify-center cursor-pointer transition-all">
+        <i data-lucide="image-plus" class="w-4 h-4 text-gray-400 group-hover:text-amber-400"></i>
+        <span class="text-[9px] text-gray-400 mt-0.5">+ Foto</span>
+        <input type="file" accept="image/*" onchange="uploadVoxRef(${idx}, this)" class="hidden">
+      </label>` : '';
+
+    const previewPlayerHtml = s.video_url ? `
+      <div class="mt-3 p-3 rounded-xl bg-black/60 border border-emerald-400/30 flex flex-col sm:flex-row items-center gap-3">
+        <video src="${s.video_url}" controls playsinline class="w-24 h-32 rounded-lg object-contain bg-black"></video>
+        <div class="flex-1 text-left space-y-1">
+          <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i> Prévia Pronta (${s.duration}s)
+          </span>
+          <p class="text-[11px] text-gray-300">Pronto para a masterização final do vídeo completo.</p>
+          <a href="${s.video_url}" download="cena_${idx+1}.mp4" class="inline-flex items-center gap-1 text-[11px] text-cyan-300 hover:underline">
+            <i data-lucide="download" class="w-3 h-3"></i> Baixar clipe avulso
+          </a>
+        </div>
+      </div>` : '';
+
+    html += `
+      <div class="glass-panel rounded-2xl p-4 md:p-5 border border-white/10 space-y-3 relative hover:border-white/20 transition-all">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-md bg-amber-500/20 text-amber-300 text-xs font-black flex items-center justify-center border border-amber-400/40">${idx+1}</span>
+            <input type="text" value="${s.headline || 'CENA ' + (idx+1)}" onchange="updateVoxSceneField(${idx}, 'headline', this.value)" class="bg-transparent border-b border-transparent focus:border-amber-400 text-sm font-extrabold text-white outline-none">
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1 text-xs text-gray-400">
+              <span>Duração:</span>
+              <select onchange="updateVoxSceneField(${idx}, 'duration', parseFloat(this.value))" class="bg-dark-900 border border-white/15 rounded px-2 py-0.5 text-xs text-white font-bold outline-none">
+                <option value="5" ${s.duration == 5 ? 'selected' : ''}>5s</option>
+                <option value="6" ${s.duration == 6 ? 'selected' : ''}>6s</option>
+                <option value="7" ${s.duration == 7 ? 'selected' : ''}>7s</option>
+                <option value="8" ${s.duration == 8 ? 'selected' : ''}>8s</option>
+                <option value="10" ${s.duration == 10 ? 'selected' : ''}>10s</option>
+              </select>
+            </div>
+            <button type="button" onclick="deleteVoxScene(${idx})" title="Excluir cena" class="text-gray-400 hover:text-red-400 p-1">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label class="block text-[11px] font-bold text-gray-300 uppercase">Prompt Visual (O que aparece)</label>
+            <textarea rows="2" onchange="updateVoxSceneField(${idx}, 'prompt', this.value)" class="w-full bg-dark-900 border border-white/10 focus:border-amber-400 rounded-lg p-2.5 text-xs text-white outline-none leading-relaxed">${s.prompt || ''}</textarea>
+          </div>
+          <div class="space-y-1">
+            <label class="block text-[11px] font-bold text-gray-300 uppercase">Efeito de Animação / Motion</label>
+            <select onchange="updateVoxSceneField(${idx}, 'motion', this.value)" class="w-full bg-dark-900 border border-white/10 focus:border-amber-400 rounded-lg p-2 text-xs text-white outline-none">
+              <option value="moedas_caindo" ${s.motion === 'moedas_caindo' ? 'selected' : ''}>Moedas Caindo (Estilo Vox Clássico)</option>
+              <option value="zoom_parallax" ${s.motion === 'zoom_parallax' ? 'selected' : ''}>Zoom 2.5D Parallax de Câmera</option>
+              <option value="revelacao_papel" ${s.motion === 'revelacao_papel' ? 'selected' : ''}>Rasgo de Papel Revelando</option>
+              <option value="engrenagens" ${s.motion === 'engrenagens' ? 'selected' : ''}>Engrenagens / Mecanismos</option>
+              <option value="nuvens_deriva" ${s.motion === 'nuvens_deriva' ? 'selected' : ''}>Deriva de Nuvens & Céu</option>
+            </select>
+            <label class="block text-[11px] font-bold text-gray-300 uppercase pt-1">Texto da Legenda / Narração</label>
+            <input type="text" value="${s.narration || ''}" onchange="updateVoxSceneField(${idx}, 'narration', this.value)" placeholder="Texto falado ou legenda nesta cena" class="w-full bg-dark-900 border border-white/10 focus:border-amber-400 rounded-lg p-2 text-xs text-white outline-none">
+          </div>
+        </div>
+
+        <div class="border-t border-white/5 pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="space-y-1">
+            <span class="text-[10.5px] font-bold text-gray-400 uppercase tracking-wide block">Fotos de Referência (Até 3 por cena):</span>
+            <div class="flex items-center gap-2">
+              ${refsHtml}
+              ${uploadBtnHtml}
+            </div>
+          </div>
+          <div class="flex items-center gap-2 pt-2 sm:pt-0">
+            <button type="button" onclick="generateSingleVoxScene(${idx})" id="btn-scene-render-${idx}" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-dark-800 hover:bg-dark-700 border border-amber-400/40 text-amber-300 font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm">
+              <i data-lucide="play-circle" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>Gerar Prévia da Cena (${s.duration || 10}s)</span>
+            </button>
+          </div>
+        </div>
+
+        ${previewPlayerHtml}
+      </div>`;
+  });
+
+  container.innerHTML = html;
+  if (window.lucide) lucide.createIcons();
+}
+
+function updateVoxSceneField(idx, field, val) {
+  if (voxScenes[idx]) {
+    voxScenes[idx][field] = val;
+  }
+}
+
+function addVoxManualScene() {
+  const newNum = voxScenes.length + 1;
+  voxScenes.push({
+    scene_number: newNum,
+    headline: `CENA ${newNum}`,
+    prompt: 'Elemento editorial estilizado',
+    motion: 'moedas_caindo',
+    narration: '',
+    duration: 10,
+    reference_images: [],
+    video_url: null
+  });
+  renderVoxScenesUI();
+}
+
+function deleteVoxScene(idx) {
+  voxScenes.splice(idx, 1);
+  voxScenes.forEach((s, i) => s.scene_number = i + 1);
+  renderVoxScenesUI();
+}
+
+function deleteVoxRef(sceneIdx, imgIdx) {
+  if (voxScenes[sceneIdx] && voxScenes[sceneIdx].reference_images) {
+    voxScenes[sceneIdx].reference_images.splice(imgIdx, 1);
+    renderVoxScenesUI();
+  }
+}
+
+async function uploadVoxRef(sceneIdx, inputEl) {
+  if (!inputEl.files || inputEl.files.length === 0) return;
+  const file = inputEl.files[0];
+  const fd = new FormData();
+  fd.append('scene_number', sceneIdx + 1);
+  fd.append('style', currentVoxStyle);
+  fd.append('image', file);
+
+  try {
+    const res = await fetch('/api/vox/upload-ref', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.status === 'success' && data.styled_url) {
+      if (!voxScenes[sceneIdx].reference_images) {
+        voxScenes[sceneIdx].reference_images = [];
+      }
+      voxScenes[sceneIdx].reference_images.push(data.styled_url);
+      renderVoxScenesUI();
+    } else {
+      alert(data.detail || data.message || 'Erro ao processar foto.');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Erro no envio da foto de referência.');
+  }
+}
+
+async function generateSingleVoxScene(sceneIdx) {
+  const s = voxScenes[sceneIdx];
+  if (!s) return;
+  const btn = document.getElementById(`btn-scene-render-${sceneIdx}`);
+  const oldText = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-amber-400"></i> Renderizando...';
+    btn.disabled = true;
+  }
+
+  const runpodMode = document.querySelector('input[name="vox_render_mode"]:checked')?.value === 'runpod';
+  const fd = new FormData();
+  fd.append('scene_json', JSON.stringify(s));
+  fd.append('style', currentVoxStyle);
+  fd.append('runpod_mode', runpodMode);
+  fd.append('user_id', currentUserId || 'default_user');
+
+  try {
+    const res = await fetch('/api/vox/generate-scene', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.status === 'success' && data.video_url) {
+      s.video_url = data.video_url;
+      renderVoxScenesUI();
+      if (typeof updateWalletDisplay === 'function' && data.remaining_credits !== undefined) {
+        updateWalletDisplay(data.remaining_credits);
+      }
+    } else {
+      alert(data.detail || data.message || 'Erro ao gerar clipe da cena.');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Erro de conexão ao renderizar cena.');
+  } finally {
+    if (btn) {
+      btn.innerHTML = oldText;
+      btn.disabled = false;
+    }
+    if (window.lucide) lucide.createIcons();
+  }
+}
+
+async function handleVoxRenderFull() {
+  const renderedScenes = voxScenes.filter(s => s.video_url);
+  if (renderedScenes.length === 0) {
+    alert('Por favor, gere a prévia de ao menos 1 cena antes de renderizar o vídeo master de 1 minuto.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-vox-master-render');
+  const oldText = btn.innerHTML;
+  btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Masterizando Vídeo Completo...';
+  btn.disabled = true;
+
+  const fd = new FormData();
+  fd.append('title', `Vídeo ${currentVoxStyle.toUpperCase()} - ${voxScenes.length} Cenas`);
+  fd.append('style', currentVoxStyle);
+  fd.append('scenes_json', JSON.stringify(voxScenes));
+  fd.append('user_id', currentUserId || 'default_user');
+
+  try {
+    const res = await fetch('/api/vox/render-full', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.status === 'success' && data.result_url) {
+      const box = document.getElementById('vox-master-result-box');
+      const vid = document.getElementById('vox-master-video');
+      const dl = document.getElementById('vox-download-btn');
+      const title = document.getElementById('vox-result-title');
+      const badge = document.getElementById('vox-result-style-badge');
+
+      if (box && vid && dl) {
+        box.classList.remove('hidden');
+        vid.src = data.result_url;
+        vid.load();
+        dl.href = data.result_url;
+        if (title) title.innerText = data.title || 'Vídeo Master Pronto';
+        if (badge) badge.innerText = currentVoxStyle.toUpperCase();
+        box.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      alert(data.detail || data.message || 'Erro na masterização do vídeo.');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Erro de rede ao masterizar vídeo.');
+  } finally {
+    btn.innerHTML = oldText;
+    btn.disabled = false;
+    if (window.lucide) lucide.createIcons();
+  }
+}
+
 
     function openModal(id) {
       const walletInput = document.getElementById('wallet-id-input');

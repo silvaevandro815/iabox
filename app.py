@@ -2988,6 +2988,182 @@ Retorne ESTRITAMENTE um objeto JSON válido (sem markdown ao redor, apenas o JSO
     }
 
 
+
+# ----------------------------------------------------------------------------------------
+# 11. IABOX VOX MOTION ENGINE™ — CRIADOR DE VÍDEO MULTI-CENA & ESTILO VOX (EDITORIAL 2.5D)
+# ----------------------------------------------------------------------------------------
+from scripts.vox_motion_engine import VoxMotionEngine
+
+vox_engine = VoxMotionEngine()
+
+@app.get("/api/vox/styles")
+def get_vox_styles():
+    return {"status": "success", "styles": list(vox_engine.styles.values())}
+
+@app.post("/api/vox/split-script")
+def vox_split_script(
+    script_text: str = Form(...),
+    num_scenes: int = Form(6),
+    style: str = Form("vox"),
+    duration_per_scene: float = Form(10.0),
+    user_id: str = Form("default_user")
+):
+    if not script_text.strip():
+        raise HTTPException(status_code=400, detail="Envie o roteiro ou tema do vídeo.")
+    scenes = vox_engine.split_script_with_ai(
+        script_text=script_text.strip(),
+        num_scenes=num_scenes,
+        style=style,
+        sec_per_scene=duration_per_scene
+    )
+    return {"status": "success", "scenes": scenes, "style": style}
+
+@app.post("/api/vox/upload-ref")
+def vox_upload_ref(
+    scene_number: int = Form(1),
+    style: str = Form("vox"),
+    image: UploadFile = File(...)
+):
+    if not image or not image.filename:
+        raise HTTPException(status_code=400, detail="Nenhum arquivo enviado.")
+    ext = os.path.splitext(image.filename)[1].lower()
+    if ext not in (".jpg", ".jpeg", ".png", ".webp"):
+        raise HTTPException(status_code=400, detail="Formato de imagem inválido. Envie JPG, PNG ou WEBP.")
+    
+    ref_id = str(uuid.uuid4())[:8]
+    raw_path = os.path.join(UPLOAD_DIR, f"vox_ref_raw_{ref_id}{ext}")
+    with open(raw_path, "wb") as f:
+        shutil.copyfileobj(image.file, f)
+        
+    styled_name = f"vox_styled_{ref_id}.png"
+    styled_path = os.path.join(OUTPUT_DIR, styled_name)
+    try:
+        vox_engine.stylize_reference_image(raw_path, style=style, output_path=styled_path)
+    except Exception as e:
+        styled_path = raw_path
+        styled_name = os.path.basename(raw_path)
+
+    return {
+        "status": "success",
+        "ref_id": ref_id,
+        "raw_url": f"/uploads/{os.path.basename(raw_path)}",
+        "styled_url": f"/output/{styled_name}",
+        "scene_number": scene_number
+    }
+
+@app.post("/api/vox/generate-scene")
+def vox_generate_scene(
+    scene_json: str = Form(...),
+    style: str = Form("vox"),
+    runpod_mode: bool = Form(False),
+    user_id: str = Form("default_user")
+):
+    try:
+        data = json.loads(scene_json)
+    except Exception:
+        raise HTTPException(status_code=400, detail="JSON de cena inválido.")
+    
+    cost = 10 if runpod_mode else 5
+    if not deduct_credits(user_id, amount=cost):
+        raise HTTPException(status_code=402, detail=f"Saldo insuficiente. Necessário {cost} créditos para gerar esta cena.")
+    
+    scene_num = data.get("scene_number", 1)
+    duration = float(data.get("duration", 7.0))
+    refs = data.get("reference_images", [])
+    
+    local_refs = []
+    for r in refs:
+        clean = (r or "").split("?")[0].lstrip("/")
+        if os.path.exists(clean):
+            local_refs.append(clean)
+            
+    clip_id = str(uuid.uuid4())[:8]
+    out_name = f"vox_scene_{scene_num}_{clip_id}.mp4"
+    out_path = os.path.join(OUTPUT_DIR, out_name)
+    
+    try:
+        vox_engine.generate_scene_clip(
+            scene_data=data,
+            style=style,
+            duration=duration,
+            ref_images=local_refs,
+            output_mp4=out_path,
+            runpod_mode=runpod_mode
+        )
+        return {
+            "status": "success",
+            "scene_number": scene_num,
+            "video_url": f"/output/{out_name}",
+            "duration": duration,
+            "cost": cost,
+            "remaining_credits": get_user_credits(user_id)
+        }
+    except Exception as e:
+        add_credits(user_id, amount=cost)
+        raise HTTPException(status_code=500, detail=f"Erro ao renderizar cena: {sanitize_error_msg(e)}")
+
+@app.post("/api/vox/render-full")
+def vox_render_full(
+    title: str = Form("Vídeo Completo Estilo Vox"),
+    style: str = Form("vox"),
+    scenes_json: str = Form(...),
+    user_id: str = Form("default_user")
+):
+    try:
+        scenes = json.loads(scenes_json)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Lista de cenas inválida.")
+    
+    video_paths = []
+    for s in scenes:
+        v_url = s.get("video_url")
+        if v_url:
+            clean = v_url.split("?")[0].lstrip("/")
+            if os.path.exists(clean):
+                video_paths.append(clean)
+                
+    if not video_paths:
+        raise HTTPException(status_code=400, detail="Gere ao menos 1 cena antes de renderizar o vídeo final.")
+        
+    master_id = str(uuid.uuid4())[:8]
+    master_name = f"vox_master_{master_id}.mp4"
+    master_path = os.path.join(OUTPUT_DIR, master_name)
+    
+    try:
+        vox_engine.assemble_master_video(
+            scene_video_paths=video_paths,
+            output_mp4=master_path,
+            style=style
+        )
+        res_url = f"/output/{master_name}"
+        save_user_creation(
+            user_id=user_id,
+            category="Vídeo Multi-Cena (Estilo Vox)",
+            title=title or "Vídeo Multi-Cena Editorial",
+            prompt=f"{len(video_paths)} cenas no estilo {style}",
+            result_url=res_url,
+            metadata={"num_scenes": len(video_paths), "style": style}
+        )
+        return {
+            "status": "success",
+            "result_url": res_url,
+            "title": title,
+            "total_scenes": len(video_paths)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao masterizar vídeo completo: {sanitize_error_msg(e)}")
+
+@app.get("/api/vox/runpod-status")
+def vox_runpod_status():
+    try:
+        from scripts.runpod_gpu_manager import RunPodGPUManager
+        mgr = RunPodGPUManager()
+        st = mgr.get_status()
+        return {"status": "success", "runpod": st}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
