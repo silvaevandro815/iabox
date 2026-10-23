@@ -1637,23 +1637,39 @@ async def edit_viral_video(
 def _resolve_local_media_path(url_or_path: str) -> Optional[str]:
     if not url_or_path:
         return None
-    clean = url_or_path.split("?")[0].lstrip("/")
-    if clean.startswith("static/") or clean.startswith("output/") or clean.startswith("uploads/"):
-        if os.path.exists(clean):
-            return clean
+    if "://" in url_or_path:
+        from urllib.parse import urlparse
+        url_or_path = urlparse(url_or_path).path
+    clean = url_or_path.split("?")[0].strip().lstrip("/")
+    if os.path.exists(clean):
+        return clean
+    for base in [OUTPUT_DIR, UPLOAD_DIR, "static", "."]:
+        cand = os.path.join(base, os.path.basename(clean))
+        if os.path.exists(cand):
+            return cand
+        cand_sub = os.path.join(base, clean)
+        if os.path.exists(cand_sub):
+            return cand_sub
     return None
 
 @app.post("/api/canvas/upload-node")
 async def upload_canvas_node(
-    image_file: UploadFile = File(...)
+    image_file: Optional[UploadFile] = File(None),
+    image_files: List[UploadFile] = File(default=[])
 ):
-    node_id = str(uuid.uuid4())[:8]
-    ext = os.path.splitext(image_file.filename or ".jpg")[1] or ".jpg"
-    out_filename = f"node_ref_{node_id}{ext}"
-    out_path = os.path.join(OUTPUT_DIR, out_filename)
-    with open(out_path, "wb") as f:
-        shutil.copyfileobj(image_file.file, f)
-    return {"status": "success", "node_url": f"/output/{out_filename}"}
+    files = [f for f in ([image_file] + (image_files or [])) if f and f.filename]
+    if not files:
+        raise HTTPException(status_code=400, detail="Nenhum arquivo de imagem enviado.")
+    uploaded = []
+    for f in files[:3]:
+        node_id = str(uuid.uuid4())[:8]
+        ext = os.path.splitext(f.filename or ".jpg")[1] or ".jpg"
+        out_filename = f"node_ref_{node_id}{ext}"
+        out_path = os.path.join(OUTPUT_DIR, out_filename)
+        with open(out_path, "wb") as out_f:
+            shutil.copyfileobj(f.file, out_f)
+        uploaded.append(f"/output/{out_filename}")
+    return {"status": "success", "node_url": uploaded[0], "node_urls": uploaded}
 
 @app.post("/api/canvas/generate-node")
 async def generate_canvas_node(
@@ -1666,6 +1682,7 @@ async def generate_canvas_node(
     face_lock_url: str = Form(""),
     face_strength: int = Form(100),
     face_file: Optional[UploadFile] = File(None),
+    ref_images: List[UploadFile] = File(default=[]),
     ref_urls: str = Form(""),
     reference_urls: str = Form(""),
     user_id: str = Form("default_user")
@@ -1686,8 +1703,17 @@ async def generate_canvas_node(
     ref_paths = []
     for u in urls_list:
         p = _resolve_local_media_path(u)
-        if p:
+        if p and p not in ref_paths:
             ref_paths.append(p)
+
+    for idx, rf in enumerate((ref_images or [])[:3]):
+        if rf and rf.filename:
+            ext = os.path.splitext(rf.filename)[1] or ".jpg"
+            r_path = os.path.join(UPLOAD_DIR, f"canvas_ref_{job_id[:8]}_{idx}{ext}")
+            with open(r_path, "wb") as f:
+                shutil.copyfileobj(rf.file, f)
+            if r_path not in ref_paths:
+                ref_paths.append(r_path)
 
     # Resolução da Foto de Fidelização de Rosto (Face Lock 100%)
     face_path = None
@@ -2323,6 +2349,7 @@ def story_create_project(
     style: str = Form("photorealistic cinematic film"),
     aspect_ratio: str = Form("16:9"),
     anchor_image: Optional[UploadFile] = File(None),
+    ref_images: List[UploadFile] = File(default=[]),
     user_id: str = Form("default_user")
 ):
     uid = _story_uid(user_id)
@@ -2333,26 +2360,32 @@ def story_create_project(
         conn.close()
         raise HTTPException(status_code=400, detail="Limite de projetos atingido. Exclua algum projeto antigo.")
     pid = str(uuid.uuid4())
+    saved_story_refs = []
     anchor_path = None
-    if anchor_image and anchor_image.filename:
-        ext = os.path.splitext(anchor_image.filename)[1].lower()
-        if ext not in (".jpg", ".jpeg", ".png", ".webp"):
-            conn.close()
-            raise HTTPException(status_code=400, detail="Envie uma imagem JPG, PNG ou WEBP.")
-        anchor_path = os.path.join(UPLOAD_DIR, f"story_anchor_{pid[:8]}{ext}")
-        with open(anchor_path, "wb") as f:
-            shutil.copyfileobj(anchor_image.file, f)
+
+    all_anchor_files = [f for f in ([anchor_image] + (ref_images or [])) if f and f.filename]
+    for idx, af in enumerate(all_anchor_files[:3]):
+        ext = os.path.splitext(af.filename)[1].lower() or ".jpg"
+        if ext in (".jpg", ".jpeg", ".png", ".webp"):
+            r_path = os.path.join(UPLOAD_DIR, f"story_ref_{pid[:8]}_{idx}{ext}")
+            with open(r_path, "wb") as f:
+                shutil.copyfileobj(af.file, f)
+            saved_story_refs.append(r_path)
+            if anchor_path is None:
+                anchor_path = r_path
+
     bible = {
         "setting": setting[:500], "time_of_day": time_of_day[:100], "lighting_source": lighting_source[:300],
         "lighting_mood": lighting_mood if lighting_mood in STORY_LIGHT_MOODS else "default",
-        "characters": characters[:700], "style": style[:200]
+        "characters": characters[:700], "style": style[:200],
+        "ref_images": saved_story_refs
     }
     c.execute("INSERT INTO story_projects (id, user_id, title, bible, aspect_ratio, anchor_path) VALUES (?, ?, ?, ?, ?, ?)",
               (pid, uid, title[:120] or "Minha História", json.dumps(bible, ensure_ascii=False),
                aspect_ratio if aspect_ratio in ("16:9", "9:16", "1:1") else "16:9", anchor_path))
     conn.commit()
     conn.close()
-    return {"status": "success", "project_id": pid}
+    return {"status": "success", "project_id": pid, "saved_refs_count": len(saved_story_refs)}
 
 @app.post("/api/story/project/from-creation")
 def story_project_from_creation(
@@ -2504,7 +2537,7 @@ def story_quote(duration: float = Form(5), user_id: str = Form("default_user")):
         "upgrade_package": "single_gpu", "price_brl": 19.90, "studio_package": "studio_gpu", "studio_price_brl": 79.90
     }
 
-def _story_run_clip(clip_id: str, project_id: str, uid: str, user_id: str, req_ip: str):
+def _story_run_clip(clip_id: str, project_id: str, uid: str, user_id: str, req_ip: str, clip_refs: list = None):
     def _set(**kw):
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
@@ -2530,19 +2563,26 @@ def _story_run_clip(clip_id: str, project_id: str, uid: str, user_id: str, req_i
         prev_prompt = prev[0] if prev else ""
         prev_kf = _story_local_path(prev[1]) if prev and prev[1] else None
 
+        bible_refs = [p for p in bible.get("ref_images", []) if p and os.path.exists(p)]
+        explicit_clip_refs = [p for p in (clip_refs or []) if p and os.path.exists(p)]
+
         from scripts.magnific_canvas_engine import MagnificCanvasEngine
         engine = MagnificCanvasEngine()
         n_key = min(3, max(1, _math.ceil(duration / 5.0)))
         compiled = _story_compile_prompt(bible, shot_key, action, prev_prompt)
         keyframes = []
         for k in range(n_key):
-            refs = [p for p in (prev_kf, anchor) if p]
+            raw_refs = explicit_clip_refs + [p for p in (prev_kf, anchor) if p] + bible_refs
             if keyframes:
-                refs = [keyframes[-1]] + refs
+                raw_refs = [keyframes[-1]] + raw_refs
+            unique_refs = []
+            for r in raw_refs:
+                if r and r not in unique_refs:
+                    unique_refs.append(r)
             kf_path = os.path.join(OUTPUT_DIR, f"story_kf_{clip_id[:8]}_{k}.jpg")
             engine.generate_connected_node(
                 prompt=compiled + (f" This is moment {k + 1} of {n_key} of the same shot." if n_key > 1 else ""),
-                reference_images=refs[:4], model_style="Seedream 5 Pro", aspect_ratio=ar,
+                reference_images=unique_refs[:4], model_style="Seedream 5 Pro", aspect_ratio=ar,
                 camera_angle=shot["cam"], lighting_mood=bible.get("lighting_mood", "default"),
                 face_lock_path=anchor, face_strength=100, output_path=kf_path)
             keyframes.append(kf_path)
@@ -2568,6 +2608,7 @@ def story_add_clip(
     prompt: str = Form(...),
     duration: float = Form(5),
     transition: str = Form("cut"),
+    ref_images: List[UploadFile] = File(default=[]),
     user_id: str = Form("default_user")
 ):
     uid = _story_uid(user_id)
@@ -2594,6 +2635,16 @@ def story_add_clip(
         raise HTTPException(status_code=402, detail=f"Saldo insuficiente (necessário {cost} créditos para filmar este plano com continuidade).")
 
     cid = str(uuid.uuid4())
+    saved_clip_refs = []
+    for idx, rf in enumerate((ref_images or [])[:3]):
+        if rf and rf.filename:
+            ext = os.path.splitext(rf.filename)[1].lower() or ".jpg"
+            if ext in (".jpg", ".jpeg", ".png", ".webp"):
+                r_path = os.path.join(UPLOAD_DIR, f"story_clipref_{cid[:8]}_{idx}{ext}")
+                with open(r_path, "wb") as f:
+                    shutil.copyfileobj(rf.file, f)
+                saved_clip_refs.append(r_path)
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("""INSERT INTO story_clips (id, project_id, user_id, position, shot_type, prompt, duration, transition, source, status, progress)
@@ -2602,8 +2653,8 @@ def story_add_clip(
     c.execute("UPDATE story_projects SET updated_at = CURRENT_TIMESTAMP WHERE id = ?", (project_id,))
     conn.commit()
     conn.close()
-    threading.Thread(target=_story_run_clip, args=(cid, project_id, uid, user_id, client_ip_var.get()), daemon=True).start()
-    return {"status": "started", "clip_id": cid, "cost": cost, "remaining_credits": get_user_credits(user_id)}
+    threading.Thread(target=_story_run_clip, args=(cid, project_id, uid, user_id, client_ip_var.get(), saved_clip_refs), daemon=True).start()
+    return {"status": "started", "clip_id": cid, "cost": cost, "remaining_credits": get_user_credits(user_id), "ref_count": len(saved_clip_refs)}
 
 @app.post("/api/story/clip/regenerate")
 def story_regenerate_clip(clip_id: str = Form(...), user_id: str = Form("default_user")):
@@ -2992,13 +3043,22 @@ Retorne ESTRITAMENTE um objeto JSON válido (sem markdown ao redor, apenas o JSO
 # ----------------------------------------------------------------------------------------
 # 11. IABOX VOX MOTION ENGINE™ — CRIADOR DE VÍDEO MULTI-CENA & ESTILO VOX (EDITORIAL 2.5D)
 # ----------------------------------------------------------------------------------------
-from scripts.vox_motion_engine import VoxMotionEngine
+vox_engine = None
 
-vox_engine = VoxMotionEngine()
+def _get_vox_engine():
+    global vox_engine
+    if vox_engine is None:
+        try:
+            from scripts.vox_motion_engine import VoxMotionEngine
+            vox_engine = VoxMotionEngine()
+        except Exception as e:
+            print(f"[VoxMotionEngine] Import error: {e}")
+            raise HTTPException(status_code=500, detail="Motor Vox Motion inicializando dependências de imagem...")
+    return vox_engine
 
 @app.get("/api/vox/styles")
 def get_vox_styles():
-    return {"status": "success", "styles": list(vox_engine.styles.values())}
+    return {"status": "success", "styles": list(_get_vox_engine().styles.values())}
 
 @app.post("/api/vox/split-script")
 def vox_split_script(
@@ -3010,7 +3070,7 @@ def vox_split_script(
 ):
     if not script_text.strip():
         raise HTTPException(status_code=400, detail="Envie o roteiro ou tema do vídeo.")
-    scenes = vox_engine.split_script_with_ai(
+    scenes = _get_vox_engine().split_script_with_ai(
         script_text=script_text.strip(),
         num_scenes=num_scenes,
         style=style,
@@ -3038,7 +3098,7 @@ def vox_upload_ref(
     styled_name = f"vox_styled_{ref_id}.png"
     styled_path = os.path.join(OUTPUT_DIR, styled_name)
     try:
-        vox_engine.stylize_reference_image(raw_path, style=style, output_path=styled_path)
+        _get_vox_engine().stylize_reference_image(raw_path, style=style, output_path=styled_path)
     except Exception as e:
         styled_path = raw_path
         styled_name = os.path.basename(raw_path)
@@ -3073,16 +3133,20 @@ def vox_generate_scene(
     
     local_refs = []
     for r in refs:
-        clean = (r or "").split("?")[0].lstrip("/")
-        if os.path.exists(clean):
-            local_refs.append(clean)
+        p = _resolve_local_media_path(r)
+        if p and os.path.exists(p):
+            local_refs.append(p)
+        else:
+            clean = (r or "").split("?")[0].lstrip("/")
+            if os.path.exists(clean):
+                local_refs.append(clean)
             
     clip_id = str(uuid.uuid4())[:8]
     out_name = f"vox_scene_{scene_num}_{clip_id}.mp4"
     out_path = os.path.join(OUTPUT_DIR, out_name)
     
     try:
-        vox_engine.generate_scene_clip(
+        _get_vox_engine().generate_scene_clip(
             scene_data=data,
             style=style,
             duration=duration,
@@ -3130,7 +3194,7 @@ def vox_render_full(
     master_path = os.path.join(OUTPUT_DIR, master_name)
     
     try:
-        vox_engine.assemble_master_video(
+        _get_vox_engine().assemble_master_video(
             scene_video_paths=video_paths,
             output_mp4=master_path,
             style=style

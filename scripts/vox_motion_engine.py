@@ -318,9 +318,15 @@ Responda ESTRITAMENTE um JSON ARRAY com {num_scenes} objetos. Não inclua texto 
         fps = 30
         total_frames = int(duration * fps)
 
-        styled_ref = None
-        if ref_images and len(ref_images) > 0 and os.path.exists(ref_images[0]):
-            styled_ref = self.stylize_reference_image(ref_images[0], style)
+        styled_refs = []
+        for r_path in (ref_images or [])[:3]:
+            if r_path and os.path.exists(r_path):
+                try:
+                    s_path = self.stylize_reference_image(r_path, style)
+                    if s_path and os.path.exists(s_path):
+                        styled_refs.append(s_path)
+                except Exception as e_st:
+                    print(f"[VoxMotionEngine] Erro ao estilizar ref {r_path}: {e_st}")
 
         headline = scene_data.get("headline", "ESTILO VOX")
         prompt = scene_data.get("prompt", "Cena editorial")
@@ -341,7 +347,7 @@ Responda ESTRITAMENTE um JSON ARRAY com {num_scenes} objetos. Não inclua texto 
                 prompt=prompt,
                 motion_type=motion_type,
                 narration=narration,
-                styled_ref_path=styled_ref
+                styled_refs=styled_refs
             )
 
             raw_video = os.path.join(work_dir, "raw_video.mp4")
@@ -377,7 +383,8 @@ Responda ESTRITAMENTE um JSON ARRAY com {num_scenes} objetos. Não inclua texto 
         prompt: str,
         motion_type: str,
         narration: str,
-        styled_ref_path: Optional[str]
+        styled_refs: List[str] = None,
+        styled_ref_path: Optional[str] = None
     ):
         try:
             font_title = ImageFont.truetype("times.ttf", 110)
@@ -388,15 +395,19 @@ Responda ESTRITAMENTE um JSON ARRAY com {num_scenes} objetos. Não inclua texto 
             font_sub = ImageFont.load_default()
             font_narration = ImageFont.load_default()
 
-        sub_img = None
-        if styled_ref_path and os.path.exists(styled_ref_path):
-            try:
-                raw = Image.open(styled_ref_path).convert("RGBA")
-                target_w = int(cw * 0.80)
-                aspect = raw.height / max(1, raw.width)
-                sub_img = raw.resize((target_w, int(target_w * aspect)), Image.Resampling.LANCZOS)
-            except Exception:
-                sub_img = None
+        # Carrega todas as fotos de referência estilizadas (até 3)
+        all_refs_to_load = list(styled_refs or [])
+        if styled_ref_path and styled_ref_path not in all_refs_to_load:
+            all_refs_to_load.insert(0, styled_ref_path)
+
+        loaded_subs = []
+        for p in all_refs_to_load[:3]:
+            if p and os.path.exists(p):
+                try:
+                    raw = Image.open(p).convert("RGBA")
+                    loaded_subs.append(raw)
+                except Exception as e_im:
+                    print(f"[VoxMotionEngine] Erro ao abrir ref {p}: {e_im}")
 
         num_coins = 12
         coins = []
@@ -459,13 +470,56 @@ Responda ESTRITAMENTE um JSON ARRAY com {num_scenes} objetos. Não inclua texto 
             canvas.paste(halo, (cw//2 - halo_size//2, sky_y + 35), halo)
 
             zoom_factor = 1.0 + 0.06 * progress
-            if sub_img:
-                zw = int(sub_img.width * zoom_factor)
-                zh = int(sub_img.height * zoom_factor)
-                zoomed_sub = sub_img.resize((zw, zh), Image.Resampling.LANCZOS)
-                sub_x = (cw - zw) // 2
-                sub_y = sky_y + int(sky_h * 0.20)
-                canvas.paste(zoomed_sub, (sub_x, sub_y), zoomed_sub)
+
+            # Renderização Inteligente das Imagens de Referência (Até 3 com Animação Parallax / Colagem Editorial)
+            if len(loaded_subs) == 1:
+                # 1 Foto de Referência: Sujeito Principal Central com Zoom 2.5D
+                raw1 = loaded_subs[0]
+                target_w = int(cw * 0.78 * zoom_factor)
+                aspect = raw1.height / max(1, raw1.width)
+                z1 = raw1.resize((target_w, int(target_w * aspect)), Image.Resampling.LANCZOS)
+                canvas.paste(z1, ((cw - target_w) // 2, sky_y + int(sky_h * 0.20)), z1)
+
+            elif len(loaded_subs) == 2:
+                # 2 Fotos de Referência: Composição Editorial com 2 Elementos Dinâmicos
+                raw1, raw2 = loaded_subs[0], loaded_subs[1]
+                # Elemento 1 (Principal): 62% de largura, centro-esquerda com leve drift
+                drift1 = int(math.sin(t * 1.5) * 14)
+                w1 = int(cw * 0.62 * zoom_factor)
+                h1 = int(w1 * (raw1.height / max(1, raw1.width)))
+                z1 = raw1.resize((w1, h1), Image.Resampling.LANCZOS)
+                canvas.paste(z1, (int(cw * 0.06) + drift1, sky_y + int(sky_h * 0.16)), z1)
+
+                # Elemento 2 (Secundário): 48% de largura, centro-direita com contra-drift e sombra
+                drift2 = int(math.cos(t * 1.8) * 16)
+                w2 = int(cw * 0.48 * (1.0 + 0.04 * progress))
+                h2 = int(w2 * (raw2.height / max(1, raw2.width)))
+                z2 = raw2.resize((w2, h2), Image.Resampling.LANCZOS)
+                canvas.paste(z2, (int(cw * 0.46) + drift2, sky_y + int(sky_h * 0.32)), z2)
+
+            elif len(loaded_subs) >= 3:
+                # 3 Fotos de Referência: Tríade Editorial Estilo Vox (Sujeito Central + 2 Badges/Props)
+                raw1, raw2, raw3 = loaded_subs[0], loaded_subs[1], loaded_subs[2]
+                drift_l = int(math.sin(t * 2.0) * 12)
+                drift_r = int(math.cos(t * 2.0) * 12)
+
+                # Foto 2 (Lateral Esquerda / Contexto)
+                w2 = int(cw * 0.38)
+                h2 = int(w2 * (raw2.height / max(1, raw2.width)))
+                z2 = raw2.resize((w2, h2), Image.Resampling.LANCZOS)
+                canvas.paste(z2, (int(cw * 0.05) + drift_l, sky_y + int(sky_h * 0.26)), z2)
+
+                # Foto 3 (Lateral Direita / Detalhe)
+                w3 = int(cw * 0.38)
+                h3 = int(w3 * (raw3.height / max(1, raw3.width)))
+                z3 = raw3.resize((w3, h3), Image.Resampling.LANCZOS)
+                canvas.paste(z3, (int(cw * 0.57) + drift_r, sky_y + int(sky_h * 0.28)), z3)
+
+                # Foto 1 (Hero Central Sobreposto)
+                w1 = int(cw * 0.54 * zoom_factor)
+                h1 = int(w1 * (raw1.height / max(1, raw1.width)))
+                z1 = raw1.resize((w1, h1), Image.Resampling.LANCZOS)
+                canvas.paste(z1, ((cw - w1) // 2, sky_y + int(sky_h * 0.14)), z1)
 
             if motion_type == "moedas_caindo" or style == "vox":
                 draw_coin = ImageDraw.Draw(canvas)

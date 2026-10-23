@@ -66,19 +66,18 @@ class MagnificCanvasEngine:
         }
 
     def _call_llm_text(self, prompt_text: str, parts: list = None, timeout: int = 25) -> str:
-        """Cascata Neural Resiliente (Multi-Modelos Ativos 3.6 / 3.5 / 3.0 + Fallback)."""
+        """Cascata Neural Resiliente (Multi-Modelos Ativos 3.6 / 3.5 + Fallback)."""
         if self.gemini_key:
             active_models = [
                 "gemini-3.6-flash",
-                "gemini-3.5-flash",
-                "gemini-3.8-flash"
+                "gemini-3.5-flash"
             ]
             req_parts = list(parts) if parts else []
             req_parts.append({"text": prompt_text})
             for m_name in active_models:
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/{m_name}:generateContent?key={self.gemini_key}"
                 try:
-                    r = requests.post(url, json={"contents": [{"parts": req_parts}]}, timeout=min(timeout, 5))
+                    r = requests.post(url, json={"contents": [{"parts": req_parts}]}, timeout=timeout)
                     if r.status_code == 200:
                         candidates = r.json().get("candidates", [])
                         if candidates:
@@ -194,34 +193,65 @@ Return ONLY the final English prompt, without quotes or explanations."""
         face_lock_path: str,
         w: int,
         h: int,
-        raw_out_path: str
+        raw_out_path: str,
+        all_refs: list = None
     ) -> bool:
         """
         Cascata de 4 Motores Reais em GPU Dedicada para garantir 100% de geração real e ultra-realista:
-        1. FLUX.1-Kontext-Dev (quando há imagem de referência ou Face Lock — preserva o sujeito real + aplica o prompt)
-        2. PuLID-FLUX (travamento biométrico de identidade facial)
-        3. FLUX.1-schnell / FLUX.1-dev (síntese neural 8K ultra-rápida em GPU)
-        4. Cloud API Fallback (12s timeout)
+        1. Google Gemini 2.5/3.1 Flash Image + GPT Image (com até 3 imagens de referência multimodal via base64)
+        2. FLUX.1-Kontext-Dev (preserva o sujeito real + aplica o prompt)
+        3. PuLID-FLUX (travamento biométrico de identidade facial)
+        4. FLUX.1-schnell / FLUX.1-dev (síntese neural 8K ultra-rápida em GPU)
         """
         seed = int(uuid.uuid4().int % 999999)
         ref_to_use = face_lock_path if (face_lock_path and os.path.exists(face_lock_path)) else (
             primary_ref_path if (primary_ref_path and os.path.exists(primary_ref_path)) else None
         )
 
-        # MOTOR 0: Google Gemini / Omni Vision 8K via OpenRouter Cluster (Alta Fidelidade Óptica)
+        all_valid_refs = []
+        if face_lock_path and os.path.exists(face_lock_path) and face_lock_path not in all_valid_refs:
+            all_valid_refs.append(face_lock_path)
+        for r_p in (all_refs or []):
+            if r_p and os.path.exists(r_p) and r_p not in all_valid_refs:
+                all_valid_refs.append(r_p)
+        if primary_ref_path and os.path.exists(primary_ref_path) and primary_ref_path not in all_valid_refs:
+            all_valid_refs.append(primary_ref_path)
+
+        # MOTOR 0: Google Gemini / Omni Vision 8K via OpenRouter Cluster (Alta Fidelidade Óptica Condicionada às Referências)
         if self.openrouter_key:
-            for g_model in ("google/gemini-2.5-flash-image", "google/gemini-3.1-flash-image"):
+            msg_content = [
+                {
+                    "type": "text",
+                    "text": (
+                        f"Generate an ultra-photorealistic 8K cinematic image faithful to the person, subjects, and lighting of the reference image(s). "
+                        f"Scene description: {compiled_prompt[:1000]}"
+                    )
+                }
+            ]
+            for r_p in all_valid_refs[:3]:
+                try:
+                    with open(r_p, "rb") as rf:
+                        b64_data = base64.b64encode(rf.read()).decode("utf-8")
+                    mime = "image/png" if r_p.lower().endswith(".png") else "image/jpeg"
+                    msg_content.append({
+                        "type": "image_url",
+                        "image_url": {"url": f"data:{mime};base64,{b64_data}"}
+                    })
+                except Exception as e_rf:
+                    print(f"[ESGCore] Erro ao carregar ref {r_p}: {e_rf}")
+
+            for g_model in ("google/gemini-2.5-flash-image", "google/gemini-3.1-flash-image", "google/gemini-3-pro-image", "openai/gpt-5-image"):
                 try:
                     payload = {
                         "model": g_model,
-                        "messages": [{"role": "user", "content": compiled_prompt[:700]}],
+                        "messages": [{"role": "user", "content": msg_content}],
                         "modalities": ["image", "text"]
                     }
                     r = requests.post(
                         "https://openrouter.ai/api/v1/chat/completions",
                         headers={"Authorization": f"Bearer {self.openrouter_key}", "Content-Type": "application/json"},
                         json=payload,
-                        timeout=35
+                        timeout=55
                     )
                     if r.status_code == 200:
                         res_data = r.json()
@@ -233,13 +263,13 @@ Return ONLY the final English prompt, without quotes or explanations."""
                                 b64_str = url_data.split(",")[1] if "," in url_data else url_data
                                 if b64_str:
                                     img_bytes = base64.b64decode(b64_str)
-                                    if len(img_bytes) > 10000:
+                                    if len(img_bytes) > 8000:
                                         with open(raw_out_path, "wb") as f:
                                             f.write(img_bytes)
-                                        print(f"[ESGCore] Síntese Google Omni / Gemini concluída com sucesso ({len(img_bytes)} bytes)!")
+                                        print(f"[ESGCore] Síntese Google Omni / Gemini concluída com fidelidade a {len(all_valid_refs)} referências ({len(img_bytes)} bytes)!")
                                         return True
                 except Exception as e_gemini:
-                    print(f"[ESGCore] Info Motor Google Omni Vision ({e_gemini}). Migrando para Cluster Flux...")
+                    print(f"[ESGCore] Info Motor Google Omni Vision ({e_gemini})...")
 
         # MOTOR 1: Cluster Neural Flux 8K Ultra-Rápido (6 segundos)
         encoded = urllib.parse.quote(compiled_prompt[:650])
@@ -364,7 +394,8 @@ Return ONLY the final English prompt, without quotes or explanations."""
             face_lock_path=face_lock_path,
             w=w,
             h=h,
-            raw_out_path=raw_tmp
+            raw_out_path=raw_tmp,
+            all_refs=reference_images
         )
 
         if not synthesized or not os.path.exists(raw_tmp):

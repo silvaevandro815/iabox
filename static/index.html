@@ -1486,13 +1486,13 @@
             <div class="flex flex-wrap items-center justify-between gap-2">
               <label class="block text-sm font-bold text-cyan-300 flex items-center gap-1.5">
                 <i data-lucide="image" class="w-4 h-4 text-cyan-400"></i>
-                <span>3. Fotos de Referência (Rosto do Avatar, Foto do Novo Cenário ou Produtos)</span>
+                <span>3. Fotos de Referência (Até 3 com botão X para excluir)</span>
               </label>
-              <span id="video-ref-count-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">0 / 5 selecionadas</span>
+              <span id="video-ref-count-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">0 / 3 selecionadas</span>
             </div>
             <input type="file" id="video-ref-images" accept="image/*" multiple onchange="handleRefFilesAdded('video', this)" class="w-full bg-dark-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/20 file:text-cyan-300">
             <p class="text-[11px] text-gray-400">
-              <i data-lucide="info" class="w-3.5 h-3.5 inline text-cyan-400 mr-1"></i><strong>Instruções Omni Flow:</strong> Envie a foto de quem vai te substituir no vídeo (avatar/influenciador) ou a foto do novo cenário (praia, estúdio, cidade à noite). O motor fará o Face Lock e a rotoscopia de iluminação.
+              <i data-lucide="info" class="w-3.5 h-3.5 inline text-cyan-400 mr-1"></i><strong>Instruções Omni Flow:</strong> Envie até 3 fotos de referência (avatar/influenciador, novo cenário ou produto com botão X para remover cada). O motor fará o Face Lock e a rotoscopia visual.
             </p>
             <div id="video-ref-preview" class="flex flex-wrap gap-2 pt-1"></div>
           </div>
@@ -1609,13 +1609,13 @@
       <div class="border-b border-white/10 pb-4">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-pink-500/15 border border-pink-400/40 text-pink-300 text-xs font-extrabold uppercase tracking-wider mb-2">
           <i data-lucide="layers" class="w-3.5 h-3.5 text-pink-400"></i>
-          Multi-Referência Ativa &bull; Envie de 3 a 5 Fotos de Referência
+          Multi-Referência Ativa &bull; Envie até 3 Fotos de Referência
         </div>
         <h2 class="text-3xl font-bold font-display text-white flex items-center gap-3">
           <i data-lucide="image" class="w-8 h-8 text-pink-400"></i>
-          Gerador de Imagens & Fotos 8K (Com 3 a 5 Imagens de Referência)
+          Gerador de Imagens & Fotos 8K (Com até 3 Imagens de Referência)
         </h2>
-        <p class="text-gray-400 text-sm mt-1">Crie fotos ultra-realistas de cinema, retratos fiéis e criativos publicitários enviando de <strong>3 a 5 imagens de referência</strong> para a IA manter total fidelidade visual.</p>
+        <p class="text-gray-400 text-sm mt-1">Crie fotos ultra-realistas de cinema, retratos fiéis e criativos publicitários enviando até <strong>3 imagens de referência com botão X para excluir</strong> para a IA manter total fidelidade visual.</p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -1648,11 +1648,11 @@
           
           <div class="p-4 rounded-2xl bg-dark-800/90 border border-pink-400/30 space-y-3">
             <div class="flex flex-wrap items-center justify-between gap-2">
-              <label class="block text-sm font-bold text-pink-300">2. Imagens de Referência (Selecione de 3 a 5 Imagens: Opcional)</label>
-              <span id="image-ref-count-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pink-500/20 text-pink-300 border border-pink-400/30">0 / 5 selecionadas</span>
+              <label class="block text-sm font-bold text-pink-300">2. Fotos de Referência (Até 3 com botão X para excluir: Opcional)</label>
+              <span id="image-ref-count-badge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-xl bg-pink-500/20 text-pink-300 border border-pink-400/30">0 / 3 selecionadas</span>
             </div>
             <input type="file" id="image-ref-files" accept="image/*" multiple onchange="handleRefFilesAdded('image', this)" class="w-full bg-dark-900 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-pink-500/20 file:text-pink-300">
-            <p class="text-[11px] text-gray-400">Envie de <strong>3 a 5 imagens de referência</strong> (rosto de múltiplos ângulos, produto, roupa ou cenário). O motor Gemini Vision + Flux + Magnific 8K analisa todas as fotos para gerar sua imagem.</p>
+            <p class="text-[11px] text-gray-400">Envie até <strong>3 fotos de referência</strong> (rosto de múltiplos ângulos, produto, roupa ou cenário com botão X para excluir). O motor Gemini Vision + Flux + Magnific 8K obedece a todas as referências.</p>
             <div id="image-ref-preview" class="flex flex-wrap gap-2 pt-1"></div>
           </div>
 
@@ -1754,7 +1754,7 @@
           <label class="cursor-pointer bg-dark-700 hover:bg-dark-600 border border-amber-400/40 text-amber-300 font-bold px-3.5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5">
             <i data-lucide="upload-cloud" class="w-4 h-4 text-amber-400"></i>
             <span>+ Subir Foto (@Image)</span>
-            <input type="file" id="canvas-upload-input" accept="image/*" class="hidden" onchange="handleCanvasUploadNode(event)">
+            <input type="file" id="canvas-upload-input" accept="image/*" multiple class="hidden" onchange="handleCanvasUploadNode(event)">
           </label>
 
           <button onclick="deleteSelectedCanvasNode()" class="bg-red-500/15 hover:bg-red-500/30 border border-red-400/40 text-red-300 font-bold px-3 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5" title="Deletar o nó atualmente selecionado no Canvas">
@@ -2348,7 +2348,18 @@
               </select>
             </div>
             <input id="sn-lightsrc" maxlength="300" placeholder="De onde vem a luz? Ex.: janela à esquerda, lâmpada amarela no teto" class="w-full bg-dark-900 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white">
-            <label class="block text-[11px] text-gray-400">Foto de referência do personagem (opcional): <input id="sn-anchor" type="file" accept="image/*" class="block mt-1 text-[11px] text-gray-300"></label>
+            <div class="space-y-1.5 p-3 rounded-xl bg-dark-800/80 border border-cyan-400/20">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-gray-300">Fotos de Referência (Até 3 com botão X para excluir):</span>
+                <span id="sn-anchor-count" class="text-[10px] font-mono text-cyan-300">0 / 3</span>
+              </div>
+              <label class="flex items-center gap-2 cursor-pointer text-xs text-cyan-300 hover:text-cyan-200">
+                <i data-lucide="image-plus" class="w-3.5 h-3.5 text-cyan-400"></i>
+                <span>Adicionar até 3 fotos de referência</span>
+                <input id="sn-anchor" type="file" accept="image/*" multiple onchange="handleStoryAnchorRefAdded(this)" class="hidden">
+              </label>
+              <div id="sn-anchor-preview" class="flex flex-wrap gap-1.5 pt-1"></div>
+            </div>
             <button onclick="storyCreateNew()" class="w-full py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/50 text-cyan-200 text-xs font-extrabold flex items-center justify-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-cyan-300"></i> Criar minha história</button>
           </div>
         </div>
@@ -2413,6 +2424,15 @@
                   <select id="sa-trans" class="w-full mt-1 bg-dark-900 border border-white/15 rounded-xl px-2 py-1.5 text-[11px] text-white"><option value="cut">Corte seco</option><option value="fade">Suave (fade)</option></select></label>
               </div>
               <button id="sa-btn" onclick="storyAddClip()" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-xs font-extrabold flex items-center justify-center gap-2"><i data-lucide="video" class="w-4 h-4 text-black"></i> Filmar este plano - <span id="sa-cost">25</span> créditos</button>
+              <div class="mt-2 p-3 rounded-xl bg-dark-800/80 border border-amber-400/20 space-y-1.5">
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wide block">Fotos de Referência para este plano (até 3):</span>
+                <label class="flex items-center gap-2 cursor-pointer text-[11px] text-gray-300 hover:text-amber-300 transition-all">
+                  <i data-lucide="image-plus" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i>
+                  <span>Adicionar até 3 fotos de referência para este plano</span>
+                  <input type="file" id="sa-ref-files" accept="image/*" multiple onchange="handleStoryClipRefAdded(this)" class="hidden">
+                </label>
+                <div id="sa-ref-preview" class="flex flex-wrap gap-1.5"></div>
+              </div>
               <label class="block text-[11px] text-gray-400">ou coloque um vídeo seu na linha do tempo (grátis): <input id="sa-upload" type="file" accept="video/*" onchange="storyUploadClip(this)" class="block mt-1 text-[11px] text-gray-300"></label>
             </div>
           </div>
@@ -3392,13 +3412,14 @@
     // ------------------------------------------------------------------------
     let imageRefFilesList = [];
     let videoRefFilesList = [];
+    const MAX_REFS = 3;
 
     function handleRefFilesAdded(type, inputEl) {
       if (!inputEl || !inputEl.files) return;
       const targetList = (type === 'image') ? imageRefFilesList : videoRefFilesList;
       const newFiles = Array.from(inputEl.files);
       for (const f of newFiles) {
-        if (targetList.length >= 5) break;
+        if (targetList.length >= MAX_REFS) break;
         const exists = targetList.some(item => item.name === f.name && item.size === f.size);
         if (!exists) {
           targetList.push(f);
@@ -3430,21 +3451,21 @@
       if (!previewEl) return;
 
       if (badgeEl) {
-        badgeEl.innerText = `${targetList.length} / 5 selecionadas`;
+        badgeEl.innerText = `${targetList.length} / ${MAX_REFS} selecionadas`;
         if (targetList.length > 0) {
           badgeEl.className = isImg
-            ? 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pink-500/20 text-pink-300 border border-pink-400/40 '
-            : 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 ';
+            ? 'text-[11px] font-bold px-2.5 py-0.5 rounded-xl bg-pink-500/20 text-pink-300 border border-pink-400/40 '
+            : 'text-[11px] font-bold px-2.5 py-0.5 rounded-xl bg-blue-500/20 text-blue-300 border border-blue-400/40 ';
         } else {
           badgeEl.className = isImg
-            ? 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pink-500/10 text-pink-400 border border-pink-400/20'
-            : 'text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-400/20';
+            ? 'text-[11px] font-bold px-2.5 py-0.5 rounded-xl bg-pink-500/10 text-pink-400 border border-pink-400/20'
+            : 'text-[11px] font-bold px-2.5 py-0.5 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-400/20';
         }
       }
 
       previewEl.innerHTML = '';
       if (targetList.length === 0) {
-        previewEl.innerHTML = `<span class="text-xs text-gray-500 flex items-center gap-1.5 py-2 px-1">Nenhuma foto selecionada. Adicione até 5 fotos para a IA extrair contexto e fidelidade.</span>`;
+        previewEl.innerHTML = `<span class="text-xs text-gray-500 flex items-center gap-1.5 py-2 px-1">Nenhuma foto selecionada. Adicione até ${MAX_REFS} fotos para a IA extrair contexto e fidelidade.</span>`;
         return;
       }
 
@@ -3474,13 +3495,13 @@
         previewEl.appendChild(card);
       });
 
-      if (targetList.length < 5) {
+      if (targetList.length < MAX_REFS) {
         const addCard = document.createElement('label');
         addCard.className = 'cursor-pointer w-20 h-20 rounded-2xl border-2 border-dashed border-cyan-400/40 hover:border-cyan-400 bg-cyan-500/5 hover:bg-cyan-500/15 flex flex-col items-center justify-center gap-1 text-cyan-300 transition-all shrink-0';
         addCard.title = 'Adicionar mais uma foto de referência';
         addCard.innerHTML = `
           <span class="text-xl font-black leading-none">+</span>
-          <span class="text-[9px] font-bold tracking-tight">Mais Foto</span>
+          <span class="text-[9px] font-bold tracking-tight">+ Foto</span>
         `;
         addCard.onclick = () => {
           const inp = document.getElementById(inputId);
@@ -3488,6 +3509,77 @@
         };
         previewEl.appendChild(addCard);
       }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Ref preview para plano da história
+    function handleStoryClipRefAdded(inputEl) {
+      if (!inputEl || !inputEl.files) return;
+      const previewEl = document.getElementById('sa-ref-preview');
+      if (!previewEl) return;
+      previewEl.innerHTML = '';
+      const files = Array.from(inputEl.files).slice(0, 3);
+      files.forEach((file, idx) => {
+        const reader = new FileReader();
+        const card = document.createElement('div');
+        card.className = 'relative w-14 h-14 rounded-xl overflow-hidden border border-amber-400/50 bg-black shrink-0';
+        card.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-black/60"><span class="text-[8px] text-gray-400">...</span></div>
+          <button type="button" onclick="removeStoryClipRef(${idx})" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 hover:bg-red-400 text-white rounded-md flex items-center justify-center text-xs font-bold shadow cursor-pointer">&times;</button>`;
+        reader.onload = (e) => {
+          const imgEl = document.createElement('img');
+          imgEl.src = e.target.result;
+          imgEl.className = 'w-full h-full object-cover';
+          card.replaceChild(imgEl, card.firstElementChild);
+        };
+        reader.readAsDataURL(file);
+        previewEl.appendChild(card);
+      });
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function removeStoryClipRef(idx) {
+      const input = document.getElementById('sa-ref-files');
+      if (!input) return;
+      const dt = new DataTransfer();
+      Array.from(input.files).forEach((f, i) => { if (i !== idx) dt.items.add(f); });
+      input.files = dt.files;
+      handleStoryClipRefAdded(input);
+    }
+
+    function handleStoryAnchorRefAdded(inputEl) {
+      if (!inputEl || !inputEl.files) return;
+      const previewEl = document.getElementById('sn-anchor-preview');
+      const countEl = document.getElementById('sn-anchor-count');
+      if (!previewEl) return;
+      previewEl.innerHTML = '';
+      const files = Array.from(inputEl.files).slice(0, 3);
+      if (countEl) countEl.innerText = `${files.length} / 3`;
+      files.forEach((file, idx) => {
+        const reader = new FileReader();
+        const card = document.createElement('div');
+        card.className = 'relative w-14 h-14 rounded-xl overflow-hidden border border-cyan-400/50 bg-black shrink-0';
+        card.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-black/60"><span class="text-[8px] text-gray-400">...</span></div>
+          <button type="button" onclick="removeStoryAnchorRef(${idx})" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 hover:bg-red-400 text-white rounded-md flex items-center justify-center text-xs font-bold shadow cursor-pointer">&times;</button>`;
+        reader.onload = (e) => {
+          const imgEl = document.createElement('img');
+          imgEl.src = e.target.result;
+          imgEl.className = 'w-full h-full object-cover';
+          card.replaceChild(imgEl, card.firstElementChild);
+        };
+        reader.readAsDataURL(file);
+        previewEl.appendChild(card);
+      });
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function removeStoryAnchorRef(idx) {
+      const input = document.getElementById('sn-anchor');
+      if (!input) return;
+      const dt = new DataTransfer();
+      Array.from(input.files).forEach((f, i) => { if (i !== idx) dt.items.add(f); });
+      input.files = dt.files;
+      handleStoryAnchorRefAdded(input);
     }
 
     // ------------------------------------------------------------------------
@@ -4034,7 +4126,7 @@ function renderVoxScenesUI() {
       <label class="w-16 h-16 rounded-lg border border-dashed border-white/20 hover:border-amber-400 bg-dark-900/60 hover:bg-dark-800 flex flex-col items-center justify-center cursor-pointer transition-all">
         <i data-lucide="image-plus" class="w-4 h-4 text-gray-400 group-hover:text-amber-400"></i>
         <span class="text-[9px] text-gray-400 mt-0.5">+ Foto</span>
-        <input type="file" accept="image/*" onchange="uploadVoxRef(${idx}, this)" class="hidden">
+        <input type="file" accept="image/*" multiple onchange="uploadVoxRef(${idx}, this)" class="hidden">
       </label>` : '';
 
     const previewPlayerHtml = s.video_url ? `
@@ -4154,28 +4246,32 @@ function deleteVoxRef(sceneIdx, imgIdx) {
 
 async function uploadVoxRef(sceneIdx, inputEl) {
   if (!inputEl.files || inputEl.files.length === 0) return;
-  const file = inputEl.files[0];
-  const fd = new FormData();
-  fd.append('scene_number', sceneIdx + 1);
-  fd.append('style', currentVoxStyle);
-  fd.append('image', file);
-
-  try {
-    const res = await fetch('/api/vox/upload-ref', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (data.status === 'success' && data.styled_url) {
-      if (!voxScenes[sceneIdx].reference_images) {
-        voxScenes[sceneIdx].reference_images = [];
-      }
-      voxScenes[sceneIdx].reference_images.push(data.styled_url);
-      renderVoxScenesUI();
-    } else {
-      alert(data.detail || data.message || 'Erro ao processar foto.');
-    }
-  } catch (err) {
-    console.error(err);
-    alert('Erro no envio da foto de referência.');
+  const files = Array.from(inputEl.files).slice(0, 3);
+  if (!voxScenes[sceneIdx].reference_images) {
+    voxScenes[sceneIdx].reference_images = [];
   }
+  for (const file of files) {
+    if (voxScenes[sceneIdx].reference_images.length >= 3) break;
+    const fd = new FormData();
+    fd.append('scene_number', sceneIdx + 1);
+    fd.append('style', currentVoxStyle);
+    fd.append('image', file);
+
+    try {
+      const res = await fetch('/api/vox/upload-ref', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.status === 'success' && data.styled_url) {
+        voxScenes[sceneIdx].reference_images.push(data.styled_url);
+      } else {
+        alert(data.detail || data.message || 'Erro ao processar foto.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Erro no envio da foto de referência.');
+    }
+  }
+  inputEl.value = '';
+  renderVoxScenesUI();
 }
 
 async function generateSingleVoxScene(sceneIdx) {
@@ -5390,40 +5486,43 @@ setInterval(triggerRobotBlink, 3800);
     }
 
     async function handleCanvasUploadNode(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+      const files = Array.from(event.target.files || []).slice(0, 3);
+      if (!files.length) return;
 
       const statusEl = document.getElementById('canvas-status-msg');
-      statusEl.innerText = 'Subindo novo nó @Image para o Canvas...';
+      statusEl.innerText = `Subindo ${files.length} foto(s) de referência para o Canvas...`;
 
-      const formData = new FormData();
-      formData.append('image_file', file);
-
-      try {
-        const res = await fetch('/api/canvas/upload-node', { method: 'POST', body: formData });
-        const data = await res.json();
-        if (data.node_url) {
-          const nextIdx = canvasNodes.length + 1;
-          const newId = `node_${Date.now()}`;
-          canvasNodes.push({
-            id: newId,
-            tag: `@Image${nextIdx}`,
-            role: 'Character',
-            title: file.name.slice(0, 18),
-            url: data.node_url,
-            res: '8K Ref',
-            x: 90 + ((nextIdx % 3) * 120),
-            y: 80 + ((nextIdx % 3) * 135),
-            connected: true
-          });
-          selectedCanvasNodeId = newId;
-          selectedCanvasNodeUrl = data.node_url;
-          renderCanvasNodes();
-          statusEl.innerText = `@Image${nextIdx} adicionado e conectado ao gerador!`;
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('image_file', file);
+        try {
+          const res = await fetch('/api/canvas/upload-node', { method: 'POST', body: formData });
+          const data = await res.json();
+          if (data.node_url) {
+            const nextIdx = canvasNodes.length + 1;
+            const newId = `node_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
+            canvasNodes.push({
+              id: newId,
+              tag: `@Image${nextIdx}`,
+              role: 'Character',
+              title: file.name.slice(0, 18),
+              url: data.node_url,
+              res: '8K Ref',
+              x: 80 + ((nextIdx % 4) * 110),
+              y: 70 + ((nextIdx % 4) * 125),
+              connected: true
+            });
+            selectedCanvasNodeId = newId;
+            selectedCanvasNodeUrl = data.node_url;
+          }
+        } catch (e) {
+          console.error(e);
         }
-      } catch (e) {
-        statusEl.innerText = 'Erro ao enviar imagem: ' + e.message;
       }
+      renderCanvasNodes();
+      drawCanvasCables();
+      statusEl.innerText = `Nós de referência adicionados e conectados ao gerador 8K!`;
+      event.target.value = '';
     }
 
     async function handleCanvasGenerateNode(overridePrompt = null, updateSelectedNode = false) {
@@ -5916,7 +6015,13 @@ setInterval(triggerRobotBlink, 3800);
       fd.append('lighting_mood', document.getElementById('sn-light').value);
       fd.append('lighting_source', document.getElementById('sn-lightsrc').value);
       fd.append('aspect_ratio', document.getElementById('sn-ar').value);
-      const f = document.getElementById('sn-anchor').files[0]; if (f) fd.append('anchor_image', f);
+      const anchorInput = document.getElementById('sn-anchor');
+      if (anchorInput && anchorInput.files.length > 0) {
+        for (let i = 0; i < Math.min(anchorInput.files.length, 3); i++) {
+          if (i === 0) fd.append('anchor_image', anchorInput.files[i]);
+          else fd.append('ref_images', anchorInput.files[i]);
+        }
+      }
       if (!document.getElementById('sn-setting').value.trim()) return alert('Conte onde a história acontece - é o que mantém o cenário igual em todos os planos.');
       try { const r = await storyPost('/api/story/project/create', fd); setMascotMessage('História criada! Agora escolha o ângulo e o que acontece no primeiro plano. '); storyOpen(r.project_id); } catch (e) { storyErr(e); }
     }
@@ -6057,11 +6162,20 @@ setInterval(triggerRobotBlink, 3800);
       const fd = new FormData();
       fd.append('project_id', storyProject.id); fd.append('shot_type', storyShot); fd.append('prompt', prompt);
       fd.append('duration', document.getElementById('sa-dur').value); fd.append('transition', document.getElementById('sa-trans').value);
+      // Inclui até 3 fotos de referência por plano (personagem, cenário, objeto)
+      const storyClipRefInput = document.getElementById('sa-ref-files');
+      if (storyClipRefInput && storyClipRefInput.files.length > 0) {
+        for (let i = 0; i < Math.min(storyClipRefInput.files.length, 3); i++) {
+          fd.append('ref_images', storyClipRefInput.files[i]);
+        }
+      }
+      fd.append('user_id', currentUserId || 'default_user');
       const btn = document.getElementById('sa-btn'); btn.disabled = true;
       try {
         await storyPost('/api/story/clip/add', fd);
         document.getElementById('sa-prompt').value = '';
         document.getElementById('story-suggestions').innerHTML = '';
+        if (storyClipRefInput) storyClipRefInput.value = '';
         setMascotMessage(' Filmando na mesma cena, com a mesma luz. Pode acompanhar na linha do tempo!');
         await storyReload(); storyStartPoll(); updateCredits();
       } catch (e) { storyErr(e); } finally { btn.disabled = false; }
