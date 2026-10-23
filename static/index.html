@@ -85,10 +85,28 @@
       cursor: grab;
       touch-action: none;
       user-select: none;
-      transition: transform 0.1s ease-out;
+      will-change: transform, left, top;
     }
-    #draggable-mascot:active {
+    #draggable-mascot:active, #draggable-mascot.is-dragging {
       cursor: grabbing;
+      transition: none !important;
+    }
+    @keyframes mascotHoverFloat {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-9px) rotate(1.2deg);
+      }
+    }
+    .mascot-floating {
+      animation: mascotHoverFloat 3.2s ease-in-out infinite;
+    }
+    #mascot-img-wrapper {
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #draggable-mascot:hover #mascot-img-wrapper {
+      transform: scale(1.06);
     }
     /* Ícones Futuristas Neon Cyberpunk */
     .neon-icon-box {
@@ -2896,7 +2914,7 @@
     </div>
   </div>
 
-  <div id="draggable-mascot" class="flex flex-col items-center">
+  <div id="draggable-mascot" class="flex flex-col items-center mascot-floating">
     
     
     <div id="mascot-bubble" onclick="openIABotAssistant()" class="bg-dark-800/95 text-white text-xs px-3.5 py-2 rounded-2xl border border-cyan-400/50 shadow-neon-cyan-sm mb-2 max-w-[220px] text-center transform scale-95 transition-all cursor-pointer hover:border-amber-400">
@@ -4260,83 +4278,113 @@ async function handleVoxRenderFull() {
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
     const mascot = document.getElementById('draggable-mascot');
-    const bubble = document.getElementById('mascot-bubble');
-    const msgEl = document.getElementById('mascot-msg');
+const bubble = document.getElementById('mascot-bubble');
+const msgEl = document.getElementById('mascot-msg');
+const robotImgEl = document.getElementById('mascot-img');
 
-    let isDragging = false;
-    let startX, startY, initialX, initialY;
+let isDragging = false;
+let startX = 0, startY = 0, initialX = 0, initialY = 0;
+let hasMoved = false;
 
-    function setMascotMessage(msg) {
-      if (!msgEl) return;
-      const cleanMsg = (msg || '').replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2B50}-\u{2B55}]/gu, '').trim();
-      msgEl.innerHTML = `<span class="inline-flex items-center gap-1.5"><i data-lucide="bot" class="w-3.5 h-3.5 text-cyan-400 drop-shadow-[0_0_6px_#00f0ff] shrink-0"></i><span>${cleanMsg}</span></span>`;
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-      bubble.classList.remove('scale-95');
-      bubble.classList.add('scale-105');
-      setTimeout(() => bubble.classList.remove('scale-105'), 300);
-    }
+function setMascotMessage(msg) {
+  if (!msgEl) return;
+  const cleanMsg = (msg || '').replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2B50}-\u{2B55}]/gu, '').trim();
+  msgEl.innerHTML = `<span class="inline-flex items-center gap-1.5"><i data-lucide="bot" class="w-3.5 h-3.5 text-cyan-400 drop-shadow-[0_0_6px_#00f0ff] shrink-0"></i><span>${cleanMsg}</span></span>`;
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+  if (bubble) {
+    bubble.classList.remove('scale-95');
+    bubble.classList.add('scale-105');
+    setTimeout(() => bubble.classList.remove('scale-105'), 300);
+  }
+}
 
-    const tipsList = [
-      "Arraste-me para onde quiser na tela pelo mouse ou toque!",
-      "Sabia que você pode colocar sua voz na música de qualquer cantor famoso?",
-      "Nossas vozes masculinas e femininas são 100% brasileiras!",
-      "Experimente criar uma música sertaneja ou trap no IA Music Studio!",
-      "Acesse a aba 'O Criador' para ver o currículo do Evandro Gallina!",
-      "Você pode ouvir e testar todas as amostras gratuitamente na vitrine!"
-    ];
-    let tipIdx = 0;
+const tipsList = [
+  "Arraste-me para onde quiser na tela pelo mouse ou toque!",
+  "Sabia que você pode criar um vídeo de 1 minuto cena a cena no Estilo Vox?",
+  "Nossas vozes masculinas e femininas são 100% brasileiras!",
+  "Experimente criar uma música sertaneja ou trap no IA Music Studio!",
+  "Acesse a aba 'O Criador' para ver o currículo do Evandro Gallina!",
+  "Você pode ouvir e testar todas as amostras gratuitamente na vitrine!"
+];
+let tipIdx = 0;
 
-    mascot.addEventListener('pointerdown', (e) => {
-      isDragging = true;
-      mascot.classList.remove('');
-      startX = e.clientX;
-      startY = e.clientY;
-      const rect = mascot.getBoundingClientRect();
-      initialX = rect.left;
-      initialY = rect.top;
+if (mascot) {
+  mascot.addEventListener('pointerdown', (e) => {
+    isDragging = true;
+    hasMoved = false;
+    startX = e.clientX;
+    startY = e.clientY;
+    const rect = mascot.getBoundingClientRect();
+    initialX = rect.left;
+    initialY = rect.top;
+    mascot.classList.remove('mascot-floating');
+    mascot.classList.add('is-dragging');
+    try {
       mascot.setPointerCapture(e.pointerId);
-    });
+    } catch (_) {}
+  });
 
-    mascot.addEventListener('pointermove', (e) => {
-      if (!isDragging) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      mascot.style.left = `${initialX + dx}px`;
-      mascot.style.top = `${initialY + dy}px`;
-      mascot.style.bottom = 'auto';
-      mascot.style.right = 'auto';
-    });
+  mascot.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+      hasMoved = true;
+    }
+    const mw = mascot.offsetWidth || 110;
+    const mh = mascot.offsetHeight || 130;
+    const maxX = Math.max(10, window.innerWidth - mw - 10);
+    const maxY = Math.max(10, window.innerHeight - mh - 10);
+    const posX = Math.max(10, Math.min(maxX, initialX + dx));
+    const posY = Math.max(10, Math.min(maxY, initialY + dy));
+    mascot.style.left = `${posX}px`;
+    mascot.style.top = `${posY}px`;
+    mascot.style.bottom = 'auto';
+    mascot.style.right = 'auto';
+  });
 
-    mascot.addEventListener('pointerup', (e) => {
-      if (!isDragging) return;
-      isDragging = false;
-      mascot.classList.add('');
-      if (Math.abs(e.clientX - startX) < 5 && Math.abs(e.clientY - startY) < 5) {
-        tipIdx = (tipIdx + 1) % tipsList.length;
-        setMascotMessage(tipsList[tipIdx]);
-        triggerRobotBlink();
+  const onPointerUp = (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    mascot.classList.remove('is-dragging');
+    mascot.classList.add('mascot-floating');
+    try {
+      if (e && e.pointerId && mascot.hasPointerCapture(e.pointerId)) {
+        mascot.releasePointerCapture(e.pointerId);
+      }
+    } catch (_) {}
+    if (!hasMoved) {
+      tipIdx = (tipIdx + 1) % tipsList.length;
+      setMascotMessage(tipsList[tipIdx]);
+      triggerRobotBlink();
+      if (typeof openIABotAssistant === 'function') {
         openIABotAssistant();
       }
-    });
+    }
+  };
 
-    const robotImgEl = document.getElementById('mascot-img');
-    const preloadBlink = new Image();
-    preloadBlink.src = '/static/assets/robot_mascot_blink.png?v=2';
+  mascot.addEventListener('pointerup', onPointerUp);
+  mascot.addEventListener('pointercancel', onPointerUp);
+}
 
-    function triggerRobotBlink() {
-      if (!robotImgEl) return;
+const preloadBlink = new Image();
+preloadBlink.src = '/static/assets/robot_mascot_blink.png?v=2';
+
+function triggerRobotBlink() {
+  if (!robotImgEl) return;
+  robotImgEl.src = '/static/assets/robot_mascot_blink.png?v=2';
+  setTimeout(() => {
+    robotImgEl.src = '/static/assets/robot_mascot.png?v=2';
+    setTimeout(() => {
       robotImgEl.src = '/static/assets/robot_mascot_blink.png?v=2';
       setTimeout(() => {
         robotImgEl.src = '/static/assets/robot_mascot.png?v=2';
-        setTimeout(() => {
-          robotImgEl.src = '/static/assets/robot_mascot_blink.png?v=2';
-          setTimeout(() => {
-            robotImgEl.src = '/static/assets/robot_mascot.png?v=2';
-          }, 140);
-        }, 140);
-      }, 150);
-    }
-    setInterval(triggerRobotBlink, 3800);
+      }, 120);
+    }, 120);
+  }, 140);
+}
+setInterval(triggerRobotBlink, 3800);
+
 
     async function updateCredits() {
       try {
