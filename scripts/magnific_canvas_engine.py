@@ -227,7 +227,24 @@ Return ONLY the final English prompt, without quotes or explanations."""
         if primary_ref_path and os.path.exists(primary_ref_path) and primary_ref_path not in all_valid_refs:
             all_valid_refs.append(primary_ref_path)
 
-        # MOTOR 0: Google Gemini / Omni Vision 8K via OpenRouter Cluster (Alta Fidelidade Óptica Condicionada às Referências)
+        # MOTOR RUNPOD (OPEN-SOURCE): FLUX.1 Kontext-dev (com foto de referencia) ou FLUX.1 dev/schnell (so prompt)
+        try:
+            from scripts import runpod_open_engine as _rp
+            if _rp.available():
+                from scripts.ai_video_engine import public_url_for
+                ref_url = public_url_for(all_valid_refs[0]) if all_valid_refs else None
+                got = _rp.flux_image(
+                    compiled_prompt, raw_out_path, ref_image_url=ref_url,
+                    aspect_ratio="9:16" if h > w else ("1:1" if h == w else "16:9"),
+                    quality="dev" if not ref_url else "schnell"
+                )
+                if got and os.path.exists(raw_out_path) and os.path.getsize(raw_out_path) > 8000:
+                    print(f"[ESGCore] Sintese FLUX open-source (RunPod) concluida (refs={len(all_valid_refs)})")
+                    return True
+        except Exception as e_rp:
+            print(f"[ESGCore] RunPod FLUX indisponivel: {e_rp}")
+
+        # MOTOR 0 (reserva): Gemini multimodal via OpenRouter, so se o RunPod falhar
         if self.openrouter_key:
             if all_valid_refs:
                 prompt_text = (
@@ -684,30 +701,34 @@ Return ONLY the final English prompt, without quotes or explanations."""
             f"Epic cinema wide shot with realistic vehicle and environment motion, clouds and light moving naturally across the scene, {scene_prompt}, IMAX 70mm film"
         ]
 
-        ltx_client = None
-        try:
-            from gradio_client import Client, handle_file
-            ltx_client = Client("Lightricks/ltx-video-distilled", token=self.hf_token or None)
-        except Exception:
-            pass
+        from concurrent.futures import ThreadPoolExecutor
+        from scripts.ai_video_engine import generate_video_clip
 
-        verified_real_videos = [
-            "static/samples/demo_cinema_1970.mp4",
-            "static/samples/demo_influencer_916.mp4",
-            "static/samples/showcase_1_cyberpunk.mp4",
-            "static/samples/showcase_2_portrait.mp4",
-            "static/samples/showcase_3_scifi.mp4"
-        ]
+        norm_vf = (
+            f"scale={w}:{h}:force_original_aspect_ratio=increase:flags=lanczos,crop={w}:{h},fps=30,"
+            f"unsharp=5:5:0.6:5:5:0.0,format=yuv420p"
+        )
+        ar_str = "9:16" if aspect_ratio == "9:16" else ("1:1" if aspect_ratio == "1:1" else "16:9")
 
-        for idx, img_path in enumerate(image_paths):
+        def _render_take(idx_img):
+            idx, img_path = idx_img
             if not os.path.exists(img_path):
-                continue
+                return idx, None
             take_out = os.path.join(work_dir, f"take_{idx:02d}.mp4")
-            generated_real_video = False
-
-            if ltx_client is not None:
+            raw_clip = os.path.join(work_dir, f"raw_{idx:02d}.mp4")
+            mp = (
+                f"{scene_prompt or 'cinematic scene'}. Animate this exact image with real physical motion "
+                f"(subject movement, cloth, hair, water, smoke, wind, parallax), smooth cinematic camera movement, "
+                f"ultra-realistic 8K detail, temporal consistency, keep the same subject and composition, no text, no watermark."
+            )
+            vid = generate_video_clip(
+                prompt=mp, out_path=raw_clip, first_frame=img_path,
+                duration=min(max(float(sec_per_take), 4.0), 8.0), aspect_ratio=ar_str
+            )
+            if not vid:
                 try:
-                    from gradio_client import handle_file
+                    from gradio_client import Client, handle_file
+                    ltx_client = Client("Lightricks/ltx-video-distilled", token=self.hf_token or None)
                     res_vid = ltx_client.predict(
                         prompt=motion_prompts[idx % len(motion_prompts)],
                         negative_prompt="worst quality, blurry, jittery, distorted face, static slide, zoompan",
@@ -726,31 +747,20 @@ Return ONLY the final English prompt, without quotes or explanations."""
                     )
                     v_path = res_vid[0]["video"] if isinstance(res_vid[0], dict) else res_vid[0]
                     if v_path and os.path.exists(v_path):
-                        subprocess.run([
-                            "ffmpeg", "-y", "-i", v_path,
-                            "-vf", f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},eq=contrast=1.05:saturation=1.08,format=yuv420p",
-                            "-c:v", "libx264", "-preset", "fast", "-crf", "20", "-an",
-                            take_out
-                        ], capture_output=True)
-                        if os.path.exists(take_out):
-                            take_files.append(take_out)
-                            generated_real_video = True
-                except Exception:
-                    pass
+                        vid = v_path
+                except Exception as e_ltx:
+                    print(f"[Storyboard] LTX indisponivel: {e_ltx}")
+            if not vid:
+                return idx, None
+            subprocess.run([
+                "ffmpeg", "-y", "-i", vid, "-vf", norm_vf,
+                "-c:v", "libx264", "-preset", "fast", "-crf", "17", "-an", take_out
+            ], capture_output=True)
+            return idx, (take_out if os.path.exists(take_out) else None)
 
-            if not generated_real_video:
-                real_fallback = verified_real_videos[idx % len(verified_real_videos)]
-                if os.path.exists(real_fallback):
-                    subprocess.run([
-                        "ffmpeg", "-y", "-i", real_fallback,
-                        "-vf", f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},eq=contrast=1.06:saturation=1.10,format=yuv420p",
-                        "-t", str(min(float(sec_per_take), 5.0)),
-                        "-c:v", "libx264", "-preset", "fast", "-crf", "20", "-an",
-                        take_out
-                    ], capture_output=True)
-                    if os.path.exists(take_out):
-                        take_files.append(take_out)
-                        generated_real_video = True
+        with ThreadPoolExecutor(max_workers=3) as ex:
+            results = sorted(ex.map(_render_take, list(enumerate(image_paths))), key=lambda t: t[0])
+        take_files = [t for _, t in results if t]
 
         if not take_files:
             raise RuntimeError("Não foi possível renderizar os takes em movimento real do Storyboard.")
@@ -766,7 +776,12 @@ Return ONLY the final English prompt, without quotes or explanations."""
             "-i", concat_list, "-c", "copy", silent_video
         ], capture_output=True)
 
-        total_dur = max(3.5, len(take_files) * float(sec_per_take))
+        try:
+            _pr = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", silent_video],
+                                 capture_output=True, text=True)
+            total_dur = max(3.5, float(_pr.stdout.strip()))
+        except Exception:
+            total_dur = max(3.5, len(take_files) * float(sec_per_take))
 
         sfx_raw = os.path.join(work_dir, "sfx_real.mp3")
         self.generate_real_sfx_soundscape(

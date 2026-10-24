@@ -3986,7 +3986,7 @@
               } else if (url.endsWith('.mp3') || url.endsWith('.wav') || ['voice', 'clone', 'suno', 'parody'].includes(c.category)) {
                 mediaHtml = `<div class="p-3 rounded-xl bg-dark-900 border border-white/10"><audio controls class="w-full h-9"><source src="${url}" type="audio/mpeg"></audio></div>`;
               } else {
-                mediaHtml = `<img src="${url}" onerror="this.onerror=null; this.src='/static/samples/canvas_take1.jpg';" class="w-full h-40 object-cover rounded-xl bg-black border border-white/10 cursor-pointer" onclick="openCanvasLightbox('${url}', '${(c.title || 'Criativo').replace(/'/g, '')}')">`;
+                mediaHtml = `<img src="${url}" onerror="if(!this.dataset.r){this.dataset.r=1;const u=this.src.split('?')[0];setTimeout(()=>{this.src=u+'?r='+Date.now();},1200);}" class="w-full h-40 object-cover rounded-xl bg-black border border-white/10 cursor-pointer" onclick="openCanvasLightbox('${url}', '${(c.title || 'Criativo').replace(/'/g, '')}')">`;
               }
               return `
                 <div class="bg-dark-800/90 border border-white/10 rounded-2xl p-4 flex flex-col justify-between space-y-3">
@@ -4919,12 +4919,13 @@ setInterval(triggerRobotBlink, 3800);
           box.innerHTML = `
             <div class="space-y-3 w-full">
               <span class="text-xs font-bold text-pink-400 block">Imagem 8K Ultra-Realista Renderizada (${data.ref_count || 0} ref usadas)!</span>
-              <img src="${data.result_url}" alt="Imagem Gerada por IA" class="rounded-xl w-full max-h-72 object-contain bg-black/40 border border-white/10 shadow-lg cursor-pointer" onclick="openCanvasLightbox('${data.result_url}', 'Imagem 8K Ultra-Realista')">
+              <img src="${data.result_url}?t=${Date.now()}" alt="Imagem Gerada por IA" onerror="if(!this.dataset.r){this.dataset.r=1;const u='${data.result_url}';setTimeout(()=>{this.src=u+'?r='+Date.now();},1200);}" class="rounded-xl w-full max-h-72 object-contain bg-black/40 border border-white/10 shadow-lg cursor-pointer" onclick="openCanvasLightbox('${data.result_url}', 'Imagem 8K Ultra-Realista')">
               <a href="${dlUrl}" download class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-pink-500/20 border border-pink-400/40 text-xs font-extrabold text-pink-300 hover:bg-pink-500/30">
                 <i data-lucide="download" class="w-3.5 h-3.5"></i> ⬇️ Baixar Imagem 8K Direto no PC
               </a>
             </div>`;
           updateCredits();
+          try { loadMemoryAndAccessLogs(); } catch (e2) {}
         } else {
           box.innerHTML = `<span class="text-red-400 text-xs">Erro: ${data.detail || 'Falha ao gerar imagem'}</span>`;
         }
@@ -4960,12 +4961,19 @@ setInterval(triggerRobotBlink, 3800);
                 </div>`;
             }
             lucide.createIcons();
+            if (typeof updateCredits === 'function') updateCredits();
+            try { loadMemoryAndAccessLogs(); } catch (e2) {}
           } else if (job.status === 'failed') {
             clearInterval(interval);
-            element.innerHTML = `<span class="text-red-400 text-xs">Falha na produção: ${job.error || 'Erro desconhecido'}</span>`;
+            element.innerHTML = `<span class="text-red-400 text-xs">Falha na produção: ${job.error || 'Erro desconhecido'}. Seus créditos foram devolvidos, tente novamente.</span>`;
+            if (typeof updateCredits === 'function') updateCredits();
+          } else if (mediaType === 'video') {
+            const pct = Math.max(5, Math.min(99, job.progress || 10));
+            element.innerHTML = `<div class="py-6 w-full space-y-3"><i data-lucide="loader-2" class="w-8 h-8 mx-auto text-cyan-400 animate-spin"></i><div class="text-xs text-cyan-300 font-bold">Gerando vídeo real com movimento cinematográfico... ${pct}%</div><div class="w-full h-2 rounded-lg bg-white/10 overflow-hidden"><div class="h-full bg-cyan-400" style="width:${pct}%"></div></div><div class="text-[11px] text-gray-400">Cada plano é animado por IA de vídeo. Leva de 2 a 6 minutos. Pode acompanhar aqui.</div></div>`;
+            lucide.createIcons();
           }
         } catch (e) {}
-      }, 3500);
+      }, 4000);
     }
 
     async function handleStripeCheckout(pkgId) {
