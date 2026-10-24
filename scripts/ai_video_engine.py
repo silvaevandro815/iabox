@@ -26,14 +26,20 @@ def public_url_for(local_path: str):
     return f"{PUBLIC_BASE}/output/{name}"
 
 
-def _ltx_hf(prompt, out_path, first_frame, duration, aspect_ratio, log):
+def _ltx_hf(prompt, out_path, first_frame, duration, aspect_ratio, log, negative_prompt=None):
     try:
         from gradio_client import Client, handle_file
+        from scripts.magnific_canvas_engine import prompt_has_human_subject
+        if not negative_prompt:
+            if not prompt_has_human_subject(prompt):
+                negative_prompt = "worst quality, blurry, jittery, distorted, static slide, human, person, woman, girl, man, face, portrait, lady, female, people, crowd, extra limbs"
+            else:
+                negative_prompt = "worst quality, blurry, jittery, distorted, static slide, deformed face, extra limbs"
         client = Client("Lightricks/ltx-video-distilled", token=os.getenv("HF_TOKEN") or None)
         portrait = aspect_ratio == "9:16"
         res = client.predict(
             prompt=prompt[:900],
-            negative_prompt="worst quality, blurry, jittery, distorted, static slide",
+            negative_prompt=negative_prompt,
             input_image_filepath=handle_file(first_frame) if first_frame else None,
             input_video_filepath=None,
             height_ui=768 if portrait else 512,
@@ -80,7 +86,7 @@ def _local_cinematic_motion(first_frame, out_path, duration=5, aspect_ratio="9:1
 
 
 def generate_video_clip(prompt, out_path, first_frame=None, reference_images=None, duration=5,
-                        aspect_ratio="9:16", timeout_s=900, is_paid=False, log=print):
+                        aspect_ratio="9:16", timeout_s=900, is_paid=False, log=print, negative_prompt=None):
     """
     Gera clipe com movimento real.
     - Se is_paid=True (VIP ou créditos pagos): utiliza GPU Dedicada Wan 2.2 no RunPod.io.
@@ -98,13 +104,13 @@ def generate_video_clip(prompt, out_path, first_frame=None, reference_images=Non
     if is_paid and rp.available():
         log("[AIVideo] Tier VIP/Pago: Roteando para GPU Dedicada RunPod.io (Wan 2.2 720p)")
         v = rp.wan_video(prompt, out_path, image_url=img_url, duration=duration,
-                         aspect_ratio=aspect_ratio, log=log)
+                         aspect_ratio=aspect_ratio, negative_prompt=negative_prompt, log=log)
         if v:
             return v
 
     # Tier Gratuito (50 tokens de boas-vindas) -> Open-source gratuito sem cobrança no RunPod
     log("[AIVideo] Tier Gratuito: Roteando para Motor Open-Source Gratuito (Zero Custo no RunPod)")
-    v_hf = _ltx_hf(prompt, out_path, first_frame, duration, aspect_ratio, log)
+    v_hf = _ltx_hf(prompt, out_path, first_frame, duration, aspect_ratio, log, negative_prompt=negative_prompt)
     if v_hf:
         return v_hf
 

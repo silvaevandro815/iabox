@@ -116,12 +116,18 @@ def _save_media(ref: str, out_path: str) -> bool:
         return False
 
 
-def wan_video(prompt, out_path, image_url=None, duration=5, aspect_ratio="9:16", log=print):
+def wan_video(prompt, out_path, image_url=None, duration=5, aspect_ratio="9:16", negative_prompt=None, log=print):
     """Wan 2.2 (open-source) no RunPod. image_url publica => image-to-video, senao text-to-video."""
+    from scripts.magnific_canvas_engine import prompt_has_human_subject
+    if negative_prompt is None:
+        if not prompt_has_human_subject(prompt):
+            negative_prompt = "human, person, woman, girl, female, lady, man, male, boy, face, portrait, people, crowds, extra limbs, blurry, low quality, static image, slideshow, still frame, distortion, deformed, text, watermark, jitter"
+        else:
+            negative_prompt = "blurry, low quality, static image, slideshow, still frame, distortion, deformed, deformed face, bad anatomy, extra limbs, text, watermark, jitter"
     size = {"9:16": "720*1280", "1:1": "960*960"}.get(aspect_ratio, "1280*720")
     payload = {
         "prompt": prompt[:1500],
-        "negative_prompt": "blurry, low quality, static image, slideshow, still frame, distortion, deformed, text, watermark, jitter",
+        "negative_prompt": negative_prompt,
         "size": size,
         "duration": 10 if duration > 7 else 5,
         "seed": -1,
@@ -146,18 +152,24 @@ def wan_video(prompt, out_path, image_url=None, duration=5, aspect_ratio="9:16",
     return None
 
 
-def flux_image(prompt, out_path, ref_image_url=None, aspect_ratio="9:16", quality="schnell", log=print):
+def flux_image(prompt, out_path, ref_image_url=None, aspect_ratio="9:16", quality="schnell", negative_prompt=None, log=print):
     """FLUX.1 (open-source). Com imagem de referencia usa Kontext-dev (preserva o sujeito)."""
+    from scripts.magnific_canvas_engine import prompt_has_human_subject
+    if negative_prompt is None:
+        if not prompt_has_human_subject(prompt):
+            negative_prompt = "human, person, woman, girl, female, lady, man, male, boy, face, portrait, people, crowds, extra limbs, blurry, low quality"
+        else:
+            negative_prompt = "deformed face, bad anatomy, extra limbs, blurry, low quality"
     size = {"9:16": (768, 1344), "1:1": (1024, 1024), "21:9": (1536, 640)}.get(aspect_ratio, (1344, 768))
     if ref_image_url:
         out = run_endpoint(EP_FLUX_KONTEXT, {
-            "prompt": prompt[:1500], "image": ref_image_url, "size": f"{size[0]}*{size[1]}",
+            "prompt": prompt[:1500], "negative_prompt": negative_prompt, "image": ref_image_url, "size": f"{size[0]}*{size[1]}",
             "num_inference_steps": 28, "guidance": 2.5, "seed": -1, "enable_safety_checker": False,
         }, timeout_s=300, log=log)
     else:
         slug = EP_FLUX_DEV if quality == "dev" else EP_FLUX_SCHNELL
         out = run_endpoint(slug, {
-            "prompt": prompt[:1500], "negative_prompt": "", "width": size[0], "height": size[1],
+            "prompt": prompt[:1500], "negative_prompt": negative_prompt, "width": size[0], "height": size[1],
             "size": f"{size[0]}*{size[1]}", "num_inference_steps": 4 if slug == EP_FLUX_SCHNELL else 28,
             "guidance": 3.5, "seed": -1, "num_images": 1, "output_format": "jpeg", "enable_safety_checker": False,
         }, timeout_s=300, log=log)

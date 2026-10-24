@@ -17,8 +17,55 @@ import base64
 import shutil
 import urllib.parse
 import subprocess
+import re
 import requests
 from dotenv import dotenv_values
+
+
+def prompt_has_human_subject(text: str) -> bool:
+    """Detecta com alta precisão se o prompt descreve um ser humano, personagem, rosto ou pessoa."""
+    if not text:
+        return False
+    t = str(text).lower()
+    human_keywords = [
+        r'\bhomem\b', r'\bhomens\b', r'\bmulher\b', r'\bmulheres\b',
+        r'\bpessoa\b', r'\bpessoas\b', r'\bmenina\b', r'\bmeninas\b',
+        r'\bmenino\b', r'\bmeninos\b', r'\bgaroto\b', r'\bgarotos\b',
+        r'\bgarota\b', r'\bgarotas\b', r'\bhumano\b', r'\bhumanos\b',
+        r'\brosto\b', r'\brostos\b', r'\bface\b', r'\bfaces\b',
+        r'\bportrait\b', r'\bretrato\b', r'\bpersonagem\b', r'\bpersonagens\b',
+        r'\bator\b', r'\batriz\b', r'\bmodelo\b', r'\bmodelos\b',
+        r'\bapresentador\b', r'\bapresentadora\b', r'\borador\b', r'\boradora\b',
+        r'\bcantor\b', r'\bcantora\b', r'\bcliente\b', r'\bcara\b',
+        r'\bman\b', r'\bmen\b', r'\bwoman\b', r'\bwomen\b',
+        r'\bperson\b', r'\bpeople\b', r'\bgirl\b', r'\bgirls\b',
+        r'\bboy\b', r'\bboys\b', r'\bkid\b', r'\bkids\b',
+        r'\bchild\b', r'\bchildren\b', r'\bbaby\b', r'\bbabies\b',
+        r'\bhuman\b', r'\bhumans\b', r'\bactor\b', r'\bactress\b',
+        r'\bmodel\b', r'\bmodels\b', r'\bselfie\b', r'\blady\b',
+        r'\bladies\b', r'\bguy\b', r'\bguys\b', r'\bfemale\b',
+        r'\bmale\b', r'\bprotagonist\b', r'\bprotagonista\b'
+    ]
+    pattern = "|".join(human_keywords)
+    return bool(re.search(pattern, t))
+
+
+def sanitize_prompt_subject(enhanced_prompt: str, user_prompt: str) -> str:
+    """Se o usuário NÃO pediu ser humano, remove menções alucinadas a pessoas/mulheres/homens."""
+    if not enhanced_prompt or prompt_has_human_subject(user_prompt):
+        return enhanced_prompt
+    cleaned = enhanced_prompt
+    hallucinated_patterns = [
+        r'\b(?:a\s+)?(?:beautiful\s+|young\s+)?(?:woman|female|girl|lady)\s+(?:holding|watching|with|turning|transforming)?\b',
+        r'\b(?:a\s+)?(?:handsome\s+|young\s+)?(?:man|male|guy)\s+(?:holding|watching|with|turning|transforming)?\b',
+        r'\b(?:a\s+)?(?:person|model|human|bystander)\s+(?:holding|watching|with|turning|transforming)?\b',
+        r'\b(?:skin\s+pores|facial\s+features|human\s+skin|detailed\s+skin|intense\s+eye\s+contact)\b'
+    ]
+    for pat in hallucinated_patterns:
+        cleaned = re.sub(pat, '', cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r',\s*,+', ',', cleaned)
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip().strip(',')
+    return cleaned
 
 
 class MagnificCanvasEngine:
@@ -30,6 +77,7 @@ class MagnificCanvasEngine:
         self.openrouter_key = env.get('OPENROUTER_API_KEY') or os.environ.get('OPENROUTER_API_KEY', '')
         self.hf_token = env.get('HF_TOKEN') or env.get('HUGGINGFACE_TOKEN') or os.environ.get('HF_TOKEN', '')
 
+        # Presets para quando há seres humanos / personagens
         self.style_presets = {
             "Google Omni Vision 8K": "Google Omni cinema vision, ultra-high optical fidelity, photorealistic human subject, razor-sharp textures, dynamic volumetric range, 8K commercial production, Hasselblad 100MP clarity",
             "Seedream 5 Pro": "8k cinema masterwork, ARRI Alexa 65 IMAX 70mm, ultra-realistic skin pores and subsurface scattering, natural volumetric lighting, razor-sharp optical focus, Hollywood blockbuster color grading",
@@ -45,14 +93,43 @@ class MagnificCanvasEngine:
             "IABOX Cinema 8K": "ultra-upscaled 8k, extreme micro-detail, pores and fabric texture, masterwork photography, dramatic chiaroscuro lighting, Kodak Vision3 500T film look"
         }
 
+        # Presets para objetos, natureza, veículos, produtos ou transformações abstratas (ZERO humanos)
+        self.style_presets_object = {
+            "Google Omni Vision 8K": "Google Omni cinema vision, ultra-high optical fidelity, razor-sharp physical textures, dynamic volumetric range, 8K commercial production, Hasselblad 100MP clarity",
+            "Seedream 5 Pro": "8k cinema masterwork, ARRI Alexa 65 IMAX 70mm, intricate organic and surface textures, natural volumetric lighting, razor-sharp optical focus, Hollywood blockbuster color grading",
+            "NanoBanana Pro 2": "multi-reference visual continuity, cinematic movie frame, anamorphic 35mm lens, dramatic volumetric lighting, shallow depth of field, hyper-detailed physical surface texture, 8k photorealistic",
+            "NanoBanana Pro": "cinematic movie still, ARRI Alexa 65, anamorphic lens 35mm, dramatic volumetric lighting, shallow depth of field, hyper-detailed physical surface texture, 8k photorealistic",
+            "Flux.1 Kontext Pro": "physical object fidelity, 100% faithful material structure, raw candid 85mm macro photography, lifelike micro-textures, studio cinema lighting, 8k ultra-detailed",
+            "Magnific Cinema 8K": "ultra-upscaled 8k, extreme micro-detail, intricate material and surface texture, masterwork photography, dramatic chiaroscuro lighting, Kodak Vision3 500T film look",
+            "GPT Image 2 Ultra": "high-precision scene composition, exact spatial coherence, photorealistic textures, crisp architectural and environmental details, 8k commercial cinema quality",
+            "Qwen Image Edit Pro": "seamless scene relighting and material continuity, photorealistic integration, natural shadows and reflections, 8k movie still",
+            "Flux Realism Pro": "raw candid photography, ultra realistic, natural organic texture, 85mm macro lens, sharp focus, lifelike colors, editorial quality",
+            "Higgsfield Dark Cinema": "dark moody blockbuster frame, flames and rim lighting, intense atmosphere, IMAX 70mm cinematography, Teal and Orange color grade, ultra detailed",
+            "IABOX Cinema Dark Cinema": "dark moody blockbuster frame, flames and rim lighting, intense atmosphere, IMAX 70mm cinematography, Teal and Orange color grade, ultra detailed",
+            "IABOX Cinema 8K": "ultra-upscaled 8k, extreme micro-detail, intricate material and surface texture, masterwork photography, dramatic chiaroscuro lighting, Kodak Vision3 500T film look"
+        }
+
         self.camera_angles = {
             "default": "",
             "close_up_85mm": "extreme close-up portrait shot on 85mm f/1.2 prime lens, shallow depth of field, intense eye contact",
+            "macro_detail": "extreme macro close-up shot, shallow depth of field, razor-sharp textures, intricate surface detail",
             "low_angle_hero": "dramatic low-angle hero shot looking up, 24mm wide cinema lens, imposing heroic presence",
             "over_shoulder": "cinematic over-the-shoulder shot, depth of field framing the subject in conversation or action",
             "wide_anamorphic": "epic wide establishing cinema shot, Panavision anamorphic 35mm lens, expansive environment",
             "drone_aerial": "high-altitude sweeping drone aerial cinema shot looking down at the scene, IMAX scale",
             "side_profile": "cinematic side-profile tracking shot, dramatic rim light outlining the face and silhouette",
+            "dutch_angle": "dynamic tilted Dutch angle action frame, high tension thriller cinematography"
+        }
+
+        self.camera_angles_object = {
+            "default": "",
+            "close_up_85mm": "extreme close-up macro detail shot on 85mm prime lens, shallow depth of field, razor-sharp focus on the object",
+            "macro_detail": "extreme macro close-up shot, shallow depth of field, razor-sharp textures, intricate surface detail",
+            "low_angle_hero": "dramatic low-angle hero shot looking up, 24mm wide cinema lens, imposing presence",
+            "over_shoulder": "cinematic framing shot, depth of field framing the object in action",
+            "wide_anamorphic": "epic wide establishing cinema shot, Panavision anamorphic 35mm lens, expansive environment",
+            "drone_aerial": "high-altitude sweeping drone aerial cinema shot looking down at the scene, IMAX scale",
+            "side_profile": "cinematic side-profile tracking shot, dramatic rim light outlining the contours and silhouette",
             "dutch_angle": "dynamic tilted Dutch angle action frame, high tension thriller cinematography"
         }
 
@@ -64,6 +141,18 @@ class MagnificCanvasEngine:
             "imax_daylight": "crisp natural IMAX daylight, high dynamic range, clear atmospheric depth",
             "fire_volumetric": "warm flickering firelight and volumetric smoke, epic action blockbuster mood"
         }
+
+    def get_style(self, model_style: str, has_human: bool = True) -> str:
+        """Retorna o estilo visual correto respeitando a presença ou ausência de seres humanos."""
+        if has_human:
+            return self.style_presets.get(model_style, self.style_presets.get("Seedream 5 Pro", ""))
+        return self.style_presets_object.get(model_style, self.style_presets_object.get("Seedream 5 Pro", ""))
+
+    def get_camera(self, camera_angle: str, has_human: bool = True) -> str:
+        """Retorna a especificação de enquadramento óptica adaptada ao assunto."""
+        if has_human:
+            return self.camera_angles.get(camera_angle, "")
+        return self.camera_angles_object.get(camera_angle, self.camera_angles.get(camera_angle, ""))
 
     def _call_llm_text(self, prompt_text: str, parts: list = None, timeout: int = 25) -> str:
         """Cascata Neural Resiliente (Multi-Modelos Ativos 3.6 / 3.5 + Fallback)."""
@@ -131,8 +220,9 @@ class MagnificCanvasEngine:
         de Rosto para extrair biometria exata e fundir com o prompt do cliente, aplicando os sliders
         Magnific AI (Criatividade, Semelhança/HDR e Fractalidade).
         """
-        style_suffix = self.style_presets.get(model_style, self.style_presets["Seedream 5 Pro"])
-        cam_spec = self.camera_angles.get(camera_angle, "")
+        has_human = bool(face_lock_path and os.path.exists(face_lock_path)) or prompt_has_human_subject(user_prompt)
+        style_suffix = self.get_style(model_style, has_human=has_human)
+        cam_spec = self.get_camera(camera_angle, has_human=has_human)
         light_spec = self.lighting_moods.get(lighting_mood, "")
 
         magnific_specs = []
@@ -145,7 +235,10 @@ class MagnificCanvasEngine:
             magnific_specs.append(f"High Resemblance ({resemblance}%): preserve exact subject identity, color palette, and geometric proportions")
         
         if fractality > 50:
-            magnific_specs.append(f"High Fractality ({fractality}%): hyper-detailed micro-pores, surface texture, intricate fabric weaves, 8k razor sharpness")
+            if has_human:
+                magnific_specs.append(f"High Fractality ({fractality}%): hyper-detailed micro-pores, surface texture, intricate fabric weaves, 8k razor sharpness")
+            else:
+                magnific_specs.append(f"High Fractality ({fractality}%): hyper-detailed organic surface textures, material grains, physical reflections, 8k razor sharpness")
 
         specs_list = [s for s in (cam_spec, light_spec, style_suffix, " ".join(magnific_specs)) if s]
         extra_specs = ", ".join(specs_list)
@@ -185,14 +278,24 @@ class MagnificCanvasEngine:
             )
 
         if valid_refs > 0:
+            human_rule = ""
+            if not has_human:
+                human_rule = "\n5. STRICT ZERO-HUMAN RULE: This scene is about an OBJECT/NATURE/CONCEPT. Do NOT include any humans, persons, women, men, faces, or bodies unless explicitly present in the reference images."
             rules_instruction = f"""MANDATORY RULES:
 1. Carefully observe the {valid_refs} reference image(s) provided. If a person, product, character, or specific object is in the reference images, preserve their exact appearance, identity, textures, and details.
 2. If a person is present, preserve their exact ethnicity, facial features, hair, and build. NEVER change their ethnicity or facial structure.
 3. Obey the user prompt faithfully: "{clean_prompt}".
-4. Write a single, cohesive, ultra-detailed photorealistic English prompt (max 90 words) that fuses the reference visual features with the action/scene requested.
-5. Include these optical specifications: {extra_specs}."""
+4. Write a single, cohesive, ultra-detailed photorealistic English prompt (max 90 words) that fuses the reference visual features with the action/scene requested.{human_rule}
+6. Include these optical specifications: {extra_specs}."""
         else:
-            rules_instruction = f"""MANDATORY RULES:
+            if not has_human:
+                rules_instruction = f"""MANDATORY RULES:
+1. Obey the user prompt faithfully: "{clean_prompt}". Focus 100% EXCLUSIVELY on what was requested by the user.
+2. ABSOLUTE ZERO-HUMAN MANDATE: The user prompt describes an OBJECT, NATURE, ANIMAL, OR PHYSICAL TRANSFORMATION ('{clean_prompt}'). Absolutely DO NOT generate or mention any human beings, persons, women, men, girls, boys, faces, hands, bodies, portraits, or bystanders under any circumstances! The focal subject must strictly be the requested object/action.
+3. Expand the scene into a single, cohesive, ultra-detailed photorealistic English prompt (max 90 words) with rich physical textures, realistic depth, cinematic lighting, and sharp focus on the object/transformation.
+4. Include these optical specifications: {extra_specs}."""
+            else:
+                rules_instruction = f"""MANDATORY RULES:
 1. Obey the user prompt faithfully: "{clean_prompt}". If the prompt specifies an object, character, animal, scenery, vehicle, machine, or action, focus 100% on what was requested by the user.
 2. Expand the scene into a single, cohesive, ultra-detailed photorealistic English prompt (max 90 words) with rich textures, realistic depth, cinematic lighting, and sharp focus.
 3. Do NOT invent unrelated people or elements not requested in the prompt.
@@ -210,9 +313,14 @@ Return ONLY the final English prompt, without quotes or explanations."""
 
         enhanced = self._call_llm_text(system_instruction, parts=parts if valid_refs > 0 else None, timeout=22)
         if enhanced:
+            if not has_human:
+                enhanced = sanitize_prompt_subject(enhanced, clean_prompt)
             return enhanced
 
-        return f"{clean_prompt.strip()}, {extra_specs}"
+        fallback_p = f"{clean_prompt.strip()}, {extra_specs}"
+        if not has_human:
+            fallback_p = sanitize_prompt_subject(fallback_p, clean_prompt)
+        return fallback_p
 
     def _synthesize_gpu_image(
         self,
@@ -223,7 +331,8 @@ Return ONLY the final English prompt, without quotes or explanations."""
         h: int,
         raw_out_path: str,
         all_refs: list = None,
-        is_paid: bool = False
+        is_paid: bool = False,
+        has_human: bool = None
     ) -> bool:
         """
         Cascata Neural Inteligente:
@@ -231,6 +340,8 @@ Return ONLY the final English prompt, without quotes or explanations."""
         - Se is_paid=False (bônus de teste 50 tokens): utiliza modelos open-source gratuitos (Pollinations FLUX),
           preservando 100% o saldo em dólares do servidor RunPod.io do fundador.
         """
+        if has_human is None:
+            has_human = bool(face_lock_path and os.path.exists(face_lock_path)) or prompt_has_human_subject(compiled_prompt)
         seed = int(uuid.uuid4().int % 999999)
         ref_to_use = face_lock_path if (face_lock_path and os.path.exists(face_lock_path)) else (
             primary_ref_path if (primary_ref_path and os.path.exists(primary_ref_path)) else None
@@ -252,10 +363,12 @@ Return ONLY the final English prompt, without quotes or explanations."""
                 if _rp.available():
                     from scripts.ai_video_engine import public_url_for
                     ref_url = public_url_for(all_valid_refs[0]) if all_valid_refs else None
+                    neg_flux = None if has_human else "human, person, woman, girl, female, lady, man, male, boy, face, portrait, people, crowd, deformed, extra limbs, blurry"
                     got = _rp.flux_image(
                         compiled_prompt, raw_out_path, ref_image_url=ref_url,
                         aspect_ratio="9:16" if h > w else ("1:1" if h == w else "16:9"),
-                        quality="dev" if not ref_url else "schnell"
+                        quality="dev" if not ref_url else "schnell",
+                        negative_prompt=neg_flux
                     )
                     if got and os.path.exists(raw_out_path) and os.path.getsize(raw_out_path) > 8000:
                         print(f"[ESGCore] Síntese FLUX no RunPod GPU concluída (Tier VIP/Pago)")
@@ -267,6 +380,9 @@ Return ONLY the final English prompt, without quotes or explanations."""
             try:
                 enc_p = urllib.parse.quote(compiled_prompt[:350])
                 u_free = f"https://image.pollinations.ai/prompt/{enc_p}?width={w}&height={h}&seed={seed}&model=flux&nologo=true"
+                if not has_human:
+                    neg_p = urllib.parse.quote("human, person, woman, girl, lady, man, face, portrait, people, extra limbs")
+                    u_free += f"&negative={neg_p}"
                 rfb = requests.get(u_free, headers={"User-Agent": "Mozilla/5.0"}, timeout=25)
                 if rfb.status_code == 200 and len(rfb.content) > 5000:
                     with open(raw_out_path, "wb") as f:
@@ -288,6 +404,8 @@ Return ONLY the final English prompt, without quotes or explanations."""
                     f"Generate an ultra-photorealistic 8K cinematic image faithful to the scene description: "
                     f"{compiled_prompt[:1000]}"
                 )
+            if not has_human:
+                prompt_text += " CRITICAL CONSTRAINT: Absolutely DO NOT include any human beings, women, men, people, or faces. Strictly depict the requested object/action."
             msg_content = [
                 {
                     "type": "text",
@@ -462,6 +580,8 @@ Return ONLY the final English prompt, without quotes or explanations."""
         raw_tmp = output_path + ".raw_synth"
         primary_ref = reference_images[0] if reference_images else None
 
+        has_human_node = bool(face_lock_path and os.path.exists(face_lock_path)) or prompt_has_human_subject(prompt)
+
         synthesized = self._synthesize_gpu_image(
             compiled_prompt=final_prompt,
             primary_ref_path=primary_ref,
@@ -470,13 +590,17 @@ Return ONLY the final English prompt, without quotes or explanations."""
             h=h,
             raw_out_path=raw_tmp,
             all_refs=reference_images,
-            is_paid=is_paid
+            is_paid=is_paid,
+            has_human=has_human_node
         )
 
         if not synthesized or not os.path.exists(raw_tmp):
             try:
                 enc_simple = urllib.parse.quote(prompt[:250])
                 u_fallback = f"https://image.pollinations.ai/prompt/{enc_simple}?width={w}&height={h}&seed={int(uuid.uuid4().int % 999999)}&nologo=true"
+                if not has_human_node:
+                    neg_p = urllib.parse.quote("human, person, woman, girl, lady, man, face, portrait, people, extra limbs")
+                    u_fallback += f"&negative={neg_p}"
                 rfb = requests.get(u_fallback, headers={"User-Agent": "Mozilla/5.0"}, timeout=18)
                 if rfb.status_code == 200 and len(rfb.content) > 5000:
                     with open(raw_tmp, "wb") as f:
@@ -1010,11 +1134,20 @@ Retorne APENAS um JSON válido (sem markdown ```json) no formato:
             except Exception:
                 pass
 
+        is_human_ref = prompt_has_human_subject(reference_description or "")
+        ref_protagonist = reference_description or ('cinematic protagonist in dramatic lighting' if is_human_ref else 'cinematic object in dramatic lighting')
+        tex_desc = "hyper-detailed skin pores and fabric texture" if is_human_ref else "hyper-detailed organic surface and material texture"
+        light_color_desc = (
+            "Iluminação dramática com luz de recorte (Rim Light) aquecida, contraste Teal & Orange em película 500T e micro-detalhamento de poros 8K."
+            if is_human_ref else
+            "Iluminação dramática com luz de recorte (Rim Light) aquecida, contraste Teal & Orange em película 500T e micro-detalhamento de superfícies e texturas 8K."
+        )
+
         return {
-            "layer_1_composition": "Enquadramento cinematográfico de alta retenção com ponto focal centralizado no sujeito, separação nítida entre primeiro plano e fundo atmosférico em proporção widescreen.",
+            "layer_1_composition": "Enquadramento cinematográfico de alta retenção com ponto focal centralizado no assunto, separação nítida entre primeiro plano e fundo atmosférico em proporção widescreen.",
             "layer_2_optics_camera": "Lente Prime Anamórfica 35mm / 85mm f/1.4 em câmera de cinema 65mm, bokeh orgânico e desfoque de profundidade óptico.",
-            "layer_3_lighting_color": "Iluminação dramática com luz de recorte (Rim Light) aquecida, contraste Teal & Orange em película 500T e micro-detalhamento de poros 8K.",
-            "layer_4_master_prompt": f"Ultra-realistic 8K Hollywood movie frame, {reference_description or 'cinematic protagonist in dramatic lighting'}, shot on 65mm cinema camera with 35mm anamorphic lens, volumetric atmosphere, hyper-detailed skin pores and fabric texture, master color grading.",
+            "layer_3_lighting_color": light_color_desc,
+            "layer_4_master_prompt": f"Ultra-realistic 8K Hollywood movie frame, {ref_protagonist}, shot on 65mm cinema camera with 35mm anamorphic lens, volumetric atmosphere, {tex_desc}, master color grading.",
             "detected_camera_key": "wide_anamorphic",
             "detected_lighting_key": "golden_hour",
             "detected_sfx_key": "epic_cinema_impact"

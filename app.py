@@ -1561,23 +1561,42 @@ async def check_omni_requirements(
 # ----------------------------------------------------------------------------------------
 def _plan_video_shots(clean_prompt: str, num_takes: int, has_refs: bool) -> list:
     """Divide o pedido do usuario em N planos cinematograficos com ACAO e movimento de camera."""
-    fallback_moves = [
-        "slow cinematic dolly-in, subject performing the requested action with natural physical motion",
-        "smooth orbit camera around the subject, continuing the action, realistic motion blur",
-        "low angle tracking shot, dynamic movement, volumetric light and particles",
-        "handheld-style push-in with shallow depth of field, action reaches its climax",
-        "crane up reveal, wide establishing view, motion continues naturally",
-        "close-up detail shot, macro textures, subtle motion, shallow focus",
-    ]
+    from scripts.magnific_canvas_engine import prompt_has_human_subject, sanitize_prompt_subject
+    has_human = prompt_has_human_subject(clean_prompt)
+    if has_human:
+        fallback_moves = [
+            "slow cinematic dolly-in, the subject performing the requested action with natural physical motion",
+            "smooth orbit camera around the subject, continuing the action, realistic motion blur",
+            "low angle tracking shot, dynamic movement, volumetric light and particles",
+            "handheld-style push-in with shallow depth of field, action reaches its climax",
+            "crane up reveal, wide establishing view, motion continues naturally",
+            "close-up detail shot, sharp focus, subtle motion",
+        ]
+    else:
+        fallback_moves = [
+            "slow cinematic dolly-in, the requested object undergoing natural physical transformation and motion",
+            "smooth orbit camera around the object, continuing the physical transformation, realistic motion blur",
+            "low angle tracking shot of the object, dynamic transformation, volumetric light and particles",
+            "push-in macro shot with shallow depth of field, the object transformation reaches its climax",
+            "crane up reveal of the object in its environment, physical motion continues naturally",
+            "extreme close-up macro detail shot, intricate organic textures, subtle physical motion, razor-sharp focus",
+        ]
     shots = []
     try:
         from scripts.magnific_canvas_engine import MagnificCanvasEngine
         ref_rule = "The subject/person/object from the reference images MUST be the protagonist of every shot, identical appearance." if has_refs else ""
+        human_neg_rule = (
+            "STRICT ZERO-HUMAN RULE: The user request is about an object/nature/concept ('" + clean_prompt + "'). "
+            "ABSOLUTELY DO NOT introduce any human beings, women, men, girls, boys, faces, portraits, or people in ANY of the shots. "
+            "Every single shot must strictly depict the requested object and its physical transformation/action."
+            if not has_human else ""
+        )
         instr = (
             f'The user wants a real cinematic video about: "{clean_prompt}".\n'
             f"Split it into exactly {num_takes} consecutive shots that tell the request faithfully, in order. {ref_rule}\n"
-            "Each shot: ONE English sentence (max 45 words) describing the visible subject, the ACTION/MOTION happening "
-            "(physical movement, not a still pose), the camera movement, lighting and ultra-realistic detail. "
+            f"{human_neg_rule}\n"
+            "Each shot: ONE English sentence (max 45 words) describing the visible subject/object, the ACTION/MOTION happening "
+            "(physical movement/transformation, not a still pose), the camera movement, lighting and ultra-realistic detail. "
             "Never add elements the user did not ask for.\n"
             f"Return ONLY a JSON array of {num_takes} strings."
         )
@@ -1587,18 +1606,23 @@ def _plan_video_shots(clean_prompt: str, num_takes: int, has_refs: bool) -> list
             raw = raw[4:]
         arr = json.loads(raw[raw.index("["): raw.rindex("]") + 1])
         shots = [str(x).strip() for x in arr if str(x).strip()]
+        if not has_human:
+            shots = [sanitize_prompt_subject(s, clean_prompt) for s in shots]
     except Exception as e:
         print(f"[VideoPlan] fallback de planos: {e}")
     while len(shots) < num_takes:
         i = len(shots)
-        shots.append(f"{clean_prompt}, {fallback_moves[i % len(fallback_moves)]}")
+        shot_fb = f"{clean_prompt}, {fallback_moves[i % len(fallback_moves)]}"
+        if not has_human:
+            shot_fb = sanitize_prompt_subject(shot_fb, clean_prompt)
+        shots.append(shot_fb)
     return shots[:num_takes]
 
 
 def _render_prompt_video(job_id, user_id, clean_prompt, saved_ref_imgs, duration_mode, aspect_ratio,
                          target_w, target_h, out_path, out_filename, vfx_mode, req_ip):
     from concurrent.futures import ThreadPoolExecutor
-    from scripts.magnific_canvas_engine import MagnificCanvasEngine
+    from scripts.magnific_canvas_engine import MagnificCanvasEngine, prompt_has_human_subject
     from scripts.ai_video_engine import generate_video_clip
 
     if duration_mode == "preview_10s":
@@ -1614,7 +1638,11 @@ def _render_prompt_video(job_id, user_id, clean_prompt, saved_ref_imgs, duration
     shots = _plan_video_shots(clean_prompt, num_takes, bool(saved_ref_imgs))
     save_job(job_id, "video", status="processing", progress=25, user_id=user_id)
 
-    cams = ["wide_anamorphic", "close_up_85mm", "low_angle_hero", "default", "wide_anamorphic", "close_up_85mm", "low_angle_hero", "default"]
+    has_human = prompt_has_human_subject(clean_prompt)
+    if has_human:
+        cams = ["wide_anamorphic", "close_up_85mm", "low_angle_hero", "default", "wide_anamorphic", "close_up_85mm", "low_angle_hero", "default"]
+    else:
+        cams = ["wide_anamorphic", "macro_detail", "low_angle_hero", "default", "wide_anamorphic", "macro_detail", "low_angle_hero", "default"]
     done_counter = {"n": 0}
 
     def _make_take(i):
@@ -1625,6 +1653,8 @@ def _render_prompt_video(job_id, user_id, clean_prompt, saved_ref_imgs, duration
             f"{shot}. Real physical motion and cinematic camera movement, ultra-realistic 8K detail, "
             f"natural lighting, temporal consistency, no text, no watermark. Original request: {clean_prompt}"
         )
+        if not has_human:
+            motion_prompt += " Strictly no human, no person, no woman, no face, no model."
         kf_ok = False
         is_paid = is_paid_or_vip_user(user_id, req_ip)
         try:
@@ -1636,13 +1666,19 @@ def _render_prompt_video(job_id, user_id, clean_prompt, saved_ref_imgs, duration
         except Exception as e:
             print(f"[OmniVideoGen] keyframe {i}: {e}")
 
+        neg_clip = "human, person, woman, girl, female, lady, man, face, portrait, people, crowd, extra limbs, worst quality, blurry, jittery, distorted, static slide" if not has_human else None
         real = generate_video_clip(
             prompt=motion_prompt, out_path=clip_raw,
             first_frame=kf if kf_ok else None,
             reference_images=saved_ref_imgs if not kf_ok else None,
             duration=take_len, aspect_ratio=aspect_ratio,
-            is_paid=is_paid
+            is_paid=is_paid,
+            negative_prompt=neg_clip
         )
+        done_counter["n"] += 1
+        save_job(job_id, "video", status="processing",
+                 progress=25 + int(55 * done_counter["n"] / num_takes), user_id=user_id)
+        return i, real, (kf if kf_ok else None)
         done_counter["n"] += 1
         save_job(job_id, "video", status="processing",
                  progress=25 + int(55 * done_counter["n"] / num_takes), user_id=user_id)
@@ -3240,18 +3276,38 @@ async def enhance_user_prompt(
         raise HTTPException(status_code=400, detail="Por favor, digite um prompt para ser melhorado.")
 
     cat = (category or "image").lower()
+    from scripts.magnific_canvas_engine import prompt_has_human_subject, sanitize_prompt_subject
+    has_human = prompt_has_human_subject(clean_p)
+
+    subject_rule = ""
+    if not has_human and cat in ("image", "canvas", "video"):
+        subject_rule = (
+            "REGRA ABSOLUTA DE FIDELIDADE AO ASSUNTO (ZERO HUMANOS ALUCINADOS):\n"
+            f"O prompt do usuário trata de um OBJETO, NATUREZA, ANIMAL OU TRANSFORMAÇÃO FÍSICA: \"{clean_p}\".\n"
+            "É TERMINANTEMENTE PROIBIDO adicionar seres humanos, mulheres, homens, modelos, garotas, garotos, rostos, pessoas, retratos ou mãos!\n"
+            "O prompt expandido DEVE focar 100% no objeto e na física da transformação pedida.\n"
+            "NUNCA use palavras como 'skin', 'pores', 'person', 'woman', 'man', 'model', 'face', 'portrait' ou 'eyes'."
+        )
+    elif has_human:
+        subject_rule = (
+            "O prompt do usuário trata de uma pessoa ou personagem humano. "
+            "Aprimore expressividade, iluminação facial cinematográfica, fidelidade anatômica e texturas ultra-realistas."
+        )
+
     system_instructions = f"""Você é um especialista internacional e diretor de arte em engenharia de prompts para IA generativa.
 O usuário escreveu o seguinte rascunho de prompt para a categoria "{cat}":
 "{clean_p}"
+
+{subject_rule}
 
 Sua missão é transformar esse pedido em um prompt mestre profissional, rico em detalhes visuais/musicais, eliminando qualquer pobreza de detalhes.
 
 REGRAS POR CATEGORIA:
 - Se 'image' ou 'canvas':
-  * Gere o enhanced_prompt em INGLÊS técnico cinematográfico (8K, especificando lente como 85mm f/1.2 ou 35mm anamorphic, iluminação volumétrica/rim light, texturas hiper-realistas, composição).
-  * Melhore detalhes de pele, profundidade de campo rasa e atmosfera.
+  * Gere o enhanced_prompt em INGLÊS técnico cinematográfico (8K, especificando lente como 85mm macro f/1.4 ou 35mm anamorphic, iluminação volumétrica/rim light, texturas físicas hiper-realistas, composição).
+  * Enfatize iluminação dramática, profundidade de campo rasa e atmosfera. Se for objeto, enfatize micro-texturas orgânicas e materiais.
 - Se 'video':
-  * Gere o enhanced_prompt em INGLÊS descrevendo movimentos de câmera cinematográficos (slow pan, dolly-in, orbit shot), iluminação dramática, atmosfera e ação vívida em 60fps.
+  * Gere o enhanced_prompt em INGLÊS descrevendo movimentos de câmera cinematográficos (slow pan, dolly-in, orbit shot), iluminação dramática, atmosfera e ação/transformação física vívida em 60fps.
 - Se 'suno' ou 'parody':
   * Gere o enhanced_prompt em PORTUGUÊS DO BRASIL especificando o gênero exato, instrumentos principais (violão de aço, sanfona, bateria 808, sintetizador), BPM, clima emocional e tema poético.
 
@@ -3285,41 +3341,79 @@ Retorne ESTRITAMENTE um objeto JSON válido (sem markdown ao redor, apenas o JSO
             clean_raw = clean_raw.strip()
             import json
             res_json = json.loads(clean_raw)
+            if res_json and isinstance(res_json, dict) and "enhanced_prompt" in res_json:
+                if not has_human:
+                    res_json["enhanced_prompt"] = sanitize_prompt_subject(res_json["enhanced_prompt"], clean_p)
+                    for alt in res_json.get("alternatives", []):
+                        if isinstance(alt, dict) and "prompt" in alt:
+                            alt["prompt"] = sanitize_prompt_subject(alt["prompt"], clean_p)
     except Exception as e:
         print(f"[PromptEnhancer] LLM Exception: {e}")
 
     # Fallback inteligente se o LLM falhar ou der timeout
     if not res_json or not isinstance(res_json, dict) or "enhanced_prompt" not in res_json:
         if cat in ("image", "canvas"):
-            res_json = {
-                "enhanced_prompt": f"Ultra-realistic 8K photograph of {clean_p}, shot on 85mm f/1.2 lens, cinematic golden hour lighting, sharp focus, volumetric dust, detailed textures, photorealistic masterpiece, shallow depth of field, 16:9 widescreen",
-                "improvements": [
-                    "Lente 85mm f/1.2 com desfoque de fundo cinematográfico",
-                    "Iluminação volumétrica dourada (golden hour)",
-                    "Texturas e microporos em altísseima resolução 8K",
-                    "Ajuste de enquadramento com proporção widescreen"
-                ],
-                "preset_chips": ["Luz Dourada", "85mm f/1.2", "Ultra 8K", "Cinema 16:9"],
-                "alternatives": [
-                    {"title": "Modo Cinema Escuro", "prompt": f"Dramatic cinematic scene of {clean_p}, moody shadows, Blade Runner style neon rim light, 35mm anamorphic lens, haze"},
-                    {"title": "Estilo Comercial Clean", "prompt": f"High-end commercial studio portrait of {clean_p}, clean softbox lighting, ultra-sharp detail, pristine white studio setup"}
-                ]
-            }
+            if not has_human:
+                res_json = {
+                    "enhanced_prompt": f"Ultra-realistic 8K photograph of {clean_p}, shot on macro cinema lens, cinematic golden hour lighting, sharp focus, volumetric dust, detailed organic and physical textures, photorealistic masterpiece, shallow depth of field, 16:9 widescreen",
+                    "improvements": [
+                        "Lente macro com desfoque de fundo cinematográfico",
+                        "Iluminação volumétrica dourada (golden hour)",
+                        "Micro-texturas de materiais e superfícies em altíssima resolução 8K",
+                        "Ajuste de enquadramento com proporção widescreen"
+                    ],
+                    "preset_chips": ["Luz Dourada", "Lente Macro", "Ultra 8K", "Cinema 16:9"],
+                    "alternatives": [
+                        {"title": "Modo Cinema Escuro", "prompt": f"Dramatic cinematic scene of {clean_p}, moody shadows, Blade Runner style neon rim light, 35mm anamorphic lens, haze"},
+                        {"title": "Estilo Comercial Clean", "prompt": f"High-end commercial product shot of {clean_p}, clean softbox lighting, ultra-sharp detail, pristine studio setup"}
+                    ]
+                }
+            else:
+                res_json = {
+                    "enhanced_prompt": f"Ultra-realistic 8K photograph of {clean_p}, shot on 85mm f/1.2 lens, cinematic golden hour lighting, sharp focus, volumetric dust, detailed textures, photorealistic masterpiece, shallow depth of field, 16:9 widescreen",
+                    "improvements": [
+                        "Lente 85mm f/1.2 com desfoque de fundo cinematográfico",
+                        "Iluminação volumétrica dourada (golden hour)",
+                        "Texturas e microporos em altíssima resolução 8K",
+                        "Ajuste de enquadramento com proporção widescreen"
+                    ],
+                    "preset_chips": ["Luz Dourada", "85mm f/1.2", "Ultra 8K", "Cinema 16:9"],
+                    "alternatives": [
+                        {"title": "Modo Cinema Escuro", "prompt": f"Dramatic cinematic scene of {clean_p}, moody shadows, Blade Runner style neon rim light, 35mm anamorphic lens, haze"},
+                        {"title": "Estilo Comercial Clean", "prompt": f"High-end commercial studio portrait of {clean_p}, clean softbox lighting, ultra-sharp detail, pristine white studio setup"}
+                    ]
+                }
         elif cat == "video":
-            res_json = {
-                "enhanced_prompt": f"Cinematic film shot of {clean_p}, smooth camera dolly in, dramatic studio rim lighting, 4K 60fps high motion fidelity, professional color grading, film grain",
-                "improvements": [
-                    "Movimento de câmera suave (dolly in / traveling)",
-                    "Iluminação dramática com luz de recorte (rim light)",
-                    "Taxa de quadros fluida a 60fps",
-                    "Correção de cor com graduação de cinema"
-                ],
-                "preset_chips": ["Dolly In", "60 FPS Fluido", "Luz de Recorte", "Grading Cinema"],
-                "alternatives": [
-                    {"title": "Câmera Lenta Épica", "prompt": f"Slow-motion cinematic close-up of {clean_p}, 120fps, floating particles, dramatic backlight"},
-                    {"title": "Câmera Dinâmica em Ação", "prompt": f"Fast-paced handheld tracking shot following {clean_p}, dynamic camera shake, action-packed framing"}
-                ]
-            }
+            if not has_human:
+                res_json = {
+                    "enhanced_prompt": f"Cinematic film shot of {clean_p}, smooth camera dolly in, dramatic studio rim lighting, 4K 60fps high physical motion fidelity, detailed organic transformation, professional color grading, film grain",
+                    "improvements": [
+                        "Movimento de câmera suave (dolly in / traveling)",
+                        "Iluminação dramática com luz de recorte (rim light)",
+                        "Taxa de quadros fluida a 60fps com física realista",
+                        "Correção de cor com graduação de cinema"
+                    ],
+                    "preset_chips": ["Dolly In", "60 FPS Fluido", "Luz de Recorte", "Grading Cinema"],
+                    "alternatives": [
+                        {"title": "Câmera Lenta Épica", "prompt": f"Slow-motion cinematic close-up of {clean_p}, 120fps, floating particles, dramatic backlight"},
+                        {"title": "Câmera Dinâmica em Ação", "prompt": f"Fast-paced tracking shot following {clean_p}, dynamic camera movement, detailed physics"}
+                    ]
+                }
+            else:
+                res_json = {
+                    "enhanced_prompt": f"Cinematic film shot of {clean_p}, smooth camera dolly in, dramatic studio rim lighting, 4K 60fps high motion fidelity, professional color grading, film grain",
+                    "improvements": [
+                        "Movimento de câmera suave (dolly in / traveling)",
+                        "Iluminação dramática com luz de recorte (rim light)",
+                        "Taxa de quadros fluida a 60fps",
+                        "Correção de cor com graduação de cinema"
+                    ],
+                    "preset_chips": ["Dolly In", "60 FPS Fluido", "Luz de Recorte", "Grading Cinema"],
+                    "alternatives": [
+                        {"title": "Câmera Lenta Épica", "prompt": f"Slow-motion cinematic close-up of {clean_p}, 120fps, floating particles, dramatic backlight"},
+                        {"title": "Câmera Dinâmica em Ação", "prompt": f"Fast-paced handheld tracking shot following {clean_p}, dynamic camera shake, action-packed framing"}
+                    ]
+                }
         else:
             res_json = {
                 "enhanced_prompt": f"{clean_p}, arranjo profissional com violão de aço, sanfona marcante, bateria moderna, 128 BPM, mixagem comercial de estúdio, voz encorpada e refrão chiclete envolvente",
