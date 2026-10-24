@@ -3731,16 +3731,57 @@ def vox_render_full(
     except Exception:
         raise HTTPException(status_code=400, detail="Lista de cenas inválida.")
     
+    if not scenes:
+        raise HTTPException(status_code=400, detail="Adicione ao menos uma cena para renderizar o vídeo.")
+
     video_paths = []
     for s in scenes:
         v_url = s.get("video_url")
+        p = None
         if v_url:
             clean = v_url.split("?")[0].lstrip("/")
             if os.path.exists(clean):
-                video_paths.append(clean)
+                p = clean
+                
+        # Se a cena ainda não tiver sido renderizada avulsa, gera automaticamente na fila master
+        if not p:
+            try:
+                scene_num = s.get("scene_number", len(video_paths) + 1)
+                duration = float(s.get("duration", 7.0))
+                refs = s.get("reference_images", [])
+                local_refs = []
+                for r in refs:
+                    lp = _resolve_local_media_path(r)
+                    if lp and os.path.exists(lp):
+                        local_refs.append(lp)
+                    else:
+                        clean_r = (r or "").split("?")[0].lstrip("/")
+                        if os.path.exists(clean_r):
+                            local_refs.append(clean_r)
+                
+                clip_id = str(uuid.uuid4())[:8]
+                out_name = f"vox_scene_{scene_num}_{clip_id}.mp4"
+                out_path = os.path.join(OUTPUT_DIR, out_name)
+                
+                _get_vox_engine().generate_scene_clip(
+                    scene_data=s,
+                    style=style,
+                    duration=duration,
+                    ref_images=local_refs,
+                    output_mp4=out_path,
+                    runpod_mode=False
+                )
+                if os.path.exists(out_path):
+                    p = out_path
+                    s["video_url"] = f"/output/{out_name}"
+            except Exception as e_gen:
+                print(f"[VoxRenderFull] Erro ao auto-renderizar cena {s.get('scene_number')}: {e_gen}")
+        
+        if p and os.path.exists(p):
+            video_paths.append(p)
                 
     if not video_paths:
-        raise HTTPException(status_code=400, detail="Gere ao menos 1 cena antes de renderizar o vídeo final.")
+        raise HTTPException(status_code=500, detail="Não foi possível gerar os clipes das cenas.")
         
     master_id = str(uuid.uuid4())[:8]
     master_name = f"vox_master_{master_id}.mp4"

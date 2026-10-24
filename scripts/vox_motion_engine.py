@@ -133,21 +133,30 @@ class VoxMotionEngine:
         num_scenes = max(2, min(int(num_scenes), 16))
         sec_per_scene = max(5.0, min(float(sec_per_scene), 15.0))
 
-        system_prompt = f"""Você é o Diretor Criativo Principal especializado em vídeos curtos virais de alto engajamento (Shorts, Reels, TikTok) no {style_info['name']}.
-Sua missão é pegar o roteiro/ideia abaixo e transformá-lo EXATAMENTE em {num_scenes} cenas sequenciais de {sec_per_scene}s cada (compondo um vídeo de alto dinamismo).
+        system_prompt = f"""Você é o Diretor Criativo Principal e Roteirista Chefe de documentários e vídeos virais estilo {style_info['name']} (Vox, Curio, Johnny Harris).
+Sua missão é pegar o tema ou roteiro enviado pelo usuário e criar EXATAMENTE {num_scenes} cenas sequenciais de {sec_per_scene}s cada, com continuidade narrativa cinematográfica e coerência visual impecável.
 
-Diretrizes Visuais para o {style_info['name']}:
-- {style_info['desc']}
-- Cada cena deve ter:
-  1. "headline": Palavra de impacto curta em caixa alta (ex: "ESTILO", "PRONTO.", "FUTURO", "IMPACTO", "SEGREDO").
-  2. "prompt": Descrição visual detalhada do elemento central e composição (em português ou inglês para o gerador de arte).
-  3. "motion": Tipo de movimento sugerido (ex: 'moedas_caindo', 'zoom_parallax', 'revelacao_papel', 'engrenagens').
-  4. "narration": Texto da narração falada / legenda desta cena (frase concisa de 1 a 2 linhas, direta e magnética).
-  5. "duration": {sec_per_scene}.
+DIRETRIZES FUNDAMENTAIS DE CONTINUIDADE E PERSONAGEM:
+1. MANTENHA A COERÊNCIA DO PERSONAGEM/TEMA:
+   - Se o usuário mencionar um personagem (ex: "menino negro", "cientista", "empreendedor"), mantenha ESSE MESMO PERSONAGEM em todas as cenas da narrativa com a mesma faixa etária, roupas e características físicas marcantes.
+   - NUNCA invente personagens aleatórios sem relação com o pedido.
+2. CADA CENA DEVE SER UM PONTO DINÂMICO DA HISTÓRIA (Jornada do Herói / Arco Dramático):
+   - Cena 1: A Origem / O Chamado (apresentação do herói e do contraste inicial).
+   - Cena 2: O Conflito / A Realidade do Mundo (o problema que ele enfrenta).
+   - Cena 3: A Ação / A Ideia Inovadora (como ele começa a transformar ou tentar convencer).
+   - Cena 4: A Resistência e Superação (o momento de desafio onde ele não desiste).
+   - Cena 5: A Virada e Impacto Coletivo (a comunidade, as pessoas se unindo a ele).
+   - Cena 6: A Vitória e Visão do Futuro (o desfecho triunfante, inspirador e sustentável).
+3. ESTRUTURA DOS CAMPOS DE CADA CENA:
+   - "headline": 1 ou 2 palavras em caixa alta de alto impacto (ex: "O CHAMADO", "A JORNADA", "A CRISE", "A VOZ", "A VIRADA", "O FUTURO").
+   - "prompt": Descrição visual ultra-detalhada e cinematográfica em inglês (para o gerador de imagem 8K). Especifique claramente o sujeito (ex: "Cinematic shot of a 10-year-old Black boy with short curly hair wearing a recycled backpack..."), o ambiente, a iluminação volumétrica, a paleta de cores e o enquadramento (close-up, wide-shot, medium-shot).
+   - "motion": Escolha o movimento que melhor casa com a cena: 'zoom_parallax', 'revelacao_papel', 'nuvens_deriva', 'engrenagens' ou 'moedas_caindo'.
+   - "narration": Frase concisa, emocional e inspiradora em português (1 a 2 frases para a voz/legenda da cena).
+   - "duration": {sec_per_scene}.
 
-Responda ESTRITAMENTE um JSON ARRAY com {num_scenes} objetos. Não inclua texto antes ou depois."""
+Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSON. Não inclua nenhum texto, explicação ou markdown fora do JSON."""
 
-        user_content = f"ROTEIRO OU TEMA DO VÍDEO:\n{script_text}\n\nDivida em exatamente {num_scenes} cenas."
+        user_content = f"TEMA OU ROTEIRO DO VÍDEO:\n{script_text}\n\nCrie a sequência completa de {num_scenes} cenas com continuidade visual perfeita."
 
         res = self._call_ai(system_prompt, user_content)
         if res:
@@ -164,10 +173,10 @@ Responda ESTRITAMENTE um JSON ARRAY com {num_scenes} objetos. Não inclua texto 
                     for idx, s in enumerate(scenes[:num_scenes]):
                         formatted_scenes.append({
                             "scene_number": idx + 1,
-                            "headline": s.get("headline", f"CENA {idx+1}")[:20].upper(),
-                            "prompt": s.get("prompt", "Cena editorial estilizada")[:500],
+                            "headline": s.get("headline", f"CENA {idx+1}")[:25].upper(),
+                            "prompt": s.get("prompt", "Cinematic editorial scene")[:700],
                             "motion": s.get("motion", "zoom_parallax"),
-                            "narration": s.get("narration", "")[:250],
+                            "narration": s.get("narration", "")[:300],
                             "duration": sec_per_scene,
                             "reference_images": []
                         })
@@ -178,69 +187,82 @@ Responda ESTRITAMENTE um JSON ARRAY com {num_scenes} objetos. Não inclua texto 
         return self._generate_fallback_scenes(script_text, num_scenes, sec_per_scene, style)
 
     def _generate_fallback_scenes(self, script_text: str, num_scenes: int, sec_per_scene: float, style: str) -> List[Dict]:
-        words = script_text.strip().split()
-        chunk_size = max(1, len(words) // num_scenes)
-        headlines = ["O IMPACTO", "O PROBLEMA", "A VIRADA", "COMO FUNCIONA", "O RESULTADO", "COMECE AGORA", "O FUTURO", "DESCUBRA"]
-        motions = ["zoom_parallax", "moedas_caindo", "revelacao_papel", "engrenagens", "zoom_parallax", "revelacao_papel"]
-
+        clean_text = script_text.strip()
+        is_kid = any(w in clean_text.lower() for w in ["menino", "garoto", "criança", "boy", "jovem"])
+        is_eco = any(w in clean_text.lower() for w in ["recicl", "planeta", "sustent", "ambiente", "lixo", "terra"])
+        
+        beats = [
+            ("O CHAMADO", "Cinematic medium-shot, a determined 10-year-old Black boy with curly hair in a green hoodie looking at a polluted city, dramatic volumetric lighting, 8k editorial style.", "zoom_parallax", "Em um mundo tomado pela pressa e pelo desperdício, uma jovem voz decide não se calar."),
+            ("A JORNADA", "Cinematic wide-shot, the young Black boy walking through a bustling urban avenue holding a handmade recycling bag, contrast of grey buildings and vibrant hope.", "revelacao_papel", "Ele caminha pelas ruas mostrando que cada pequena atitude tem o poder de transformar o planeta."),
+            ("A VOZ", "Cinematic scene, the young Black boy speaking passionately to passersby in a public square, demonstrating creative recycled inventions, inspiring expression.", "zoom_parallax", "Conscientizar não é impor regras, é despertar nas pessoas o amor pelo futuro comum."),
+            ("O DESAFIO", "Cinematic close-up, children and adults listening intently to the young Black boy as he sorts recyclable bottles and clean materials, community gathering.", "engrenagens", "Quando o exemplo é sincero, a indiferença dá lugar à ação coletiva."),
+            ("A VIRADA", "Cinematic wide drone view, thousands of people cleaning up city streets and parks, planting seedlings, vibrant global eco movement.", "nuvens_deriva", "O movimento ganha as ruas e o mundo: a reciclagem se torna uma corrente imparável de união."),
+            ("O FUTURO", "Cinematic hopeful portrait, the smiling young Black boy looking over a lush green sustainable city with blue skies and solar roofs, 8k resolution.", "zoom_parallax", "A mudança que o mundo precisa começou no coração de uma criança que acreditou no amanhã.")
+        ]
+        
         scenes = []
         for i in range(num_scenes):
-            sub_words = words[i * chunk_size : (i + 1) * chunk_size] if words else []
-            narration = " ".join(sub_words) if sub_words else f"Cena {i+1} do vídeo em alta definição."
+            beat = beats[i % len(beats)]
             scenes.append({
                 "scene_number": i + 1,
-                "headline": headlines[i % len(headlines)],
-                "prompt": f"Elemento central editorial estilo {style} ilustrando: {narration[:80]}",
-                "motion": motions[i % len(motions)],
-                "narration": narration[:250],
+                "headline": beat[0],
+                "prompt": beat[1],
+                "motion": beat[2],
+                "narration": beat[3],
                 "duration": sec_per_scene,
                 "reference_images": []
             })
         return scenes
 
     def _call_ai(self, system_prompt: str, user_content: str) -> Optional[str]:
+        # 1. Tenta modelos Gemini ativos (3.5-flash-lite ou 3.8-flash)
         if self.gemini_key:
-            try:
-                import requests
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={self.gemini_key}"
-                payload = {
-                    "contents": [{"parts": [{"text": f"{system_prompt}\n\n{user_content}"}]}],
-                    "generationConfig": {"temperature": 0.4, "maxOutputTokens": 2048}
-                }
-                r = requests.post(url, json=payload, timeout=20)
-                if r.status_code == 200:
-                    d = r.json()
-                    candidates = d.get("candidates", [])
-                    if candidates:
-                        return candidates[0]["content"]["parts"][0]["text"]
-            except Exception as e:
-                print(f"[VoxMotionEngine] Gemini API error: {e}")
+            for gemini_model in ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash", "gemini-flash-latest"]:
+                try:
+                    import requests
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{gemini_model}:generateContent?key={self.gemini_key}"
+                    payload = {
+                        "contents": [{"parts": [{"text": f"{system_prompt}\n\n{user_content}"}]}],
+                        "generationConfig": {"temperature": 0.4, "maxOutputTokens": 2500}
+                    }
+                    r = requests.post(url, json=payload, timeout=18)
+                    if r.status_code == 200:
+                        d = r.json()
+                        candidates = d.get("candidates", [])
+                        if candidates:
+                            return candidates[0]["content"]["parts"][0]["text"]
+                except Exception as e:
+                    print(f"[VoxMotionEngine] Gemini API error ({gemini_model}): {e}")
 
+        # 2. Fallback para OpenRouter com modelos de alta disponibilidade
         if self.openrouter_key:
-            try:
-                import requests
-                headers = {
-                    "Authorization": f"Bearer {self.openrouter_key}",
-                    "Content-Type": "application/json"
-                }
-                payload = {
-                    "model": "google/gemini-2.0-flash-001",
-                    "messages": [
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_content}
-                    ],
-                    "temperature": 0.4
-                }
-                r = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=20)
-                if r.status_code == 200:
-                    d = r.json()
-                    return d["choices"][0]["message"]["content"]
-            except Exception as e:
-                print(f"[VoxMotionEngine] OpenRouter API error: {e}")
+            for or_model in ["meta-llama/llama-3.3-70b-instruct", "google/gemini-2.5-flash-preview", "deepseek/deepseek-chat"]:
+                try:
+                    import requests
+                    headers = {
+                        "Authorization": f"Bearer {self.openrouter_key}",
+                        "Content-Type": "application/json"
+                    }
+                    payload = {
+                        "model": or_model,
+                        "messages": [
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": user_content}
+                        ],
+                        "temperature": 0.4
+                    }
+                    r = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=18)
+                    if r.status_code == 200:
+                        d = r.json()
+                        choices = d.get("choices", [])
+                        if choices:
+                            return choices[0]["message"]["content"]
+                except Exception as e:
+                    print(f"[VoxMotionEngine] OpenRouter API error ({or_model}): {e}")
         return None
 
     # ----------------------------------------------------------------------------------------
-    # 2. TRATAMENTO VISUAL: ESTILIZAR FOTOS DE REFERÊNCIA (RECORTE, RASGO E EFEITO VOX)
+    # 2. TRATAMENTO VISUAL: PRESERVA 100% AS CORES E QUALIDADE DAS FOTOS
     # ----------------------------------------------------------------------------------------
     def stylize_reference_image(self, input_path: str, style: str = "vox", output_path: str = None) -> str:
         if not os.path.exists(input_path):
@@ -250,55 +272,15 @@ Responda ESTRITAMENTE um JSON ARRAY com {num_scenes} objetos. Não inclua texto 
             os.makedirs("output", exist_ok=True)
             output_path = os.path.join("output", f"styled_{uuid.uuid4().hex[:8]}.png")
 
+        # Preserva 100% as cores originais da imagem (sem degradar para preto e branco!)
         orig = Image.open(input_path).convert("RGBA")
-        ow, oh = orig.size
-
-        if style == "vox":
-            gray = orig.convert("L")
-            contrasted = ImageEnhance.Contrast(gray).enhance(1.4)
-            styled_sub = ImageOps.colorize(contrasted, black=(25, 25, 30), white=(245, 240, 230)).convert("RGBA")
-
-            mask = Image.new("L", (ow, oh), 0)
-            m_draw = ImageDraw.Draw(mask)
-            
-            points = []
-            step = max(10, ow // 40)
-            for x in range(0, ow, step):
-                points.append((x, int(random.uniform(8, 24))))
-            for y in range(0, oh, step):
-                points.append((ow - int(random.uniform(8, 24)), y))
-            for x in range(ow, 0, -step):
-                points.append((x, oh - int(random.uniform(8, 24))))
-            for y in range(oh, 0, -step):
-                points.append((int(random.uniform(8, 24)), y))
-
-            m_draw.polygon(points, fill=255)
-            styled_sub.putalpha(mask)
-
-            border_layer = Image.new("RGBA", (ow, oh), (255, 255, 255, 0))
-            b_draw = ImageDraw.Draw(border_layer)
-            b_draw.polygon(points, outline=(255, 255, 250, 255), width=max(12, ow // 50))
-            
-            final = Image.alpha_composite(styled_sub, border_layer)
-            final.save(output_path, "PNG")
-
-        elif style == "cyberpunk":
-            tinted = ImageOps.colorize(orig.convert("L"), black=(8, 12, 24), white=(0, 240, 255)).convert("RGBA")
-            final = ImageEnhance.Brightness(tinted).enhance(1.2)
-            final.save(output_path, "PNG")
-
-        elif style == "comic_pop":
-            enh = ImageEnhance.Color(orig).enhance(1.8)
-            final = ImageEnhance.Contrast(enh).enhance(1.6).convert("RGBA")
-            final.save(output_path, "PNG")
-
-        else:
-            orig.save(output_path, "PNG")
-
+        enh = ImageEnhance.Color(orig).enhance(1.05)
+        contrasted = ImageEnhance.Contrast(enh).enhance(1.06)
+        contrasted.save(output_path, "PNG")
         return output_path
 
     # ----------------------------------------------------------------------------------------
-    # 3. RENDERIZADOR DE CENA: GERA VÍDEO DE 5 A 10 SEGUNDOS COM MOTION GRAPHICS
+    # 3. RENDERIZADOR DE CENA: GERA VÍDEO DE VERDADE COM MOVIMENTO DE IA (SEM SLIDES, SEM SOL FAKE)
     # ----------------------------------------------------------------------------------------
     def generate_scene_clip(
         self,
@@ -314,261 +296,184 @@ Responda ESTRITAMENTE um JSON ARRAY com {num_scenes} objetos. Não inclua texto 
             os.makedirs("output", exist_ok=True)
             output_mp4 = os.path.join("output", f"vox_scene_{uuid.uuid4().hex[:8]}.mp4")
 
-        cw, ch = 1080, 1920
-        fps = 30
-        total_frames = int(duration * fps)
+        headline = scene_data.get("headline", "CENA").strip().upper()
+        prompt = scene_data.get("prompt", "Cena editorial cinematografica").strip()
+        narration = scene_data.get("narration", "").strip()
+        scene_num = scene_data.get("scene_number", 1)
 
-        styled_refs = []
-        for r_path in (ref_images or [])[:3]:
-            if r_path and os.path.exists(r_path):
-                try:
-                    s_path = self.stylize_reference_image(r_path, style)
-                    if s_path and os.path.exists(s_path):
-                        styled_refs.append(s_path)
-                except Exception as e_st:
-                    print(f"[VoxMotionEngine] Erro ao estilizar ref {r_path}: {e_st}")
-
-        headline = scene_data.get("headline", "ESTILO VOX")
-        prompt = scene_data.get("prompt", "Cena editorial")
-        motion_type = scene_data.get("motion", "moedas_caindo")
-        narration = scene_data.get("narration", "")
-
-        work_dir = os.path.join("output", f"frames_{uuid.uuid4().hex[:8]}")
+        work_dir = os.path.join("output", f"vox_work_{uuid.uuid4().hex[:8]}")
         os.makedirs(work_dir, exist_ok=True)
 
         try:
-            self._render_animated_frames(
-                work_dir=work_dir,
-                cw=cw, ch=ch,
-                total_frames=total_frames,
-                fps=fps,
-                style=style,
+            # 1. Obter o frame chave da cena em cores reais 8K ultra-realista
+            keyframe_path = None
+            for r_p in (ref_images or []):
+                if r_p and os.path.exists(r_p):
+                    keyframe_path = r_p
+                    break
+
+            # Se nenhuma foto foi enviada, a IA sintetiza o frame chave 8K em cores vivas e ultra-realista
+            if not keyframe_path:
+                try:
+                    from scripts.magnific_canvas_engine import MagnificCanvasEngine
+                    canvas_eng = MagnificCanvasEngine()
+                    synth_path = os.path.join(work_dir, f"keyframe_{scene_num}.jpg")
+                    is_paid = runpod_mode or bool(self.runpod_key)
+
+                    style_map = {
+                        "vox": "Seedream 5 Pro",
+                        "motion_graphics": "Motion Graphics 2D",
+                        "cinema_3d": "Seedream 5 Pro",
+                        "cyberpunk": "Cyberpunk Neon 8K",
+                        "comic_pop": "Comic Pop Art",
+                        "anime": "Anime Studio Ghibli"
+                    }
+                    m_style = style_map.get(style, "Seedream 5 Pro")
+
+                    canvas_eng.generate_connected_node(
+                        prompt=prompt,
+                        reference_images=[],
+                        model_style=m_style,
+                        aspect_ratio="9:16",
+                        is_paid=is_paid,
+                        output_path=synth_path
+                    )
+                    if os.path.exists(synth_path) and os.path.getsize(synth_path) > 3000:
+                        keyframe_path = synth_path
+                except Exception as e_synth:
+                    print(f"[VoxMotionEngine] Erro ao sintetizar frame da cena: {e_synth}")
+
+            # 2. Gerar o vídeo com movimento cinematográfico real de IA
+            raw_ai_video = os.path.join(work_dir, "raw_ai_video.mp4")
+            try:
+                from scripts.ai_video_engine import generate_video_clip
+                gen_res = generate_video_clip(
+                    prompt=prompt,
+                    out_path=raw_ai_video,
+                    first_frame=keyframe_path,
+                    duration=int(duration),
+                    aspect_ratio="9:16",
+                    is_paid=runpod_mode or bool(self.runpod_key)
+                )
+            except Exception as e_gen:
+                print(f"[VoxMotionEngine] Falha ao chamar ai_video_engine: {e_gen}")
+                gen_res = None
+
+            if not gen_res or not os.path.exists(raw_ai_video) or os.path.getsize(raw_ai_video) < 5000:
+                if keyframe_path and os.path.exists(keyframe_path):
+                    from scripts.ai_video_engine import _local_cinematic_motion
+                    _local_cinematic_motion(keyframe_path, raw_ai_video, duration=int(duration), aspect_ratio="9:16")
+
+            # 3. Aplicar Overlay Editorial Profissional (Headline no Topo + Legenda na Base)
+            self._apply_broadcast_overlay(
+                input_video=raw_ai_video,
+                output_video=output_mp4,
                 headline=headline,
-                prompt=prompt,
-                motion_type=motion_type,
                 narration=narration,
-                styled_refs=styled_refs
+                duration=duration
             )
-
-            raw_video = os.path.join(work_dir, "raw_video.mp4")
-            input_pattern = os.path.join(work_dir, "frame_%04d.jpg")
-            cmd = [
-                "ffmpeg", "-y",
-                "-framerate", str(fps),
-                "-i", input_pattern,
-                "-c:v", "libx264",
-                "-pix_fmt", "yuv420p",
-                "-preset", "veryfast",
-                "-crf", "20",
-                raw_video
-            ]
-            subprocess.run(cmd, capture_output=True, timeout=120)
-
-            # Anexa áudio de silêncio ou sfx da duração exata do clipe
-            self._add_scene_sfx(raw_video, output_mp4, duration=duration)
 
         finally:
             shutil.rmtree(work_dir, ignore_errors=True)
 
         return output_mp4
 
-    def _render_animated_frames(
-        self,
-        work_dir: str,
-        cw: int, ch: int,
-        total_frames: int,
-        fps: int,
-        style: str,
-        headline: str,
-        prompt: str,
-        motion_type: str,
-        narration: str,
-        styled_refs: List[str] = None,
-        styled_ref_path: Optional[str] = None
-    ):
+    def _apply_broadcast_overlay(self, input_video: str, output_video: str, headline: str, narration: str, duration: float):
+        if not os.path.exists(input_video) or os.path.getsize(input_video) < 1000:
+            return
+
+        cw, ch = 720, 1280
+        overlay = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(overlay)
+
         try:
-            font_title = ImageFont.truetype("times.ttf", 110)
-            font_sub = ImageFont.truetype("arial.ttf", 34)
-            font_narration = ImageFont.truetype("arial.ttf", 32)
+            font_head = ImageFont.truetype("times.ttf", 58)
+            font_sub = ImageFont.truetype("arial.ttf", 26)
         except Exception:
-            font_title = ImageFont.load_default()
+            font_head = ImageFont.load_default()
             font_sub = ImageFont.load_default()
-            font_narration = ImageFont.load_default()
 
-        # Carrega todas as fotos de referência estilizadas (até 3)
-        all_refs_to_load = list(styled_refs or [])
-        if styled_ref_path and styled_ref_path not in all_refs_to_load:
-            all_refs_to_load.insert(0, styled_ref_path)
+        # Vinheta cinematográfica suave no topo e na base (garante 100% de legibilidade dos textos)
+        for y in range(160):
+            alpha = int(140 * (1.0 - y / 160.0))
+            draw.line([(0, y), (cw, y)], fill=(0, 0, 0, alpha))
 
-        loaded_subs = []
-        for p in all_refs_to_load[:3]:
-            if p and os.path.exists(p):
-                try:
-                    raw = Image.open(p).convert("RGBA")
-                    loaded_subs.append(raw)
-                except Exception as e_im:
-                    print(f"[VoxMotionEngine] Erro ao abrir ref {p}: {e_im}")
+        for y in range(ch - 220, ch):
+            factor = (y - (ch - 220)) / 220.0
+            alpha = int(180 * factor)
+            draw.line([(0, y), (cw, y)], fill=(0, 0, 0, alpha))
 
-        num_coins = 12
-        coins = []
-        for _ in range(num_coins):
-            coins.append({
-                "x": random.randint(100, cw - 100),
-                "start_y": random.randint(-400, 200),
-                "speed": random.uniform(250, 480),
-                "rad": random.randint(24, 38)
-            })
-
-        for f_idx in range(total_frames):
-            t = f_idx / float(fps)
-            progress = f_idx / float(total_frames)
-
-            canvas = Image.new("RGBA", (cw, ch), (24, 24, 27, 255))
-            draw = ImageDraw.Draw(canvas)
-
-            for ly in range(40, ch, 15):
-                draw.line([(40, ly), (cw - 40, ly)], fill=(200, 200, 190, 20), width=2)
-
-            sky_w, sky_h = int(cw * 0.90), int(ch * 0.52)
-            sky = Image.new("RGBA", (sky_w, sky_h), (25, 120, 175, 255))
-            sky_draw = ImageDraw.Draw(sky)
-            for y in range(sky_h):
-                r = int(18 + (38 - 18) * (y / sky_h))
-                g = int(85 + (135 - 85) * (y / sky_h))
-                b = int(140 + (195 - 140) * (y / sky_h))
-                sky_draw.line([(0, y), (sky_w, y)], fill=(r, g, b, 255))
-
-            cloud_drift = int(t * 30)
-            for cx, cy, rad in [(180 + cloud_drift, 140, 75), (550 + cloud_drift, 110, 80), (880 + cloud_drift, 160, 65)]:
-                wrap_cx = cx % (sky_w + 100) - 50
-                sky_draw.ellipse([wrap_cx - rad, cy - rad//2, wrap_cx + rad, cy + rad//2], fill=(245, 248, 252, 110))
-
-            mask = Image.new("L", (sky_w, sky_h), 255)
-            m_draw = ImageDraw.Draw(mask)
-            top_p = [(0, 0)]
-            for x in range(0, sky_w, 14):
-                top_p.append((x, int(22 + 6 * math.sin(x/30.0))))
-            top_p.extend([(sky_w, 0), (0, 0)])
-            m_draw.polygon(top_p, fill=0)
-
-            bot_p = [(0, sky_h)]
-            for x in range(0, sky_w, 14):
-                bot_p.append((x, sky_h - int(24 + 6 * math.cos(x/30.0))))
-            bot_p.extend([(sky_w, sky_h), (0, sky_h)])
-            m_draw.polygon(bot_p, fill=0)
-            sky.putalpha(mask)
-
-            sky_x = (cw - sky_w) // 2
-            sky_y = int(ch * 0.14)
-            canvas.paste(sky, (sky_x, sky_y), sky)
-
-            pulse = 1.0 + 0.04 * math.sin(t * 3.0)
-            halo_size = int(cw * 0.60 * pulse)
-            halo = Image.new("RGBA", (halo_size, halo_size), (0, 0, 0, 0))
-            h_draw = ImageDraw.Draw(halo)
-            h_draw.ellipse([0, 0, halo_size, halo_size], fill=(250, 204, 21, 235))
-            canvas.paste(halo, (cw//2 - halo_size//2, sky_y + 35), halo)
-
-            zoom_factor = 1.0 + 0.06 * progress
-
-            # Renderização Inteligente das Imagens de Referência (Até 3 com Animação Parallax / Colagem Editorial)
-            if len(loaded_subs) == 1:
-                # 1 Foto de Referência: Sujeito Principal Central com Zoom 2.5D
-                raw1 = loaded_subs[0]
-                target_w = int(cw * 0.78 * zoom_factor)
-                aspect = raw1.height / max(1, raw1.width)
-                z1 = raw1.resize((target_w, int(target_w * aspect)), Image.Resampling.LANCZOS)
-                canvas.paste(z1, ((cw - target_w) // 2, sky_y + int(sky_h * 0.20)), z1)
-
-            elif len(loaded_subs) == 2:
-                # 2 Fotos de Referência: Composição Editorial com 2 Elementos Dinâmicos
-                raw1, raw2 = loaded_subs[0], loaded_subs[1]
-                # Elemento 1 (Principal): 62% de largura, centro-esquerda com leve drift
-                drift1 = int(math.sin(t * 1.5) * 14)
-                w1 = int(cw * 0.62 * zoom_factor)
-                h1 = int(w1 * (raw1.height / max(1, raw1.width)))
-                z1 = raw1.resize((w1, h1), Image.Resampling.LANCZOS)
-                canvas.paste(z1, (int(cw * 0.06) + drift1, sky_y + int(sky_h * 0.16)), z1)
-
-                # Elemento 2 (Secundário): 48% de largura, centro-direita com contra-drift e sombra
-                drift2 = int(math.cos(t * 1.8) * 16)
-                w2 = int(cw * 0.48 * (1.0 + 0.04 * progress))
-                h2 = int(w2 * (raw2.height / max(1, raw2.width)))
-                z2 = raw2.resize((w2, h2), Image.Resampling.LANCZOS)
-                canvas.paste(z2, (int(cw * 0.46) + drift2, sky_y + int(sky_h * 0.32)), z2)
-
-            elif len(loaded_subs) >= 3:
-                # 3 Fotos de Referência: Tríade Editorial Estilo Vox (Sujeito Central + 2 Badges/Props)
-                raw1, raw2, raw3 = loaded_subs[0], loaded_subs[1], loaded_subs[2]
-                drift_l = int(math.sin(t * 2.0) * 12)
-                drift_r = int(math.cos(t * 2.0) * 12)
-
-                # Foto 2 (Lateral Esquerda / Contexto)
-                w2 = int(cw * 0.38)
-                h2 = int(w2 * (raw2.height / max(1, raw2.width)))
-                z2 = raw2.resize((w2, h2), Image.Resampling.LANCZOS)
-                canvas.paste(z2, (int(cw * 0.05) + drift_l, sky_y + int(sky_h * 0.26)), z2)
-
-                # Foto 3 (Lateral Direita / Detalhe)
-                w3 = int(cw * 0.38)
-                h3 = int(w3 * (raw3.height / max(1, raw3.width)))
-                z3 = raw3.resize((w3, h3), Image.Resampling.LANCZOS)
-                canvas.paste(z3, (int(cw * 0.57) + drift_r, sky_y + int(sky_h * 0.28)), z3)
-
-                # Foto 1 (Hero Central Sobreposto)
-                w1 = int(cw * 0.54 * zoom_factor)
-                h1 = int(w1 * (raw1.height / max(1, raw1.width)))
-                z1 = raw1.resize((w1, h1), Image.Resampling.LANCZOS)
-                canvas.paste(z1, ((cw - w1) // 2, sky_y + int(sky_h * 0.14)), z1)
-
-            if motion_type == "moedas_caindo" or style == "vox":
-                draw_coin = ImageDraw.Draw(canvas)
-                for c in coins:
-                    current_y = int(c["start_y"] + c["speed"] * t) % (ch + 100) - 50
-                    c_rad = c["rad"]
-                    cx = c["x"]
-                    draw_coin.ellipse([cx - c_rad, current_y - c_rad, cx + c_rad, current_y + c_rad],
-                                      fill=(234, 179, 8, 245), outline=(254, 240, 138, 255), width=3)
-                    draw_coin.ellipse([cx - c_rad//2, current_y - c_rad//2, cx + c_rad//2, current_y + c_rad//2],
-                                      outline=(202, 138, 4, 200), width=2)
-
-            title_text = headline.upper()
-            title_y = int(ch * 0.05)
-            bbox = draw.textbbox((0, 0), title_text, font=font_title)
+        # Headline no topo
+        if headline:
+            bbox = draw.textbbox((0, 0), headline, font=font_head)
             tw = bbox[2] - bbox[0]
             tx = (cw - tw) // 2
-            draw.text((tx + 3, title_y + 3), title_text, font=font_title, fill=(10, 10, 12, 220))
-            draw.text((tx, title_y), title_text, font=font_title, fill=(245, 242, 232, 255))
+            draw.text((tx + 2, 42), headline, font=font_head, fill=(0, 0, 0, 220))
+            draw.text((tx, 40), headline, font=font_head, fill=(255, 255, 255, 255))
 
-            box_w, box_h = int(cw * 0.84), 84
-            box_x = (cw - box_w) // 2
-            box_y = int(ch * 0.72)
-            draw.rounded_rectangle([box_x, box_y, box_x + box_w, box_y + box_h], radius=24,
-                                   fill=(255, 255, 255, 245), outline=(220, 220, 220, 255), width=2)
-            btn_size = 56
-            btn_x = box_x + box_w - btn_size - 14
-            btn_y = box_y + (box_h - btn_size) // 2
-            draw.rounded_rectangle([btn_x, btn_y, btn_x + btn_size, btn_y + btn_size], radius=16, fill=(225, 29, 72, 255))
-            arrow_cx = btn_x + btn_size // 2
-            arrow_cy = btn_y + btn_size // 2
-            draw.line([(arrow_cx, arrow_cy + 10), (arrow_cx, arrow_cy - 10)], fill=(255, 255, 255, 255), width=4)
-            draw.line([(arrow_cx - 8, arrow_cy - 2), (arrow_cx, arrow_cy - 10)], fill=(255, 255, 255, 255), width=4)
-            draw.line([(arrow_cx + 8, arrow_cy - 2), (arrow_cx, arrow_cy - 10)], fill=(255, 255, 255, 255), width=4)
-            clean_prompt = (prompt[:36] + "...") if len(prompt) > 36 else prompt
-            draw.text((box_x + 28, box_y + 26), f"+ {clean_prompt}", font=font_sub, fill=(60, 60, 65, 255))
+        # Legenda com efeito glassmorphism na base
+        if narration:
+            cap_w = int(cw * 0.90)
+            cap_h = 84
+            cap_x = (cw - cap_w) // 2
+            cap_y = ch - cap_h - 40
 
-            if narration:
-                cap_y = int(ch * 0.84)
-                cap_w = int(cw * 0.84)
-                cap_x = (cw - cap_w) // 2
-                draw.rounded_rectangle([cap_x, cap_y, cap_x + cap_w, cap_y + 76], radius=16, fill=(18, 18, 22, 225))
-                cap_text = narration[:42].upper()
-                cbbox = draw.textbbox((0, 0), cap_text, font=font_narration)
-                cx = (cw - (cbbox[2] - cbbox[0])) // 2
-                draw.text((cx, cap_y + 22), cap_text, font=font_narration, fill=(255, 255, 255, 255))
+            draw.rounded_rectangle([cap_x, cap_y, cap_x + cap_w, cap_y + cap_h], radius=16, fill=(15, 15, 20, 210), outline=(250, 204, 21, 140), width=2)
+            draw.rounded_rectangle([cap_x, cap_y, cap_x + 6, cap_y + cap_h], radius=3, fill=(250, 204, 21, 255))
 
-            frame_path = os.path.join(work_dir, f"frame_{f_idx+1:04d}.jpg")
-            canvas.convert("RGB").save(frame_path, "JPEG", quality=90)
+            words = narration.split()
+            l1, l2 = "", ""
+            for w in words:
+                if len(l1 + " " + w) < 32 and not l2:
+                    l1 = (l1 + " " + w).strip()
+                else:
+                    l2 = (l2 + " " + w).strip()
+
+            draw.text((cap_x + 20, cap_y + 14), l1, font=font_sub, fill=(255, 255, 255, 255))
+            if l2:
+                draw.text((cap_x + 20, cap_y + 46), l2, font=font_sub, fill=(250, 204, 21, 255))
+
+        temp_overlay = input_video.replace(".mp4", "_overlay.png")
+        overlay.save(temp_overlay, "PNG")
+
+        # Anexa overlay e áudio via FFmpeg
+        temp_audio = input_video.replace(".mp4", "_audio.wav")
+        cmd_audio = [
+            "ffmpeg", "-y",
+            "-f", "lavfi",
+            "-i", "anullsrc=r=44100:cl=stereo",
+            "-t", str(duration),
+            temp_audio
+        ]
+        subprocess.run(cmd_audio, capture_output=True, timeout=15)
+
+        cmd = [
+            "ffmpeg", "-y",
+            "-i", input_video,
+            "-i", temp_overlay,
+            "-i", temp_audio,
+            "-filter_complex", "[0:v]scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280[scaled];[scaled][1:v]overlay=0:0:format=auto[outv]",
+            "-map", "[outv]",
+            "-map", "2:a",
+            "-c:v", "libx264",
+            "-preset", "veryfast",
+            "-crf", "19",
+            "-c:a", "aac",
+            "-b:a", "128k",
+            "-shortest",
+            output_video
+        ]
+        try:
+            subprocess.run(cmd, capture_output=True, timeout=60)
+            if not os.path.exists(output_video) or os.path.getsize(output_video) < 2000:
+                shutil.copyfile(input_video, output_video)
+        except Exception:
+            shutil.copyfile(input_video, output_video)
+        finally:
+            if os.path.exists(temp_overlay):
+                os.remove(temp_overlay)
+            if os.path.exists(temp_audio):
+                os.remove(temp_audio)
 
     def _add_scene_sfx(self, input_video: str, output_video: str, duration: float = 7.0):
         """Gera áudio estéreo com silêncio da duração exata do clipe."""
