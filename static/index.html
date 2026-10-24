@@ -1812,6 +1812,10 @@
             <i data-lucide="move" class="w-3.5 h-3.5"></i> Estúdio 8K
           </span>
           <div class="h-3 w-[1px] bg-white/15"></div>
+          <button onclick="document.getElementById('canvas-upload-input').click()" class="px-2.5 py-0.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/35 border border-cyan-400/50 text-[10px] text-cyan-300 font-extrabold flex items-center gap-1 transition-all" title="Subir Nova Foto ou Imagem para criar Nó no Canvas">
+            <i data-lucide="plus" class="w-3 h-3"></i> + Adicionar Imagem / Nó
+          </button>
+          <div class="h-3 w-[1px] bg-white/15"></div>
           <button onclick="zoomCanvasViewport(-0.12)" class="px-2 py-0.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-xs text-gray-200 font-bold" title="Diminuir Zoom (-)">−</button>
           <span id="canvas-zoom-badge" class="text-[11px] font-mono text-cyan-300 font-bold">100%</span>
           <button onclick="zoomCanvasViewport(0.12)" class="px-2 py-0.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-xs text-gray-200 font-bold" title="Aumentar Zoom (+)">+</button>
@@ -1827,7 +1831,7 @@
 
           <div id="canvas-nodes-layer" class="absolute inset-0 z-20"></div>
 
-          <div id="canvas-gen-node" class="absolute z-20 w-72 md:w-80 rounded-2xl bg-dark-800/95 backdrop-blur-xl border-2 border-cyan-400/70 shadow-neon-cyan p-3 cursor-grab active:cursor-grabbing" style="left: 420px; top: 75px;">
+          <div id="canvas-gen-node" onclick="selectMasterGenNode(event)" class="absolute z-20 w-72 md:w-80 rounded-2xl bg-dark-800/95 backdrop-blur-xl border-2 border-cyan-400/70 shadow-neon-cyan p-3 cursor-grab active:cursor-grabbing transition-all" style="left: 420px; top: 75px;">
             <div id="gen-node-in-port" class="absolute -left-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-cyan-400 text-black font-black flex items-center justify-center shadow-lg border-2 border-dark-900 text-xs" title="Conector de Entrada Multi-Referência">+</div>
 
             <div class="flex items-center justify-between text-xs text-gray-300 mb-2 px-1">
@@ -1835,7 +1839,12 @@
                 <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
                 Master 8K Scene Output
               </span>
-              <span id="gen-node-res-badge" class="text-[10px] font-mono bg-cyan-500/15 text-cyan-300 px-2 py-0.5 rounded-md border border-cyan-400/30">3840 x 2160 (8K)</span>
+              <div class="flex items-center gap-1.5">
+                <span id="gen-node-res-badge" class="text-[10px] font-mono bg-cyan-500/15 text-cyan-300 px-2 py-0.5 rounded-md border border-cyan-400/30">3840 x 2160 (8K)</span>
+                <button type="button" onclick="deleteMasterGenNode(event)" title="Deletar / Fechar este nó Master do Canvas" class="w-5 h-5 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-300 flex items-center justify-center text-xs transition-all border border-red-500/40 cursor-pointer">
+                  <i data-lucide="trash-2" class="w-3 h-3 text-red-300"></i>
+                </button>
+              </div>
             </div>
 
             <div id="gen-node-preview-box" ondblclick="openCanvasLightbox(currentGeneratedNodeUrl, 'Cena Conectada 8K (ESG Studio)')" class="relative w-full h-44 rounded-xl overflow-hidden bg-black border border-white/10 group cursor-pointer">
@@ -1863,6 +1872,11 @@
                 <span>Baixar PC</span>
               </button>
             </div>
+          </div>
+
+          <div id="canvas-dropzone-hint" class="pointer-events-none absolute bottom-4 right-4 z-20 px-3.5 py-2 rounded-2xl bg-dark-900/80 border border-white/10 text-xs text-gray-300 flex items-center gap-2 backdrop-blur-md shadow-lg">
+            <i data-lucide="upload-cloud" class="w-4 h-4 text-cyan-400"></i>
+            <span>Arraste e solte fotos no Canvas ou cole com <strong>Ctrl+V</strong> para criar novos nós</span>
           </div>
         </div>
 
@@ -1920,6 +1934,42 @@
                 <input type="file" id="canvas-facelock-file" accept="image/*" onchange="handleCustomFaceLockUpload(event)" class="hidden">
                 <input type="range" id="canvas-facelock-slider" min="80" max="100" value="100" oninput="document.getElementById('canvas-facelock-pct').innerText = this.value + '% Fiel'" class="w-full accent-cyan-400 h-1.5 bg-dark-700 rounded-lg cursor-pointer">
               </div>
+            </div>
+          </div>
+
+          <!-- CONTROLES MAGNIFIC AI: CRIATIVIDADE, SEMELHANÇA E FRACTALIDADE -->
+          <div class="p-2.5 rounded-xl bg-dark-800/90 border border-amber-400/40 space-y-2">
+            <span class="font-bold text-amber-300 flex items-center gap-1.5 text-[11px]">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+              Motor Magnific AI 8K (Alucinação vs Fidelidade):
+            </span>
+
+            <div class="space-y-1">
+              <div class="flex items-center justify-between text-[10px]">
+                <span class="text-gray-300 font-semibold">Criatividade (Hallucination):</span>
+                <span id="canvas-creativity-val" class="font-mono text-cyan-300 font-bold">50%</span>
+              </div>
+              <input type="range" id="canvas-creativity-slider" min="0" max="100" value="50" oninput="document.getElementById('canvas-creativity-val').innerText = this.value + '%'" class="w-full accent-amber-400 h-1.5 bg-dark-700 rounded-lg cursor-pointer">
+              <div class="flex justify-between text-[8px] text-gray-500">
+                <span>0% Fiel / Original</span>
+                <span>100% Invenção de Detalhes</span>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex items-center justify-between text-[10px]">
+                <span class="text-gray-300 font-semibold">Semelhança / Resemblance (HDR):</span>
+                <span id="canvas-resemblance-val" class="font-mono text-emerald-300 font-bold">85%</span>
+              </div>
+              <input type="range" id="canvas-resemblance-slider" min="20" max="100" value="85" oninput="document.getElementById('canvas-resemblance-val').innerText = this.value + '%'" class="w-full accent-emerald-400 h-1.5 bg-dark-700 rounded-lg cursor-pointer">
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex items-center justify-between text-[10px]">
+                <span class="text-gray-300 font-semibold">Fractalidade (Microporos & Textura):</span>
+                <span id="canvas-fractality-val" class="font-mono text-amber-300 font-bold">60%</span>
+              </div>
+              <input type="range" id="canvas-fractality-slider" min="0" max="100" value="60" oninput="document.getElementById('canvas-fractality-val').innerText = this.value + '%'" class="w-full accent-amber-400 h-1.5 bg-dark-700 rounded-lg cursor-pointer">
             </div>
           </div>
 
@@ -1993,11 +2043,11 @@
             <button type="button" id="enhance-btn-canvas-prompt-input" onclick="enhancePromptWithAI('canvas-prompt-input', 'canvas')" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-amber-500/20 border border-amber-400/40 text-amber-200 hover:brightness-125 transition-all whitespace-nowrap">
               <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300 drop-shadow-[0_0_6px_#f59e0b]"></i> <span>Melhorar Prompt</span>
             </button>
-            <input type="text" id="canvas-prompt-input" oninput="checkPromptPoverty('canvas-prompt-input', 'canvas')" value="Crie um novo take cinematográfico 8K mantendo 100% do rosto fiel de @Image1 e a iluminação dramática de @Image2 em plano aberto 35mm" placeholder="Ex: Crie um novo ângulo câmera baixa de @Image1 mantendo o cenário de @Image2..." class="flex-1 bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
+            <input type="text" id="canvas-prompt-input" oninput="checkPromptPoverty('canvas-prompt-input', 'canvas')" value="Crie um novo take cinematográfico 8K mantendo 100% do rosto fiel de @Image1 e a iluminação dramática de @Image2 em plano aberto 35mm" placeholder="Ex: Crie um novo ângulo câmera baixa de @Image1 mantendo o cenário de @Image2..." class="flex-1 min-w-[280px] bg-dark-800 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-amber-400">
             
             <button onclick="handleCanvasGenerateNode()" id="canvas-gen-btn" class="bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 hover:opacity-95 text-black font-extrabold px-5 py-2.5 rounded-xl text-xs md:text-sm shadow-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap">
               <i data-lucide="wand-2" class="w-4 h-4"></i>
-              <span>Gerar Nó 8K (3 Cr)</span>
+              <span>Gerar Novo Nó 8K (3 Cr)</span>
             </button>
           </div>
 
@@ -5021,7 +5071,12 @@ setInterval(triggerRobotBlink, 3800);
       selectedCanvasNodeId = 'node_1';
       selectedCanvasNodeUrl = canvasNodes[0].url;
       const genNode = document.getElementById('canvas-gen-node');
-      if (genNode) { genNode.style.left = '465px'; genNode.style.top = '72px'; }
+      if (genNode) {
+        genNode.style.display = 'block';
+        genNode.style.left = '465px';
+        genNode.style.top = '72px';
+        genNode.classList.remove('ring-2', 'ring-cyan-400');
+      }
       const inspector = document.getElementById('canvas-director-inspector');
       if (inspector) { inspector.style.left = 'auto'; inspector.style.right = '14px'; inspector.style.top = '52px'; }
       const dock = document.getElementById('canvas-bottom-dock');
@@ -5168,6 +5223,101 @@ setInterval(triggerRobotBlink, 3800);
       board.addEventListener('pointerup', () => { panning = false; });
     })();
 
+    (function initCanvasDragDropAndShortcuts() {
+      const board = document.getElementById('magnific-canvas-board');
+      if (board) {
+        board.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          board.classList.add('ring-2', 'ring-cyan-400', 'ring-inset');
+        });
+        board.addEventListener('dragleave', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          board.classList.remove('ring-2', 'ring-cyan-400', 'ring-inset');
+        });
+        board.addEventListener('drop', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          board.classList.remove('ring-2', 'ring-cyan-400', 'ring-inset');
+          if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            const rect = board.getBoundingClientRect();
+            const dropX = Math.round((e.clientX - rect.left - canvasPanX) / canvasZoomLevel);
+            const dropY = Math.round((e.clientY - rect.top - canvasPanY) / canvasZoomLevel);
+            uploadFilesToCanvas(e.dataTransfer.files, dropX, dropY);
+          }
+        });
+      }
+
+      window.addEventListener('paste', (e) => {
+        const activeTab = document.getElementById('tab-canvas');
+        if (!activeTab || activeTab.classList.contains('hidden')) return;
+        if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+        const items = (e.clipboardData || (e.originalEvent && e.originalEvent.clipboardData))?.items;
+        if (!items) return;
+        const pastedFiles = [];
+        for (const item of items) {
+          if (item.type && item.type.indexOf('image') === 0) {
+            const blob = item.getAsFile();
+            if (blob) pastedFiles.push(blob);
+          }
+        }
+        if (pastedFiles.length > 0) {
+          e.preventDefault();
+          uploadFilesToCanvas(pastedFiles, 160, 160);
+        }
+      });
+
+      window.addEventListener('keydown', (e) => {
+        const activeTab = document.getElementById('tab-canvas');
+        if (!activeTab || activeTab.classList.contains('hidden')) return;
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+          if (selectedCanvasNodeId) {
+            e.preventDefault();
+            deleteSelectedCanvasNode();
+          }
+        }
+      });
+    })();
+
+    function selectMasterGenNode(ev) {
+      if (ev) ev.stopPropagation();
+      selectedCanvasNodeId = 'canvas-gen-node';
+      selectedCanvasNodeUrl = currentGeneratedNodeUrl;
+      const tagBadge = document.getElementById('inspector-selected-tag');
+      if (tagBadge) tagBadge.innerText = 'Master 8K (Saída)';
+      const genNode = document.getElementById('canvas-gen-node');
+      if (genNode) {
+        genNode.classList.add('ring-2', 'ring-cyan-400');
+      }
+      canvasNodes.forEach(n => {
+        const dom = document.getElementById(`dom_${n.id}`);
+        if (dom) {
+          dom.classList.remove('border-cyan-400', 'shadow-neon-cyan-sm');
+          if (n.connected) dom.classList.add('border-amber-400/70');
+        }
+      });
+    }
+
+    function deleteMasterGenNode(ev) {
+      if (ev) ev.stopPropagation();
+      const genNode = document.getElementById('canvas-gen-node');
+      if (genNode) {
+        genNode.style.display = 'none';
+        genNode.classList.remove('ring-2', 'ring-cyan-400');
+      }
+      const svg = document.getElementById('canvas-svg-cables');
+      if (svg) svg.innerHTML = '';
+      if (selectedCanvasNodeId === 'canvas-gen-node') {
+        selectedCanvasNodeId = canvasNodes[0] ? canvasNodes[0].id : null;
+        selectedCanvasNodeUrl = canvasNodes[0] ? canvasNodes[0].url : '';
+      }
+      const statusEl = document.getElementById('canvas-status-msg');
+      if (statusEl) statusEl.innerText = 'Nó Master 8K removido do Canvas. Você pode gerar novos nós ou subir novas fotos!';
+      setMascotMessage('Nó Master removido do Canvas!');
+    }
+
     function deleteCanvasNode(nodeId, ev) {
       if (ev) ev.stopPropagation();
       const target = canvasNodes.find(n => n.id === nodeId);
@@ -5183,19 +5333,40 @@ setInterval(triggerRobotBlink, 3800);
     }
 
     function deleteSelectedCanvasNode() {
+      if (selectedCanvasNodeId === 'canvas-gen-node') {
+        deleteMasterGenNode();
+        return;
+      }
       if (!selectedCanvasNodeId && canvasNodes.length > 0) {
         selectedCanvasNodeId = canvasNodes[canvasNodes.length - 1].id;
       }
-      if (!selectedCanvasNodeId) return alert('Nenhum nó selecionado para deletar.');
-      deleteCanvasNode(selectedCanvasNodeId);
+      if (selectedCanvasNodeId) {
+        deleteCanvasNode(selectedCanvasNodeId);
+        return;
+      }
+      const genNode = document.getElementById('canvas-gen-node');
+      if (genNode && genNode.style.display !== 'none') {
+        deleteMasterGenNode();
+        return;
+      }
+      alert('Nenhum nó selecionado para deletar.');
     }
 
     function clearAllCanvasNodes() {
       canvasNodes = [];
       selectedCanvasNodeId = null;
+      selectedCanvasNodeUrl = '';
+      const genNode = document.getElementById('canvas-gen-node');
+      if (genNode) {
+        genNode.style.display = 'none';
+        genNode.classList.remove('ring-2', 'ring-cyan-400');
+      }
       renderCanvasNodes();
+      const svg = document.getElementById('canvas-svg-cables');
+      if (svg) svg.innerHTML = '';
       const statusEl = document.getElementById('canvas-status-msg');
-      if (statusEl) statusEl.innerText = 'Todos os nós foram limpos. Suba novas fotos ou use o Agente Diretor de Filmes!';
+      if (statusEl) statusEl.innerText = 'Todos os nós foram limpos do Canvas! Arraste novas fotos ou clique em + Adicionar Imagem.';
+      setMascotMessage('Canvas totalmente limpo!');
     }
 
     function duplicateSelectedCanvasNode() {
@@ -5390,9 +5561,10 @@ setInterval(triggerRobotBlink, 3800);
     function drawCanvasCables() {
       const svg = document.getElementById('canvas-svg-cables');
       const genNode = document.getElementById('canvas-gen-node');
-      if (!svg || !genNode) return;
-
+      if (!svg) return;
       svg.innerHTML = '';
+      if (!genNode || genNode.style.display === 'none') return;
+
       const genX = parseInt(genNode.style.left || '465', 10);
       const genY = parseInt(genNode.style.top || '72', 10) + (genNode.offsetHeight / 2 || 130);
 
@@ -5502,14 +5674,16 @@ setInterval(triggerRobotBlink, 3800);
       if (cs && ts) ts.value = cs.value;
     }
 
-    async function handleCanvasUploadNode(event) {
-      const files = Array.from(event.target.files || []).slice(0, 3);
-      if (!files.length) return;
+    async function uploadFilesToCanvas(files, dropX = null, dropY = null) {
+      const fileList = Array.from(files || []).filter(f => f.type.startsWith('image/')).slice(0, 10);
+      if (!fileList.length) return;
 
       const statusEl = document.getElementById('canvas-status-msg');
-      statusEl.innerText = `Subindo ${files.length} foto(s) de referência para o Canvas...`;
+      if (statusEl) statusEl.innerText = `Subindo ${fileList.length} nova(s) imagem(ns) para o Canvas...`;
 
-      for (const file of files) {
+      let addedCount = 0;
+      for (let i = 0; i < fileList.length; i++) {
+        const file = fileList[i];
         const formData = new FormData();
         formData.append('image_file', file);
         try {
@@ -5518,27 +5692,38 @@ setInterval(triggerRobotBlink, 3800);
           if (data.node_url) {
             const nextIdx = canvasNodes.length + 1;
             const newId = `node_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
+            const nodeX = dropX !== null ? Math.max(20, dropX + (i * 30)) : (60 + ((nextIdx % 4) * 110));
+            const nodeY = dropY !== null ? Math.max(20, dropY + (i * 30)) : (60 + ((nextIdx % 4) * 125));
+
             canvasNodes.push({
               id: newId,
               tag: `@Image${nextIdx}`,
-              role: 'Character',
-              title: file.name.slice(0, 18),
+              role: nextIdx === 1 ? 'Character' : (nextIdx === 2 ? 'Prop' : 'Scene'),
+              title: file.name.replace(/\.[^/.]+$/, "").slice(0, 18),
               url: data.node_url,
               res: '8K Ref',
-              x: 80 + ((nextIdx % 4) * 110),
-              y: 70 + ((nextIdx % 4) * 125),
+              x: nodeX,
+              y: nodeY,
               connected: true
             });
             selectedCanvasNodeId = newId;
             selectedCanvasNodeUrl = data.node_url;
+            addedCount++;
           }
         } catch (e) {
-          console.error(e);
+          console.error('[uploadFilesToCanvas] Erro:', e);
         }
       }
       renderCanvasNodes();
       drawCanvasCables();
-      statusEl.innerText = `Nós de referência adicionados e conectados ao gerador 8K!`;
+      if (statusEl) statusEl.innerText = `${addedCount} novo(s) nó(s) criado(s) com sucesso no Canvas!`;
+      setMascotMessage(`${addedCount} nova(s) foto(s) conectada(s) ao Canvas!`);
+    }
+
+    async function handleCanvasUploadNode(event) {
+      const files = event.target.files;
+      if (!files || !files.length) return;
+      await uploadFilesToCanvas(files);
       event.target.value = '';
     }
 
@@ -5551,6 +5736,9 @@ setInterval(triggerRobotBlink, 3800);
       const lightingMood = document.getElementById('canvas-lighting-select').value;
       const faceLockOn = document.getElementById('canvas-facelock-toggle').checked;
       const faceStrength = document.getElementById('canvas-facelock-slider').value;
+      const creativity = document.getElementById('canvas-creativity-slider') ? document.getElementById('canvas-creativity-slider').value : 50;
+      const resemblance = document.getElementById('canvas-resemblance-slider') ? document.getElementById('canvas-resemblance-slider').value : 85;
+      const fractality = document.getElementById('canvas-fractality-slider') ? document.getElementById('canvas-fractality-slider').value : 60;
 
       if (!prompt) return alert('Digite o comando para o gerador conectado.');
 
@@ -5558,7 +5746,7 @@ setInterval(triggerRobotBlink, 3800);
       const btn = document.getElementById('canvas-gen-btn');
       const previewImg = document.getElementById('gen-node-img');
 
-      statusEl.innerText = `Sintetizando em 8K Ultra-Realista fiel ao seu prompt e referências (${modelStyle} + Face Lock ${faceStrength}%)...`;
+      statusEl.innerText = `Sintetizando em 8K Ultra-Realista fiel ao seu prompt e referências (${modelStyle} + Face Lock ${faceStrength}% | Criatividade: ${creativity}%)...`;
       btn.disabled = true;
       previewImg.classList.add('opacity-40', '');
 
@@ -5569,6 +5757,9 @@ setInterval(triggerRobotBlink, 3800);
       formData.append('model_style', modelStyle);
       formData.append('camera_angle', cameraAngle);
       formData.append('lighting_mood', lightingMood);
+      formData.append('creativity', creativity);
+      formData.append('resemblance', resemblance);
+      formData.append('fractality', fractality);
       formData.append('face_lock_enabled', faceLockOn);
       formData.append('face_lock_url', currentFaceLockUrl);
       formData.append('face_strength', faceStrength);
@@ -5583,7 +5774,11 @@ setInterval(triggerRobotBlink, 3800);
           currentGeneratedNodeUrl = data.result_url;
           previewImg.src = data.result_url;
           document.getElementById('gen-node-res-badge').innerText = '3840 x 2160 (8K)';
-          if (updateSelectedNode && selectedCanvasNodeId) {
+          
+          const genNode = document.getElementById('canvas-gen-node');
+          if (genNode) genNode.style.display = 'block';
+
+          if (updateSelectedNode && selectedCanvasNodeId && selectedCanvasNodeId !== 'canvas-gen-node') {
             const targetNode = canvasNodes.find(n => n.id === selectedCanvasNodeId);
             if (targetNode) {
               targetNode.url = data.result_url;
@@ -5591,9 +5786,32 @@ setInterval(triggerRobotBlink, 3800);
               targetNode.lighting = lightingMood;
               renderCanvasNodes();
             }
+          } else {
+            const nextIdx = canvasNodes.length + 1;
+            const newId = `node_${Date.now()}`;
+            const isVert = (aspectRatio === '9:16');
+            canvasNodes.push({
+              id: newId,
+              tag: `@Image${nextIdx}`,
+              role: 'Scene',
+              title: `Take ${nextIdx}: Cena 8K`,
+              url: data.result_url,
+              res: isVert ? '2160 x 3840' : '3840 x 2160',
+              x: 270 + ((nextIdx % 3) * 50),
+              y: 110 + ((nextIdx % 3) * 50),
+              connected: true,
+              camera: cameraAngle,
+              lighting: lightingMood,
+              sfx: document.getElementById('canvas-sfx-select') ? document.getElementById('canvas-sfx-select').value : 'v8_engine_road'
+            });
+            selectedCanvasNodeId = newId;
+            selectedCanvasNodeUrl = data.result_url;
+            renderCanvasNodes();
+            drawCanvasCables();
           }
-          statusEl.innerText = `Cena 8K Ultra-Realista gerada! Clique em Baixar Criativo no PC ou transforme em Nó!`;
-          setMascotMessage('Cena 8K Ultra-Realista pronta! Clique em ⬇️ Baixar Criativo no PC para salvar! ');
+
+          statusEl.innerText = `Cena 8K Ultra-Realista gerada e adicionada como Novo Nó no Canvas!`;
+          setMascotMessage('Novo Nó 8K Ultra-Realista criado com sucesso no Canvas! ');
           updateCredits();
         } else {
           statusEl.innerText = `Erro: ${data.detail || 'Falha ao gerar cena conectada'}`;

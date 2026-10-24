@@ -120,17 +120,35 @@ class MagnificCanvasEngine:
         model_style: str = "Seedream 5 Pro",
         camera_angle: str = "default",
         lighting_mood: str = "default",
+        creativity: int = 50,
+        resemblance: int = 85,
+        fractality: int = 60,
         face_lock_path: str = None,
         face_strength: int = 100
     ) -> str:
         """
         Analisa todas as imagens de referência conectadas (@Image1..@Image5) + Foto de Fidelização
-        de Rosto para extrair biometria exata e fundir com o prompt do cliente.
+        de Rosto para extrair biometria exata e fundir com o prompt do cliente, aplicando os sliders
+        Magnific AI (Criatividade, Semelhança/HDR e Fractalidade).
         """
         style_suffix = self.style_presets.get(model_style, self.style_presets["Seedream 5 Pro"])
         cam_spec = self.camera_angles.get(camera_angle, "")
         light_spec = self.lighting_moods.get(lighting_mood, "")
-        extra_specs = ", ".join([s for s in (cam_spec, light_spec, style_suffix) if s])
+
+        magnific_specs = []
+        if creativity < 30:
+            magnific_specs.append(f"Low Creativity ({creativity}%): strictly faithful to reference shapes and composition, avoid hallucinating new objects")
+        elif creativity > 70:
+            magnific_specs.append(f"High Creativity ({creativity}%): imaginative cinematic details, hyper-creative lighting, rich atmospheric textures")
+        
+        if resemblance > 75:
+            magnific_specs.append(f"High Resemblance ({resemblance}%): preserve exact subject identity, color palette, and geometric proportions")
+        
+        if fractality > 50:
+            magnific_specs.append(f"High Fractality ({fractality}%): hyper-detailed micro-pores, surface texture, intricate fabric weaves, 8k razor sharpness")
+
+        specs_list = [s for s in (cam_spec, light_spec, style_suffix, " ".join(magnific_specs)) if s]
+        extra_specs = ", ".join(specs_list)
 
         all_refs = []
         if face_lock_path and os.path.exists(face_lock_path):
@@ -389,13 +407,17 @@ Return ONLY the final English prompt, without quotes or explanations."""
         aspect_ratio: str = "16:9",
         camera_angle: str = "default",
         lighting_mood: str = "default",
+        creativity: int = 50,
+        resemblance: int = 85,
+        fractality: int = 60,
         face_lock_path: str = None,
         face_strength: int = 100,
         output_path: str = "output/canvas_node.jpg"
     ) -> dict:
         """
         Gera um novo criativo ultra-realista 8K fiel ao prompt do cliente e às imagens
-        de referência conectadas (@Image1..@Image5) + Face Lock 100%.
+        de referência conectadas (@Image1..@Image5) + Face Lock 100%, guiado pelos parâmetros
+        Magnific AI (Creativity, Resemblance/HDR e Fractality).
         """
         os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
         reference_images = [p for p in (reference_images or []) if p and os.path.exists(p)]
@@ -407,6 +429,9 @@ Return ONLY the final English prompt, without quotes or explanations."""
             model_style=model_style,
             camera_angle=camera_angle,
             lighting_mood=lighting_mood,
+            creativity=creativity,
+            resemblance=resemblance,
+            fractality=fractality,
             face_lock_path=face_lock_path,
             face_strength=face_strength
         )

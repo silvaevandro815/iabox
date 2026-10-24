@@ -1835,7 +1835,7 @@ async def upload_canvas_node(
     if not files:
         raise HTTPException(status_code=400, detail="Nenhum arquivo de imagem enviado.")
     uploaded = []
-    for f in files[:3]:
+    for f in files[:10]:
         node_id = str(uuid.uuid4())[:8]
         ext = os.path.splitext(f.filename or ".jpg")[1] or ".jpg"
         out_filename = f"node_ref_{node_id}{ext}"
@@ -1852,6 +1852,9 @@ async def generate_canvas_node(
     aspect_ratio: str = Form("16:9"),
     camera_angle: str = Form("default"),
     lighting_mood: str = Form("default"),
+    creativity: int = Form(50),
+    resemblance: int = Form(85),
+    fractality: int = Form(60),
     face_lock_enabled: bool = Form(True),
     face_lock_url: str = Form(""),
     face_strength: int = Form(100),
@@ -1880,7 +1883,7 @@ async def generate_canvas_node(
         if p and p not in ref_paths:
             ref_paths.append(p)
 
-    for idx, rf in enumerate((ref_images or [])[:3]):
+    for idx, rf in enumerate((ref_images or [])[:5]):
         if rf and rf.filename:
             ext = os.path.splitext(rf.filename)[1] or ".jpg"
             r_path = os.path.join(UPLOAD_DIR, f"canvas_ref_{job_id[:8]}_{idx}{ext}")
@@ -1896,12 +1899,10 @@ async def generate_canvas_node(
         face_path = os.path.join(UPLOAD_DIR, f"facelock_{job_id[:8]}{ext}")
         with open(face_path, "wb") as f:
             shutil.copyfileobj(face_file.file, f)
-    elif face_lock_enabled:
-        resolved_face = _resolve_local_media_path(face_lock_url) if face_lock_url else None
+    elif face_lock_enabled and face_lock_url:
+        resolved_face = _resolve_local_media_path(face_lock_url)
         if resolved_face and os.path.exists(resolved_face):
             face_path = resolved_face
-        elif os.path.exists("static/samples/canvas_take1.jpg"):
-            face_path = "static/samples/canvas_take1.jpg"
 
     try:
         from scripts.magnific_canvas_engine import MagnificCanvasEngine
@@ -1913,6 +1914,9 @@ async def generate_canvas_node(
             aspect_ratio=aspect_ratio,
             camera_angle=camera_angle,
             lighting_mood=lighting_mood,
+            creativity=creativity,
+            resemblance=resemblance,
+            fractality=fractality,
             face_lock_path=face_path,
             face_strength=face_strength,
             output_path=out_path
@@ -1924,7 +1928,16 @@ async def generate_canvas_node(
             f"Canvas 8K ({model_style})",
             prompt,
             f"/output/{out_filename}",
-            {"model_style": model_style, "aspect_ratio": aspect_ratio, "camera": camera_angle, "lighting": lighting_mood, "face_locked": bool(face_path)}
+            {
+                "model_style": model_style,
+                "aspect_ratio": aspect_ratio,
+                "camera": camera_angle,
+                "lighting": lighting_mood,
+                "creativity": creativity,
+                "resemblance": resemblance,
+                "fractality": fractality,
+                "face_locked": bool(face_path)
+            }
         )
         return {
             "status": "success",
