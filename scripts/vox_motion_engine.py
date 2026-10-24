@@ -50,68 +50,74 @@ class VoxMotionEngine:
             "vox": {
                 "id": "vox",
                 "name": "Estilo Vox (Colagem Editorial Vintage)",
-                "desc": "Papel rasgado, texturas de jornal antigo, retícula halftone, halo amarelo vibrante, moedas caindo e tipografia serif retrô.",
+                "canvas_preset": "Estilo Vox (Colagem Editorial Vintage)",
+                "desc": "Papel rasgado, texturas de jornal antigo, retícula halftone, realces amarelos vibrantes, colagem fotográfica recortada e tipografia editorial.",
+                "prompt_prefix": "Vox documentary editorial collage art, vintage paper texture background, archival newspaper and cutout photo montage, subtle halftone dots, vibrant yellow highlighter accents, mixed-media photo montage, stop-motion archival explainer aesthetic, graphic design masterpiece",
+                "video_motion": "editorial collage stop-motion parallax, archival cutouts animating, subtle paper texture drift, kinetic graphic elements, professional documentary motion",
                 "bg_color": (24, 24, 27),
-                "accent_color": (250, 204, 21), # Amarelo Vox
-                "secondary_color": (25, 120, 175), # Azul Céu
-                "has_torn_paper": True,
-                "has_halo": True,
-                "motion_types": ["moedas_caindo", "zoom_parallax", "engrenagens", "nuvens_deriva", "revelacao_papel"]
+                "accent_color": (250, 204, 21), # Amarelo Vox #FACC15
+                "accent_hex": "#FACC15",
+                "font_head": "times.ttf"
             },
             "motion_graphics": {
                 "id": "motion_graphics",
                 "name": "Motion Graphics 2D (Explainer Tech Minimalista)",
+                "canvas_preset": "Motion Graphics 2D (Explainer Tech Minimalista)",
                 "desc": "Visual corporativo limpo, formas geométricas vetorizadas, dados infográficos flutuantes e paleta ciano/ardósia moderna.",
-                "bg_color": (15, 23, 42), # Slate 900
-                "accent_color": (6, 182, 212), # Ciano 500
-                "secondary_color": (59, 130, 246), # Azul 500
-                "has_torn_paper": False,
-                "has_halo": False,
-                "motion_types": ["grafico_barras", "hud_tech", "zoom_isometrico", "vetores_flutuantes"]
+                "prompt_prefix": "clean 2D flat vector illustration, motion graphics explainer design, minimalist geometric vector art, slate grey and cyan high-contrast color palette, modern tech infographic elements, sharp clean edges, vector art masterpiece",
+                "video_motion": "smooth 2D vector animation, kinetic infographic motion, minimalist geometric shapes shifting, modern motion design",
+                "bg_color": (15, 23, 42),
+                "accent_color": (6, 182, 212), # Ciano 500 #06B6D4
+                "accent_hex": "#06B6D4",
+                "font_head": "arial.ttf"
             },
             "cinema_3d": {
                 "id": "cinema_3d",
                 "name": "3D Render Cinematográfico (Unreal / Octane)",
+                "canvas_preset": "3D Render Cinematográfico (Unreal / Octane)",
                 "desc": "Iluminação volumétrica dramática, sombras suaves de estúdio, texturas foto-realistas e profundidade de campo rasa.",
+                "prompt_prefix": "Unreal Engine 5 Octane 3D render, photorealistic 3D CGI masterwork, volumetric ray-traced lighting, subsurface scattering, ambient occlusion, 8k CGI cinema quality",
+                "video_motion": "fluid 3D camera pan, 3D CGI volumetric motion, cinematic smooth camera movement",
                 "bg_color": (10, 10, 15),
                 "accent_color": (245, 158, 11), # Âmbar
-                "secondary_color": (99, 102, 241), # Indigo
-                "has_torn_paper": False,
-                "has_halo": True,
-                "motion_types": ["camera_dolly", "luz_volumetrica", "bokeh_flutuante", "profundidade_3d"]
+                "accent_hex": "#F59E0B",
+                "font_head": "arial.ttf"
             },
             "cyberpunk": {
                 "id": "cyberpunk",
                 "name": "Dark Cyberpunk Neon",
+                "canvas_preset": "Dark Cyberpunk Neon",
                 "desc": "Contraste extremo, reflexos de asfalto molhado, neon laser ciano e magenta, interface HUD holográfica e fumaça volumétrica.",
+                "prompt_prefix": "dark cyberpunk sci-fi aesthetic, glowing vibrant cyan and magenta neon lights, futuristic cityscape, rain-slicked wet reflections, high contrast volumetric neon glow, dark synthwave vibe",
+                "video_motion": "pulsing neon lights, glowing wet street reflections, volumetric smoke drifting, cyberpunk camera tracking",
                 "bg_color": (10, 12, 20),
-                "accent_color": (6, 182, 212), # Ciano Laser
-                "secondary_color": (244, 63, 94), # Rose/Neon
-                "has_torn_paper": False,
-                "has_halo": True,
-                "motion_types": ["glitch_suave", "neon_pulso", "grid_perspectiva", "scanline_hud"]
+                "accent_color": (244, 63, 94), # Rose/Neon Magenta #F43F5E
+                "accent_hex": "#F43F5E",
+                "font_head": "arial.ttf"
             },
             "comic_pop": {
                 "id": "comic_pop",
                 "name": "HQ & Pop Art (Graphic Novel Vintage)",
+                "canvas_preset": "HQ & Pop Art (Graphic Novel Vintage)",
                 "desc": "Pontos Ben-Day de impressão, contornos pretos expressivos, balões de diálogo, onomatopeias e cores chapadas vibrantes.",
-                "bg_color": (255, 251, 235), # Off-white vintage
-                "accent_color": (239, 68, 68), # Vermelho Comic
-                "secondary_color": (234, 179, 8), # Amarelo Comic
-                "has_torn_paper": True,
-                "has_halo": False,
-                "motion_types": ["linhas_acao", "zoom_impacto", "quadro_destaque"]
+                "prompt_prefix": "vintage comic book pop art illustration, bold black ink outlines, Roy Lichtenstein style Ben-Day dots, vivid retro comic colors, dynamic graphic novel art, halftone print texture",
+                "video_motion": "dynamic graphic novel animation, comic book pop art action lines, stylized illustrated movement",
+                "bg_color": (255, 251, 235),
+                "accent_color": (239, 68, 68), # Vermelho Comic #EF4444
+                "accent_hex": "#EF4444",
+                "font_head": "impact.ttf"
             },
             "anime": {
                 "id": "anime",
                 "name": "Ilustração Anime & Studio Ghibli",
+                "canvas_preset": "Ilustração Anime & Studio Ghibli",
                 "desc": "Céus em aquarela com nuvens volumosas, luz natural suave, paleta nostálgica pintada à mão e atmosfera pacífica.",
+                "prompt_prefix": "Studio Ghibli anime masterwork illustration, Makoto Shinkai aesthetic, hand-painted watercolor background, beautiful lush painted clouds, soft natural anime lighting, expressive anime cel-shading",
+                "video_motion": "cinematic anime animation, gentle wind blowing through hair, watercolor painted clouds drifting, soft natural character motion, Studio Ghibli cel motion",
                 "bg_color": (20, 30, 45),
-                "accent_color": (56, 189, 248), # Sky
-                "secondary_color": (251, 191, 36), # Sunset
-                "has_torn_paper": False,
-                "has_halo": True,
-                "motion_types": ["nuvens_ghibli", "particulas_luz", "pan_aquarela"]
+                "accent_color": (56, 189, 248), # Sky Blue #38BDF8
+                "accent_hex": "#38BDF8",
+                "font_head": "times.ttf"
             }
         }
 
@@ -134,7 +140,14 @@ class VoxMotionEngine:
         sec_per_scene = max(5.0, min(float(sec_per_scene), 15.0))
 
         system_prompt = f"""Você é o Diretor Criativo Principal e Roteirista Chefe de documentários e vídeos virais estilo {style_info['name']} (Vox, Curio, Johnny Harris).
-Sua missão é pegar o tema ou roteiro enviado pelo usuário e criar EXATAMENTE {num_scenes} cenas sequenciais de {sec_per_scene}s cada, com continuidade narrativa cinematográfica e coerência visual impecável.
+Sua missão é pegar o tema ou roteiro enviado pelo usuário e criar EXATAMENTE {num_scenes} cenas sequenciais de {sec_per_scene}s cada, com continuidade narrativa cinematográfica e rigorosa obediência ao estilo visual selecionado.
+
+REGRA SUPREMA DE ESTILO VISUAL: {style_info['name'].upper()}
+Cada cena DEVE incorporar com precisão milimétrica a estética deste estilo:
+- Descrição estética obrigatória: {style_info['desc']}
+- Todos os prompts do campo "prompt" DEVEM ser em INGLÊS e OBRIGATORIAMENTE conter a assinatura visual do estilo:
+  "{style_info['prompt_prefix']}"
+- NUNCA gere fotos de cinema genérico ou de câmera comum se o estilo for Colagem Editorial Vox, Anime, Comic Pop Art ou Motion Graphics! Obedeça 100% ao estilo {style_info['name']}.
 
 DIRETRIZES FUNDAMENTAIS DE CONTINUIDADE E PERSONAGEM:
 1. MANTENHA A COERÊNCIA DO PERSONAGEM/TEMA:
@@ -148,15 +161,15 @@ DIRETRIZES FUNDAMENTAIS DE CONTINUIDADE E PERSONAGEM:
    - Cena 5: A Virada e Impacto Coletivo (a comunidade, as pessoas se unindo a ele).
    - Cena 6: A Vitória e Visão do Futuro (o desfecho triunfante, inspirador e sustentável).
 3. ESTRUTURA DOS CAMPOS DE CADA CENA:
-   - "headline": 1 ou 2 palavras em caixa alta de alto impacto (ex: "O CHAMADO", "A JORNADA", "A CRISE", "A VOZ", "A VIRADA", "O FUTURO").
-   - "prompt": Descrição visual ultra-detalhada e cinematográfica em inglês (para o gerador de imagem 8K). Especifique claramente o sujeito (ex: "Cinematic shot of a 10-year-old Black boy with short curly hair wearing a recycled backpack..."), o ambiente, a iluminação volumétrica, a paleta de cores e o enquadramento (close-up, wide-shot, medium-shot).
+   - "headline": 1 ou 2 palavras em CAIXA ALTA de alto impacto (ex: "O CHAMADO", "A JORNADA", "A CRISE", "A VOZ", "A VIRADA", "O FUTURO").
+   - "prompt": Descrição visual ultra-detalhada em INGLÊS (para o gerador de imagem 8K) contendo OBRIGATORIAMENTE "{style_info['prompt_prefix']}" seguido do sujeito e da ação.
    - "motion": Escolha o movimento que melhor casa com a cena: 'zoom_parallax', 'revelacao_papel', 'nuvens_deriva', 'engrenagens' ou 'moedas_caindo'.
    - "narration": Frase concisa, emocional e inspiradora em português (1 a 2 frases para a voz/legenda da cena).
    - "duration": {sec_per_scene}.
 
 Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSON. Não inclua nenhum texto, explicação ou markdown fora do JSON."""
 
-        user_content = f"TEMA OU ROTEIRO DO VÍDEO:\n{script_text}\n\nCrie a sequência completa de {num_scenes} cenas com continuidade visual perfeita."
+        user_content = f"TEMA OU ROTEIRO DO VÍDEO:\n{script_text}\n\nCrie a sequência completa de {num_scenes} cenas com continuidade visual perfeita no estilo {style_info['name']}."
 
         res = self._call_ai(system_prompt, user_content)
         if res:
@@ -171,10 +184,15 @@ Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSO
                 if isinstance(scenes, list) and len(scenes) > 0:
                     formatted_scenes = []
                     for idx, s in enumerate(scenes[:num_scenes]):
+                        p_raw = s.get("prompt", "Editorial scene")
+                        # Garante que a assinatura visual do estilo esteja presente no prompt
+                        if not any(k in p_raw.lower() for k in ["vox", "collage", "anime", "ghibli", "comic", "pop art", "vector", "cyberpunk", "octane", "unreal"]):
+                            p_raw = f"{style_info['prompt_prefix']}, {p_raw}"
+
                         formatted_scenes.append({
                             "scene_number": idx + 1,
                             "headline": s.get("headline", f"CENA {idx+1}")[:25].upper(),
-                            "prompt": s.get("prompt", "Cinematic editorial scene")[:700],
+                            "prompt": p_raw[:850],
                             "motion": s.get("motion", "zoom_parallax"),
                             "narration": s.get("narration", "")[:300],
                             "duration": sec_per_scene,
@@ -187,17 +205,16 @@ Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSO
         return self._generate_fallback_scenes(script_text, num_scenes, sec_per_scene, style)
 
     def _generate_fallback_scenes(self, script_text: str, num_scenes: int, sec_per_scene: float, style: str) -> List[Dict]:
-        clean_text = script_text.strip()
-        is_kid = any(w in clean_text.lower() for w in ["menino", "garoto", "criança", "boy", "jovem"])
-        is_eco = any(w in clean_text.lower() for w in ["recicl", "planeta", "sustent", "ambiente", "lixo", "terra"])
-        
+        style_info = self.styles.get(style, self.styles["vox"])
+        prefix = style_info.get("prompt_prefix", "Vox documentary editorial collage art, vintage paper texture background")
+
         beats = [
-            ("O CHAMADO", "Cinematic medium-shot, a determined 10-year-old Black boy with curly hair in a green hoodie looking at a polluted city, dramatic volumetric lighting, 8k editorial style.", "zoom_parallax", "Em um mundo tomado pela pressa e pelo desperdício, uma jovem voz decide não se calar."),
-            ("A JORNADA", "Cinematic wide-shot, the young Black boy walking through a bustling urban avenue holding a handmade recycling bag, contrast of grey buildings and vibrant hope.", "revelacao_papel", "Ele caminha pelas ruas mostrando que cada pequena atitude tem o poder de transformar o planeta."),
-            ("A VOZ", "Cinematic scene, the young Black boy speaking passionately to passersby in a public square, demonstrating creative recycled inventions, inspiring expression.", "zoom_parallax", "Conscientizar não é impor regras, é despertar nas pessoas o amor pelo futuro comum."),
-            ("O DESAFIO", "Cinematic close-up, children and adults listening intently to the young Black boy as he sorts recyclable bottles and clean materials, community gathering.", "engrenagens", "Quando o exemplo é sincero, a indiferença dá lugar à ação coletiva."),
-            ("A VIRADA", "Cinematic wide drone view, thousands of people cleaning up city streets and parks, planting seedlings, vibrant global eco movement.", "nuvens_deriva", "O movimento ganha as ruas e o mundo: a reciclagem se torna uma corrente imparável de união."),
-            ("O FUTURO", "Cinematic hopeful portrait, the smiling young Black boy looking over a lush green sustainable city with blue skies and solar roofs, 8k resolution.", "zoom_parallax", "A mudança que o mundo precisa começou no coração de uma criança que acreditou no amanhã.")
+            ("O CHAMADO", f"{prefix}, portrait of a determined 10-year-old Black boy with curly hair in a green hoodie looking over a city, dramatic contrast, high resolution.", "zoom_parallax", "Em um mundo tomado pela pressa e pelo desperdício, uma jovem voz decide não se calar."),
+            ("A JORNADA", f"{prefix}, wide view, the young Black boy walking through a bustling urban avenue holding a handmade recycling bag, striking composition.", "revelacao_papel", "Ele caminha pelas ruas mostrando que cada pequena atitude tem o poder de transformar o planeta."),
+            ("A VOZ", f"{prefix}, the young Black boy speaking passionately in a public square, demonstrating creative recycled inventions, inspiring expression.", "zoom_parallax", "Conscientizar não é impor regras, é despertar nas pessoas o amor pelo futuro comum."),
+            ("O DESAFIO", f"{prefix}, community gathering listening to the young Black boy as he sorts recyclable bottles, rich graphic textures.", "engrenagens", "Quando o exemplo é sincero, a indiferença dá lugar à ação coletiva."),
+            ("A VIRADA", f"{prefix}, thousands of people cleaning up city streets and parks, planting seedlings, vibrant global eco movement.", "nuvens_deriva", "O movimento ganha as ruas e o mundo: a reciclagem se torna uma corrente imparável de união."),
+            ("O FUTURO", f"{prefix}, hopeful smiling portrait of the young Black boy looking over a lush green sustainable city with solar roofs, uplifting composition.", "zoom_parallax", "A mudança que o mundo precisa começou no coração de uma criança que acreditou no amanhã.")
         ]
         
         scenes = []
@@ -312,26 +329,24 @@ Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSO
                     keyframe_path = r_p
                     break
 
-            # Se nenhuma foto foi enviada, a IA sintetiza o frame chave 8K em cores vivas e ultra-realista
+            # Se nenhuma foto foi enviada, a IA sintetiza o frame chave 8K rigorosamente no estilo selecionado
+            style_info = self.styles.get(style, self.styles["vox"])
             if not keyframe_path:
                 try:
                     from scripts.magnific_canvas_engine import MagnificCanvasEngine
                     canvas_eng = MagnificCanvasEngine()
                     synth_path = os.path.join(work_dir, f"keyframe_{scene_num}.jpg")
                     is_paid = runpod_mode or bool(self.runpod_key)
+                    m_style = style_info.get("canvas_preset", "Estilo Vox (Colagem Editorial Vintage)")
 
-                    style_map = {
-                        "vox": "Seedream 5 Pro",
-                        "motion_graphics": "Motion Graphics 2D",
-                        "cinema_3d": "Seedream 5 Pro",
-                        "cyberpunk": "Cyberpunk Neon 8K",
-                        "comic_pop": "Comic Pop Art",
-                        "anime": "Anime Studio Ghibli"
-                    }
-                    m_style = style_map.get(style, "Seedream 5 Pro")
+                    # Assegura a assinatura visual artística do estilo no prompt
+                    full_img_prompt = prompt
+                    prefix = style_info.get("prompt_prefix", "")
+                    if prefix and not any(k in prompt.lower() for k in ["vox", "collage", "anime", "ghibli", "comic", "pop art", "vector", "cyberpunk", "octane", "unreal"]):
+                        full_img_prompt = f"{prefix}, {prompt}"
 
                     canvas_eng.generate_connected_node(
-                        prompt=prompt,
+                        prompt=full_img_prompt,
                         reference_images=[],
                         model_style=m_style,
                         aspect_ratio="9:16",
@@ -343,12 +358,15 @@ Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSO
                 except Exception as e_synth:
                     print(f"[VoxMotionEngine] Erro ao sintetizar frame da cena: {e_synth}")
 
-            # 2. Gerar o vídeo com movimento cinematográfico real de IA
+            # 2. Gerar o vídeo com movimento cinematográfico real de IA respeitando o estilo
             raw_ai_video = os.path.join(work_dir, "raw_ai_video.mp4")
             try:
                 from scripts.ai_video_engine import generate_video_clip
+                motion_tag = style_info.get("video_motion", "editorial documentary motion")
+                video_prompt = f"{prompt}, {motion_tag}"
+
                 gen_res = generate_video_clip(
-                    prompt=prompt,
+                    prompt=video_prompt,
                     out_path=raw_ai_video,
                     first_frame=keyframe_path,
                     duration=int(duration),
@@ -364,13 +382,14 @@ Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSO
                     from scripts.ai_video_engine import _local_cinematic_motion
                     _local_cinematic_motion(keyframe_path, raw_ai_video, duration=int(duration), aspect_ratio="9:16")
 
-            # 3. Aplicar Overlay Editorial Profissional (Headline no Topo + Legenda na Base)
+            # 3. Aplicar Overlay Editorial Profissional respeitando as cores e tipografia do estilo
             self._apply_broadcast_overlay(
                 input_video=raw_ai_video,
                 output_video=output_mp4,
                 headline=headline,
                 narration=narration,
-                duration=duration
+                duration=duration,
+                style=style
             )
 
         finally:
@@ -378,19 +397,28 @@ Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSO
 
         return output_mp4
 
-    def _apply_broadcast_overlay(self, input_video: str, output_video: str, headline: str, narration: str, duration: float):
+    def _apply_broadcast_overlay(self, input_video: str, output_video: str, headline: str, narration: str, duration: float, style: str = "vox"):
         if not os.path.exists(input_video) or os.path.getsize(input_video) < 1000:
             return
 
         cw, ch = 720, 1280
         overlay = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
         draw = ImageDraw.Draw(overlay)
+        style_info = self.styles.get(style, self.styles["vox"])
+        accent_color = style_info.get("accent_color", (250, 204, 21))
+        font_file = style_info.get("font_head", "times.ttf")
 
         try:
-            font_head = ImageFont.truetype("times.ttf", 58)
+            font_head = ImageFont.truetype(font_file, 58)
+        except Exception:
+            try:
+                font_head = ImageFont.truetype("arial.ttf", 58)
+            except Exception:
+                font_head = ImageFont.load_default()
+
+        try:
             font_sub = ImageFont.truetype("arial.ttf", 26)
         except Exception:
-            font_head = ImageFont.load_default()
             font_sub = ImageFont.load_default()
 
         # Vinheta cinematográfica suave no topo e na base (garante 100% de legibilidade dos textos)
@@ -418,8 +446,11 @@ Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSO
             cap_x = (cw - cap_w) // 2
             cap_y = ch - cap_h - 40
 
-            draw.rounded_rectangle([cap_x, cap_y, cap_x + cap_w, cap_y + cap_h], radius=16, fill=(15, 15, 20, 210), outline=(250, 204, 21, 140), width=2)
-            draw.rounded_rectangle([cap_x, cap_y, cap_x + 6, cap_y + cap_h], radius=3, fill=(250, 204, 21, 255))
+            outline_rgba = (accent_color[0], accent_color[1], accent_color[2], 160)
+            accent_rgba = (accent_color[0], accent_color[1], accent_color[2], 255)
+
+            draw.rounded_rectangle([cap_x, cap_y, cap_x + cap_w, cap_y + cap_h], radius=16, fill=(15, 15, 20, 210), outline=outline_rgba, width=2)
+            draw.rounded_rectangle([cap_x, cap_y, cap_x + 6, cap_y + cap_h], radius=3, fill=accent_rgba)
 
             words = narration.split()
             l1, l2 = "", ""
@@ -431,9 +462,10 @@ Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSO
 
             draw.text((cap_x + 20, cap_y + 14), l1, font=font_sub, fill=(255, 255, 255, 255))
             if l2:
-                draw.text((cap_x + 20, cap_y + 46), l2, font=font_sub, fill=(250, 204, 21, 255))
+                draw.text((cap_x + 20, cap_y + 46), l2, font=font_sub, fill=accent_rgba)
 
         temp_overlay = input_video.replace(".mp4", "_overlay.png")
+        overlay.save(temp_overlay, "PNG")
         overlay.save(temp_overlay, "PNG")
 
         # Anexa overlay e áudio via FFmpeg

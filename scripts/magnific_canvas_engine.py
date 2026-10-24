@@ -79,6 +79,7 @@ class MagnificCanvasEngine:
 
         # Presets para quando há seres humanos / personagens
         self.style_presets = {
+            # --- Modelos Fotorrealistas & Cinema ---
             "Google Omni Vision 8K": "Google Omni cinema vision, ultra-high optical fidelity, photorealistic human subject, razor-sharp textures, dynamic volumetric range, 8K commercial production, Hasselblad 100MP clarity",
             "Seedream 5 Pro": "8k cinema masterwork, ARRI Alexa 65 IMAX 70mm, ultra-realistic skin pores and subsurface scattering, natural volumetric lighting, razor-sharp optical focus, Hollywood blockbuster color grading",
             "NanoBanana Pro 2": "multi-reference visual continuity, cinematic movie frame, anamorphic 35mm lens, dramatic volumetric lighting, shallow depth of field, hyper-detailed skin texture, 8k photorealistic",
@@ -90,11 +91,20 @@ class MagnificCanvasEngine:
             "Flux Realism Pro": "raw candid photography, ultra realistic, natural skin texture, 85mm f/1.4 lens, sharp focus, lifelike colors, editorial quality",
             "Higgsfield Dark Cinema": "dark moody blockbuster frame, flames and rim lighting, intense atmosphere, IMAX 70mm cinematography, Teal and Orange color grade, ultra detailed",
             "IABOX Cinema Dark Cinema": "dark moody blockbuster frame, flames and rim lighting, intense atmosphere, IMAX 70mm cinematography, Teal and Orange color grade, ultra detailed",
-            "IABOX Cinema 8K": "ultra-upscaled 8k, extreme micro-detail, pores and fabric texture, masterwork photography, dramatic chiaroscuro lighting, Kodak Vision3 500T film look"
+            "IABOX Cinema 8K": "ultra-upscaled 8k, extreme micro-detail, pores and fabric texture, masterwork photography, dramatic chiaroscuro lighting, Kodak Vision3 500T film look",
+
+            # --- Estilos Artísticos, Editoriais & Gráficos ---
+            "Estilo Vox (Colagem Editorial Vintage)": "Vox documentary editorial collage art, vintage paper texture background, archival newspaper and cutout photo montage, subtle halftone dots, vibrant yellow highlighter and graphic accents, mixed-media editorial collage, stop-motion archival explainer aesthetic, graphic design masterpiece, trending on Behance editorial",
+            "Motion Graphics 2D (Explainer Tech Minimalista)": "clean 2D flat vector illustration, motion graphics explainer design, minimalist geometric vector art, slate grey and cyan high-contrast color palette, modern tech infographic elements, sharp clean edges, vector art masterpiece",
+            "3D Render Cinematográfico (Unreal / Octane)": "Unreal Engine 5 Octane 3D render, photorealistic 3D CGI masterwork, volumetric ray-traced lighting, subsurface scattering, ambient occlusion, 8k CGI cinema quality",
+            "Dark Cyberpunk Neon": "dark cyberpunk sci-fi aesthetic, glowing vibrant cyan and magenta neon lights, futuristic cityscape, rain-slicked wet reflections, high contrast volumetric neon glow, dark synthwave vibe",
+            "HQ & Pop Art (Graphic Novel Vintage)": "vintage comic book pop art illustration, bold black ink outlines, Roy Lichtenstein style Ben-Day dots, vivid retro comic colors, dynamic graphic novel art, halftone print texture",
+            "Ilustração Anime & Studio Ghibli": "Studio Ghibli anime masterwork illustration, Makoto Shinkai aesthetic, hand-painted watercolor background, beautiful lush painted clouds, soft natural anime lighting, expressive anime cel-shading"
         }
 
         # Presets para objetos, natureza, veículos, produtos ou transformações abstratas (ZERO humanos)
         self.style_presets_object = {
+            # --- Modelos Fotorrealistas & Cinema ---
             "Google Omni Vision 8K": "Google Omni cinema vision, ultra-high optical fidelity, razor-sharp physical textures, dynamic volumetric range, 8K commercial production, Hasselblad 100MP clarity",
             "Seedream 5 Pro": "8k cinema masterwork, ARRI Alexa 65 IMAX 70mm, intricate organic and surface textures, natural volumetric lighting, razor-sharp optical focus, Hollywood blockbuster color grading",
             "NanoBanana Pro 2": "multi-reference visual continuity, cinematic movie frame, anamorphic 35mm lens, dramatic volumetric lighting, shallow depth of field, hyper-detailed physical surface texture, 8k photorealistic",
@@ -106,7 +116,15 @@ class MagnificCanvasEngine:
             "Flux Realism Pro": "raw candid photography, ultra realistic, natural organic texture, 85mm macro lens, sharp focus, lifelike colors, editorial quality",
             "Higgsfield Dark Cinema": "dark moody blockbuster frame, flames and rim lighting, intense atmosphere, IMAX 70mm cinematography, Teal and Orange color grade, ultra detailed",
             "IABOX Cinema Dark Cinema": "dark moody blockbuster frame, flames and rim lighting, intense atmosphere, IMAX 70mm cinematography, Teal and Orange color grade, ultra detailed",
-            "IABOX Cinema 8K": "ultra-upscaled 8k, extreme micro-detail, intricate material and surface texture, masterwork photography, dramatic chiaroscuro lighting, Kodak Vision3 500T film look"
+            "IABOX Cinema 8K": "ultra-upscaled 8k, extreme micro-detail, intricate material and surface texture, masterwork photography, dramatic chiaroscuro lighting, Kodak Vision3 500T film look",
+
+            # --- Estilos Artísticos, Editoriais & Gráficos ---
+            "Estilo Vox (Colagem Editorial Vintage)": "Vox documentary editorial collage art of object, vintage paper texture background, archival newspaper and cutout montage, subtle halftone dots, vibrant yellow highlighter and graphic accents, mixed-media editorial collage, stop-motion archival explainer aesthetic, graphic design masterpiece",
+            "Motion Graphics 2D (Explainer Tech Minimalista)": "clean 2D flat vector illustration, motion graphics explainer design, minimalist geometric vector art, slate grey and cyan high-contrast color palette, modern tech infographic elements, sharp clean edges, vector art masterpiece",
+            "3D Render Cinematográfico (Unreal / Octane)": "Unreal Engine 5 Octane 3D render, photorealistic 3D CGI masterwork of object, volumetric ray-traced lighting, subsurface scattering, ambient occlusion, 8k CGI cinema quality",
+            "Dark Cyberpunk Neon": "dark cyberpunk sci-fi aesthetic, glowing vibrant cyan and magenta neon lights, futuristic object design, rain-slicked wet reflections, high contrast volumetric neon glow, dark synthwave vibe",
+            "HQ & Pop Art (Graphic Novel Vintage)": "vintage comic book pop art illustration of object, bold black ink outlines, Roy Lichtenstein style Ben-Day dots, vivid retro comic colors, dynamic graphic novel art, halftone print texture",
+            "Ilustração Anime & Studio Ghibli": "Studio Ghibli anime masterwork illustration, Makoto Shinkai aesthetic, hand-painted watercolor background, beautiful lush painted clouds, soft natural anime lighting, expressive anime cel-shading"
         }
 
         self.camera_angles = {
@@ -143,10 +161,45 @@ class MagnificCanvasEngine:
         }
 
     def get_style(self, model_style: str, has_human: bool = True) -> str:
-        """Retorna o estilo visual correto respeitando a presença ou ausência de seres humanos."""
-        if has_human:
-            return self.style_presets.get(model_style, self.style_presets.get("Seedream 5 Pro", ""))
-        return self.style_presets_object.get(model_style, self.style_presets_object.get("Seedream 5 Pro", ""))
+        """Retorna o estilo visual correto respeitando a presença ou ausência de seres humanos e suporte completo a estilos artísticos."""
+        presets = self.style_presets if has_human else self.style_presets_object
+        if not model_style:
+            return presets.get("Seedream 5 Pro", "")
+        
+        # 1. Match exato
+        if model_style in presets:
+            return presets[model_style]
+        
+        # 2. Aliases e nomes curtos
+        aliases = {
+            "vox": "Estilo Vox (Colagem Editorial Vintage)",
+            "estilo vox": "Estilo Vox (Colagem Editorial Vintage)",
+            "motion_graphics": "Motion Graphics 2D (Explainer Tech Minimalista)",
+            "motion graphics": "Motion Graphics 2D (Explainer Tech Minimalista)",
+            "motion 2d": "Motion Graphics 2D (Explainer Tech Minimalista)",
+            "cinema_3d": "3D Render Cinematográfico (Unreal / Octane)",
+            "cinema 3d": "3D Render Cinematográfico (Unreal / Octane)",
+            "3d render": "3D Render Cinematográfico (Unreal / Octane)",
+            "cyberpunk": "Dark Cyberpunk Neon",
+            "cyberpunk neon": "Dark Cyberpunk Neon",
+            "comic_pop": "HQ & Pop Art (Graphic Novel Vintage)",
+            "comic pop": "HQ & Pop Art (Graphic Novel Vintage)",
+            "hq pop art": "HQ & Pop Art (Graphic Novel Vintage)",
+            "anime": "Ilustração Anime & Studio Ghibli",
+            "ghibli": "Ilustração Anime & Studio Ghibli",
+            "anime studio ghibli": "Ilustração Anime & Studio Ghibli"
+        }
+        m_lower = str(model_style).strip().lower()
+        if m_lower in aliases and aliases[m_lower] in presets:
+            return presets[aliases[m_lower]]
+
+        # 3. Match case-insensitive ou substring
+        for k, v in presets.items():
+            k_lower = k.lower()
+            if k_lower == m_lower or m_lower in k_lower or k_lower in m_lower:
+                return v
+
+        return presets.get(model_style, presets.get("Seedream 5 Pro", ""))
 
     def get_camera(self, camera_angle: str, has_human: bool = True) -> str:
         """Retorna a especificação de enquadramento óptica adaptada ao assunto."""
@@ -408,6 +461,22 @@ Return STRICTLY a valid raw JSON object (no markdown quotes, no explanations out
                 f"from the first reference image (exact facial bone structure, eyes, nose, hairline, skin tone, age, and expression)."
             )
 
+        m_lower = str(model_style).lower()
+        if "vox" in m_lower:
+            medium_desc = "an authentic Vox editorial collage artwork (mixed-media photo cutouts, vintage archival paper texture, yellow graphic accents, halftone dot patterns)"
+        elif "anime" in m_lower or "ghibli" in m_lower:
+            medium_desc = "a stunning Studio Ghibli anime cel illustration (hand-painted watercolor background, rich anime color palette, soft natural daylight)"
+        elif "comic" in m_lower or "pop" in m_lower:
+            medium_desc = "a vintage pop-art graphic novel comic illustration (bold black ink lineart, Ben-Day dots, vivid retro comic colors)"
+        elif "motion" in m_lower or "vector" in m_lower:
+            medium_desc = "a clean 2D vector tech motion graphics illustration (minimalist geometric shapes, slate and cyan palette, sharp clean edges)"
+        elif "cyberpunk" in m_lower:
+            medium_desc = "a high-contrast dark cyberpunk sci-fi artwork (vibrant cyan and magenta neon glow, futuristic holograms, rain-slicked wet reflections)"
+        elif "3d" in m_lower or "octane" in m_lower or "unreal" in m_lower:
+            medium_desc = "a masterwork 3D CGI render (Unreal Engine 5 Octane render, volumetric ray-traced lighting, 3D digital art)"
+        else:
+            medium_desc = "a single, cohesive, ultra-detailed photorealistic English prompt (max 90 words) with rich textures, realistic depth, cinematic lighting, and sharp focus"
+
         if valid_refs > 0:
             human_rule = ""
             if not has_human:
@@ -416,21 +485,21 @@ Return STRICTLY a valid raw JSON object (no markdown quotes, no explanations out
 1. Carefully observe the {valid_refs} reference image(s) provided. If a person, product, character, or specific object is in the reference images, preserve their exact appearance, identity, textures, and details.
 2. If a person is present, preserve their exact ethnicity, facial features, hair, and build. NEVER change their ethnicity or facial structure.
 3. Obey the user prompt faithfully: "{clean_prompt}".
-4. Write a single, cohesive, ultra-detailed photorealistic English prompt (max 90 words) that fuses the reference visual features with the action/scene requested.{human_rule}
-6. Include these optical specifications: {extra_specs}."""
+4. Write {medium_desc} that fuses the reference visual features with the action/scene requested.{human_rule}
+6. Include these optical/artistic specifications: {extra_specs}."""
         else:
             if not has_human:
                 rules_instruction = f"""MANDATORY RULES:
 1. Obey the user prompt faithfully: "{clean_prompt}". Focus 100% EXCLUSIVELY on what was requested by the user.
 2. ABSOLUTE ZERO-HUMAN MANDATE: The user prompt describes an OBJECT, NATURE, ANIMAL, OR PHYSICAL TRANSFORMATION ('{clean_prompt}'). Absolutely DO NOT generate or mention any human beings, persons, women, men, girls, boys, faces, hands, bodies, portraits, or bystanders under any circumstances! The focal subject must strictly be the requested object/action.
-3. Expand the scene into a single, cohesive, ultra-detailed photorealistic English prompt (max 90 words) with rich physical textures, realistic depth, cinematic lighting, and sharp focus on the object/transformation.
-4. Include these optical specifications: {extra_specs}."""
+3. Expand the scene into {medium_desc} with rich physical textures, realistic depth, lighting, and sharp focus on the object/transformation.
+4. Include these optical/artistic specifications: {extra_specs}."""
             else:
                 rules_instruction = f"""MANDATORY RULES:
 1. Obey the user prompt faithfully: "{clean_prompt}". If the prompt specifies an object, character, animal, scenery, vehicle, machine, or action, focus 100% on what was requested by the user.
-2. Expand the scene into a single, cohesive, ultra-detailed photorealistic English prompt (max 90 words) with rich textures, realistic depth, cinematic lighting, and sharp focus.
+2. Expand the scene into {medium_desc}.
 3. Do NOT invent unrelated people or elements not requested in the prompt.
-4. Include these optical specifications: {extra_specs}."""
+4. Include these optical/artistic specifications: {extra_specs}."""
 
         system_instruction = f"""You are the visual continuity and prompt synthesis engine of ESG Neural Core 8K.
 The user provided {valid_refs} reference image(s) and requested this scene:

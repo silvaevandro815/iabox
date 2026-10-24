@@ -3407,7 +3407,11 @@ Sua missão é transformar esse pedido em um prompt mestre profissional, rico em
 REGRAS POR CATEGORIA:
 - Se 'image' ou 'canvas':
   * Gere o enhanced_prompt em INGLÊS técnico cinematográfico (8K, especificando lente como 85mm macro f/1.4 ou 35mm anamorphic, iluminação volumétrica/rim light, texturas físicas hiper-realistas, composição).
+  * Se o usuário citar um estilo artístico (como Anime, Comic Pop Art, Dark Cyberpunk, Vox, 2D Motion Graphics), obedeça e especifique os parâmetros visuais exatos desse estilo!
   * Enfatize iluminação dramática, profundidade de campo rasa e atmosfera. Se for objeto, enfatize micro-texturas orgânicas e materiais.
+- Se 'vox':
+  * Gere o enhanced_prompt em INGLÊS no estilo VOX EDITORIAL COLLAGE (mixed-media photo cutouts, vintage archival paper texture, newspaper print, subtle halftone dots, vibrant yellow highlighter accents #FACC15, stop-motion parallax feel, modern explainer graphic design).
+  * Se o usuário citar um estilo específico (anime, comic, cyberpunk, motion graphics 2D), obedeça ESTRITAMENTE a estética desse estilo selecionado sem converter em foto genérica.
 - Se 'video':
   * Gere o enhanced_prompt em INGLÊS descrevendo movimentos de câmera cinematográficos (slow pan, dolly-in, orbit shot), iluminação dramática, atmosfera e ação/transformação física vívida em 60fps.
 - Se 'suno' ou 'parody':
@@ -3516,6 +3520,21 @@ Retorne ESTRITAMENTE um objeto JSON válido (sem markdown ao redor, apenas o JSO
                         {"title": "Câmera Dinâmica em Ação", "prompt": f"Fast-paced handheld tracking shot following {clean_p}, dynamic camera shake, action-packed framing"}
                     ]
                 }
+        elif cat == "vox":
+            res_json = {
+                "enhanced_prompt": f"Vox documentary editorial collage art of {clean_p}, vintage paper texture background, archival cutouts, halftone dot patterns, vibrant yellow graphic highlights, mixed-media explainer illustration, 8k Behance editorial design",
+                "improvements": [
+                    "Aplicação de estética autêntica de colagem editorial estilo Vox",
+                    "Textura de papel vintage de arquivo e recortes fotográficos de alto contraste",
+                    "Realces em amarelo vibrante e diagramação de documentário moderno",
+                    "Estética de motion graphics explicativo com profundidade"
+                ],
+                "preset_chips": ["Colagem Vox", "Papel Vintage", "Halftone Retrô", "Amarelo Vox"],
+                "alternatives": [
+                    {"title": "Colagem Editorial Vox", "prompt": f"Authentic Vox editorial collage of {clean_p}, vintage archival paper, yellow accents, paper cutouts"},
+                    {"title": "Motion Graphics Minimalista", "prompt": f"Clean 2D vector motion graphics explainer of {clean_p}, minimalist geometric flat art, slate and cyan"}
+                ]
+            }
         else:
             res_json = {
                 "enhanced_prompt": f"{clean_p}, arranjo profissional com violão de aço, sanfona marcante, bateria moderna, 128 BPM, mixagem comercial de estúdio, voz encorpada e refrão chiclete envolvente",
