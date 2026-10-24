@@ -1946,6 +1946,108 @@ async def edit_viral_video(
         "cost": required_credits
     }
 
+
+# ----------------------------------------------------------------------------------------
+# MOTOR DE METAMORFOSE CINEMATOGRÁFICA INÍCIO & FIM (START FRAME & END FRAME)
+# Estilo Kling.ai e Higgsfield: Conecta dois estados (Frame A e Frame B) em 10s ou 15s contínuos
+# ----------------------------------------------------------------------------------------
+@app.post("/api/video/start-end")
+async def create_start_end_video(
+    start_image: UploadFile = File(...),
+    end_image: UploadFile = File(...),
+    prompt: str = Form(""),
+    duration: int = Form(10),
+    aspect_ratio: str = Form("9:16"),
+    user_id: str = Form("default_user")
+):
+    """
+    Gera um filme cinematográfico conectando o Frame Inicial (Estado A) ao Frame Final (Estado B)
+    em 10 ou 15 segundos (Padrão Kling.ai / Higgsfield).
+    """
+    clean_p = (prompt or "").strip()
+    if not start_image or not start_image.filename:
+        raise HTTPException(status_code=400, detail="Por favor, envie o Frame Inicial (Estado A).")
+    if not end_image or not end_image.filename:
+        raise HTTPException(status_code=400, detail="Por favor, envie o Frame Final (Estado B).")
+
+    enforce_authenticated_gmail(user_id)
+    dur = 15 if int(duration or 10) >= 14 else 10
+    required_credits = 25 if dur == 15 else 15
+
+    if not deduct_credits(user_id, amount=required_credits):
+        raise HTTPException(
+            status_code=402,
+            detail=f"Saldo insuficiente ({required_credits} créditos necessários para metamorfose de {dur}s). Recarregue seus créditos para continuar."
+        )
+
+    req_ip = client_ip_var.get()
+    job_id = str(uuid.uuid4())
+
+    start_filename = f"start_{job_id[:8]}_{start_image.filename}"
+    start_path = os.path.join(UPLOAD_DIR, start_filename)
+    with open(start_path, "wb") as f:
+        shutil.copyfileobj(start_image.file, f)
+
+    end_filename = f"end_{job_id[:8]}_{end_image.filename}"
+    end_path = os.path.join(UPLOAD_DIR, end_filename)
+    with open(end_path, "wb") as f:
+        shutil.copyfileobj(end_image.file, f)
+
+    out_filename = f"morph_{job_id[:8]}.mp4"
+    out_path = os.path.join(OUTPUT_DIR, out_filename)
+
+    save_job(job_id, "video", status="processing", progress=15, user_id=user_id)
+
+    def _task():
+        try:
+            from scripts.ai_video_engine import render_start_end_movie
+            is_paid = is_paid_or_vip_user(user_id, req_ip)
+            save_job(job_id, "video", status="processing", progress=25, user_id=user_id)
+
+            render_start_end_movie(
+                job_id=job_id,
+                user_id=user_id,
+                start_img_path=start_path,
+                end_img_path=end_path,
+                prompt=clean_p,
+                duration=dur,
+                aspect_ratio=aspect_ratio,
+                out_path=out_path,
+                out_filename=out_filename,
+                req_ip=req_ip,
+                is_paid=is_paid
+            )
+
+            save_job(job_id, "video", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
+            save_user_creation(
+                user_id,
+                "video_start_end",
+                f"Metamorfose Início ➔ Fim ({dur}s)",
+                clean_p or f"Transição {aspect_ratio} ({dur}s)",
+                f"/output/{out_filename}",
+                {"duration": dur, "aspect_ratio": aspect_ratio, "mode": "kling_higgsfield_start_end"},
+                ip_override=req_ip
+            )
+        except Exception as e:
+            print(f"[StartEndVideo] Falha na renderização: {e}")
+            save_job(job_id, "video", status="failed", error=str(e), user_id=user_id)
+            try:
+                if not is_founder_vip(user_id, req_ip):
+                    add_credits(user_id, required_credits)
+            except Exception as e_ref:
+                print(f"[StartEndVideo] Falha ao reembolsar créditos: {e_ref}")
+
+    t = threading.Thread(target=_task)
+    t.start()
+
+    return {
+        "status": "started",
+        "job_id": job_id,
+        "duration": dur,
+        "message": f"Produção de Metamorfose Cinematográfica ({dur}s) iniciada com sucesso!",
+        "cost": required_credits
+    }
+
 # ----------------------------------------------------------------------------------------
 # 7. MAGNIFIC 2.0, HIGGSFIELD & BUZZY AI FILM DIRECTOR (INFINITE CANVAS & CINEMA STUDIO)
 # ----------------------------------------------------------------------------------------
@@ -3439,6 +3541,55 @@ Retorne ESTRITAMENTE um objeto JSON válido (sem markdown ao redor, apenas o JSO
         "preset_chips": res_json.get("preset_chips", []),
         "alternatives": res_json.get("alternatives", [])
     }
+
+
+# ----------------------------------------------------------------------------------------
+# PROMPT ENHANCER PARA TRANSIÇÃO DE ESTADOS (START FRAME ➔ END FRAME)
+# Estilo Kling.ai & Higgsfield: Analisa visualmente ambos os frames e cria narrativa 3 Atos
+# ----------------------------------------------------------------------------------------
+@app.post("/api/prompt/enhance-start-end")
+async def enhance_start_end_prompt(
+    start_image: Optional[UploadFile] = File(None),
+    end_image: Optional[UploadFile] = File(None),
+    user_hint: Optional[str] = Form(""),
+    user_id: str = Form("default_user")
+):
+    """
+    Analisa visualmente o Frame Inicial e o Frame Final e gera o prompt conector de metamorfose
+    cinematográfica (Começo -> Durante -> Fim), sugerindo tempo ideal de 10s ou 15s.
+    """
+    start_path = None
+    end_path = None
+    temp_dir = os.path.join(UPLOAD_DIR, f"tmp_se_{uuid.uuid4().hex[:8]}")
+    os.makedirs(temp_dir, exist_ok=True)
+
+    try:
+        if start_image and start_image.filename:
+            start_path = os.path.join(temp_dir, f"start_{start_image.filename}")
+            with open(start_path, "wb") as f:
+                shutil.copyfileobj(start_image.file, f)
+
+        if end_image and end_image.filename:
+            end_path = os.path.join(temp_dir, f"end_{end_image.filename}")
+            with open(end_path, "wb") as f:
+                shutil.copyfileobj(end_image.file, f)
+
+        from scripts.magnific_canvas_engine import MagnificCanvasEngine
+        engine = MagnificCanvasEngine()
+        result = engine.synthesize_start_end_prompt(start_path, end_path, user_hint or "")
+        return {
+            "status": "success",
+            "enhanced_prompt": result.get("enhanced_prompt", ""),
+            "narrative_pt": result.get("narrative_pt", ""),
+            "recommended_duration": result.get("recommended_duration", 10),
+            "start_state_desc": result.get("start_state_desc", ""),
+            "end_state_desc": result.get("end_state_desc", ""),
+            "camera_motion": result.get("camera_motion", ""),
+            "lighting_evolution": result.get("lighting_evolution", ""),
+            "improvements": result.get("improvements", [])
+        }
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
 
 
 

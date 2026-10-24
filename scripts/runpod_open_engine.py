@@ -116,8 +116,8 @@ def _save_media(ref: str, out_path: str) -> bool:
         return False
 
 
-def wan_video(prompt, out_path, image_url=None, duration=5, aspect_ratio="9:16", negative_prompt=None, log=print):
-    """Wan 2.2 (open-source) no RunPod. image_url publica => image-to-video, senao text-to-video."""
+def wan_video(prompt, out_path, image_url=None, end_image_url=None, duration=5, aspect_ratio="9:16", negative_prompt=None, log=print):
+    """Wan 2.2 / Wan 2.1 FLF2V (open-source) no RunPod. Suporta imagem inicial e imagem final (Start & End Frame)."""
     from scripts.magnific_canvas_engine import prompt_has_human_subject
     if negative_prompt is None:
         if not prompt_has_human_subject(prompt):
@@ -125,11 +125,12 @@ def wan_video(prompt, out_path, image_url=None, duration=5, aspect_ratio="9:16",
         else:
             negative_prompt = "blurry, low quality, static image, slideshow, still frame, distortion, deformed, deformed face, bad anatomy, extra limbs, text, watermark, jitter"
     size = {"9:16": "720*1280", "1:1": "960*960"}.get(aspect_ratio, "1280*720")
+    dur_val = 15 if duration >= 14 else (10 if duration > 7 else 5)
     payload = {
         "prompt": prompt[:1500],
         "negative_prompt": negative_prompt,
         "size": size,
-        "duration": 10 if duration > 7 else 5,
+        "duration": dur_val,
         "seed": -1,
         "num_inference_steps": 30,
         "guidance": 5,
@@ -140,7 +141,12 @@ def wan_video(prompt, out_path, image_url=None, duration=5, aspect_ratio="9:16",
     slug = EP_WAN_T2V
     if image_url:
         payload["image"] = image_url
+        payload["first_frame"] = image_url
         slug = EP_WAN_I2V
+    if end_image_url:
+        payload["last_frame"] = end_image_url
+        payload["end_image"] = end_image_url
+        payload["end_image_url"] = end_image_url
     out = run_endpoint(slug, payload, timeout_s=900, log=log)
     if out is None:
         return None

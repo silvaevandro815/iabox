@@ -182,6 +182,17 @@ class MagnificCanvasEngine:
                     pass
 
         if self.openrouter_key:
+            msg_content = []
+            if parts:
+                for p in parts:
+                    if isinstance(p, dict) and "inline_data" in p:
+                        mime = p["inline_data"].get("mime_type", "image/jpeg")
+                        b64 = p["inline_data"].get("data", "")
+                        msg_content.append({
+                            "type": "image_url",
+                            "image_url": {"url": f"data:{mime};base64,{b64}"}
+                        })
+            msg_content.append({"type": "text", "text": prompt_text})
             for or_model in ("google/gemini-2.5-flash", "meta-llama/llama-3.3-70b-instruct"):
                 try:
                     r = requests.post(
@@ -189,9 +200,9 @@ class MagnificCanvasEngine:
                         headers={"Authorization": f"Bearer {self.openrouter_key}", "Content-Type": "application/json"},
                         json={
                             "model": or_model,
-                            "messages": [{"role": "user", "content": prompt_text}]
+                            "messages": [{"role": "user", "content": msg_content if len(msg_content) > 1 else prompt_text}]
                         },
-                        timeout=18
+                        timeout=22
                     )
                     if r.status_code == 200:
                         content = r.json()["choices"][0]["message"]["content"].strip()
@@ -201,6 +212,126 @@ class MagnificCanvasEngine:
                     pass
 
         return ""
+
+    def synthesize_start_end_prompt(
+        self,
+        start_image_path: str = None,
+        end_image_path: str = None,
+        user_hint: str = ""
+    ) -> dict:
+        """
+        Analisa visualmente as duas imagens (Frame Inicial e Frame Final) no estilo Kling.ai / Higgsfield
+        e sintetiza uma narrativa cinematográfica contínua dividida em 3 atos (Começo, Durante e Fim),
+        recomendando automaticamente se a cena deve durar 10s ou 15s.
+        """
+        parts = []
+        has_start = bool(start_image_path and os.path.exists(start_image_path))
+        has_end = bool(end_image_path and os.path.exists(end_image_path))
+
+        if has_start:
+            try:
+                with open(start_image_path, "rb") as f:
+                    b64_start = base64.b64encode(f.read()).decode("utf-8")
+                mime_start = "image/png" if start_image_path.lower().endswith(".png") else "image/jpeg"
+                parts.append({
+                    "inline_data": {
+                        "mime_type": mime_start,
+                        "data": b64_start
+                    }
+                })
+            except Exception as e:
+                print(f"[StartEndPrompt] Erro ao ler start_image: {e}")
+
+        if has_end:
+            try:
+                with open(end_image_path, "rb") as f:
+                    b64_end = base64.b64encode(f.read()).decode("utf-8")
+                mime_end = "image/png" if end_image_path.lower().endswith(".png") else "image/jpeg"
+                parts.append({
+                    "inline_data": {
+                        "mime_type": mime_end,
+                        "data": b64_end
+                    }
+                })
+            except Exception as e:
+                print(f"[StartEndPrompt] Erro ao ler end_image: {e}")
+
+        clean_hint = (user_hint or "").strip()
+        system_instruction = f"""You are a master Hollywood VFX director and visual metamorphosis supervisor (specialized in Kling AI and Higgsfield Start/End Frame technology).
+The user wants to generate a seamless, continuous 10 to 15 second cinematic video that smoothly transitions between TWO visual states:
+- Image 1 (First uploaded image): START FRAME (Initial state of the scene at 0.0s).
+- Image 2 (Second uploaded image): END FRAME (Destination state / resolution at 10.0s - 15.0s).
+User's creative guidance: "{clean_hint or 'Create a natural, breathtaking cinematic transition between both frames'}"
+
+YOUR MISSION:
+Carefully inspect both images. Identify what transforms: shapes, materials, lighting, environment, color palette, camera angle, and kinetic action.
+Write an ultra-realistic cinematic video prompt structured in 3 continuous phases:
+1. START (Começo): Establishes the exact scene and composition of Image 1 with subtle initial motion.
+2. DURING (Durante / Ação Metamórfica): Fluid physical transformation, camera movement (push-in, orbit or tracking), volumetric lighting and kinetic energy bridging the states.
+3. END (Fim): Perfectly resolves and stabilizes into the exact composition and visual elements of Image 2.
+
+Determine the optimal duration:
+- 10 seconds: If the transformation is straightforward, direct, or medium pace.
+- 15 seconds: If the metamorphosis involves complex multi-stage physical changes, shifting backgrounds, or dramatic cinematic progression.
+
+CRITICAL ANTI-HALLUCINATION RULE:
+If neither image shows human beings, DO NOT invent any humans, women, men, or faces. Keep the focus 100% on the objects, nature, or environment.
+
+Return STRICTLY a valid raw JSON object (no markdown quotes, no explanations outside JSON):
+{{
+  "enhanced_prompt": "Continuous 3-act English prompt describing start state, dynamic physical transformation/camera movement during the video, and clean resolution into the end state, 8K cinematic quality...",
+  "narrative_pt": "Explicação em português detalhando como a cena evolui do Começo ao Fim.",
+  "recommended_duration": 10,
+  "start_state_desc": "Breve descrição do estado inicial (em português)",
+  "end_state_desc": "Breve descrição do estado final (em português)",
+  "camera_motion": "Movimento de câmera cinematográfico (ex: Dolly-in lento com órbita de 30 graus)",
+  "lighting_evolution": "Evolução da luz (ex: Luz natural diurna transicionando para recorte neon volumétrico)",
+  "improvements": [
+    "Sincronização precisa de início e fim",
+    "Continuidade temporal cinematográfica",
+    "Física de transformação realista"
+  ]
+}}"""
+
+        raw = self._call_llm_text(system_instruction, parts=parts, timeout=25)
+        res_json = None
+        if raw and "{" in raw and "}" in raw:
+            try:
+                c = raw.strip()
+                if "```" in c:
+                    blocks = c.split("```")
+                    for b in blocks:
+                        if "{" in b and "}" in b:
+                            c = b
+                            if c.startswith("json"):
+                                c = c[4:]
+                            break
+                s_idx = c.find("{")
+                e_idx = c.rfind("}")
+                if s_idx != -1 and e_idx != -1 and e_idx > s_idx:
+                    import json
+                    res_json = json.loads(c[s_idx: e_idx + 1])
+            except Exception as e_parse:
+                print(f"[StartEndPrompt] Erro ao parsear JSON: {e_parse}")
+
+        if not res_json or not isinstance(res_json, dict) or "enhanced_prompt" not in res_json:
+            hint_txt = clean_hint or "metamorfose cinematográfica contínua"
+            res_json = {
+                "enhanced_prompt": f"A breathtaking cinematic time-lapse transition starting faithfully from the composition of Frame A, experiencing a continuous organic transformation and dynamic camera push-in with volumetric lighting, seamlessly resolving into the exact details of Frame B. 8K resolution, photorealistic motion blur, temporal consistency. Context: {hint_txt}",
+                "narrative_pt": f"Transição fluida conectando o Frame Inicial ao Frame Final através de movimento de câmera envolvente e transformação gradual dos elementos ({hint_txt}).",
+                "recommended_duration": 15 if len(clean_hint) > 40 else 10,
+                "start_state_desc": "Composição e enquadramento do Frame Inicial",
+                "end_state_desc": "Conclusão fiel no Frame Final",
+                "camera_motion": "Traveling frontal suave (dolly-in) com foco contínuo",
+                "lighting_evolution": "Iluminação volumétrica adaptativa",
+                "improvements": [
+                    "Continuidade espacial entre Frame 1 e Frame 2",
+                    "Evolução física sem cortes abruptos",
+                    "Ajuste automático de tempo (10s a 15s)"
+                ]
+            }
+
+        return res_json
 
     def analyze_connected_nodes(
         self,
