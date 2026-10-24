@@ -222,14 +222,14 @@ Return ONLY the final English prompt, without quotes or explanations."""
         w: int,
         h: int,
         raw_out_path: str,
-        all_refs: list = None
+        all_refs: list = None,
+        is_paid: bool = False
     ) -> bool:
         """
-        Cascata de 4 Motores Reais em GPU Dedicada para garantir 100% de geração real e ultra-realista:
-        1. Google Gemini 2.5/3.1 Flash Image + GPT Image (com até 3 imagens de referência multimodal via base64)
-        2. FLUX.1-Kontext-Dev (preserva o sujeito real + aplica o prompt)
-        3. PuLID-FLUX (travamento biométrico de identidade facial)
-        4. FLUX.1-schnell / FLUX.1-dev (síntese neural 8K ultra-rápida em GPU)
+        Cascata Neural Inteligente:
+        - Se is_paid=True (VIP ou créditos pagos): aciona GPU dedicada RunPod.io (FLUX.1 Dev/Schnell).
+        - Se is_paid=False (bônus de teste 50 tokens): utiliza modelos open-source gratuitos (Pollinations FLUX),
+          preservando 100% o saldo em dólares do servidor RunPod.io do fundador.
         """
         seed = int(uuid.uuid4().int % 999999)
         ref_to_use = face_lock_path if (face_lock_path and os.path.exists(face_lock_path)) else (
@@ -245,22 +245,36 @@ Return ONLY the final English prompt, without quotes or explanations."""
         if primary_ref_path and os.path.exists(primary_ref_path) and primary_ref_path not in all_valid_refs:
             all_valid_refs.append(primary_ref_path)
 
-        # MOTOR RUNPOD (OPEN-SOURCE): FLUX.1 Kontext-dev (com foto de referencia) ou FLUX.1 dev/schnell (so prompt)
-        try:
-            from scripts import runpod_open_engine as _rp
-            if _rp.available():
-                from scripts.ai_video_engine import public_url_for
-                ref_url = public_url_for(all_valid_refs[0]) if all_valid_refs else None
-                got = _rp.flux_image(
-                    compiled_prompt, raw_out_path, ref_image_url=ref_url,
-                    aspect_ratio="9:16" if h > w else ("1:1" if h == w else "16:9"),
-                    quality="dev" if not ref_url else "schnell"
-                )
-                if got and os.path.exists(raw_out_path) and os.path.getsize(raw_out_path) > 8000:
-                    print(f"[ESGCore] Sintese FLUX open-source (RunPod) concluida (refs={len(all_valid_refs)})")
+        # 1. TIER PAGO / VIP FUNDADOR: RunPod GPU Dedicado
+        if is_paid:
+            try:
+                from scripts import runpod_open_engine as _rp
+                if _rp.available():
+                    from scripts.ai_video_engine import public_url_for
+                    ref_url = public_url_for(all_valid_refs[0]) if all_valid_refs else None
+                    got = _rp.flux_image(
+                        compiled_prompt, raw_out_path, ref_image_url=ref_url,
+                        aspect_ratio="9:16" if h > w else ("1:1" if h == w else "16:9"),
+                        quality="dev" if not ref_url else "schnell"
+                    )
+                    if got and os.path.exists(raw_out_path) and os.path.getsize(raw_out_path) > 8000:
+                        print(f"[ESGCore] Síntese FLUX no RunPod GPU concluída (Tier VIP/Pago)")
+                        return True
+            except Exception as e_rp:
+                print(f"[ESGCore] RunPod FLUX indisponível: {e_rp}")
+        else:
+            # 2. TIER GRATUITO (50 Tokens de Boas-Vindas): Open-Source Gratuito (Zero Custo no RunPod)
+            try:
+                enc_p = urllib.parse.quote(compiled_prompt[:350])
+                u_free = f"https://image.pollinations.ai/prompt/{enc_p}?width={w}&height={h}&seed={seed}&model=flux&nologo=true"
+                rfb = requests.get(u_free, headers={"User-Agent": "Mozilla/5.0"}, timeout=25)
+                if rfb.status_code == 200 and len(rfb.content) > 5000:
+                    with open(raw_out_path, "wb") as f:
+                        f.write(rfb.content)
+                    print(f"[ESGCore] Síntese FLUX open-source gratuita concluída (Zero Custo no RunPod)")
                     return True
-        except Exception as e_rp:
-            print(f"[ESGCore] RunPod FLUX indisponivel: {e_rp}")
+            except Exception as e_free:
+                print(f"[ESGCore] Free open-source fallback: {e_free}")
 
         # MOTOR 0 (reserva): Gemini multimodal via OpenRouter, so se o RunPod falhar
         if self.openrouter_key:
@@ -412,6 +426,7 @@ Return ONLY the final English prompt, without quotes or explanations."""
         fractality: int = 60,
         face_lock_path: str = None,
         face_strength: int = 100,
+        is_paid: bool = False,
         output_path: str = "output/canvas_node.jpg"
     ) -> dict:
         """
@@ -454,7 +469,8 @@ Return ONLY the final English prompt, without quotes or explanations."""
             w=w,
             h=h,
             raw_out_path=raw_tmp,
-            all_refs=reference_images
+            all_refs=reference_images,
+            is_paid=is_paid
         )
 
         if not synthesized or not os.path.exists(raw_tmp):

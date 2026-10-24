@@ -49,6 +49,8 @@ FOUNDER_VIP_PREFIXES = (
 FOUNDER_VIP_KEYS = {
     "evandro_admin_master",
     "vip_evandro",
+    "silvaevandro815@gmail.com",
+    "evandrosilvagallina@gmail.com"
 }
 
 def hash_password(password: str) -> str:
@@ -272,6 +274,16 @@ def init_db():
         pass
 
     c.execute("""
+        CREATE TABLE IF NOT EXISTS device_wallets (
+            device_id TEXT PRIMARY KEY,
+            ip TEXT,
+            email TEXT,
+            bonus_claimed INTEGER DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    c.execute("""
         CREATE TABLE IF NOT EXISTS vip_ips (
             ip TEXT PRIMARY KEY,
             note TEXT,
@@ -470,54 +482,118 @@ def is_founder_vip(user_id: str = "", ip: str = "") -> bool:
             pass
     return False
 
-def get_user_credits(user_id="default_user"):
+def is_paid_or_vip_user(user_id: str = "", ip: str = "") -> bool:
+    """Verifica se o usuário é VIP do fundador ou se comprou créditos pagos via Stripe."""
+    req_ip = ip or client_ip_var.get()
+    if is_founder_vip(user_id, req_ip):
+        return True
+    uid_clean = (user_id or "").strip().lower()
+    if not uid_clean or uid_clean == "default_user":
+        return False
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("SELECT paid_credits, is_vip FROM users WHERE LOWER(email) = ? OR id = ?", (uid_clean, uid_clean))
+        row = c.fetchone()
+        conn.close()
+        if row and (row[0] > 0 or row[1] == 1):
+            return True
+    except Exception:
+        pass
+    return False
+
+def enforce_authenticated_gmail(user_id: str, ip: str = None):
+    """Regra de Ouro: Apenas usuários autenticados com conta Google (@gmail.com) podem operar."""
+    req_ip = ip or client_ip_var.get()
+    if is_founder_vip(user_id, req_ip):
+        return True
+    uid_clean = (user_id or "").strip().lower()
+    if not uid_clean or uid_clean == "default_user" or not is_valid_gmail(uid_clean):
+        raise HTTPException(
+            status_code=401,
+            detail="Acesso Restrito: É obrigatório estar conectado com uma conta válida do Google (@gmail.com) para utilizar a plataforma IABOX."
+        )
+    return True
+
+def get_user_credits(user_id="default_user", device_id=None):
     ip = client_ip_var.get()
     # 1. Acesso Exclusivo Ilimitado VIP (Gmail ou IP)
     if is_founder_vip(user_id, ip):
         return 999999
 
+    uid_clean = (user_id or "").strip().lower()
+    if not uid_clean or uid_clean == "default_user" or not is_valid_gmail(uid_clean):
+        return 0
+
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
 
-    uid_clean = (user_id or "").strip().lower()
     c.execute("SELECT credits, is_vip, paid_credits FROM users WHERE id = ? OR LOWER(email) = ?", (uid_clean, uid_clean))
     u_row = c.fetchone()
 
     c.execute("SELECT credits, is_vip, bonus_claimed FROM ip_wallets WHERE ip = ?", (ip,))
     ip_row = c.fetchone()
+
+    dev_row = None
+    if device_id:
+        c.execute("SELECT bonus_claimed FROM device_wallets WHERE device_id = ?", (device_id,))
+        dev_row = c.fetchone()
     conn.close()
 
     if (u_row and u_row[1] == 1) or (ip_row and ip_row[1] == 1):
         return 999999
 
     if u_row:
-        user_bal = u_row[0]
+        user_bal = u_row[0] or 0
         paid_bal = u_row[2] or 0
-        # Se comprou créditos pagos via Stripe, pode usar em qualquer IP
+        # Se comprou créditos pagos via Stripe, pode usar em qualquer IP / Aparelho (vinculado ao seu Gmail!)
         if paid_bal > 0:
             return user_bal
-        # Para saldo gratuito de teste (50 tokens), prevalece a trava por IP
+
+        # Para saldo gratuito de teste (50 tokens), prevalece a trava estrita por IP e Aparelho
         ip_bal = ip_row[0] if ip_row else 0
         return min(user_bal, ip_bal)
 
-    # Visitante sem conta vinculada
-    return ip_row[0] if ip_row else 50
+    # Sem conta registrada com Gmail válido -> 0 créditos
+    return 0
 
-def deduct_credits(user_id="default_user", amount=1):
+def deduct_credits(user_id="default_user", amount=1, device_id=None):
     ip = client_ip_var.get()
     if is_founder_vip(user_id, ip):
         return True
 
-    current = get_user_credits(user_id)
+    uid_clean = (user_id or "").strip().lower()
+    if not uid_clean or uid_clean == "default_user" or not is_valid_gmail(uid_clean):
+        return False
+
+    current = get_user_credits(user_id, device_id=device_id)
     if current < amount:
         return False
 
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     new_bal = max(0, current - amount)
-    c.execute("UPDATE ip_wallets SET credits = ? WHERE ip = ?", (new_bal, ip))
-    uid_clean = (user_id or "").strip().lower()
+    
+    # Atualiza saldo do usuário
     c.execute("UPDATE users SET credits = ? WHERE id = ? OR LOWER(email) = ?", (new_bal, uid_clean, uid_clean))
+    
+    # Verifica se o usuário tem créditos pagos comprados
+    c.execute("SELECT paid_credits FROM users WHERE id = ? OR LOWER(email) = ?", (uid_clean, uid_clean))
+    u_row = c.fetchone()
+    has_paid = u_row and (u_row[0] or 0) > 0
+
+    # Se NÃO é usuário pagante (está usando os 50 tokens gratuitos), atualiza também o saldo do IP e vincula o aparelho
+    if not has_paid:
+        c.execute("UPDATE ip_wallets SET credits = ? WHERE ip = ?", (new_bal, ip))
+        if device_id:
+            try:
+                c.execute("""
+                    INSERT INTO device_wallets (device_id, ip, email, bonus_claimed) VALUES (?, ?, ?, 1)
+                    ON CONFLICT(device_id) DO UPDATE SET ip=excluded.ip
+                """, (device_id, ip, uid_clean))
+            except Exception:
+                pass
+
     conn.commit()
     conn.close()
     return True
@@ -561,6 +637,7 @@ def register_user(
     name: str = Form("")
 ):
     ip = extract_client_ip(request)
+    device_id = (request.headers.get("x-device-id") or request.cookies.get("iabox_dev_id") or "").strip()
     email_clean = (email or "").strip().lower()
 
     if not is_valid_gmail(email_clean):
@@ -580,23 +657,31 @@ def register_user(
     # Verifica se o IP ou o e-mail é do fundador VIP
     is_vip = 1 if is_founder_vip(email_clean, ip) else 0
 
-    # Regra estrita de bônus de 50 tokens:
-    # Só concede 50 tokens se o IP NUNCA tiver resgatado bônus antes
+    # Regra estrita de bônus de 50 tokens (Vínculo IP + Aparelho + Gmail):
+    # Só concede 50 tokens se o IP E o APARELHO nunca tiverem resgatado bônus antes
     c.execute("SELECT credits, bonus_claimed, is_vip FROM ip_wallets WHERE ip = ?", (ip,))
     ip_row = c.fetchone()
+    dev_row = None
+    if device_id:
+        c.execute("SELECT bonus_claimed FROM device_wallets WHERE device_id = ?", (device_id,))
+        dev_row = c.fetchone()
+
+    device_already_claimed = (ip_row and ip_row[1] == 1) or (dev_row and dev_row[0] == 1)
 
     if is_vip == 1:
         initial_credits = 999999
         bonus_msg = "👑 Conta VIP Ilimitada ativada com sucesso!"
-    elif ip_row and ip_row[1] == 1:
-        # IP já usou o bônus de 50 tokens em outra conta
+    elif device_already_claimed:
+        # IP ou Aparelho já usou o bônus de 50 tokens em outra conta
         initial_credits = 0
-        bonus_msg = "Conta criada com sucesso! O bônus de 50 tokens grátis já foi resgatado neste aparelho/IP anteriormente. Para utilizar os motores de IA, adquira créditos via Stripe."
+        bonus_msg = "Aviso Anti-Fraude: Este aparelho ou endereço IP já utilizou o teste gratuito de 50 tokens. Para utilizar os motores de IA, adquira créditos via Stripe ou acesse a conta Gmail com saldo."
     else:
         # Novo IP e novo Gmail -> concede os 50 tokens
         initial_credits = 50
-        bonus_msg = "Conta criada com sucesso! Bônus de boas-vindas de 50 tokens liberado para este aparelho e Gmail."
+        bonus_msg = "Conta criada com sucesso! Bônus de 50 tokens liberado para este aparelho e Gmail."
         c.execute("INSERT OR REPLACE INTO ip_wallets (ip, credits, is_vip, bonus_claimed) VALUES (?, 50, ?, 1)", (ip, is_vip))
+        if device_id:
+            c.execute("INSERT OR REPLACE INTO device_wallets (device_id, ip, email, bonus_claimed) VALUES (?, ?, ?, 1)", (device_id, ip, email_clean))
 
     pw_hash = hash_password(password)
     user_name = name.strip() or email_clean.split("@")[0].capitalize()
@@ -751,19 +836,28 @@ def auth_google(
         }
     else:
         # Novo usuário via Google: cadastra automaticamente sem necessidade de senha manual
+        device_id = (request.headers.get("x-device-id") or request.cookies.get("iabox_dev_id") or "").strip()
         c.execute("SELECT credits, bonus_claimed, is_vip FROM ip_wallets WHERE ip = ?", (ip,))
         ip_row = c.fetchone()
+        dev_row = None
+        if device_id:
+            c.execute("SELECT bonus_claimed FROM device_wallets WHERE device_id = ?", (device_id,))
+            dev_row = c.fetchone()
+
+        device_already_claimed = (ip_row and ip_row[1] == 1) or (dev_row and dev_row[0] == 1)
 
         if is_vip == 1:
             initial_credits = 999999
             bonus_msg = "👑 Conta Google VIP Ilimitada conectada com sucesso!"
-        elif ip_row and ip_row[1] == 1:
+        elif device_already_claimed:
             initial_credits = 0
-            bonus_msg = "Conta Google vinculada com sucesso! O bônus de 50 tokens já foi resgatado neste aparelho/IP anteriormente. Para utilizar os motores de IA, adquira créditos via Stripe."
+            bonus_msg = "Conta Google conectada! Este aparelho ou endereço IP já utilizou o teste gratuito de 50 tokens. Para utilizar os motores de IA, adquira créditos via Stripe ou entre na conta original."
         else:
             initial_credits = 50
-            bonus_msg = "Conta Google vinculada com sucesso! Bônus de 50 tokens liberado para o seu Gmail."
+            bonus_msg = "Conta Google vinculada com sucesso! Bônus de 50 tokens liberado para o seu Gmail e aparelho."
             c.execute("INSERT OR REPLACE INTO ip_wallets (ip, credits, is_vip, bonus_claimed) VALUES (?, 50, ?, 1)", (ip, is_vip))
+            if device_id:
+                c.execute("INSERT OR REPLACE INTO device_wallets (device_id, ip, email, bonus_claimed) VALUES (?, ?, ?, 1)", (device_id, ip, extracted_email))
 
         user_display_name = extracted_name or extracted_email.split("@")[0].capitalize()
         dummy_hash = hash_password(secrets.token_hex(16))
@@ -932,15 +1026,19 @@ def get_auth_me(
 @app.get("/api/user/credits")
 def get_credits(request: Request, user_id: str = "default_user"):
     ip = extract_client_ip(request)
+    device_id = (request.headers.get("x-device-id") or request.cookies.get("iabox_dev_id") or "").strip()
     vip = is_founder_vip(user_id, ip)
-    credits = get_user_credits(user_id)
+    credits = get_user_credits(user_id, device_id=device_id)
+    has_paid = is_paid_or_vip_user(user_id, ip)
     ua = request.headers.get("user-agent", "")
     log_client_access(ip, user_id, vip, action="session_access", user_agent=ua)
     return {
         "user_id": user_id,
         "ip": ip,
+        "device_id": device_id,
         "is_vip": vip,
-        "role": "Fundador VIP (Acesso Ilimitado)" if vip else "Visitante (Bônus Único por IP)",
+        "has_paid": has_paid,
+        "role": "Fundador VIP (Acesso Ilimitado)" if vip else ("Cliente VIP Pago" if has_paid else "Visitante (Trava IP + Aparelho)"),
         "credits": credits
     }
 
@@ -1139,9 +1237,10 @@ async def generate_suno_music(
     voice_sample: Optional[UploadFile] = File(None),
     user_id: str = Form("default_user")
 ):
+    enforce_authenticated_gmail(user_id)
     cost = 20 if voice_sample else 15
     if not deduct_credits(user_id, amount=cost):
-        raise HTTPException(status_code=402, detail=f"Saldo insuficiente (necessário {cost} créditos).")
+        raise HTTPException(status_code=402, detail=f"Saldo insuficiente (necessário {cost} créditos). Seu aparelho ou conta Gmail está sem tokens ativos.")
 
     req_ip = client_ip_var.get()
     job_id = str(uuid.uuid4())
@@ -1362,8 +1461,9 @@ async def generate_image(
     ref_images: List[UploadFile] = File(default=[]),
     user_id: str = Form("default_user")
 ):
+    enforce_authenticated_gmail(user_id)
     if not deduct_credits(user_id, amount=2):
-        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 2 créditos).")
+        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 2 créditos). Seu aparelho ou conta Gmail está sem tokens ativos.")
 
     job_id = str(uuid.uuid4())
     out_filename = f"image_{job_id[:8]}.jpg"
@@ -1381,11 +1481,13 @@ async def generate_image(
     try:
         from scripts.magnific_canvas_engine import MagnificCanvasEngine
         engine = MagnificCanvasEngine()
+        is_paid = is_paid_or_vip_user(user_id, client_ip_var.get())
         info = engine.generate_connected_node(
             prompt=prompt,
             reference_images=saved_refs,
             model_style=model_style,
             aspect_ratio=aspect_ratio,
+            is_paid=is_paid,
             output_path=out_path
         )
         save_job(job_id, "image", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
@@ -1524,10 +1626,11 @@ def _render_prompt_video(job_id, user_id, clean_prompt, saved_ref_imgs, duration
             f"natural lighting, temporal consistency, no text, no watermark. Original request: {clean_prompt}"
         )
         kf_ok = False
+        is_paid = is_paid_or_vip_user(user_id, req_ip)
         try:
             engine.generate_connected_node(
                 prompt=shot, reference_images=saved_ref_imgs, model_style="Seedream 5 Pro",
-                aspect_ratio=aspect_ratio, camera_angle=cams[i % len(cams)], output_path=kf
+                aspect_ratio=aspect_ratio, camera_angle=cams[i % len(cams)], is_paid=is_paid, output_path=kf
             )
             kf_ok = os.path.exists(kf)
         except Exception as e:
@@ -1537,7 +1640,8 @@ def _render_prompt_video(job_id, user_id, clean_prompt, saved_ref_imgs, duration
             prompt=motion_prompt, out_path=clip_raw,
             first_frame=kf if kf_ok else None,
             reference_images=saved_ref_imgs if not kf_ok else None,
-            duration=take_len, aspect_ratio=aspect_ratio
+            duration=take_len, aspect_ratio=aspect_ratio,
+            is_paid=is_paid
         )
         done_counter["n"] += 1
         save_job(job_id, "video", status="processing",
@@ -1622,12 +1726,13 @@ async def edit_viral_video(
             detail="Por favor, digite as instruções do que deve acontecer no vídeo (prompt) ou envie um vídeo condutor."
         )
 
+    enforce_authenticated_gmail(user_id)
     is_heavy = (duration_mode in ["extended_60s", "movie_5m"]) or (vfx_mode in ["character_swap", "scene_swap", "multitake_cinema"])
     required_credits = 40 if is_heavy else 10
 
     if not deduct_credits(user_id, amount=required_credits):
         cost_desc = f"{required_credits} créditos (Modo IABOX Omni Turbo)." if is_heavy else "10 créditos."
-        raise HTTPException(status_code=402, detail=f"Saldo insuficiente (necessário {cost_desc})")
+        raise HTTPException(status_code=402, detail=f"Saldo insuficiente (necessário {cost_desc}). Seu aparelho ou conta Gmail está sem saldo ativo.")
 
     req_ip = client_ip_var.get()
     job_id = str(uuid.uuid4())
@@ -1864,8 +1969,9 @@ async def generate_canvas_node(
     reference_urls: str = Form(""),
     user_id: str = Form("default_user")
 ):
+    enforce_authenticated_gmail(user_id)
     if not deduct_credits(user_id, amount=3):
-        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 3 créditos).")
+        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 3 créditos). Seu aparelho ou conta Gmail está sem tokens ativos. Renove seus créditos para continuar.")
 
     job_id = str(uuid.uuid4())
     out_filename = f"canvas_node_{job_id[:8]}.jpg"
@@ -1907,6 +2013,7 @@ async def generate_canvas_node(
     try:
         from scripts.magnific_canvas_engine import MagnificCanvasEngine
         engine = MagnificCanvasEngine()
+        is_paid = is_paid_or_vip_user(user_id, client_ip_var.get())
         info = engine.generate_connected_node(
             prompt=prompt,
             reference_images=ref_paths,
@@ -1919,6 +2026,7 @@ async def generate_canvas_node(
             fractality=fractality,
             face_lock_path=face_path,
             face_strength=face_strength,
+            is_paid=is_paid,
             output_path=out_path
         )
         save_job(job_id, "canvas_node", status="completed", progress=100, result_url=f"/output/{out_filename}", user_id=user_id)
@@ -1961,8 +2069,9 @@ async def magnific_upscale_node(
     scale_target: str = Form("8k"),
     user_id: str = Form("default_user")
 ):
+    enforce_authenticated_gmail(user_id)
     if not deduct_credits(user_id, amount=4):
-        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 4 créditos).")
+        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 4 créditos). Seu aparelho ou conta Gmail está sem tokens ativos.")
 
     job_id = str(uuid.uuid4())
     in_path = None
@@ -2010,8 +2119,9 @@ async def canvas_single_node_to_video(
     cloned_voice_file: Optional[UploadFile] = File(None),
     user_id: str = Form("default_user")
 ):
+    enforce_authenticated_gmail(user_id)
     if not deduct_credits(user_id, amount=6):
-        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 6 créditos).")
+        raise HTTPException(status_code=402, detail="Saldo insuficiente (necessário 6 créditos). Seu aparelho ou conta Gmail está sem tokens ativos.")
 
     img_path = _resolve_local_media_path(node_url)
     if not img_path or not os.path.exists(img_path):
@@ -2774,12 +2884,13 @@ def _story_run_clip(clip_id: str, project_id: str, uid: str, user_id: str, req_i
             for r in raw_refs:
                 if r and r not in unique_refs:
                     unique_refs.append(r)
+            is_paid = is_paid_or_vip_user(user_id, req_ip)
             kf_path = os.path.join(OUTPUT_DIR, f"story_kf_{clip_id[:8]}_{k}.jpg")
             engine.generate_connected_node(
                 prompt=compiled + (f" This is moment {k + 1} of {n_key} of the same shot." if n_key > 1 else ""),
                 reference_images=unique_refs[:4], model_style="Seedream 5 Pro", aspect_ratio=ar,
                 camera_angle=shot["cam"], lighting_mood=bible.get("lighting_mood", "default"),
-                face_lock_path=anchor, face_strength=100, output_path=kf_path)
+                face_lock_path=anchor, face_strength=100, is_paid=is_paid, output_path=kf_path)
             keyframes.append(kf_path)
             _set(progress=15 + int(45 * (k + 1) / n_key))
 
@@ -2806,6 +2917,7 @@ def story_add_clip(
     ref_images: List[UploadFile] = File(default=[]),
     user_id: str = Form("default_user")
 ):
+    enforce_authenticated_gmail(user_id)
     uid = _story_uid(user_id)
     duration = max(2.0, min(float(duration), 30.0))
     if shot_type not in STORY_SHOTS:
@@ -2827,7 +2939,7 @@ def story_add_clip(
 
     cost, heavy = _story_quote(duration, True)
     if not deduct_credits(user_id, amount=cost):
-        raise HTTPException(status_code=402, detail=f"Saldo insuficiente (necessário {cost} créditos para filmar este plano com continuidade).")
+        raise HTTPException(status_code=402, detail=f"Saldo insuficiente (necessário {cost} créditos para filmar este plano com continuidade). Seu aparelho ou conta Gmail está sem tokens ativos.")
 
     cid = str(uuid.uuid4())
     saved_clip_refs = []
@@ -3008,6 +3120,7 @@ def story_suggest_next(project_id: str = Form(...), user_id: str = Form("default
 
 @app.post("/api/story/export")
 def story_export(project_id: str = Form(...), user_id: str = Form("default_user")):
+    enforce_authenticated_gmail(user_id)
     uid = _story_uid(user_id)
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()

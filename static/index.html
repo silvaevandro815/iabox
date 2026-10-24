@@ -196,6 +196,11 @@
             <button id="user-logout-btn" type="button" onclick="event.stopPropagation(); handleLogout();" title="Desconectar da conta" class="text-red-400 hover:text-red-300 font-bold ml-1 hidden flex items-center"><i data-lucide="log-out" class="w-3.5 h-3.5"></i></button>
           </div>
 
+          <div id="device-security-pill" class="hidden lg:flex items-center gap-1.5 bg-dark-800/90 border border-cyan-500/30 px-2.5 py-1.5 rounded-xl text-[11px] text-cyan-300 whitespace-nowrap shrink-0" title="Vínculo de Segurança Ativo: IP + Aparelho + Gmail">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span class="text-gray-300 font-semibold">IP &amp; Aparelho Vinculados</span>
+          </div>
+
           <div id="wallet-badge-pill" class="bg-cyan-500/10 border border-cyan-400/40 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 cursor-pointer hover:border-cyan-400 transition-colors whitespace-nowrap shrink-0" onclick="openModal('recharge-modal')">
             <svg class="w-4 h-4 text-cyan-400 shrink-0" style="filter: drop-shadow(0 0 6px #00f0ff);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="rgba(0,240,255,0.25)"/>
@@ -2513,6 +2518,20 @@
         </p>
       </div>
 
+      <!-- AVISO DE VÍNCULO DE SEGURANÇA IP + APARELHO + GMAIL -->
+      <div class="p-3 rounded-2xl bg-cyan-950/80 border border-cyan-400/40 text-[11px] text-gray-200 space-y-1 shadow-lg">
+        <div class="flex items-center gap-1.5 text-cyan-300 font-extrabold text-xs">
+          <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
+          <span>Vínculo de Segurança Aparelho + IP + Gmail</span>
+        </div>
+        <p class="text-[10px] text-gray-300 leading-tight">
+          Seu computador ou celular e endereço de IP são vinculados à sua conta Gmail no primeiro acesso. É concedido apenas <strong>1 teste gratuito (50 tokens) por aparelho e conexão</strong>.
+        </p>
+        <p class="text-[10px] text-amber-300 font-semibold leading-tight">
+          💡 Contas secundárias no mesmo aparelho/IP só funcionam com recarga de tokens. Se você já tem tokens pagos na sua conta Gmail, eles funcionam em qualquer dispositivo.
+        </p>
+      </div>
+
       <!-- BOTÃO DIRETO VINCULAR CONTA GOOGLE -->
       <div class="space-y-3">
         <button type="button" onclick="triggerGoogleDirectLogin()" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 text-gray-900 font-extrabold py-3 px-4 rounded-2xl shadow-neon-cyan border border-white/40 transform hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer">
@@ -3310,6 +3329,49 @@
     let isVipFounder = false;
     let logoClickCount = 0;
     let logoClickTimer = null;
+
+    function getOrCreateDeviceFingerprint() {
+      let devId = localStorage.getItem('iabox_device_id');
+      if (!devId) {
+        const raw = [
+          navigator.userAgent,
+          screen.width + 'x' + screen.height,
+          screen.colorDepth,
+          navigator.hardwareConcurrency || 4,
+          navigator.language || 'pt-BR',
+          Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
+        ].join('||');
+        let hash = 0;
+        for (let i = 0; i < raw.length; i++) {
+          hash = ((hash << 5) - hash) + raw.charCodeAt(i);
+          hash |= 0;
+        }
+        const randPart = Math.random().toString(36).substring(2, 9);
+        devId = 'dev_' + Math.abs(hash).toString(16) + '_' + randPart;
+        localStorage.setItem('iabox_device_id', devId);
+      }
+      document.cookie = `iabox_dev_id=${devId}; path=/; max-age=31536000; SameSite=Lax`;
+      return devId;
+    }
+
+    const currentDeviceId = getOrCreateDeviceFingerprint();
+
+    // Intercepta todas as chamadas fetch para injetar automaticamente o X-Device-Id
+    const originalFetch = window.fetch;
+    window.fetch = function(url, options = {}) {
+      options.headers = options.headers || {};
+      if (options.headers instanceof Headers) {
+        if (!options.headers.has('X-Device-Id')) options.headers.set('X-Device-Id', currentDeviceId);
+      } else if (Array.isArray(options.headers)) {
+        options.headers.push(['X-Device-Id', currentDeviceId]);
+      } else {
+        options.headers['X-Device-Id'] = currentDeviceId;
+      }
+      if (options.body && options.body instanceof FormData && !options.body.has('device_id')) {
+        options.body.append('device_id', currentDeviceId);
+      }
+      return originalFetch(url, options);
+    };
 
     function getOrInitUserId() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -4561,14 +4623,33 @@ setInterval(triggerRobotBlink, 3800);
             heroBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-cyan-400 "></span><span class="flex items-center gap-1.5"><i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-300"></i> Bônus de Teste Ativo no Seu IP (${data.ip || 'PC/Mobile'}): ${userCredits} Tokens Restantes</span>`;
           }
         }
+
+        if (data.ip) {
+          const secPill = document.getElementById('device-security-pill');
+          if (secPill) {
+            secPill.title = `Vínculo de Segurança Ativo: IP ${data.ip} & Aparelho ${data.device_id || ''} vinculados à conta Google`;
+            if (data.has_paid) {
+              secPill.innerHTML = `<i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i><span class="text-emerald-300 font-semibold">Cliente VIP Pago (${data.ip})</span>`;
+            } else {
+              secPill.innerHTML = `<i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyan-400"></i><span class="text-gray-300 font-semibold">IP &amp; Aparelho Vinculados</span>`;
+            }
+            lucide.createIcons();
+          }
+        }
       } catch (err) { console.log('Erro ao ler créditos:', err); }
     }
     updateCredits();
 
     function requireCredits(cost) {
       if (isVipFounder) return true;
+      if (!currentUserId || (!currentUserId.toLowerCase().endsWith('@gmail.com') && !currentUserId.toLowerCase().endsWith('@googlemail.com'))) {
+        openAuthModal();
+        setMascotMessage('É obrigatório entrar com sua conta Google (@gmail.com) para utilizar as ferramentas de IA.');
+        return false;
+      }
       if (userCredits < cost) {
-        setMascotMessage(`Seus 50 tokens gratuitos de teste por IP acabaram! Escolha seu pacote pré-pago via Stripe para continuar criando. `);
+        setMascotMessage(`Saldo insuficiente (${userCredits} tokens). Este aparelho/IP atingiu o limite gratuito. Adquira créditos para continuar.`);
+        alert(`Aviso de Saldo e Segurança:\n\nIdentificamos que seu saldo neste aparelho/IP (${userCredits} tokens) é insuficiente para esta ação (necessário ${cost} créditos).\n\nLembre-se: O teste gratuito de 50 tokens é concedido apenas uma vez por dispositivo e conexão IP. Caso você já tenha adquirido créditos em sua conta Google, certifique-se de estar conectado com ela.`);
         openModal('recharge-modal');
         return false;
       }
