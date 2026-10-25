@@ -122,7 +122,7 @@ class VoxMotionEngine:
         }
 
     # ----------------------------------------------------------------------------------------
-    # 1. INTELIGÊNCIA ARTIFICIAL: DESMEMBRAR ROTEIRO EM CENAS (BEATS)
+    # 1. INTELIGÊNCIA ARTIFICIAL: DESMEMBRAR ROTEIRO EM CENAS (BEATS CINEMATOGRÁFICOS)
     # ----------------------------------------------------------------------------------------
     def split_script_with_ai(
         self,
@@ -132,42 +132,45 @@ class VoxMotionEngine:
         sec_per_scene: float = 10.0
     ) -> List[Dict]:
         """
-        Usa o Gemini / OpenRouter para analisar o roteiro ou tema e transformá-lo em
-        um plano de corte multi-cena rigorosamente estruturado dentro do estilo selecionado.
+        Usa LLM avançado para analisar o roteiro ou tema e transformá-lo em
+        um plano de corte multi-cena com rigorosa continuidade narrativa,
+        design consistente de personagens/sujeitos (VISUAL_DNA) e planos de câmera variados.
         """
         style_info = self.styles.get(style, self.styles["vox"])
         num_scenes = max(2, min(int(num_scenes), 16))
         sec_per_scene = max(5.0, min(float(sec_per_scene), 15.0))
 
-        system_prompt = f"""Você é o Diretor Criativo Principal e Roteirista Chefe de documentários e vídeos virais estilo {style_info['name']} (Vox, Curio, Johnny Harris).
-Sua missão é pegar o tema ou roteiro enviado pelo usuário e criar EXATAMENTE {num_scenes} cenas sequenciais de {sec_per_scene}s cada, com continuidade narrativa cinematográfica e rigorosa obediência ao estilo visual selecionado.
+        system_prompt = f"""Você é o Diretor Criativo Principal e Roteirista Chefe de documentários e vídeos virais estilo {style_info['name']} (Vox, Johnny Harris, Kurzgesagt, Netflix Explained).
+Sua missão é pegar o tema ou roteiro enviado pelo usuário e criar EXATAMENTE {num_scenes} cenas sequenciais de {sec_per_scene}s cada, com continuidade narrativa impecável (Começo, Meio e Fim) e obediência absoluta ao estilo visual selecionado.
 
-REGRA SUPREMA DE ESTILO VISUAL: {style_info['name'].upper()}
-Cada cena DEVE incorporar com precisão milimétrica a estética deste estilo:
-- Descrição estética obrigatória: {style_info['desc']}
-- Todos os prompts do campo "prompt" DEVEM ser em INGLÊS e OBRIGATORIAMENTE conter a assinatura visual do estilo:
+REGRA SUPREMA DE ESTILO: {style_info['name'].upper()}
+- Estética obrigatória: {style_info['desc']}
+- Assinatura visual obrigatória em TODOS os prompts:
   "{style_info['prompt_prefix']}"
-- NUNCA gere fotos de cinema genérico ou de câmera comum se o estilo for Colagem Editorial Vox, Anime, Comic Pop Art ou Motion Graphics! Obedeça 100% ao estilo {style_info['name']}.
 
-DIRETRIZES FUNDAMENTAIS DE CONTINUIDADE E PERSONAGEM:
-1. MANTENHA A COERÊNCIA DO PERSONAGEM/TEMA:
-   - Se o usuário mencionar um personagem (ex: "menino negro", "cientista", "empreendedor"), mantenha ESSE MESMO PERSONAGEM em todas as cenas da narrativa com a mesma faixa etária, roupas e características físicas marcantes.
-   - NUNCA invente personagens aleatórios sem relação com o pedido.
-2. CADA CENA DEVE SER UM PONTO DINÂMICO DA HISTÓRIA (Jornada do Herói / Arco Dramático):
-   - Cena 1: A Origem / O Chamado (apresentação do herói e do contraste inicial).
-   - Cena 2: O Conflito / A Realidade do Mundo (o problema que ele enfrenta).
-   - Cena 3: A Ação / A Ideia Inovadora (como ele começa a transformar ou tentar convencer).
-   - Cena 4: A Resistência e Superação (o momento de desafio onde ele não desiste).
-   - Cena 5: A Virada e Impacto Coletivo (a comunidade, as pessoas se unindo a ele).
-   - Cena 6: A Vitória e Visão do Futuro (o desfecho triunfante, inspirador e sustentável).
-3. ESTRUTURA DOS CAMPOS DE CADA CENA:
-   - "headline": 1 ou 2 palavras em CAIXA ALTA de alto impacto (ex: "O CHAMADO", "A JORNADA", "A CRISE", "A VOZ", "A VIRADA", "O FUTURO").
-   - "prompt": Descrição visual ultra-detalhada em INGLÊS (para o gerador de imagem 8K) contendo OBRIGATORIAMENTE "{style_info['prompt_prefix']}" seguido do sujeito e da ação.
-   - "motion": Escolha o movimento que melhor casa com a cena: 'zoom_parallax', 'revelacao_papel', 'nuvens_deriva', 'engrenagens' ou 'moedas_caindo'.
-   - "narration": Frase concisa, emocional e inspiradora em português (1 a 2 frases para a voz/legenda da cena).
-   - "duration": {sec_per_scene}.
+ETAPA 1 — IDENTIFICAR E FIXAR O DNA VISUAL DO SUJEITO (VISUAL_DNA):
+1. Identifique o sujeito central da história (ex: um planeta artesanal, um personagem específico, um objeto em transformação).
+2. Formule uma descrição visual densa e invariável (materiais, textura, paleta de cores, estilo de colagem ou traço do estilo ativo).
+3. Esse bloco "VISUAL_DNA: [descrição]" DEVE SER REPETIDO LITERALMENTE em TODAS as {num_scenes} cenas para garantir consistência visual absoluta nos modelos generativos!
+4. FIDELIDADE AO TEMA: Se a história trata de um planeta, espaço, objeto inanimado ou animal, É TERMINANTEMENTE PROIBIDO inventar ou inserir seres humanos, mulheres ou pessoas aleatórias! Mantenha o foco 100% no elemento central pedido.
 
-Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSON. Não inclua nenhum texto, explicação ou markdown fora do JSON."""
+ETAPA 2 — PROGRESSÃO CINEMATOGRÁFICA RIGOROSA (6 ATOS COM PLANOS E ÂNGULOS TÉCNICOS DISTINTOS):
+- Cena 1: Extreme Wide Establishing Shot (Plano Geral Aberto 24mm) + slow pan/drift. Estabelece o mundo, escala e atmosfera inicial.
+- Cena 2: Medium Portrait / Focus Shot (Plano Médio 50mm) + slow dolly-in. Apresenta o sujeito/personagem central em destaque.
+- Cena 3: Macro Detail Shot (Plano Detalhe / Close-up 85mm) + dynamic tilt/tracking. Mostra o mecanismo interno, textura tátil ou ponto de tensão.
+- Cena 4: Dynamic Low-Angle Action Shot (Contra-Plongée 35mm) + kinetic push/orbit. Ação dramática, metamorfose ou clímax do conflito.
+- Cena 5: High-Angle Wide Impact Shot (Plano Plongée Aberto 28mm) + sweeping crane. O impacto amplo, irradiação no cenário ou reverberação coletiva.
+- Cena 6: Hero Medium Resolution Shot (Plano Master de Fechamento) + parallax pull-out. Conclusão triunfante, inspiradora e memorável.
+
+ESTRUTURA DOS CAMPOS DE CADA CENA NO JSON:
+- "scene_number": número inteiro da cena (1 a {num_scenes}).
+- "headline": 1 ou 2 palavras em CAIXA ALTA de alto impacto (ex: "A ORIGEM", "O CHAMADO", "O NÚCLEO", "A VIRADA", "A EXPANSÃO", "O FUTURO").
+- "prompt": Descrição visual técnica em INGLÊS. Comece com "{style_info['prompt_prefix']}", seguido do Plano e Lente (ex: "Extreme Wide Establishing Shot, 24mm lens"), depois "VISUAL_DNA: [descrição fixa do sujeito]", depois a ação da cena e iluminação, finalizando com o movimento de câmera cinematográfico.
+- "motion": 'zoom_parallax', 'revelacao_papel', 'nuvens_deriva', 'engrenagens' ou 'moedas_caindo'.
+- "narration": Frase concisa, cinematográfica e conectada em português (construindo uma narrativa fluida com começo, meio e fim).
+- "duration": {sec_per_scene}.
+
+Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSON. Não inclua texto explicativo fora do array."""
 
         user_content = f"TEMA OU ROTEIRO DO VÍDEO:\n{script_text}\n\nCrie a sequência completa de {num_scenes} cenas com continuidade visual perfeita no estilo {style_info['name']}."
 
@@ -181,6 +184,9 @@ Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSO
                     clean_json = clean_json.split("```")[1].split("```")[0].strip()
                 
                 scenes = json.loads(clean_json)
+                if isinstance(scenes, dict):
+                    scenes = scenes.get("scenes", list(scenes.values())[0])
+
                 if isinstance(scenes, list) and len(scenes) > 0:
                     formatted_scenes = []
                     for idx, s in enumerate(scenes[:num_scenes]):
@@ -191,10 +197,10 @@ Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSO
 
                         formatted_scenes.append({
                             "scene_number": idx + 1,
-                            "headline": s.get("headline", f"CENA {idx+1}")[:25].upper(),
-                            "prompt": p_raw[:850],
+                            "headline": s.get("headline", f"CENA {idx+1}")[:30].upper(),
+                            "prompt": p_raw[:1200],
                             "motion": s.get("motion", "zoom_parallax"),
-                            "narration": s.get("narration", "")[:300],
+                            "narration": s.get("narration", "")[:350],
                             "duration": sec_per_scene,
                             "reference_images": []
                         })
@@ -205,18 +211,61 @@ Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSO
         return self._generate_fallback_scenes(script_text, num_scenes, sec_per_scene, style)
 
     def _generate_fallback_scenes(self, script_text: str, num_scenes: int, sec_per_scene: float, style: str) -> List[Dict]:
+        """
+        Gera 6 cenas cinematográficas adaptativas quando o LLM estiver indisponível,
+        extraindo dinamicamente o tema do texto do usuário (Planeta, Metamorfose de Objeto,
+        Personagem ou Tecnologia) ao invés de fixar uma única história.
+        """
         style_info = self.styles.get(style, self.styles["vox"])
         prefix = style_info.get("prompt_prefix", "Vox documentary editorial collage art, vintage paper texture background")
+        text_lower = (script_text or "").lower()
 
-        beats = [
-            ("O CHAMADO", f"{prefix}, portrait of a determined 10-year-old Black boy with curly hair in a green hoodie looking over a city, dramatic contrast, high resolution.", "zoom_parallax", "Em um mundo tomado pela pressa e pelo desperdício, uma jovem voz decide não se calar."),
-            ("A JORNADA", f"{prefix}, wide view, the young Black boy walking through a bustling urban avenue holding a handmade recycling bag, striking composition.", "revelacao_papel", "Ele caminha pelas ruas mostrando que cada pequena atitude tem o poder de transformar o planeta."),
-            ("A VOZ", f"{prefix}, the young Black boy speaking passionately in a public square, demonstrating creative recycled inventions, inspiring expression.", "zoom_parallax", "Conscientizar não é impor regras, é despertar nas pessoas o amor pelo futuro comum."),
-            ("O DESAFIO", f"{prefix}, community gathering listening to the young Black boy as he sorts recyclable bottles, rich graphic textures.", "engrenagens", "Quando o exemplo é sincero, a indiferença dá lugar à ação coletiva."),
-            ("A VIRADA", f"{prefix}, thousands of people cleaning up city streets and parks, planting seedlings, vibrant global eco movement.", "nuvens_deriva", "O movimento ganha as ruas e o mundo: a reciclagem se torna uma corrente imparável de união."),
-            ("O FUTURO", f"{prefix}, hopeful smiling portrait of the young Black boy looking over a lush green sustainable city with solar roofs, uplifting composition.", "zoom_parallax", "A mudança que o mundo precisa começou no coração de uma criança que acreditou no amanhã.")
-        ]
-        
+        # Tema 1: Planeta / Espaço / Cosmos
+        if any(w in text_lower for w in ["planeta", "planet", "espaço", "espaco", "space", "galaxia", "universo", "estrela", "cosmos"]):
+            dna = "A stylized vintage papercraft planet crafted from aged cartography maps, torn parchment continents, deep blueprint teal oceans, and golden foil rings"
+            beats = [
+                ("A ORIGEM", f"{prefix}, Extreme Wide Establishing Shot, 24mm lens, VISUAL_DNA: {dna}, drifting serenely in a cosmic void of aged celestial atlas pages, slow panoramic drift.", "nuvens_deriva", "Nos confins inexplorados do cosmos, um mundo esculpido pelo tempo aguarda em silêncio."),
+                ("O NÚCLEO", f"{prefix}, Medium Focus Shot, 50mm lens, VISUAL_DNA: {dna}, rotating gently revealing paper tectonic folds and golden contour lines, dramatic rim light, slow dolly-in.", "zoom_parallax", "Sua atmosfera guarda segredos de uma civilização antiga gravados em mapas e papiros."),
+                ("O MECANISMO", f"{prefix}, Macro Detail Shot, 85mm lens, VISUAL_DNA: {dna}, extreme close-up of intricate paper clockwork gears and luminous canary-yellow energy veins, tilt focus tracking.", "engrenagens", "No coração deste planeta, engrenagens douradas mantêm o ritmo perfeito da existência."),
+                ("A TRANSFORMAÇÃO", f"{prefix}, Dynamic Low-Angle Action Shot, 35mm lens, VISUAL_DNA: {dna}, golden energy bursts through paper tectonic plates, shifting mountain ranges, kinetic orbit push.", "revelacao_papel", "Um impulso de luz rompe a crosta, despertando forças adormecidas há milênios."),
+                ("A IRRADIAÇÃO", f"{prefix}, High-Angle Wide Impact Shot, 28mm lens, VISUAL_DNA: {dna}, radiant yellow light pulses across the entire planetary surface illuminating orbiting star charts, sweeping crane.", "moedas_caindo", "O brilho se expande pelo espaço, transformando a escuridão em um espetáculo de harmonia."),
+                ("O FUTURO", f"{prefix}, Hero Medium Resolution Shot, 50mm lens, VISUAL_DNA: {dna}, the majestic planet flourishing with luminescent golden paper auroras, cinematic parallax pull-out.", "zoom_parallax", "Assim nasce uma nova era cósmica: onde história, arte e vida eterna se encontram.")
+            ]
+        # Tema 2: Metamorfose / Objeto (Ex: Lápis vira Flor)
+        elif any(w in text_lower for w in ["lápis", "lapis", "flor", "flower", "metamorfose", "semente", "planta", "árvore", "arvore"]):
+            dna = "A handcrafted vintage pencil crafted from dark cedar wood and golden brass ferrule, transforming into an intricate origami blooming flower"
+            beats = [
+                ("O COMEÇO", f"{prefix}, Extreme Wide Establishing Shot, 24mm lens, VISUAL_DNA: {dna}, resting on an architect drafting table covered in blueprints and paper scraps, slow pan.", "revelacao_papel", "Toda grande criação começa na simplicidade de um único traço no papel."),
+                ("O DESPERTAR", f"{prefix}, Medium Focus Shot, 50mm lens, VISUAL_DNA: {dna}, graphite tip glowing with delicate yellow highlights as wood grain subtly fractures into petal folds, slow dolly-in.", "zoom_parallax", "Onde antes havia apenas madeira e grafite, uma centelha de vida começa a pulsar."),
+                ("A ECLOSÃO", f"{prefix}, Macro Detail Shot, 85mm lens, VISUAL_DNA: {dna}, extreme macro of paper petals delicately peeling away from the wooden pencil core, dynamic tilt tracking.", "engrenagens", "Camada por camada, a matéria rígida se curva diante da força da imaginação."),
+                ("A METAMORFOSE", f"{prefix}, Dynamic Low-Angle Action Shot, 35mm lens, VISUAL_DNA: {dna}, rapid burst of colorful origami petals unfurling in dynamic motion, kinetic low-angle push.", "moedas_caindo", "O lápis se desfaz e floresce: o instrumento se transforma na própria obra de arte."),
+                ("O IMPACTO", f"{prefix}, High-Angle Wide Impact Shot, 28mm lens, VISUAL_DNA: {dna}, vibrant yellow paper pollen particles showering the workspace bringing illustrations to life, sweeping crane.", "nuvens_deriva", "O pólen dourado da criatividade se espalha, colorindo tudo ao seu redor."),
+                ("O TRIUNFO", f"{prefix}, Hero Medium Resolution Shot, 50mm lens, VISUAL_DNA: {dna}, fully bloomed glowing origami lotus standing proud amidst architectural sketches, parallax pull-out.", "zoom_parallax", "A verdadeira arte não apenas desenha a beleza: ela a faz florescer no mundo real.")
+            ]
+        # Tema 3: Tecnologia / Inteligência Artificial / Negócios
+        elif any(w in text_lower for w in ["ia", "ai", "inteligência", "inteligencia", "robô", "robo", "futuro", "negócio", "negocio", "mercado", "empresa"]):
+            dna = "A futuristic archival collage of cybernetic gears, glowing circuits, vintage newspaper headlines, and bright canary-yellow infographic markers"
+            beats = [
+                ("A REVOLUÇÃO", f"{prefix}, Extreme Wide Establishing Shot, 24mm lens, VISUAL_DNA: {dna}, massive editorial wall of financial graphs, algorithms and paper cutouts, slow pan.", "engrenagens", "Uma revolução invisível está redesenhando as fronteiras de toda a economia global."),
+                ("O DESAFIO", f"{prefix}, Medium Focus Shot, 50mm lens, VISUAL_DNA: {dna}, central vintage human silhouette confronting complex geometric AI neural pathways, slow dolly-in.", "zoom_parallax", "Modelos tradicionais desmoronam diante da velocidade implacável da automação inteligente."),
+                ("O NÚCLEO", f"{prefix}, Macro Detail Shot, 85mm lens, VISUAL_DNA: {dna}, extreme close-up of mechanical clockwork merging with glowing fiber optic threads, dynamic tracking.", "engrenagens", "Aqueles que dominam a nova engrenagem transformam horas de esforço em segundos de impacto."),
+                ("A DISRUPÇÃO", f"{prefix}, Dynamic Low-Angle Action Shot, 35mm lens, VISUAL_DNA: {dna}, towering kinetic charts and paper graphs rocketing upward with bold yellow accents, kinetic push.", "moedas_caindo", "A barreira de entrada caiu: pequenas ideias agora movem impérios gigantescos."),
+                ("A ESCALA", f"{prefix}, High-Angle Wide Impact Shot, 28mm lens, VISUAL_DNA: {dna}, global interconnected network of digital cutouts and financial data nodes glowing bright, sweeping crane.", "revelacao_papel", "O mundo nunca mais será o mesmo para quem decide liderar a vanguarda."),
+                ("O FUTURO", f"{prefix}, Hero Medium Resolution Shot, 50mm lens, VISUAL_DNA: {dna}, triumphant visionary icon looking over a gleaming horizon of innovation, parallax pull-out.", "zoom_parallax", "O futuro pertence àqueles que não apenas assistem à mudança, mas a constroem hoje.")
+            ]
+        # Tema 4: Padrão Inspirador Adaptado
+        else:
+            subj = script_text.split('.')[0][:40] if script_text else "A compelling visual concept"
+            dna = f"A stylized archival cutout of {subj} rendered in vintage papercraft collage with Canary Yellow #FACC15 accents and aged newsprint texture"
+            beats = [
+                ("O CHAMADO", f"{prefix}, Extreme Wide Establishing Shot, 24mm lens, VISUAL_DNA: {dna}, dramatic wide environment with layered vintage parchment, slow pan.", "revelacao_papel", "Toda grande história começa no momento exato em que decidimos desafiar o comum."),
+                ("O FOCO", f"{prefix}, Medium Focus Shot, 50mm lens, VISUAL_DNA: {dna}, crisp cutout silhouette with yellow highlighter halo, slow dolly-in.", "zoom_parallax", "O olhar atento descobre oportunidades onde os outros enxergavam apenas rotina."),
+                ("O DETALHE", f"{prefix}, Macro Detail Shot, 85mm lens, VISUAL_DNA: {dna}, extreme macro of intricate paper textures and handcrafted edges, dynamic tilt.", "engrenagens", "São os detalhes minuciosos e a perseverança silenciosa que constroem a grandeza."),
+                ("O CLÍMAX", f"{prefix}, Dynamic Low-Angle Action Shot, 35mm lens, VISUAL_DNA: {dna}, kinetic dynamic movement with dramatic shadows and high contrast, low-angle push.", "moedas_caindo", "No instante da virada, cada peça do mosaico se encaixa com precisão absoluta."),
+                ("A EXPANSÃO", f"{prefix}, High-Angle Wide Impact Shot, 28mm lens, VISUAL_DNA: {dna}, sweeping panoramic view of the entire scene reacting in harmony, sweeping crane.", "nuvens_deriva", "O resultado reverbera além das expectativas, inspirando todos ao redor."),
+                ("O TRIUNFO", f"{prefix}, Hero Medium Resolution Shot, 50mm lens, VISUAL_DNA: {dna}, final iconic composition with golden parchment radiance, parallax pull-out.", "zoom_parallax", "A visão inicial se consolida como um legado inquestionável para o amanhã.")
+            ]
+
         scenes = []
         for i in range(num_scenes):
             beat = beats[i % len(beats)]
@@ -232,28 +281,14 @@ Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSO
         return scenes
 
     def _call_ai(self, system_prompt: str, user_content: str) -> Optional[str]:
-        # 1. Tenta modelos Gemini ativos (3.5-flash-lite ou 3.8-flash)
-        if self.gemini_key:
-            for gemini_model in ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-2.5-flash", "gemini-flash-latest"]:
-                try:
-                    import requests
-                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{gemini_model}:generateContent?key={self.gemini_key}"
-                    payload = {
-                        "contents": [{"parts": [{"text": f"{system_prompt}\n\n{user_content}"}]}],
-                        "generationConfig": {"temperature": 0.4, "maxOutputTokens": 2500}
-                    }
-                    r = requests.post(url, json=payload, timeout=18)
-                    if r.status_code == 200:
-                        d = r.json()
-                        candidates = d.get("candidates", [])
-                        if candidates:
-                            return candidates[0]["content"]["parts"][0]["text"]
-                except Exception as e:
-                    print(f"[VoxMotionEngine] Gemini API error ({gemini_model}): {e}")
-
-        # 2. Fallback para OpenRouter com modelos de alta disponibilidade
+        """
+        Orquestra a chamada de LLM com prioridade para modelos rápidos e confiáveis:
+        1. OpenRouter (deepseek/deepseek-chat e meta-llama/llama-3.3-70b-instruct) -> altíssima velocidade e coerência.
+        2. Gemini Google API (gemini-3.6-flash e gemini-3.5-flash).
+        """
+        # 1. Prioridade OpenRouter (DeepSeek / Llama 70B respondem com precisão de JSON em ~3s)
         if self.openrouter_key:
-            for or_model in ["meta-llama/llama-3.3-70b-instruct", "google/gemini-2.5-flash-preview", "deepseek/deepseek-chat"]:
+            for or_model in ["deepseek/deepseek-chat", "meta-llama/llama-3.3-70b-instruct"]:
                 try:
                     import requests
                     headers = {
@@ -266,16 +301,41 @@ Responda ESTRITAMENTE um JSON ARRAY contendo exatamente {num_scenes} objetos JSO
                             {"role": "system", "content": system_prompt},
                             {"role": "user", "content": user_content}
                         ],
-                        "temperature": 0.4
+                        "temperature": 0.35
                     }
-                    r = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=18)
+                    r = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=22)
                     if r.status_code == 200:
                         d = r.json()
                         choices = d.get("choices", [])
                         if choices:
-                            return choices[0]["message"]["content"]
+                            txt = choices[0]["message"]["content"]
+                            if txt and len(txt.strip()) > 30:
+                                return txt
                 except Exception as e:
-                    print(f"[VoxMotionEngine] OpenRouter API error ({or_model}): {e}")
+                    print(f"[VoxMotionEngine] OpenRouter API ({or_model}) aviso: {e}")
+
+        # 2. Alternativa direta Gemini com modelos ativos e timeout curto (8s)
+        if self.gemini_key:
+            for gemini_model in ["gemini-3.6-flash", "gemini-3.5-flash"]:
+                try:
+                    import requests
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{gemini_model}:generateContent?key={self.gemini_key}"
+                    payload = {
+                        "contents": [{"parts": [{"text": f"{system_prompt}\n\n{user_content}"}]}],
+                        "generationConfig": {"temperature": 0.35, "maxOutputTokens": 3000}
+                    }
+                    r = requests.post(url, json=payload, timeout=10)
+                    if r.status_code == 200:
+                        d = r.json()
+                        candidates = d.get("candidates", [])
+                        if candidates:
+                            c_parts = candidates[0].get("content", {}).get("parts", [])
+                            for cp in c_parts:
+                                if "text" in cp:
+                                    return cp["text"]
+                except Exception as e:
+                    print(f"[VoxMotionEngine] Gemini API ({gemini_model}) aviso: {e}")
+
         return None
 
     # ----------------------------------------------------------------------------------------

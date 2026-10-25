@@ -3410,10 +3410,13 @@ REGRAS POR CATEGORIA:
   * Se o usuário citar um estilo artístico (como Anime, Comic Pop Art, Dark Cyberpunk, Vox, 2D Motion Graphics), obedeça e especifique os parâmetros visuais exatos desse estilo!
   * Enfatize iluminação dramática, profundidade de campo rasa e atmosfera. Se for objeto, enfatize micro-texturas orgânicas e materiais.
 - Se 'vox':
-  * Gere o enhanced_prompt em INGLÊS no estilo VOX EDITORIAL COLLAGE (mixed-media photo cutouts, vintage archival paper texture, newspaper print, subtle halftone dots, vibrant yellow highlighter accents #FACC15, stop-motion parallax feel, modern explainer graphic design).
-  * Se o usuário citar um estilo específico (anime, comic, cyberpunk, motion graphics 2D), obedeça ESTRITAMENTE a estética desse estilo selecionado sem converter em foto genérica.
+  * Gere o enhanced_prompt em INGLÊS com a assinatura editorial Vox: "Vox documentary editorial collage art, vintage paper texture background, archival newspaper and cutout photo montage, subtle halftone dots, vibrant yellow highlighter accents #FACC15, stop-motion archival explainer aesthetic".
+  * Exija especificações técnicas de câmera: enquadramento (Extreme Wide 24mm, Medium 50mm, Macro 85mm, Low-Angle 35mm), ângulo dramático e movimento de câmera (dolly-in, slow drift pan, dynamic tilt, kinetic orbit).
+  * Fixe o VISUAL_DNA do sujeito para consistência absoluta. Se for um planeta, objeto ou conceito, NUNCA introduza seres humanos ou mulheres alucinadas!
+  * Se o usuário citar um estilo específico (anime, comic, cyberpunk, motion graphics 2D), obedeça ESTRITAMENTE a estética desse estilo sem converter em foto genérica.
 - Se 'video':
-  * Gere o enhanced_prompt em INGLÊS descrevendo movimentos de câmera cinematográficos (slow pan, dolly-in, orbit shot), iluminação dramática, atmosfera e ação/transformação física vívida em 60fps.
+  * Gere o enhanced_prompt em INGLÊS cinematográfico descrevendo movimentos de câmera técnicos (slow pan, dolly-in, orbit shot), iluminação dramática, atmosfera e ação/transformação física vívida em 60fps.
+  * Se o prompt tratar de um objeto (ex: lápis virando flor), descreva a transformação física progressiva dos materiais sem introduzir pessoas aleatórias.
 - Se 'suno' ou 'parody':
   * Gere o enhanced_prompt em PORTUGUÊS DO BRASIL especificando o gênero exato, instrumentos principais (violão de aço, sanfona, bateria 808, sintetizador), BPM, clima emocional e tema poético.
 

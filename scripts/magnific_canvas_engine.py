@@ -209,6 +209,25 @@ class MagnificCanvasEngine:
 
     def _call_llm_text(self, prompt_text: str, parts: list = None, timeout: int = 25) -> str:
         """Cascata Neural Resiliente (Multi-Modelos Ativos 3.6 / 3.5 + Fallback)."""
+        if self.openrouter_key and not parts:
+            for or_model in ("deepseek/deepseek-chat", "meta-llama/llama-3.3-70b-instruct"):
+                try:
+                    r = requests.post(
+                        "https://openrouter.ai/api/v1/chat/completions",
+                        headers={"Authorization": f"Bearer {self.openrouter_key}", "Content-Type": "application/json"},
+                        json={
+                            "model": or_model,
+                            "messages": [{"role": "user", "content": prompt_text}]
+                        },
+                        timeout=18
+                    )
+                    if r.status_code == 200:
+                        content = r.json()["choices"][0]["message"]["content"].strip()
+                        if content:
+                            return content
+                except Exception:
+                    pass
+
         if self.gemini_key:
             active_models = [
                 "gemini-3.6-flash",
@@ -219,7 +238,7 @@ class MagnificCanvasEngine:
             for m_name in active_models:
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/{m_name}:generateContent?key={self.gemini_key}"
                 try:
-                    r = requests.post(url, json={"contents": [{"parts": req_parts}]}, timeout=timeout)
+                    r = requests.post(url, json={"contents": [{"parts": req_parts}]}, timeout=min(timeout, 12))
                     if r.status_code == 200:
                         candidates = r.json().get("candidates", [])
                         if candidates:
@@ -246,7 +265,7 @@ class MagnificCanvasEngine:
                             "image_url": {"url": f"data:{mime};base64,{b64}"}
                         })
             msg_content.append({"type": "text", "text": prompt_text})
-            for or_model in ("google/gemini-2.5-flash", "meta-llama/llama-3.3-70b-instruct"):
+            for or_model in ("deepseek/deepseek-chat", "meta-llama/llama-3.3-70b-instruct"):
                 try:
                     r = requests.post(
                         "https://openrouter.ai/api/v1/chat/completions",

@@ -153,6 +153,35 @@
       box-shadow: 0 0 18px rgba(96, 165, 250, 0.35), inset 0 0 12px rgba(96, 165, 250, 0.2);
     }
     .neon-blue svg { filter: drop-shadow(0 0 6px #60a5fa) drop-shadow(0 0 12px rgba(96,165,250,0.7)); }
+
+    /* Otimizações Mobile Responsivas ESG */
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+      width: 100%;
+      -webkit-text-size-adjust: 100%;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    @media (max-width: 640px) {
+      #draggable-mascot {
+        bottom: 16px !important;
+        right: 12px !important;
+      }
+      #mascot-img-wrapper {
+        width: 60px !important;
+        height: 60px !important;
+      }
+      #mascot-bubble {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
@@ -164,35 +193,36 @@
     <div class="max-w-[1400px] mx-auto flex flex-col gap-2">
       
       
-      <div class="flex items-center justify-between gap-2">
+      <div class="flex items-center justify-between gap-1.5 sm:gap-2">
         
-        <div id="esg-logo-trigger" onpointerdown="handleLogoSecretClick(event)" class="flex items-center gap-2.5 group cursor-pointer select-none shrink-0" title="Toque ou clique 3 vezes para Acesso Total VIP neste aparelho">
-          <div style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 8px;" class="shrink-0 overflow-hidden border-2 border-cyan-400 shadow-neon-cyan-sm group-hover:scale-105 transition-transform bg-white p-0.5 flex items-center justify-center">
+        <!-- Logo e Identidade Visual ESG -->
+        <div id="esg-logo-trigger" onpointerdown="handleLogoSecretClick(event)" class="flex items-center gap-2 group cursor-pointer select-none shrink-0" title="Toque ou clique 3 vezes para Acesso Total VIP neste aparelho">
+          <div style="width: 36px; height: 36px; min-width: 36px; min-height: 36px; border-radius: 8px;" class="sm:w-11 sm:h-11 sm:min-w-11 sm:min-h-11 shrink-0 overflow-hidden border-2 border-cyan-400 shadow-neon-cyan-sm group-hover:scale-105 transition-transform bg-white p-0.5 flex items-center justify-center">
             <img src="/static/assets/logo_esg_square.png?v=3" alt="ESG Logo Quadrada" class="w-full h-full object-contain">
           </div>
           <div class="shrink-0">
-            <span class="text-lg lg:text-xl font-bold font-display tracking-wider text-white flex items-center gap-1.5 leading-none">
-              IABOX<span class="w-2 h-2 rounded-full bg-cyan-glow "></span>
+            <span class="text-base sm:text-xl font-bold font-display tracking-wider text-white flex items-center gap-1 sm:gap-1.5 leading-none">
+              IABOX<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-cyan-glow"></span>
             </span>
-            <span class="text-[9px] text-cyan-300/90 tracking-wider block uppercase font-semibold mt-0.5">ESG &bull; Sistemas de IA</span>
+            <span class="text-[8px] sm:text-[9px] text-cyan-300/90 tracking-wider block uppercase font-semibold mt-0.5">ESG &bull; Sistemas IA</span>
           </div>
         </div>
 
-        
-        <div class="flex items-center gap-2 shrink-0">
-          <button onclick="openIABotAssistant()" class="flex items-center gap-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/40 text-emerald-200 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
+        <!-- Ações do Cabeçalho Compactas e Alinhadas para Mobile -->
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <button onclick="openIABotAssistant()" class="hidden md:flex items-center gap-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/40 text-emerald-200 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
             <i data-lucide="bot" class="w-3.5 h-3.5 text-emerald-400"></i>
-            <span class="hidden md:inline">Perguntar ao Robô</span>
+            <span>Perguntar ao Robô</span>
           </button>
 
-          <button onclick="switchTab('memory')" class="hidden sm:flex items-center gap-1.5 bg-cyan-500/10 hover:bg-cyan-500/25 border border-cyan-400/40 text-cyan-200 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
+          <button onclick="switchTab('memory')" class="hidden md:flex items-center gap-1.5 bg-cyan-500/10 hover:bg-cyan-500/25 border border-cyan-400/40 text-cyan-200 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap">
             <i data-lucide="database" class="w-3.5 h-3.5 text-cyan-400"></i>
             <span>Memória & Acessos</span>
           </button>
 
-          <div id="user-session-pill" onclick="openAuthModal()" class="flex items-center gap-1.5 bg-dark-800/90 hover:bg-dark-700 border border-white/15 px-2.5 py-1.5 rounded-xl text-xs whitespace-nowrap shrink-0 cursor-pointer transition-all" title="Sua Conta do Google Gmail">
-            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span id="user-session-email" class="text-gray-300 font-semibold max-w-[130px] md:max-w-[170px] truncate">Entrar com Gmail</span>
+          <div id="user-session-pill" onclick="openAuthModal()" class="flex items-center gap-1 sm:gap-1.5 bg-dark-800/90 hover:bg-dark-700 border border-white/15 px-2 sm:px-2.5 py-1.5 rounded-xl text-xs whitespace-nowrap shrink-0 cursor-pointer transition-all" title="Sua Conta do Google Gmail">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+            <span id="user-session-email" class="text-gray-300 font-semibold max-w-[75px] sm:max-w-[170px] truncate text-[11px] sm:text-xs">Entrar</span>
             <button id="user-logout-btn" type="button" onclick="event.stopPropagation(); handleLogout();" title="Desconectar da conta" class="text-red-400 hover:text-red-300 font-bold ml-1 hidden flex items-center"><i data-lucide="log-out" class="w-3.5 h-3.5"></i></button>
           </div>
 
@@ -201,14 +231,14 @@
             <span class="text-gray-300 font-semibold">IP &amp; Aparelho Vinculados</span>
           </div>
 
-          <div id="wallet-badge-pill" class="bg-cyan-500/10 border border-cyan-400/40 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 cursor-pointer hover:border-cyan-400 transition-colors whitespace-nowrap shrink-0" onclick="openModal('recharge-modal')">
-            <svg class="w-4 h-4 text-cyan-400 shrink-0" style="filter: drop-shadow(0 0 6px #00f0ff);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <div id="wallet-badge-pill" class="bg-cyan-500/10 border border-cyan-400/40 px-2 sm:px-2.5 py-1.5 rounded-xl flex items-center gap-1 cursor-pointer hover:border-cyan-400 transition-colors whitespace-nowrap shrink-0" onclick="openModal('recharge-modal')">
+            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400 shrink-0" style="filter: drop-shadow(0 0 6px #00f0ff);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="rgba(0,240,255,0.25)"/>
             </svg>
-            <span class="text-xs font-extrabold text-white whitespace-nowrap"><span id="credit-display">50</span> <span id="credit-label-text" class="text-[11px] text-cyan-300 font-semibold">tokens</span></span>
+            <span class="text-xs font-extrabold text-white whitespace-nowrap"><span id="credit-display">50</span> <span id="credit-label-text" class="text-[11px] text-cyan-300 font-semibold hidden sm:inline">tokens</span></span>
           </div>
 
-          <button onclick="openModal('recharge-modal')" class="bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-extrabold px-3 py-1.5 rounded-xl text-xs shadow-neon-cyan transition-all transform hover:scale-105 active:scale-95 flex items-center gap-1.5 whitespace-nowrap shrink-0">
+          <button onclick="openModal('recharge-modal')" class="bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-black font-extrabold px-2.5 sm:px-3 py-1.5 rounded-xl text-[11px] sm:text-xs shadow-neon-cyan transition-all transform hover:scale-105 active:scale-95 flex items-center gap-1 whitespace-nowrap shrink-0">
             <svg class="w-3.5 h-3.5 text-black shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
               <line x1="12" y1="8" x2="12" y2="16"/>
@@ -219,35 +249,35 @@
         </div>
       </div>
 
-      
-      <nav class="flex flex-wrap items-center justify-center gap-1.5 pt-1.5 border-t border-white/10">
-        <button data-tab="dashboard" onclick="switchTab('dashboard')" class="nav-btn active whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-cyan-400 bg-cyan-500/15 border border-cyan-400/30 flex items-center gap-1.5">
+      <!-- Barra de Navegação Horizontal Touch Deslizante (Single-Row Swipeable) -->
+      <nav class="flex flex-nowrap overflow-x-auto no-scrollbar items-center gap-1.5 pt-1.5 pb-1 border-t border-white/10 justify-start sm:justify-center px-1 -mx-1 scroll-smooth">
+        <button data-tab="dashboard" onclick="switchTab('dashboard')" class="nav-btn active shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-cyan-400 bg-cyan-500/15 border border-cyan-400/30 flex items-center gap-1.5">
           <i data-lucide="home" class="w-3.5 h-3.5 text-cyan-400 drop-shadow-[0_0_6px_#00f0ff]"></i>
           <span>Início</span>
         </button>
-                <button data-tab="vox" onclick="switchTab('vox')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all flex items-center gap-1.5">
+        <button data-tab="vox" onclick="switchTab('vox')" class="nav-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all flex items-center gap-1.5">
           <i data-lucide="scissors" class="w-3.5 h-3.5 text-amber-400 drop-shadow-[0_0_6px_#f59e0b]"></i>
           <span>Estilo Vox</span>
           <span class="text-[8.5px] font-black uppercase px-1.5 py-0.2 rounded-md bg-amber-400 text-black">NOVO</span>
         </button>
-        <button data-tab="story" onclick="switchTab('story')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all flex items-center gap-1.5">
+        <button data-tab="story" onclick="switchTab('story')" class="nav-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-extrabold text-amber-300 hover:text-amber-200 bg-amber-500/15 border border-amber-400/40 transition-all flex items-center gap-1.5">
           <i data-lucide="clapperboard" class="w-3.5 h-3.5 text-amber-400 drop-shadow-[0_0_6px_#f59e0b]"></i>
           <span>Minha História</span>
           <span class="ml-1 text-[9px] px-1.5 py-0.5 rounded-full bg-amber-400 text-black font-black">NOVO</span>
         </button>
-        <button data-tab="video" onclick="switchTab('video')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all flex items-center gap-1.5">
+        <button data-tab="video" onclick="switchTab('video')" class="nav-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all flex items-center gap-1.5">
           <i data-lucide="video" class="w-3.5 h-3.5 text-cyan-400 drop-shadow-[0_0_6px_#06b6d4]"></i>
           <span>Vídeo</span>
         </button>
-        <button data-tab="image" onclick="switchTab('image')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all flex items-center gap-1.5">
+        <button data-tab="image" onclick="switchTab('image')" class="nav-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all flex items-center gap-1.5">
           <i data-lucide="camera" class="w-3.5 h-3.5 text-pink-400 drop-shadow-[0_0_6px_#ec4899]"></i>
           <span>Imagem</span>
         </button>
-        <button data-tab="suno" onclick="switchTab('suno')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all flex items-center gap-1.5">
+        <button data-tab="suno" onclick="switchTab('suno')" class="nav-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all flex items-center gap-1.5">
           <i data-lucide="music" class="w-3.5 h-3.5 text-cyan-400 drop-shadow-[0_0_6px_#a855f7]"></i>
           <span>Música</span>
         </button>
-        <details class="relative" id="nav-more">
+        <details class="relative shrink-0" id="nav-more">
           <summary class="list-none cursor-pointer whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-200 hover:text-white bg-dark-800/80 border border-white/10 transition-all select-none flex items-center gap-1.5">
             <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-blue-400 drop-shadow-[0_0_6px_#3b82f6]"></i>
             <span>Mais ferramentas</span>
@@ -275,7 +305,7 @@
             </button>
           </div>
         </details>
-        <button data-tab="memory" onclick="switchTab('memory')" class="nav-btn whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-cyan-300 hover:text-white bg-cyan-500/10 border border-cyan-400/30 transition-all flex items-center gap-1.5">
+        <button data-tab="memory" onclick="switchTab('memory')" class="nav-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold text-cyan-300 hover:text-white bg-cyan-500/10 border border-cyan-400/30 transition-all flex items-center gap-1.5">
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400 drop-shadow-[0_0_6px_#c084fc]"></i>
           <span>Meus Criativos</span>
         </button>
@@ -287,7 +317,7 @@
   
   
   
-  <main class="flex-grow max-w-7xl mx-auto w-full px-4 lg:px-8 py-8">
+  <main class="flex-grow max-w-7xl mx-auto w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
 
     
     
@@ -3232,7 +3262,7 @@
       <i data-lucide="palette" class="w-4 h-4 text-amber-400"></i>
       1. Selecione o Estilo Visual do Vídeo (Consistência em todas as Cenas)
     </label>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3" id="vox-style-selector">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3" id="vox-style-selector">
       
       <!-- 1. Estilo Vox (Padrão) -->
       <button type="button" onclick="selectVoxStyle('vox')" id="style-card-vox" class="vox-style-card active p-3 rounded-xl border border-amber-400 bg-amber-500/15 text-left transition-all hover:scale-[1.02]">
@@ -3293,10 +3323,10 @@
         <i data-lucide="file-text" class="w-4 h-4 text-amber-400"></i>
         2. Roteiro ou Tema do Vídeo de 1 Minuto
       </label>
-      <div class="flex flex-wrap items-center gap-3 text-xs">
-        <div class="flex items-center gap-2">
-          <span class="text-gray-400">Total de Cenas:</span>
-          <select id="vox-num-scenes" class="bg-dark-900 border border-white/20 rounded-lg px-2.5 py-1 text-white font-bold outline-none focus:border-amber-400">
+      <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-3 text-xs w-full sm:w-auto">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+          <span class="text-gray-400 text-[11px] sm:text-xs">Total de Cenas:</span>
+          <select id="vox-num-scenes" class="w-full sm:w-auto bg-dark-900 border border-white/20 rounded-lg px-2 py-1 text-white font-bold outline-none focus:border-amber-400 text-xs">
             <option value="6" selected>6 Cenas (1 Minuto @ 10s)</option>
             <option value="8">8 Cenas (1 Minuto @ 7.5s)</option>
             <option value="10">10 Cenas (1 Minuto @ 6s)</option>
@@ -3304,9 +3334,9 @@
             <option value="4">4 Cenas Curtas (Vídeo 30s)</option>
           </select>
         </div>
-        <div class="flex items-center gap-2">
-          <span class="text-gray-400">Duração/Cena:</span>
-          <select id="vox-default-duration" class="bg-dark-900 border border-white/20 rounded-lg px-2.5 py-1 text-white font-bold outline-none focus:border-amber-400">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+          <span class="text-gray-400 text-[11px] sm:text-xs">Duração/Cena:</span>
+          <select id="vox-default-duration" class="w-full sm:w-auto bg-dark-900 border border-white/20 rounded-lg px-2 py-1 text-white font-bold outline-none focus:border-amber-400 text-xs">
             <option value="10" selected>10 segundos</option>
             <option value="8">8 segundos</option>
             <option value="7">7 segundos</option>
@@ -3332,18 +3362,18 @@
 
   <!-- GERENCIADOR DE CENAS DINÂMICAS -->
   <div class="space-y-4">
-    <div class="flex items-center justify-between">
-      <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-        <h3 class="text-lg font-bold text-white flex items-center gap-2">
-          <i data-lucide="film" class="w-5 h-5 text-amber-400"></i>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2">
+        <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+          <i data-lucide="film" class="w-4 h-4 sm:w-5 sm:h-5 text-amber-400"></i>
           <span>3. Cenas do Vídeo (<span id="vox-scenes-count">0</span> Cenas)</span>
         </h3>
-        <span class="text-xs text-emerald-400 font-semibold flex items-center gap-1">
+        <span class="text-[11px] sm:text-xs text-emerald-400 font-semibold flex items-center gap-1">
           <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-          <span>100% Automático via IA &bull; Fotos de apoio opcionais (nenhum arquivo ou vídeo é obrigatório)</span>
+          <span>100% Automático via IA &bull; Fotos de apoio opcionais</span>
         </span>
       </div>
-      <div class="flex items-center gap-2 shrink-0">
+      <div class="flex items-center gap-2 shrink-0 self-end sm:self-auto">
         <button type="button" onclick="clearVoxProject()" class="px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-xs font-bold text-red-400 border border-red-500/30 transition-all flex items-center gap-1.5" title="Apagar cenas da tela e começar novo roteiro">
           <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
           <span>Limpar / Novo</span>
@@ -4514,7 +4544,7 @@ function renderVoxScenesUI() {
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
           <div class="flex items-center gap-2">
             <span class="w-6 h-6 rounded-md bg-amber-500/20 text-amber-300 text-xs font-black flex items-center justify-center border border-amber-400/40">${idx+1}</span>
-            <input type="text" value="${s.headline || 'CENA ' + (idx+1)}" onchange="updateVoxSceneField(${idx}, 'headline', this.value)" class="bg-transparent border-b border-transparent focus:border-amber-400 text-sm font-extrabold text-white outline-none">
+            <input type="text" value="${s.headline || 'CENA ' + (idx+1)}" onchange="updateVoxSceneField(${idx}, 'headline', this.value)" class="bg-transparent border-b border-transparent focus:border-amber-400 text-xs sm:text-sm font-extrabold text-white outline-none max-w-[130px] sm:max-w-xs flex-1">
           </div>
           <div class="flex items-center gap-3">
             <div class="flex items-center gap-1 text-xs text-gray-400">
