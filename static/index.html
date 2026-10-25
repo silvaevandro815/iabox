@@ -3343,10 +3343,16 @@
           <span>100% Automático via IA &bull; Fotos de apoio opcionais (nenhum arquivo ou vídeo é obrigatório)</span>
         </span>
       </div>
-      <button type="button" onclick="addVoxManualScene()" class="px-3.5 py-1.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-xs font-bold text-amber-300 border border-amber-400/40 transition-all flex items-center gap-1.5 shrink-0">
-        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-        <span>+ Adicionar Cena</span>
-      </button>
+      <div class="flex items-center gap-2 shrink-0">
+        <button type="button" onclick="clearVoxProject()" class="px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-xs font-bold text-red-400 border border-red-500/30 transition-all flex items-center gap-1.5" title="Apagar cenas da tela e começar novo roteiro">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          <span>Limpar / Novo</span>
+        </button>
+        <button type="button" onclick="addVoxManualScene()" class="px-3.5 py-1.5 rounded-lg bg-dark-800 hover:bg-dark-700 text-xs font-bold text-amber-300 border border-amber-400/40 transition-all flex items-center gap-1.5">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+          <span>+ Adicionar Cena</span>
+        </button>
+      </div>
     </div>
 
     <!-- Banner informativo: Zero fotos/vídeos obrigatórios -->
@@ -3648,6 +3654,9 @@
     }
 
     function switchTab(tabId) {
+        if (tabId === 'vox' && typeof loadVoxState === 'function') {
+          loadVoxState();
+        }
       if (tabId === 'vox') {
         setMascotMessage(' Estilo Vox Ativo: Crie vídeos de 1 minuto com colagem editorial vintage, recorte de papel rasgado e motion graphics!');
       } else if (tabId === 'video') {
@@ -4349,6 +4358,52 @@
     let currentVoxStyle = 'vox';
 let voxScenes = [];
 
+function saveVoxState() {
+  try {
+    localStorage.setItem('iabox_vox_scenes', JSON.stringify(voxScenes));
+    const txt = document.getElementById('vox-script-input');
+    if (txt) localStorage.setItem('iabox_vox_script', txt.value);
+    localStorage.setItem('iabox_vox_style', currentVoxStyle);
+  } catch (e) {
+    console.warn('Erro ao salvar vox state:', e);
+  }
+}
+
+function loadVoxState() {
+  try {
+    const savedStyle = localStorage.getItem('iabox_vox_style');
+    if (savedStyle) selectVoxStyle(savedStyle);
+
+    const savedScript = localStorage.getItem('iabox_vox_script');
+    const txt = document.getElementById('vox-script-input');
+    if (savedScript && txt && !txt.value) {
+      txt.value = savedScript;
+    }
+
+    const savedScenes = localStorage.getItem('iabox_vox_scenes');
+    if (savedScenes) {
+      const parsed = JSON.parse(savedScenes);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        voxScenes = parsed;
+        renderVoxScenesUI();
+      }
+    }
+  } catch (e) {
+    console.warn('Erro ao carregar vox state:', e);
+  }
+}
+
+function clearVoxProject() {
+  if (voxScenes.length > 0 && !confirm('Deseja limpar as cenas atuais da tela para começar um novo projeto? Os vídeos já gerados continuarão salvos na sua aba de Memória.')) {
+    return;
+  }
+  voxScenes = [];
+  try {
+    localStorage.removeItem('iabox_vox_scenes');
+  } catch (e) {}
+  renderVoxScenesUI();
+}
+
 function selectVoxStyle(styleId) {
   currentVoxStyle = styleId;
   document.querySelectorAll('.vox-style-card').forEach(btn => {
@@ -4360,6 +4415,7 @@ function selectVoxStyle(styleId) {
     el.classList.add('active', 'border-amber-400', 'bg-amber-500/15');
     el.classList.remove('border-white/10', 'bg-dark-800/60');
   }
+  saveVoxState();
 }
 
 async function handleVoxSplitScript() {
@@ -4387,6 +4443,7 @@ async function handleVoxSplitScript() {
     const data = await res.json();
     if (data.status === 'success' && data.scenes) {
       voxScenes = data.scenes;
+      saveVoxState();
       renderVoxScenesUI();
     } else {
       alert(data.detail || data.message || 'Falha ao desmembrar roteiro.');
@@ -4522,6 +4579,7 @@ function renderVoxScenesUI() {
 function updateVoxSceneField(idx, field, val) {
   if (voxScenes[idx]) {
     voxScenes[idx][field] = val;
+    saveVoxState();
   }
 }
 
@@ -4537,18 +4595,21 @@ function addVoxManualScene() {
     reference_images: [],
     video_url: null
   });
+  saveVoxState();
   renderVoxScenesUI();
 }
 
 function deleteVoxScene(idx) {
   voxScenes.splice(idx, 1);
   voxScenes.forEach((s, i) => s.scene_number = i + 1);
+  saveVoxState();
   renderVoxScenesUI();
 }
 
 function deleteVoxRef(sceneIdx, imgIdx) {
   if (voxScenes[sceneIdx] && voxScenes[sceneIdx].reference_images) {
     voxScenes[sceneIdx].reference_images.splice(imgIdx, 1);
+    saveVoxState();
     renderVoxScenesUI();
   }
 }
@@ -4605,6 +4666,7 @@ async function generateSingleVoxScene(sceneIdx) {
     const data = await res.json();
     if (data.status === 'success' && data.video_url) {
       s.video_url = data.video_url;
+      saveVoxState();
       renderVoxScenesUI();
       if (typeof updateWalletDisplay === 'function' && data.remaining_credits !== undefined) {
         updateWalletDisplay(data.remaining_credits);
@@ -4663,6 +4725,7 @@ async function handleVoxRenderFull() {
           const dataScene = await resScene.json();
           if (dataScene.status === 'success' && dataScene.video_url) {
             s.video_url = dataScene.video_url;
+            saveVoxState();
             renderVoxScenesUI();
             if (typeof updateWalletDisplay === 'function' && dataScene.remaining_credits !== undefined) {
               updateWalletDisplay(dataScene.remaining_credits);
@@ -7034,6 +7097,9 @@ setInterval(triggerRobotBlink, 3800);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        if (typeof loadVoxState === 'function') {
+          loadVoxState();
+        }
       if (!localStorage.getItem('iabox_onboarded')) {
         setTimeout(() => { try { setMascotMessage(' Oi! Escreva na caixa o que você quer criar e eu levo você ao lugar certo.'); } catch (e) {} localStorage.setItem('iabox_onboarded', '1'); }, 1800);
       }

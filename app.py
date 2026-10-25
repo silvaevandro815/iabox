@@ -3726,6 +3726,14 @@ def vox_generate_scene(
             output_mp4=out_path,
             runpod_mode=runpod_mode
         )
+        save_user_creation(
+            user_id=user_id,
+            category="Estúdio Vox",
+            title=f"Cena {scene_num}: {data.get('headline', f'Cena {scene_num}')}",
+            prompt=data.get('prompt', ''),
+            result_url=f"/output/{out_name}",
+            metadata={"scene_number": scene_num, "style": style, "duration": duration}
+        )
         return {
             "status": "success",
             "scene_number": scene_num,
@@ -3793,6 +3801,14 @@ def vox_render_full(
                 if os.path.exists(out_path):
                     p = out_path
                     s["video_url"] = f"/output/{out_name}"
+                    save_user_creation(
+                        user_id=user_id,
+                        category="Estúdio Vox",
+                        title=f"Cena {scene_num}: {s.get('headline', f'Cena {scene_num}')}",
+                        prompt=s.get('prompt', ''),
+                        result_url=f"/output/{out_name}",
+                        metadata={"scene_number": scene_num, "style": style, "duration": duration}
+                    )
             except Exception as e_gen:
                 print(f"[VoxRenderFull] Erro ao auto-renderizar cena {s.get('scene_number')}: {e_gen}")
         
